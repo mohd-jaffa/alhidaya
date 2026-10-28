@@ -1,0 +1,39 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+/test-results/
+/playwright-report/
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# production
+/build
+
+# env files: only the example is committed
+.env*
+!.env.example
+
+# supabase
+supabase/.branches/
+supabase/.temp/
+
+# misc
+.DS_Store
+*.pem
+*.log
+
+# The logo as received, at the repository root; the committed copy is
+# docs/brand/al-hidaya-logo-original.jpg
+/New Al Hidaya LH-01 (2).jpg
+
+# Impeccable working files (mocks, reviews, build state, decision pages)
+/.impeccable/mocks/
+/.impeccable/review/
+/.impeccable/build/
+/.impeccable/questions/
