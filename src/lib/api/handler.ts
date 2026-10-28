@@ -2,6 +2,7 @@ import type { ZodType } from "zod";
 import { ZodError } from "zod";
 
 import type { ErrorMessageCode } from "@/constants/messages";
+import { captureError } from "@/lib/audit/errorLog";
 import { type AppError, toAppError, validationError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
@@ -130,14 +131,18 @@ export async function withApiHandler<TData>(
 
     // The cause is logged, never returned: it is the driver's own text and can
     // name tables, columns and values (AGENTS.md §10). A fault of the server's
-    // own is an error (the error log takes it from R1.3); a refusal is the app
-    // working, and only a warning.
+    // own goes to the error log under the reference the person is shown; a
+    // refusal is the app working, and only a warning.
     if (appError.httpStatus >= 500) {
-      logger.error(
-        "API request failed",
-        { ...where, cause: appError.cause instanceof Error ? appError.cause.stack : appError.cause },
-        requestId,
-      );
+      const { traceId, ...rest } = where;
+      await captureError({
+        source: "API",
+        message: "API request failed",
+        error: appError.cause ?? appError,
+        reference: requestId,
+        ...rest,
+        context: { traceId, details: appError.details },
+      });
     } else {
       logger.warn("API request refused", { ...where, details: appError.details }, requestId);
     }

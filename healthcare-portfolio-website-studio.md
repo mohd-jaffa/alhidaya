@@ -1267,7 +1267,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R1.1 | The Drizzle client and schema conventions (MySQL 8, `utf8mb4`, timestamps, ids); `0000_auth`: Better Auth's tables and the lockout table | §27, §28 | — | DONE (2026-10-28) |
 | R1.2 | Admin sign-in with Better Auth: email and password, sign-up disabled, lockout, sign-out, password reset by email; the create-admin script; `proxy.ts`; `withAdminRoute` | §26.4 | — | TODO |
-| R1.3 | `0001_logs`: `logActionSafe`, `captureError`, retention | §36 | — | TODO |
+| R1.3 | `0001_logs`: `logActionSafe`, `captureError`, retention | §36 | — | DONE (2026-10-28) |
 | R1.4 | `0002_media` – `0007_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
 | R1.5 | `0008_enquiries`, `0009_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
 | R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | TODO |

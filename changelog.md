@@ -387,3 +387,39 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R1.3, the audit trail and the error log
+
+### Added
+- **`0001_logs`** (plan R1.3): `audit_log` (the admin's changes, kept a
+  year; a row outlives its admin account, `ON DELETE set null`) and
+  `error_log` (the server's failures, kept a month); their actions and
+  sources are `CHECK`s written from `AUDIT_ACTIONS` and `ERROR_SOURCES`
+  (`src/constants/statuses.ts`), kept equal by a contract test; indexed by
+  date and by entity.
+- **`captureError`** (`src/lib/audit/errorLog.ts`, from clinicdesk): the
+  failure to the server's output and to `error_log`, its context redacted,
+  each field clipped to its column; **never throws**.
+- **`logActionSafe`** (`src/lib/audit/auditLog.ts`): one admin change, the
+  admin taken from the checked session; a failure to write is logged and
+  swallowed. `changes` carries field names only for anything personal
+  (AGENTS.md §8).
+- **`cleanUpLogs`** (`src/lib/audit/retention.ts`): removes what is past its
+  keeping, cut-offs worked out in UTC by the app; the daily job runs it (R6.7).
+- `src/instrumentation.ts`: what Next catches itself (a page it could not draw,
+  a route that threw) goes to the error log, the query left off the path.
+
+### Changed
+- `withApiHandler` sends a server fault to the error log, under the request
+  id the person is shown, instead of only the output.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (132), coverage 100% (373 statements,
+  232 branches, 127 functions); MySQL refuses an unknown audit action by its
+  `CHECK`, and the refusal lands in the error log.
+- Build passed; the shipped-build audit passed; E2E passed, phone and
+  desktop, axe clean.
+
+### Blockers
+- None.

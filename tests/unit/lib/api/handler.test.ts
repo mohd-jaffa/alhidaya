@@ -2,11 +2,17 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as z from "zod";
 
+const { captureError } = vi.hoisted(() => ({ captureError: vi.fn(async (capture: unknown) => void capture) }));
+vi.mock("@/lib/audit/errorLog", () => ({ captureError }));
+
 import { createRequestId, normalizeApiError, readBody, readJson, readQuery, withApiHandler } from "@/lib/api/handler";
 import { conflictError, internalError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  captureError.mockClear();
+});
 
 const post = (body: BodyInit | null, headers: Record<string, string> = {}) =>
   new Request("http://localhost/api/enquiries?x=1", { method: "POST", body, headers });
@@ -113,22 +119,29 @@ describe("withApiHandler", () => {
     );
   });
 
-  it("logs a fault as an error with its cause, and never returns the cause", async () => {
-    const error = vi.spyOn(logger, "error").mockImplementation(() => {});
+  it("sends a fault to the error log with its cause, and never returns the cause", async () => {
     const response = await withApiHandler(post(null), async () => {
       throw new Error("ER_NO_SUCH_TABLE: Table 'alhidaya.secret' doesn't exist");
     });
     const body = await response.json();
     expect(response.status).toBe(500);
     expect(JSON.stringify(body)).not.toContain("secret");
-    expect(error.mock.calls[0][1]).toMatchObject({ code: "INTERNAL_ERROR", cause: expect.stringContaining("ER_NO") });
+    expect(captureError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        source: "API",
+        message: "API request failed",
+        reference: body.error.requestId,
+        code: "INTERNAL_ERROR",
+        error: expect.objectContaining({ message: expect.stringContaining("ER_NO_SUCH_TABLE") }),
+        context: expect.objectContaining({ traceId: expect.any(String) }),
+      }),
+    );
   });
 
-  it("logs a fault whose cause is not an Error as it is", async () => {
-    const error = vi.spyOn(logger, "error").mockImplementation(() => {});
+  it("logs the error itself when it has no cause", async () => {
     await withApiHandler(post(null), async () => {
-      throw internalError("INTERNAL_ERROR", undefined, "plain cause");
+      throw internalError();
     });
-    expect(error.mock.calls[0][1]).toMatchObject({ cause: "plain cause" });
+    expect(captureError.mock.calls[0][0]).toMatchObject({ error: expect.objectContaining({ name: "AppError" }) });
   });
 });

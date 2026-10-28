@@ -43,3 +43,9 @@ export const SIGN_IN_LOCKOUT = { failedAttempts: 5, lockMinutes: 15 } as const;
 
 /** How long a password-reset link works; it works once (plan §26.4). */
 export const PASSWORD_RESET_MINUTES = 30;
+
+/** How long the logs are kept (plan §36): server failures a month, the admin's changes a year. */
+export const LOG_KEEP_DAYS = { errors: 30, audit: 365 } as const;
+
+/** How much of a failure the error log keeps, per field. */
+export const ERROR_LOG_LIMITS = { message: 300, path: 500, detail: 2000, stack: 8000 } as const;
