@@ -1126,7 +1126,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R0.1 | This plan; `PRODUCT.md`; the direction contract in the surface brief; `AGENTS.md`; `CLAUDE.md`; `changelog.md`; `README.md`; the archived draft | §2, D30, D36 | — | DONE (2026-10-28) |
-| R0.2 | Next.js 16 app: TypeScript strict, Tailwind 4, React Compiler, `output: "standalone"`, ESLint, Prettier (120), Node 22 (`.nvmrc`, `engines`), `@/` and `@tests/` paths, `.gitignore`, npm scripts as clinicdesk | §23, §24 | — | TODO |
+| R0.2 | Next.js 16 app: TypeScript strict, Tailwind 4, React Compiler, `output: "standalone"`, ESLint, Prettier (120), Node 22 (`.nvmrc`, `engines`), `@/` and `@tests/` paths, `.gitignore`, npm scripts as clinicdesk | §23, §24 | — | DONE (2026-10-28) |
 | R0.3 | Test harness: Vitest unit (jsdom) and integration (local-only guard) projects; coverage at 100%; Playwright (phone + desktop, local-only guard, axe); `check-test-paths.mjs`; `tests/support` | §34 | — | TODO |
 | R0.4 | Local Supabase on 563xx ports: `config.toml`, empty `seed.sql`, db scripts; `.env.example`; env validation (`src/lib/env`) | §35.1 | — | TODO |
 | R0.5 | CI workflow (`checks` + `app`), Supabase CLI pinned | §35.2 | GitHub repo (§40) for its first run | TODO |

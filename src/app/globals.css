@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/*
+ * The design tokens of "Follow the Line" (plan §30.2) arrive in R2.1. Until
+ * then the page keeps the browser's light defaults with an explicit ground.
+ */
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: #ffffff;
+  color: #0b2440;
+}

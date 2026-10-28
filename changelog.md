@@ -37,3 +37,24 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. Open questions (plan §41) each carry a default; client prerequisites
   are listed in plan §40 (SSH access is needed for R0.8).
+
+## 2026-10-28 — R0.2, the app
+
+### Added
+- **The Next.js app** (plan R0.2): Next.js 16.4 with the React Compiler and
+  `output: "standalone"` (the build cPanel's Passenger runs, plan §35.3);
+  React 19.3; TypeScript 5.9, strict; Tailwind CSS 4.3; ESLint 9 with Next's
+  rules and the `src/lib` → `src/features` import ban; Prettier at 120
+  columns; Node 22 (`.nvmrc`, `engines`); `@/` and `@tests/` paths; npm
+  scripts as clinicdesk.
+- The root layout (English, `dir="ltr"`, metadata from `UI_TEXT`) and a
+  placeholder Home at `src/app/(site)/page.tsx` until R3.3.
+- `src/constants/messages.ts`, the start of the message catalogue.
+
+### Validation
+- Typecheck, lint and format check passed.
+- `npm run build` passed; `node .next/standalone/server.js` served `/` (200).
+- No tests yet: the harness arrives with R0.3.
+
+### Blockers
+- None.
