@@ -194,3 +194,26 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R0.5, CI
+
+### Added
+- **`.github/workflows/ci.yml`** (plan R0.5), on every push to `main`, every
+  pull request, and callable by the release workflow with a `ref`:
+  - `checks`: npm 11, `npm ci`, lint, format check, typecheck, unit tests,
+    and the **dependency audit** (plan D55): what ships may have no known
+    vulnerability at moderate or above (`npm audit --omit=dev`), the tools
+    none at high or above.
+  - `app`: MySQL 8.0.46 and Mailpit from the same `compose.yaml` as a laptop,
+    `.env.local` from the example (local values only), unit + integration
+    tests with coverage at 100%, the build, and the journeys on it (phone and
+    desktop, axe); reports kept 14 days on failure.
+- README: the CI section.
+
+### Validation
+- The workflow parses (Prettier). Its steps run green locally: both audits
+  exit 0, coverage 100% (5 tests), build, E2E (2 passed).
+- The first run on GitHub waits for the repository (plan §40).
+
+### Blockers
+- None.

@@ -1,0 +1,111 @@
+# The quality gates (plan §35.2, AGENTS.md §25), on every push to main and every
+# pull request:
+#
+#   checks   install → lint → format check → typecheck → unit tests →
+#            dependency audit (what ships: nothing at moderate or above;
+#            the tools: nothing at high or above; plan D55)
+#   app      MySQL 8.0.46 and Mailpit from compose.yaml, as on a laptop →
+#            unit + integration tests with coverage at 100% → build → the
+#            browser journeys on that build, phone and desktop, axe
+#
+# A release runs the same gates again on its tag before it deploys (the release
+# workflow, Phase 8, after full payment: plan D48), calling this one with `ref`.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+    inputs:
+      ref:
+        description: The tag or commit to check; the triggering one when empty.
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ inputs.ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, format, types, unit tests and audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # npm 10.9, bundled with Node 22, cannot resolve Vitest's peers (plan D47).
+      - name: Use npm 11
+        run: npm install -g npm@11
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+
+      - name: Audit what ships (no known vulnerability at moderate or above)
+        run: npm audit --omit=dev --audit-level=moderate
+
+      - name: Audit the tools (no known vulnerability at high or above)
+        run: npm audit --audit-level=high
+
+  app:
+    name: Coverage, build and journeys
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Use npm 11
+        run: npm install -g npm@11
+
+      - run: npm ci
+
+      # The same file as on a laptop: MySQL at the server's version, Mailpit.
+      - name: Start MySQL and Mailpit
+        run: docker compose up -d --wait
+
+      # The tests and the build read .env.local, as they do on a laptop; every
+      # value in the example is for a local service only.
+      - name: Point the app at them
+        run: cp .env.example .env.local
+
+      - run: npm run test:coverage
+
+      - run: npm run build
+
+      - name: Install the browser
+        run: npx playwright install --with-deps chromium
+
+      - run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-${{ github.run_number }}
+          path: |
+            playwright-report/
+            test-results/
+            coverage/
+          retention-days: 14
+          if-no-files-found: ignore

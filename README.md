@@ -67,4 +67,7 @@ npm run test:coverage             # unit + integration; fails below 100%
 npm run build && npm run test:e2e # browser journeys, phone and desktop, port 3100
 ```
 
-CI arrives with plan R0.5.
+CI (`.github/workflows/ci.yml`) runs all of them on every push to `main` and
+every pull request, against the same `compose.yaml`, and audits the
+dependencies: nothing that ships may carry a known vulnerability at moderate
+or above, and no tool one at high or above (plan D55).
