@@ -928,7 +928,7 @@ MySQL 8.0 (D49): `utf8mb4` throughout (Arabic later), InnoDB, enforced `CHECK`s.
 | `enquiry_notes` | internal notes |
 | `applications` | §9: job (or none), job title as applied, fields, the CV's stored id, original name, size and type, CV and email status |
 | `application_notes` | internal notes |
-| `rate_limits` | hashed key, form, window start, count |
+| `rate_limits` | keyed hash of scope and key, window start, count |
 | `sign_in_attempts` | hashed email/IP, count, locked until |
 | `audit_log` | admin changes: action, entity, before/after for non-personal fields, actor |
 | `error_log` | server failures (no personal data), with a retention |
@@ -948,14 +948,15 @@ engine. Each migration has a DB contract test.
 |---|---|
 | 0000 | `auth`: Better Auth's tables; the lockout table |
 | 0001 | `logs`: `audit_log`, `error_log` |
-| 0002 | `media` |
-| 0003 | `site`: `site_content`, `site_operations` |
-| 0004 | `pages`: `pages`, `page_sections`, the section-type `CHECK` |
-| 0005 | `services` |
-| 0006 | `jobs` |
-| 0007 | `clients` |
-| 0008 | `enquiries`: tables, notes, the rate-limit table |
-| 0009 | `applications`: tables, notes |
+| 0002 | `rate_limits`: the fixed-window counters (sign-in resets now, the forms in R1.5) |
+| 0003 | `media` |
+| 0004 | `site`: `site_content`, `site_operations` |
+| 0005 | `pages`: `pages`, `page_sections`, the section-type `CHECK` |
+| 0006 | `services` |
+| 0007 | `jobs` |
+| 0008 | `clients` |
+| 0009 | `enquiries`: tables, notes |
+| 0010 | `applications`: tables, notes |
 
 ## 29. API
 
@@ -970,7 +971,8 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `POST /api/applications` | multipart application with the CV |
 | `GET /api/preview`, `GET /api/preview/exit` | enter and leave draft mode (admin only) |
 | `POST /api/cron/retention` | the daily purge (`CRON_SECRET`) |
-| `/api/auth/[...all]` | Better Auth: sign in, sign out, session, forgotten and reset password |
+| `POST`/`DELETE /api/admin/session` | sign in (lockout first) and sign out, through Better Auth on the server; its own HTTP routes are never mounted (R1.2) |
+| `POST /api/admin/password/forgot`, `/reset` | ask for a reset link (the same answer for any email; rate-limited), and set a new password from it |
 | `/api/admin/pages/[key]` (+ `/sections`, `/publish`, `/discard`) | pages |
 | `/api/admin/services` (+ `[id]`, `/publish`, `/order`) | services |
 | `/api/admin/jobs` (+ `[id]`, `/publish`) | jobs |
@@ -1266,10 +1268,10 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R1.1 | The Drizzle client and schema conventions (MySQL 8, `utf8mb4`, timestamps, ids); `0000_auth`: Better Auth's tables and the lockout table | §27, §28 | — | DONE (2026-10-28) |
-| R1.2 | Admin sign-in with Better Auth: email and password, sign-up disabled, lockout, sign-out, password reset by email; the create-admin script; `proxy.ts`; `withAdminRoute` | §26.4 | — | TODO |
+| R1.2 | Admin sign-in with Better Auth: email and password, sign-up disabled, lockout, sign-out, password reset by email; the create-admin script; `proxy.ts`; `withAdminRoute` | §26.4 | — | DONE (2026-10-28) |
 | R1.3 | `0001_logs`: `logActionSafe`, `captureError`, retention | §36 | — | DONE (2026-10-28) |
-| R1.4 | `0002_media` – `0007_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
-| R1.5 | `0008_enquiries`, `0009_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
+| R1.4 | `0003_media` – `0008_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
+| R1.5 | `0009_enquiries`, `0010_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
 | R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | TODO |
 | R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | DONE (2026-10-28; the password-reset email; the enquiry and application alerts come with their forms, R4.3 and R5.4) |
 | R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | TODO |

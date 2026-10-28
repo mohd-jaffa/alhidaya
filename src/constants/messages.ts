@@ -25,6 +25,11 @@ export const ERROR_MESSAGES = {
   AUTH_SESSION_REQUIRED: "Please sign in to continue.",
   AUTH_SESSION_INVALID: "Your session has expired. Please sign in again.",
   AUTH_PERMISSION_DENIED: "You don't have permission to do this.",
+  // One wording for a wrong password and an unknown email (plan §26.4).
+  AUTH_INVALID_CREDENTIALS: "That email and password don't match.",
+  AUTH_LOCKED: "Too many attempts. Sign-in is paused for 15 minutes.",
+  AUTH_RESET_INVALID: "This reset link has expired or was already used. Please ask for a new one.",
+  REQUEST_ORIGIN_REFUSED: "This request was refused. Please reload the page and try again.",
 
   NOT_FOUND: "We couldn't find what you were looking for.",
   RECORD_NOT_FOUND: "This item no longer exists. It may have been deleted.",
@@ -53,6 +58,7 @@ export const VALIDATION_MESSAGES = {
   tooLong: (label: string, max: number) => `${label} can be at most ${max} characters.`,
   email: (label: string) => `${label} must look like name@example.com.`,
   phone: (label: string) => `${label} must be a Qatar number (8 digits) or start with a country code, like +44.`,
+  passwordLength: (min: number, max: number) => `Use a password of ${min} to ${max} characters.`,
 } as const;
 
 export function isErrorMessageCode(code: string | null | undefined): code is ErrorMessageCode {

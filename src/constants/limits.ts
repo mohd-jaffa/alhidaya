@@ -41,8 +41,26 @@ export const FORM_RATE_LIMIT = { submissions: 5, windowMinutes: 10 } as const;
 /** The admin's sign-in lockout (plan §26.4). */
 export const SIGN_IN_LOCKOUT = { failedAttempts: 5, lockMinutes: 15 } as const;
 
+/**
+ * Every failed sign-in takes at least this long, so a wrong password and an
+ * unknown email cannot be told apart by how quickly they are refused.
+ */
+export const SIGN_IN_FAILURE_MIN_MS = 800;
+
+/** Password-reset requests: per IP, and per email so the admin's inbox is never flooded. */
+export const RESET_RATE_LIMITS = {
+  ip: { limit: 10, windowMinutes: 60 },
+  email: { limit: 3, windowMinutes: 60 },
+} as const;
+
 /** How long a password-reset link works; it works once (plan §26.4). */
 export const PASSWORD_RESET_MINUTES = 30;
+
+/** The admin's password (plan §26.4): long rather than clever. */
+export const PASSWORD_LENGTH = { min: 12, max: 128 } as const;
+
+/** How long an admin session lasts, and how often it is extended while in use. */
+export const ADMIN_SESSION = { hours: 8, refreshMinutes: 60 } as const;
 
 /** How long the logs are kept (plan §36): server failures a month, the admin's changes a year. */
 export const LOG_KEEP_DAYS = { errors: 30, audit: 365 } as const;

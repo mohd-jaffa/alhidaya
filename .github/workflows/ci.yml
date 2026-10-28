@@ -2,11 +2,11 @@
 # pull request:
 #
 #   checks   install → lint → format check → typecheck → unit tests →
-#            dependency audit (nothing at high or above; plan D55)
+#            dependency audits (nothing at high or above; nothing that ships
+#            at moderate or above; plan D55)
 #   app      MySQL 8.0.46 and Mailpit from compose.yaml, as on a laptop →
 #            unit + integration tests with coverage at 100% → build → the
-#            build's own audit (nothing that ships at moderate or above) →
-#            the browser journeys on that build, phone and desktop, axe
+#            browser journeys on that build, phone and desktop, axe
 #
 # A release runs the same gates again on its tag before it deploys (the release
 # workflow, Phase 8, after full payment: plan D48), calling this one with `ref`.
@@ -58,6 +58,12 @@ jobs:
       - name: Audit every dependency (no known vulnerability at high or above)
         run: npm audit --audit-level=high
 
+      # What ships is every package the app loads at runtime, bundled or not;
+      # not npm's production view, which an optional peer can widen
+      # (scripts/audit-shipped.mjs).
+      - name: Audit what ships (no known vulnerability at moderate or above)
+        run: npm run audit:shipped
+
   app:
     name: Coverage, build and journeys
     needs: checks
@@ -90,11 +96,6 @@ jobs:
       - run: npm run test:coverage
 
       - run: npm run build
-
-      # What ships is the standalone build, not npm's production view, which an
-      # optional peer can widen (scripts/audit-shipped.mjs).
-      - name: Audit what ships (no known vulnerability at moderate or above)
-        run: npm run audit:shipped
 
       - name: Install the browser
         run: npx playwright install --with-deps chromium

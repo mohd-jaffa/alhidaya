@@ -2,14 +2,12 @@
 import { describe, expect, it } from "vitest";
 
 import { getServerEnv } from "@/lib/env/server";
+import { TEST_ENV } from "@tests/support/env";
 
 /** A partial environment, as a test hands one in. */
 const env = (values: Record<string, string>) => values as unknown as NodeJS.ProcessEnv;
 
-const valid = {
-  DATABASE_URL: "mysql://alhidaya_app:local-app@127.0.0.1:56306/alhidaya",
-  NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
-};
+const valid = { ...TEST_ENV };
 
 describe("getServerEnv", () => {
   it("accepts a complete environment, development by default", () => {
@@ -30,7 +28,10 @@ describe("getServerEnv", () => {
     }
   });
 
-  it("refuses a missing site address", () => {
+  it("refuses a missing site address, and secrets too short to be secret", () => {
+    expect(() => getServerEnv(env({ ...valid, BETTER_AUTH_SECRET: "short" }))).toThrow(
+      expect.objectContaining({ code: "CONFIG_INVALID" }),
+    );
     expect(() => getServerEnv(env({ DATABASE_URL: valid.DATABASE_URL }))).toThrow(
       expect.objectContaining({ code: "CONFIG_INVALID" }),
     );

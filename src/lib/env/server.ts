@@ -39,6 +39,13 @@ const serverEnvSchema = z.object({
   SMTP_SECURE: optionalBoolean,
   SMTP_USER: optionalString,
   SMTP_PASSWORD: optionalString,
+
+  // Signs the admin's session cookies (Better Auth). At least 32 characters;
+  // changing it signs the admin out (plan §26.4).
+  BETTER_AUTH_SECRET: z.string().min(32),
+  // Keys the hashes that stand in for emails and IPs in the lockout and the
+  // rate limits, so neither is ever stored (plan §18, §26.4).
+  HASH_SECRET: z.string().min(32),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

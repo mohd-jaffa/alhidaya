@@ -20,6 +20,8 @@ export const ROUTES = {
 
 export const ADMIN_ROUTES = {
   login: "/admin/login",
+  forgotPassword: "/admin/forgot-password",
+  resetPassword: "/admin/reset-password",
   overview: "/admin",
   page: (key: string) => `/admin/pages/${key}`,
   services: "/admin/services",
@@ -32,3 +34,10 @@ export const ADMIN_ROUTES = {
   operations: "/admin/settings/operations",
   activity: "/admin/activity",
 } as const;
+
+/** The admin pages anyone may open: everything else under /admin needs a session (src/proxy.ts). */
+export const ADMIN_PUBLIC_ROUTES: readonly string[] = [
+  ADMIN_ROUTES.login,
+  ADMIN_ROUTES.forgotPassword,
+  ADMIN_ROUTES.resetPassword,
+];

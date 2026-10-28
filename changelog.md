@@ -423,3 +423,76 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R1.2, the admin's sign-in
+
+### Added
+- **Better Auth on the site's own database** (`src/lib/auth/auth.ts`, plan
+  R1.2, D43): email and password; **public sign-up disabled**; passwords
+  12 – 128 characters, scrypt-hashed; 8-hour sessions extended hourly while in
+  use, the cookie lasting for the browser's session only (`HttpOnly`,
+  `SameSite=Lax`, `Secure` in production, prefix `alhidaya`); UUID ids;
+  telemetry off. **Its HTTP routes are never mounted**: the admin's own routes
+  call it on the server, so there is no sign-up endpoint and nothing else to
+  discover.
+- **The admin's routes**: `POST`/`DELETE /api/admin/session` (sign in, sign
+  out), `POST /api/admin/password/forgot` and `/reset`. Every state-changing
+  request must come from the site's own origin (`assertSameOrigin`); every
+  admin route checks the session against the database (`withAdminRoute`).
+- **The lockout** (`src/features/auth/lockout.ts`): five failures for an email
+  or from an IP lock it for 15 minutes, counted under keyed hashes
+  (`HASH_SECRET`), never the email or the IP; a lapsed lock starts the count
+  again; the right password is refused while locked.
+- **Every failed sign-in takes at least 800 ms**, so a wrong password and an
+  unknown email, which Better Auth already answers alike, cannot be told
+  apart by timing either.
+- **Password reset**: a one-time link to the admin's own reset page (30
+  minutes), the same answer for any email, **at most 3 mails an hour to an
+  email** (silently) and **10 requests an hour from an IP** (then 429); a reset
+  ends every session the admin had.
+- **`0002_rate_limits`** and `consumeRateLimit` (`src/lib/rate-limit`):
+  fixed-window counters under keyed hashes; the forms reuse them (R1.5).
+- **`src/proxy.ts`**: a page under `/admin` without a session cookie goes to
+  sign-in, keeping where it was headed; sign-in and the password pages are
+  open; every admin page is sent `X-Robots-Tag: noindex, nofollow`. The
+  secure cookie name in production is recognised.
+- **`npm run admin:create -- --email … --name …`**
+  (`scripts/create-admin.mts`, `src/features/auth/createAdmin.ts`): the only
+  way an account comes to exist; the password is asked for unseen, twice,
+  never taken from the command line, and works piped in over SSH.
+- Audit rows for sign-in, sign-out, reset requests and password changes; the
+  IP is taken as the last `X-Forwarded-For` entry (the one the server in front
+  added), to be checked on the server at R8.2.
+- Env: `BETTER_AUTH_SECRET`, `HASH_SECRET` (at least 32 characters each).
+
+### Changed
+- **The "what ships" audit now reads the runtime dependency closure** from the
+  lockfile (`scripts/audit-shipped.mjs`), and runs in CI's `checks` job.
+  Turbopack compiles Better Auth, mysql2 and the rest into its own server
+  chunks, so the standalone build's `node_modules` (13 packages) missed most
+  of what ships; the closure (89 packages) holds everything the app can load,
+  bundled or not, and still leaves out development tools and optional peers
+  (drizzle-kit). Proven both ways: a planted finding in `zod` fails it; ones
+  only in esbuild, drizzle-kit and vitest pass.
+- Plan §28 and §29: migrations renumbered after `0002_rate_limits`; the API
+  table names the admin's own routes instead of Better Auth's.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (186), coverage 100% (520 statements,
+  283 branches, 165 functions). Against the local MySQL and Mailpit: an
+  account made, a sign-in with an HttpOnly cookie the database recognises,
+  wrong password and unknown email refused alike and never faster than
+  800 ms, the email locked after five failures even against the right
+  password and from another IP, a lapsed lock counting again, sign-out ending
+  the session, a reset email whose token sets a new password and ends the old
+  session, the token refused a second time, nothing sent to an unknown email,
+  an email's mail capped and an IP refused past its limit.
+- `npm run admin:create` refuses mismatched and short passwords, creating
+  nothing.
+- Build passed; the shipped audit passed (89 packages); E2E passed, phone
+  and desktop, axe clean.
+
+### Blockers
+- None. The admin sign-in screens arrive with the admin shell (R6.2); until
+  then `/admin` redirects to a sign-in page that is not built yet.
