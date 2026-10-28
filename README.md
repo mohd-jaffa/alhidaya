@@ -65,9 +65,11 @@ npm test                          # unit tests
 npm run test:integration          # against the local MySQL (npm run services:start)
 npm run test:coverage             # unit + integration; fails below 100%
 npm run build && npm run test:e2e # browser journeys, phone and desktop, port 3100
+npm run audit:shipped             # after a build: nothing that ships may be vulnerable
 ```
 
 CI (`.github/workflows/ci.yml`) runs all of them on every push to `main` and
 every pull request, against the same `compose.yaml`, and audits the
-dependencies: nothing that ships may carry a known vulnerability at moderate
-or above, and no tool one at high or above (plan D55).
+dependencies: nothing inside the standalone build may carry a known
+vulnerability at moderate or above, and nothing in the tree one at high or
+above (plan D55).

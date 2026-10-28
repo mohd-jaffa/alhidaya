@@ -20,12 +20,14 @@
     "services:start": "docker compose up -d --wait",
     "services:stop": "docker compose stop",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "audit:shipped": "node scripts/audit-shipped.mjs"
   },
   "engines": {
     "node": "22.x"
   },
   "dependencies": {
+    "better-auth": "^1.7.14",
     "drizzle-orm": "^0.45.4",
     "mysql2": "^3.24.6",
     "next": "^16.4.3",

@@ -296,3 +296,24 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — CI audits the build that ships
+
+### Changed
+- **The "what ships" audit now reads the standalone build itself**
+  (`scripts/audit-shipped.mjs`, `npm run audit:shipped`, run in CI after the
+  build): any package inside `.next/standalone` with a known vulnerability at
+  moderate or above fails the run. `npm audit --omit=dev` could not answer
+  that question: Better Auth lists `drizzle-kit` as an optional peer, which
+  pulls the migration tool (and its old esbuild, GHSA-67mh-4wv8-2f99) into
+  npm's production view, although neither is ever imported nor present in the
+  build. The whole tree is still audited at high and above.
+
+### Validation
+- The script passes on today's build (13 packages ship) and fails when a
+  vulnerable package is planted in the build, then passes again once removed.
+- Better Auth 1.7.14 installed for R1.2; the tree has no high or critical
+  finding.
+
+### Blockers
+- None.
