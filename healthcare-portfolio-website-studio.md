@@ -1271,7 +1271,7 @@ one commit (D27).
 | R1.4 | `0002_media` – `0007_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
 | R1.5 | `0008_enquiries`, `0009_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
 | R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | TODO |
-| R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | TODO |
+| R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | DONE (2026-10-28; the password-reset email; the enquiry and application alerts come with their forms, R4.3 and R5.4) |
 | R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | TODO |
 | R1.9 | Integration: public reads return only published rows; drafts, inboxes and CVs unreachable without the admin; admin-only writes; rate limit | §34 | — | TODO |
 

@@ -6,8 +6,9 @@
 export const SITE = {
   domain: "alhidaya.qa",
   url: "https://alhidaya.qa",
-  /** The sender of every email the site sends (plan D53). */
+  /** The sender of every email the site sends (plan D53), and the name it shows. */
   sender: "noreply@alhidaya.qa",
+  senderName: "Al Hidaya Health Care Services",
   /** Where enquiries and applications go until the admin changes them (plan Q17). */
   defaultRecipients: {
     enquiries: "info@alhidaya.qa",

@@ -36,6 +36,20 @@ describe("getServerEnv", () => {
     );
   });
 
+  it("reads the mail settings, blank as unset", () => {
+    expect(
+      getServerEnv(env({ ...valid, SMTP_HOST: "127.0.0.1", SMTP_PORT: "56325", SMTP_SECURE: "false", SMTP_USER: "" })),
+    ).toMatchObject({ SMTP_HOST: "127.0.0.1", SMTP_PORT: 56325, SMTP_SECURE: false, SMTP_USER: undefined });
+    expect(getServerEnv(env({ ...valid, SMTP_PORT: "", SMTP_SECURE: "true" }))).toMatchObject({
+      SMTP_PORT: undefined,
+      SMTP_SECURE: true,
+    });
+    expect(getServerEnv(env({ ...valid, SMTP_SECURE: "" })).SMTP_SECURE).toBeUndefined();
+    expect(() => getServerEnv(env({ ...valid, SMTP_SECURE: "yes" }))).toThrow(
+      expect.objectContaining({ code: "CONFIG_INVALID" }),
+    );
+  });
+
   it("reads the process environment when given none", () => {
     expect(() => getServerEnv()).toThrow(expect.objectContaining({ code: "CONFIG_INVALID" }));
   });

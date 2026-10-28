@@ -40,3 +40,6 @@ export const FORM_RATE_LIMIT = { submissions: 5, windowMinutes: 10 } as const;
 
 /** The admin's sign-in lockout (plan §26.4). */
 export const SIGN_IN_LOCKOUT = { failedAttempts: 5, lockMinutes: 15 } as const;
+
+/** How long a password-reset link works; it works once (plan §26.4). */
+export const PASSWORD_RESET_MINUTES = 30;

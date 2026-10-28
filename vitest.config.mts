@@ -57,6 +57,10 @@ export default defineConfig({
             TEST_MIGRATION_DATABASE_URL: local.TEST_MIGRATION_DATABASE_URL ?? "",
             DATABASE_URL: local.TEST_DATABASE_URL ?? "",
             NEXT_PUBLIC_SITE_URL: local.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+            SMTP_HOST: local.SMTP_HOST ?? "",
+            SMTP_PORT: local.SMTP_PORT ?? "",
+            SMTP_SECURE: local.SMTP_SECURE ?? "",
+            MAILPIT_URL: local.MAILPIT_URL ?? "",
           },
           // Each file writes its own rows; one at a time keeps them apart.
           fileParallelism: false,

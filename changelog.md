@@ -355,3 +355,35 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R1.7, mail
+
+### Added
+- **The mail interface** (`src/lib/mail`, plan R1.7), ported from clinicdesk:
+  one `MailProvider`, `NodemailerProvider` over SMTP, and `MailService` with
+  one method per email. Messages now carry a **Reply-To** (the visitor, so the
+  team answers them directly) and **attachments** (the CV for HR, plan
+  §9.3). Mail is sent as `Al Hidaya Health Care Services
+  <noreply@alhidaya.qa>` (D53); **TLS is required in production** (port 465,
+  or STARTTLS on 587); with no `SMTP_HOST` mail is off and says so
+  (`MAIL_NOT_CONFIGURED`), never undoing what it was for.
+- **The email layout** in the logo's colours (navy ink, one deep-blue
+  button, a sky-blue rule), tables and inline styles for every mail app,
+  light only, no fetched fonts; **everything a person typed is escaped**.
+- **The password-reset email** (`MAIL_TEXT.passwordReset`); its link works
+  for 30 minutes, once (`PASSWORD_RESET_MINUTES`). The enquiry and
+  application alerts join with their forms (R4.3, R5.4).
+- Env: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`,
+  `SMTP_PASSWORD` (Mailpit locally; the server's cPanel mail in production,
+  R8.3); `MAILPIT_URL` for the tests.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (114), coverage 100% (334 statements,
+  194 branches, 117 functions); an email with a Reply-To and a PDF attachment
+  went through Mailpit's SMTP and was read back from its API.
+- Build passed; the shipped-build audit passed; E2E passed, phone and
+  desktop, axe clean.
+
+### Blockers
+- None.

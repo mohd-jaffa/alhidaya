@@ -34,6 +34,7 @@ export const ERROR_MESSAGES = {
   NETWORK_OFFLINE: "You're offline. Check your connection and try again.",
   NETWORK_UNREACHABLE: "We couldn't reach the server. Please try again in a moment.",
   EXTERNAL_SERVICE_ERROR: "A service we rely on didn't respond. Please try again in a moment.",
+  MAIL_NOT_CONFIGURED: "Email is not set up on this site yet.",
 
   CONFIG_INVALID: "The site is not set up correctly.",
   INTERNAL_ERROR: "Something went wrong on our side. Please try again.",
@@ -62,3 +63,23 @@ export function isErrorMessageCode(code: string | null | undefined): code is Err
 export function getErrorMessage(code: string): string {
   return isErrorMessageCode(code) ? ERROR_MESSAGES[code] : ERROR_MESSAGES.INTERNAL_ERROR;
 }
+
+/**
+ * Every word of every email the site sends (AGENTS.md §16). The enquiry and
+ * application alerts join with their forms (R4.3, R5.4).
+ */
+export const MAIL_TEXT = {
+  greeting: (name: string) => `Hello ${name},`,
+  /** Under a button, for a mail app that will not show one. */
+  linkFallback: "If the button doesn't work, copy this link into your browser:",
+  linkValid: (minutes: number) => `The link works for ${minutes} minutes, and only once.`,
+  passwordReset: {
+    subject: `Reset your ${UI_TEXT.siteName} admin password`,
+    preheader: "Choose a new password for the website's admin panel.",
+    heading: "Reset your password",
+    body: "Someone asked to reset the password of the website's admin panel for this address. If it was you, choose a new one below.",
+    action: "Choose a new password",
+    footnote:
+      "If you didn't ask for this, you can ignore this email: your password stays as it is. Nobody at Al Hidaya will ever ask you for it.",
+  },
+} as const;
