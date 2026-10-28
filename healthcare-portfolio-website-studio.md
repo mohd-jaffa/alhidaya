@@ -1257,7 +1257,7 @@ one commit (D27).
 | R0.4 | Local services: MySQL 8.0 and Mailpit in Docker (`compose.yaml`, 563xx ports); Drizzle config and db scripts; `.env.example`; env validation (`src/lib/env`) | §35.1 | — | DONE (2026-10-28; env validation with R0.6) |
 | R0.5 | CI workflow (`checks` + `app`), MySQL 8.0 as a service container, npm 11, `npm audit` (high and above fails) | §35.2, D55 | GitHub repo (§40) for its first run | DONE (2026-10-28; first run waits for the GitHub remote) |
 | R0.6 | Core library from clinicdesk: `AppError` + kinds + `fromDatabaseError`; logger with redaction; `lib/api` (handler, responses, client, params); `lib/query` | §29, §36 | — | DONE (2026-10-28; with env validation from R0.4; `params` arrives with the first route, R1.2, and `lib/query` with the admin screens, R6.2) |
-| R0.7 | Constants skeleton (`messages`, `routes`, `limits`, `site`); validation primitives and text hygiene; phone (+974 and international) | §25 | — | TODO |
+| R0.7 | Constants skeleton (`messages`, `routes`, `limits`, `site`); validation primitives and text hygiene; phone (+974 and international) | §25 | — | DONE (2026-10-28; `redirects` arrives with R3.7, once the service slugs are approved) |
 | R0.8 | The cPanel server checked over SSH, read-only: Node versions, memory and CPU limits, Passenger, disk, databases, mail routing, outbound SMTP and HTTPS, server location; findings recorded in §21.1 | §21, D19 | — | DONE (2026-10-28) |
 | R0.9 | **The user** backs up the old site (`public_html`, the `alhidaya_hidaya` database), gives the backup to the client, then clears the old site and its database from the server | D50 | Full payment (D48) | TODO |
 

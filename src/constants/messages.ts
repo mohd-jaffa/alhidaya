@@ -8,6 +8,8 @@ export const UI_TEXT = {
   siteDescription:
     "Nursing care at home and in clinics, and nurse staffing for hospitals, clinics and schools, in Doha, Qatar.",
   placeholderNote: "Our new website is on its way.",
+  /** The first line of a WhatsApp chat a visitor starts; they still press send (plan Q14). */
+  whatsappPrefill: "Hello Al Hidaya, I would like to ask about nursing care.",
 } as const;
 
 /**
@@ -38,6 +40,19 @@ export const ERROR_MESSAGES = {
 } as const;
 
 export type ErrorMessageCode = keyof typeof ERROR_MESSAGES;
+
+/**
+ * What a field says when it is wrong, beside the field (AGENTS.md §12): one
+ * wording whichever side catches the mistake, and never Zod's English.
+ */
+export const VALIDATION_MESSAGES = {
+  invalid: "Please check this field.",
+  required: (label: string) => `${label} is required.`,
+  tooShort: (label: string, min: number) => `${label} must be at least ${min} characters.`,
+  tooLong: (label: string, max: number) => `${label} can be at most ${max} characters.`,
+  email: (label: string) => `${label} must look like name@example.com.`,
+  phone: (label: string) => `${label} must be a Qatar number (8 digits) or start with a country code, like +44.`,
+} as const;
 
 export function isErrorMessageCode(code: string | null | undefined): code is ErrorMessageCode {
   return code != null && Object.prototype.hasOwnProperty.call(ERROR_MESSAGES, code);

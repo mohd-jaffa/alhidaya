@@ -263,3 +263,36 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R0.7, constants and validation
+
+### Added
+- **Constants** (plan R0.7, §25): `limits.ts` (text lengths; the firm upload
+  limits, CV 5 MB and images 10 MB, originals kept at most 2400 px wide; the
+  disk budgets, media and CVs 250 MB each, warning at 80 %; retention and CV
+  expiry 1 – 365 days, 180 by default; the form rate limit, 5 per 10 minutes;
+  the sign-in lockout, 5 failures for 15 minutes), `site.ts` (the domain, the
+  sender `noreply@alhidaya.qa`, the default recipients info@ and hr@),
+  `routes.ts` (every public and admin page), and in `messages.ts` the
+  `VALIDATION_MESSAGES` and the WhatsApp first line (Q14).
+- **Text hygiene** (`src/lib/text/normalise.ts`, from clinicdesk): NFC,
+  invisible and control characters removed, whitespace collapsed, line breaks
+  kept where a field has lines.
+- **Phone numbers** (`src/lib/phone.ts`), rewritten for **Qatar**: stored as
+  E.164; an 8-digit Qatar number (3, 4, 5, 6 or 7 first) may be typed without
+  its code, written `+974`, `00974` or `(+974)`; any other country needs its
+  code; `formatPhone` ("+974 3130 6555"), `callHref`, `whatsAppHref`.
+- **Validation primitives** (`src/lib/validation`): required and optional
+  lines, multi-line text, email (stored lower case) and phone (stored E.164),
+  each problem in the field's own words; blank optional fields are null; and
+  the wording floor, so Zod's English never reaches a visitor.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (84), coverage 100% (257 statements,
+  153 branches, 83 functions).
+- Build passed; E2E passed, phone and desktop, axe clean.
+- `npm audit --omit=dev`: 0 vulnerabilities.
+
+### Blockers
+- None.
