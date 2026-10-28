@@ -160,3 +160,37 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R0.4, the local services
+
+### Added
+- **`compose.yaml`** (plan R0.4): **MySQL 8.0.46**, the client's server's exact
+  version, and **Mailpit 1.32**, bound to this machine on 563xx ports
+  (MySQL 56306, Mailpit 56324, SMTP 56325). Images come from AWS's mirror of
+  the official MySQL image and Mailpit's GitHub registry (D57): Docker
+  Desktop here cannot reach Docker Hub, and CI avoids its pull limits.
+- `docker/mysql/init/01-databases-and-users.sql`: databases `alhidaya` and
+  `alhidaya_test` in `utf8mb4`, and the two users production will have:
+  `alhidaya_app` (data rights only) and `alhidaya_migrator` (schema rights).
+- **Drizzle** (`drizzle-orm`, `mysql2`; `drizzle-kit` for migrations) and
+  `drizzle.config.ts`, which migrates as the migrator; scripts
+  `services:start`, `services:stop`, `db:generate`, `db:migrate`.
+- `.env.example` with the local addresses; the integration project maps the
+  app's `DATABASE_URL` to the test database.
+- The first integration test (`tests/db/integration/local-database.test.ts`):
+  the database is MySQL 8.0.46, stores `utf8mb4`, and **refuses the app any
+  schema change** (create table, drop database).
+- Plan D56: server versions may be updated when needed, after full payment.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (5), coverage 100%.
+- `npm audit --omit=dev`: 0 vulnerabilities. The whole tree has 4 moderate
+  findings, one esbuild dev-server advisory (GHSA-67mh-4wv8-2f99) reached only
+  through `drizzle-kit`'s loader: a development tool that never ships, whose
+  dev server is never run.
+- Env validation (`src/lib/env`) moves to R0.6, with the error catalogue it
+  reports through (as clinicdesk).
+
+### Blockers
+- None.

@@ -27,21 +27,31 @@ server as a Node.js app.
 - **npm 11** for installs: npm 10.9, which ships with Node 22, fails on
   Vitest's peer dependencies (plan D47). Use `npx -y npm@11 install` instead
   of `npm install`; nothing global changes.
-- **Docker**, running: the local MySQL 8.0 and Mailpit run in it (from R0.4).
+- **Docker**, running: the local MySQL 8.0 and Mailpit run in it.
 
 ### First run
 
 ```bash
 nvm use
 npx -y npm@11 install
+cp .env.example .env.local
+npm run services:start   # MySQL 8.0.46 and Mailpit, in Docker
 npm run dev
 ```
 
 Then open <http://localhost:3000>.
 
-The local database and mail catcher (`compose.yaml`, on **563xx** ports so
-they run beside other projects) arrive with plan R0.4; this section gains
-their commands then.
+The local services (`compose.yaml`) bind to this machine only, on **563xx**
+ports, so they run beside other projects (clinicdesk uses 553xx):
+
+| | |
+|---|---|
+| The app | <http://localhost:3000> |
+| MySQL | `127.0.0.1:56306` (databases `alhidaya` and `alhidaya_test`) |
+| Mail (Mailpit) | <http://127.0.0.1:56324> (SMTP on 56325) |
+
+The app connects as `alhidaya_app`, which has data rights only; migrations
+run as `alhidaya_migrator` (plan §26.1). `npm run services:stop` stops both.
 
 ---
 
@@ -51,7 +61,10 @@ their commands then.
 npm run lint
 npm run format:check
 npm run typecheck
-npm run build
+npm test                          # unit tests
+npm run test:integration          # against the local MySQL (npm run services:start)
+npm run test:coverage             # unit + integration; fails below 100%
+npm run build && npm run test:e2e # browser journeys, phone and desktop, port 3100
 ```
 
-Tests, coverage and CI arrive with plan R0.3 and R0.5.
+CI arrives with plan R0.5.

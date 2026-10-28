@@ -1,4 +1,5 @@
 import path from "node:path";
+import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 
 /**
@@ -13,6 +14,8 @@ import { defineConfig } from "vitest/config";
  * `npm run test:coverage` runs both and fails below 100% (D26). Pages and
  * layouts are composition only and are covered by the browser journeys.
  */
+const local = { ...loadEnv("test", process.cwd(), ""), ...process.env };
+
 const alias = {
   "@tests": path.resolve(__dirname, "./tests"),
   "@": path.resolve(__dirname, "./src"),
@@ -48,6 +51,12 @@ export default defineConfig({
           environment: "node",
           include: ["tests/db/integration/**/*.test.ts"],
           globalSetup: ["./tests/support/local-database.ts"],
+          // The app's own code reads DATABASE_URL; here it is the test database.
+          env: {
+            TEST_DATABASE_URL: local.TEST_DATABASE_URL ?? "",
+            TEST_MIGRATION_DATABASE_URL: local.TEST_MIGRATION_DATABASE_URL ?? "",
+            DATABASE_URL: local.TEST_DATABASE_URL ?? "",
+          },
           // Each file writes its own rows; one at a time keeps them apart.
           fileParallelism: false,
           testTimeout: 30_000,

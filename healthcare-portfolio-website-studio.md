@@ -137,6 +137,8 @@ question (§41) the user may overturn.
 | D53 | **The sender is the existing `noreply@alhidaya.qa`** (supersedes `no-reply@` in D37). | 2026-10-28 |
 | D54 | **Uploaded CVs can be opened from cPanel** (File Manager) as well as from the admin panel, **with proper access control on every file**: the CV folder outside `public_html`, private to the account, readable names (§9.4). | 2026-10-28 |
 | D55 | **Security is a must**: every row carries its security tests; uploads, file access, sign-in and headers are reviewed against OWASP ASVS level 2 in Phase 7; CI checks dependencies for known vulnerabilities. | 2026-10-28 |
+| D56 | **Versions on the server may be updated when needed** (the user), still only after full payment (D48). On shared hosting the MySQL version belongs to HostCarts; the app is chosen to run on what the server offers (Node 22, MySQL 8.0). | 2026-10-28 |
+| D57 | **Local and CI images come from registries outside Docker Hub**: AWS's mirror of the official MySQL image and Mailpit's own GitHub registry (Docker Desktop here cannot reach Docker Hub, and CI avoids its pull limits). **(agent default)** | 2026-10-28 |
 
 ## 3. Audiences and the admin
 
@@ -1252,7 +1254,7 @@ one commit (D27).
 | R0.1 | This plan; `PRODUCT.md`; the direction contract in the surface brief; `AGENTS.md`; `CLAUDE.md`; `changelog.md`; `README.md`; the archived draft | §2, D30, D36 | — | DONE (2026-10-28) |
 | R0.2 | Next.js 16 app: TypeScript strict, Tailwind 4, React Compiler, `output: "standalone"`, ESLint, Prettier (120), Node 22 (`.nvmrc`, `engines`), `@/` and `@tests/` paths, `.gitignore`, npm scripts as clinicdesk | §23, §24 | — | DONE (2026-10-28) |
 | R0.3 | Test harness: Vitest unit (jsdom) and integration (local-only guard) projects; coverage at 100%; Playwright (phone + desktop, local-only guard, axe); `check-test-paths.mjs`; `tests/support` | §34 | — | DONE (2026-10-28) |
-| R0.4 | Local services: MySQL 8.0 and Mailpit in Docker (`compose.yaml`, 563xx ports); Drizzle config and db scripts; `.env.example`; env validation (`src/lib/env`) | §35.1 | — | TODO |
+| R0.4 | Local services: MySQL 8.0 and Mailpit in Docker (`compose.yaml`, 563xx ports); Drizzle config and db scripts; `.env.example`; env validation (`src/lib/env`) | §35.1 | — | DONE (2026-10-28; env validation with R0.6) |
 | R0.5 | CI workflow (`checks` + `app`), MySQL 8.0 as a service container, npm 11, `npm audit` (high and above fails) | §35.2, D55 | GitHub repo (§40) for its first run | TODO |
 | R0.6 | Core library from clinicdesk: `AppError` + kinds + `fromDatabaseError`; logger with redaction; `lib/api` (handler, responses, client, params); `lib/query` | §29, §36 | — | TODO |
 | R0.7 | Constants skeleton (`messages`, `routes`, `limits`, `site`); validation primitives and text hygiene; phone (+974 and international) | §25 | — | TODO |
