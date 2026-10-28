@@ -317,3 +317,41 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R1.1, the database client and the auth tables
+
+### Added
+- **`src/db/client.ts`** (plan R1.1): one mysql2 pool per server process,
+  made on first use (a build never connects), kept across hot reloads; five
+  connections (shared hosting, plan §21.1); every connection's clock pinned to
+  UTC, and dates sent and read as UTC, whatever the server's time zone;
+  `closeDb()` for scripts and tests.
+- **The schema conventions** (`src/db/schema/columns.ts`): random UUID ids
+  (no admin URL can be guessed from another), `datetime(3)` instants set by
+  the app, `created_at` and `updated_at` on every table.
+- **`0000_auth`** (`src/db/schema/auth.ts`, `drizzle/0000_auth.sql`): Better
+  Auth's `auth_user`, `auth_session`, `auth_account` and `auth_verification`,
+  field for field as its core schema names them; a unique admin email,
+  unique session tokens, sessions and accounts deleted with their admin,
+  every lookup indexed; and **`sign_in_attempts`** for the lockout, which keeps
+  only a keyed hash, never an email or an IP.
+- The integration setup now migrates the test database (as the migrator)
+  before each run; `npm run db:migrate` migrated the local one.
+- Tests: the schema's rules from Drizzle's own view (unit), the migration's
+  SQL (contract), and the pool against the local MySQL: one pool, UTC
+  connections, timestamps to the millisecond (integration).
+
+### Changed
+- Migrations are numbered from `0000`, as Drizzle Kit writes them; plan §28 and
+  the Phase 1 rows follow.
+- `drizzle/meta/` (written by Drizzle Kit) joins `.prettierignore`.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (98), coverage 100% (288 statements,
+  155 branches, 97 functions).
+- Build passed; the shipped-build audit passed (13 packages); E2E passed,
+  phone and desktop, axe clean.
+
+### Blockers
+- None.

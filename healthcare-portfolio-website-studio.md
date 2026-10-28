@@ -946,16 +946,16 @@ engine. Each migration has a DB contract test.
 
 | # | Migration |
 |---|---|
-| 0001 | `auth`: Better Auth's tables; the lockout table |
-| 0002 | `logs`: `audit_log`, `error_log` |
-| 0003 | `media` |
-| 0004 | `site`: `site_content`, `site_operations` |
-| 0005 | `pages`: `pages`, `page_sections`, the section-type `CHECK` |
-| 0006 | `services` |
-| 0007 | `jobs` |
-| 0008 | `clients` |
-| 0009 | `enquiries`: tables, notes, the rate-limit table |
-| 0010 | `applications`: tables, notes |
+| 0000 | `auth`: Better Auth's tables; the lockout table |
+| 0001 | `logs`: `audit_log`, `error_log` |
+| 0002 | `media` |
+| 0003 | `site`: `site_content`, `site_operations` |
+| 0004 | `pages`: `pages`, `page_sections`, the section-type `CHECK` |
+| 0005 | `services` |
+| 0006 | `jobs` |
+| 0007 | `clients` |
+| 0008 | `enquiries`: tables, notes, the rate-limit table |
+| 0009 | `applications`: tables, notes |
 
 ## 29. API
 
@@ -1265,11 +1265,11 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R1.1 | The Drizzle client and schema conventions (MySQL 8, `utf8mb4`, timestamps, ids); `0001_auth`: Better Auth's tables and the lockout table | §27, §28 | — | TODO |
+| R1.1 | The Drizzle client and schema conventions (MySQL 8, `utf8mb4`, timestamps, ids); `0000_auth`: Better Auth's tables and the lockout table | §27, §28 | — | DONE (2026-10-28) |
 | R1.2 | Admin sign-in with Better Auth: email and password, sign-up disabled, lockout, sign-out, password reset by email; the create-admin script; `proxy.ts`; `withAdminRoute` | §26.4 | — | TODO |
-| R1.3 | `0002_logs`: `logActionSafe`, `captureError`, retention | §36 | — | TODO |
-| R1.4 | `0003_media` – `0008_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
-| R1.5 | `0009_enquiries`, `0010_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
+| R1.3 | `0001_logs`: `logActionSafe`, `captureError`, retention | §36 | — | TODO |
+| R1.4 | `0002_media` – `0007_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
+| R1.5 | `0008_enquiries`, `0009_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
 | R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | TODO |
 | R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | TODO |
 | R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | TODO |

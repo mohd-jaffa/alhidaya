@@ -6,3 +6,6 @@
 # Generated.
 package-lock.json
 supabase/.temp/
+
+# Written by Drizzle Kit (npm run db:generate), kept exactly as it writes them.
+drizzle/meta/
