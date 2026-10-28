@@ -131,6 +131,12 @@ question (§41) the user may overturn.
 | D47 | **Installs use npm 11**: npm 10.9, bundled with Node 22, fails to resolve Vitest's peer dependencies. **(agent default)** | 2026-10-28 |
 | D48 | **Nothing is deployed to, and nothing is changed on, the client's server until the user confirms full payment.** Until then SSH is used only for read-only checks. The backup (D44) and every server step wait for that confirmation. | 2026-10-28 |
 | D49 | **The database is MySQL 8.0** (8.0.46 on the server): the server's cPanel does not support PostgreSQL (R0.8), so D39 resolves to MySQL. | 2026-10-28 |
+| D50 | **The user backs up the old site before the deploy**, gives the backup to the client, then **clears the old site and its database** from the server to free space (supersedes the developer's backup in D44; every server change still waits for D48). | 2026-10-28 |
+| D51 | **No hosting upgrade: the site is built within the 1 GB disk** (and 5 GB monthly bandwidth) of today's plan (§21.2). | 2026-10-28 |
+| D52 | **CVs and images keep firm size limits**, and **CVs have their own expiry, set in the admin panel** (1 – 365 days): when it passes the CV file is deleted, while the application record follows the general retention (D24). | 2026-10-28 |
+| D53 | **The sender is the existing `noreply@alhidaya.qa`** (supersedes `no-reply@` in D37). | 2026-10-28 |
+| D54 | **Uploaded CVs can be opened from cPanel** (File Manager) as well as from the admin panel, **with proper access control on every file**: the CV folder outside `public_html`, private to the account, readable names (§9.4). | 2026-10-28 |
+| D55 | **Security is a must**: every row carries its security tests; uploads, file access, sign-in and headers are reviewed against OWASP ASVS level 2 in Phase 7; CI checks dependencies for known vulnerabilities. | 2026-10-28 |
 
 ## 3. Audiences and the admin
 
@@ -424,16 +430,30 @@ limit as §10.3.
    saved, the failure is logged, and the admin inbox shows the CV as **not
    stored** or the email as **not sent**, with a Retry.
 
-### 9.4 Keeping CVs (D41)
+### 9.4 Keeping CVs (D41, D52, D54)
 
-- The **CV folder** is on the cPanel server, **outside `public_html` and
-  outside the app's release folders** (so a deploy never touches it),
-  readable and writable only by the app's own system user (mode `700`).
-- Files are named by a random id, never by anything the applicant typed.
-- Only the signed-in admin can download a CV, through
+- **Where:** `~/alhidaya-data/cvs/<YYYY-MM>/` on the cPanel server, **outside
+  `public_html`** (Apache can never serve it) and outside the app's release
+  folders (a deploy never touches it).
+- **Viewable in cPanel** (D54): anyone with the cPanel login can open the CVs
+  in File Manager. Each file is named so a person can find it:
+  `<YYYY-MM-DD>_<job>_<applicant>_<id>.<ext>`, where the job and the
+  applicant's name are reduced to lowercase letters, digits and hyphens (at
+  most 40 characters each) and `<id>` is random: nothing the applicant typed
+  reaches the file system unsanitised, and no two names collide. The
+  extension comes from the file's detected type, never from its name.
+- **Access control:** folders `700`, files `600`, owned by the account's own
+  user (the user both cPanel's File Manager and the Node app run as); CageFS
+  keeps every other account on the shared server out. On the website, only
+  the signed-in admin can download a CV, through
   `GET /api/admin/applications/[id]/cv` (`Content-Disposition: attachment`,
-  `no-store`); nothing in the folder is ever served publicly.
-- A CV is deleted with its application, by the admin or at retention (§18).
+  `no-store`, `nosniff`), and **every download is audited**.
+- **Expiry (D52):** CVs expire on their own setting in the admin (1 – 365
+  days); the daily job deletes an expired CV's file and the application shows
+  *CV expired* until the application itself reaches its retention (D24).
+  Deleting an application deletes its CV.
+- **Size:** at most 5 MB each (Q4); the folder's total is held to its budget
+  (§21.2).
 - The server's own backups include the folder; nothing else copies it.
 
 ### 9.5 The applications inbox
@@ -506,7 +526,8 @@ link, "available 24/7" line); social links (Instagram today); header navigation
 approved external URLs); footer columns; SEO defaults; the brochure.
 
 **Operations** (take effect on save, audited): the enquiries recipient(s),
-the applications recipient(s), and **retention days (1 – 365, D24)**.
+the applications recipient(s), **retention days (1 – 365, D24)** for enquiries
+and applications, and **CV expiry days (1 – 365, D52)**.
 
 ## 14. Draft, preview and publish
 
@@ -535,6 +556,14 @@ the applications recipient(s), and **retention days (1 – 365, D24)**.
   10 MB), strips metadata, and **makes the responsive sizes once** with sharp
   (AVIF and WebP at fixed widths), so the cPanel server never resizes images
   per request (§22.3).
+- **The original is not kept** (§21.2): only the made sizes are stored, the
+  largest 2400 px wide. An upload that would take the media folder past its
+  budget is refused with the reason.
+- **Access control:** the media folder sits under `public_html` (§21.3) with
+  its own `.htaccess`: no directory listing, **no script execution of any
+  kind** (PHP, CGI, handlers removed), only image and PDF types served,
+  `nosniff`. Files are written `644` in folders `755`; nothing there is ever
+  executable, and file names are generated by the app.
 - **Alt text is required** on every image, or explicitly marked decorative.
 - The media library lists, searches and previews; deleting an image that is
   used anywhere is refused with where it is used.
@@ -569,7 +598,7 @@ enquiry or application, change retention.
 ## 17. Email
 
 - Sent by the app through the client's cPanel mail over SMTP (D17), from
-  `no-reply@alhidaya.qa` (D37), behind one mail interface (`src/lib/mail`) so
+  `noreply@alhidaya.qa` (D53), behind one mail interface (`src/lib/mail`) so
   the provider is an env change only. Locally: Mailpit, in Docker beside the
   local database.
 - **Messages:** new enquiry → enquiries recipient; new application (CV
@@ -588,8 +617,11 @@ enquiry or application, change retention.
 
 - **The retention period** (D24) is set by the admin, 1 – 365 days (Q8 default
   180 until set).
+- **CVs expire on their own setting** (1 – 365 days, D52), which may be
+  shorter than the retention period.
 - A **daily job** deletes enquiries and applications older than the period,
-  their notes, and their CV files: a **cPanel cron job** calls
+  their notes and their CV files, and the CV files past the CV expiry: a
+  **cPanel cron job** calls
   `POST /api/cron/retention` with `CRON_SECRET` (D39). A file that cannot be
   deleted is retried the next day and shown in the admin.
 - **Personal data never goes into logs**, error logs, URLs or analytics. The
@@ -633,7 +665,7 @@ alhidaya.qa ──► the client's cPanel server (everything below is on this on
                  │   ├─ admin panel (Better Auth) and REST route handlers (/api/*)
                  │   ├─ ──► the database: PostgreSQL or MySQL/MariaDB, localhost only (Drizzle)
                  │   ├─ ──► the CV folder (private, outside public_html)
-                 │   ├─ ──► cPanel mail (SMTP, no-reply@alhidaya.qa)
+                 │   ├─ ──► cPanel mail (SMTP, noreply@alhidaya.qa)
                  │   └─ ──► Cloudflare Turnstile (server-side verification)
                  ├─ the media folder (public images, served as static files)
                  └─ cron (daily) ──► POST /api/cron/retention
@@ -665,17 +697,27 @@ GitHub Actions (on a release) ──► build ──► rsync over SSH ──►
 | DNS | Authoritative `ns1/ns2.alhidaya.qa` → `115.84.171.158` (HostCarts DNS); the zone is also present in cPanel's Zone Editor | DKIM/DMARC records are added in cPanel and verified on the public resolvers (R8.3) |
 | The current site | **Laravel 9** (end of life) on **PHP 8.1** in `public_html/application` (152 MB), bootstrapped by `public_html/index.php`; uploads in `public_html/upload` (`Services`, `CV`); `profile.pdf` (2.9 MB, the brochure); database `alhidaya_hidaya` | Backed up whole before the switch (D44, R0.9); the brochure can be reused (Q3) |
 
-### 21.2 Living within 1 GB of disk
+### 21.2 Living within 1 GB of disk (D51)
 
-Until the plan is upgraded (Q25), the new site keeps to this budget on the
-server: **two release folders at most** (the live one and one for rollback),
-each a standalone build of about 100 MB; **media** kept to the sizes the design
-uses (each image in a few widths, AVIF and WebP), checked against a quota the
-admin sees; **CVs** at most 5 MB each (Q4), deleted at retention; **the database**
-small (text only). The old site and its uploads (about 260 MB with the
-public zip) are removed from the server only after the switch and only after
-the backup is downloaded (R0.9, R8.6). The admin overview shows disk use, and
-warns at 80 %.
+The client is not upgrading, so the site is built to fit. Before the deploy,
+the user backs up the old site, hands the backup to the client, and clears the
+old site and its database from the server (D50), leaving about 950 MB:
+
+| Use | Budget |
+|---|---|
+| Two release folders (live and rollback), standalone builds | ≤ 250 MB |
+| The media folder (made image sizes only, the brochure) | ≤ 250 MB, enforced |
+| The CV folder | ≤ 250 MB, enforced (about 50 CVs at the 5 MB maximum) |
+| The database, logs, mail and Next's cache | ≤ 150 MB |
+| Headroom | ≥ 50 MB |
+
+An upload that would pass its budget is refused with the reason. A CV that
+cannot be stored still reaches HR attached to the email, and the inbox marks
+it *not stored*. The admin overview shows each folder's use and warns at 80 %;
+logs rotate. The budgets are constants (`limits.ts`). Bandwidth (5 GB a month)
+is protected by long-lived caching, small made image sizes and lazy loading;
+the speed check at R8.5 decides whether the free Cloudflare proxy is added
+(D25).
 
 ### 21.3 Serving uploaded images
 
@@ -1155,10 +1197,9 @@ From Phase 7 also the performance budgets (§31).
   instant rollback.
 - **The media folder and the CV folder live outside the release folders**,
   so no deploy or rollback ever touches them.
-- **Before the first deploy, the current site is backed up** (D44, R0.9): its
-  files, its admin panel and a dump of its database, kept on the server
-  outside `public_html` and downloaded to the developer's machine, with
-  written restore steps.
+- **Before the first deploy, the user backs up the old site** (its files, its
+  admin panel and its database), gives the backup to the client, and clears
+  the old site and its database from the server (D50, R0.9).
 - The SSH key, host and paths are GitHub secrets. The app's runtime env is
   set in cPanel's Node.js app settings.
 - `docs/RELEASE.md` (Phase 8) is the step-by-step guide.
@@ -1212,11 +1253,11 @@ one commit (D27).
 | R0.2 | Next.js 16 app: TypeScript strict, Tailwind 4, React Compiler, `output: "standalone"`, ESLint, Prettier (120), Node 22 (`.nvmrc`, `engines`), `@/` and `@tests/` paths, `.gitignore`, npm scripts as clinicdesk | §23, §24 | — | DONE (2026-10-28) |
 | R0.3 | Test harness: Vitest unit (jsdom) and integration (local-only guard) projects; coverage at 100%; Playwright (phone + desktop, local-only guard, axe); `check-test-paths.mjs`; `tests/support` | §34 | — | TODO |
 | R0.4 | Local services: MySQL 8.0 and Mailpit in Docker (`compose.yaml`, 563xx ports); Drizzle config and db scripts; `.env.example`; env validation (`src/lib/env`) | §35.1 | — | TODO |
-| R0.5 | CI workflow (`checks` + `app`), MySQL 8.0 as a service container, npm 11 | §35.2 | GitHub repo (§40) for its first run | TODO |
+| R0.5 | CI workflow (`checks` + `app`), MySQL 8.0 as a service container, npm 11, `npm audit` (high and above fails) | §35.2, D55 | GitHub repo (§40) for its first run | TODO |
 | R0.6 | Core library from clinicdesk: `AppError` + kinds + `fromDatabaseError`; logger with redaction; `lib/api` (handler, responses, client, params); `lib/query` | §29, §36 | — | TODO |
 | R0.7 | Constants skeleton (`messages`, `routes`, `limits`, `site`); validation primitives and text hygiene; phone (+974 and international) | §25 | — | TODO |
 | R0.8 | The cPanel server checked over SSH, read-only: Node versions, memory and CPU limits, Passenger, disk, databases, mail routing, outbound SMTP and HTTPS, server location; findings recorded in §21.1 | §21, D19 | — | DONE (2026-10-28) |
-| R0.9 | Backup of the current site before any server change: `public_html` (the Laravel app, uploads, brochure), a dump of `alhidaya_hidaya`, the cPanel account backup; downloaded to the developer's machine and checked; restore steps in `docs/RELEASE.md` | D44 | Full payment (D48) | TODO |
+| R0.9 | **The user** backs up the old site (`public_html`, the `alhidaya_hidaya` database), gives the backup to the client, then clears the old site and its database from the server | D50 | Full payment (D48) | TODO |
 
 ### Phase 1 — Data and security
 
@@ -1227,7 +1268,7 @@ one commit (D27).
 | R1.3 | `0002_logs`: `logActionSafe`, `captureError`, retention | §36 | — | TODO |
 | R1.4 | `0003_media` – `0008_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
 | R1.5 | `0009_enquiries`, `0010_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
-| R1.6 | File storage (`src/lib/storage`): the media folder and the private CV folder, paths from env, the disk-use reading for the admin | §9.4, §15, §21.2 | Q26 | TODO |
+| R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | TODO |
 | R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | TODO |
 | R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | TODO |
 | R1.9 | Integration: public reads return only published rows; drafts, inboxes and CVs unreachable without the admin; admin-only writes; rate limit | §34 | — | TODO |
@@ -1289,7 +1330,7 @@ one commit (D27).
 | R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |
-| R6.7 | Operations: recipients, retention (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2 | Q8 | TODO |
+| R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | TODO |
 | R6.8 | Activity (audit trail) | §36 | — | TODO |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | TODO |
 
@@ -1299,7 +1340,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R7.1 | Performance budgets in CI; fixes until every page meets them | §31 | — | TODO |
 | R7.2 | Accessibility: axe everywhere plus a manual keyboard and screen-reader pass | §32 | — | TODO |
-| R7.3 | Security headers and CSP; dependency audit; `npm run verify` and the pre-push hook | §26.3, §35.4 | — | TODO |
+| R7.3 | Security review against OWASP ASVS level 2 (sign-in, sessions, uploads, file access, input, headers and CSP, secrets, logging); fixes; `npm run verify` and the pre-push hook | §26, §35.4, D55 | — | TODO |
 | R7.4 | Impeccable finish review of the public site; fixes; `DESIGN.md` and `.impeccable/design.json` from the built world | §30.1 | — | TODO |
 | R7.5 | Client sign-off: copy, images, logos, legal pages | D6, Q18 | Client (§40) | TODO |
 
@@ -1307,7 +1348,7 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R8.1 | The production MySQL database (the second slot) with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media and CV folders | D39, D49, §21.1 | Full payment (D48), R0.9 | TODO |
+| R8.1 | The production MySQL database, created after the old one is cleared (D50), with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media folder (with its `.htaccess`) and the CV folder (`700`) | D39, D49, D54, §21.1 | Full payment (D48), R0.9 | TODO |
 | R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron; `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
 | R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM added in cPanel; DMARC `p=none` published; verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
 | R8.4 | Turnstile keys for alhidaya.qa; Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
@@ -1330,13 +1371,13 @@ URL answers with its 301; and no personal data appears in logs.
 | ~~SSH access to the cPanel server~~ (done: port 2200, user `alhidaya`, key authorised, 2026-10-28) | R0.8 |
 | **Full payment confirmed by the user** (D48) | R0.9 and every server step |
 | **Urgent, today's site:** remove the public `.well-known.zip` and rotate the secrets it exposed; protect `upload/CV` (§40.1) | now, independent of the build |
-| A decision on the hosting plan's disk and bandwidth (Q25) | before R8.1 |
+| The old site backed up by the user, given to the client, and cleared from the server with its database (D50) | before R8.1 |
 | The GitHub repository (created by the user) | R0.5's first CI run |
 | Approval of the rewritten copy | R3.1, R7.5 |
 | Client names and permission for their logos, and the logo files | before the Clients section shows (D7) |
 | The brochure PDF (or approval to reuse `profile.pdf`) | R6.6 |
 | The logo as a vector file, if they have one (Q2) | R2.2 |
-| The sender mailbox's password (Q24); cPanel access for the DKIM and DMARC records | R8.3 |
+| The `noreply@alhidaya.qa` mailbox's password, changed first (§40.1); cPanel access for the DKIM and DMARC records | R8.3 |
 | A Cloudflare account (Turnstile, Web Analytics) | R4.2, R8.4 |
 
 ### 40.1 Found on today's site (R0.8), for the client to act on now
@@ -1366,11 +1407,11 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q1 | ~~Is the CV Google account Workspace or personal Gmail?~~ | **Answered by D41:** no Google Drive. |
 | Q2 | Does the client have the logo as a vector (SVG/AI/EPS/PDF)? | The mark and wordmark are redrawn as SVG from the JPG, faithfully, for the client to approve. |
 | Q3 | Reuse the current `profile.pdf` as the brochure? | Yes, until the admin uploads a new one. |
-| Q4 | CV rules | PDF, DOC or DOCX; at most 5 MB. |
+| Q4 | CV rules | PDF, DOC or DOCX; at most 5 MB (size limits confirmed, D52). |
 | Q5 | Quote form fields | As §10.1. |
 | Q6 | Contact form fields | As §10.2. |
 | Q7 | Keep a general application (no job), like today's "Submit your resume"? | Yes, at `/careers/apply`. |
-| Q8 | Retention before the admin sets it | 180 days. |
+| Q8 | Retention and CV expiry before the admin sets them | 180 days each. |
 | Q9 | Service names, slugs, order and "what's included" | The current eight, renamed in plain English during the copy rewrite, in the current order; "included" items only where the client confirms them. |
 | Q10 | Typeface | Chosen by the user from a specimen of three signage sans faces with Arabic companions (R2.1). |
 | Q11 | Stock photo source | Unsplash and Pexels (free licences), each image's source recorded. |
@@ -1386,10 +1427,10 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q21 | Store content per locale now (`{ "en": … }`)? | Yes (§33). |
 | Q22 | Pre-switch check under a hidden temporary subdomain on the server (not a public staging site)? | Yes. |
 | Q23 | A floating WhatsApp button on every page, as today? | Decided in R2.6 with the user, from the built shell. |
-| Q24 | Send from the existing `noreply@alhidaya.qa` instead of creating `no-reply@` (D37)? | Use the existing `noreply@` (one fewer of the 5 mailboxes; the old site likely sends from it). |
-| Q25 | Upgrade the HostCarts plan? Today: 1 GB disk (733 MB free), 5 GB bandwidth a month, 1 GB memory. | Build within §21.2's budget; measure at R7.1 and decide before R8.1. A larger disk and bandwidth is strongly advised for an image-led site with a year of CVs. |
+| Q24 | ~~Send from the existing `noreply@alhidaya.qa`?~~ | **Answered by D53:** yes. |
+| Q25 | ~~Upgrade the HostCarts plan?~~ | **Answered by D51:** no; build within §21.2's budget. |
 | Q26 | How uploaded images are served | From a media folder inside `public_html` that no release touches, served by Apache (§21.3); verified on the server at R8.2. |
-| Q27 | What happens to the old site's 83 CVs and its database after the switch? | Kept only in the downloaded backup, then deleted from the server; not imported into the new site. |
+| Q27 | ~~What happens to the old site's 83 CVs and its database?~~ | **Answered by D50:** they go with the user's backup to the client and are cleared from the server; nothing is imported. |
 | Q28 | Reuse the old site's service photos (`upload/Services`)? | Only where they are good enough for the new design; otherwise licensed stock (D8). |
 
 ## 42. Later (unscheduled)
