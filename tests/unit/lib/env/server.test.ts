@@ -11,7 +11,7 @@ const valid = { ...TEST_ENV };
 
 describe("getServerEnv", () => {
   it("accepts a complete environment, development by default", () => {
-    expect(getServerEnv(env(valid))).toEqual({ ...valid, NODE_ENV: "development" });
+    expect(getServerEnv(env(valid))).toEqual({ ...valid, NODE_ENV: "development", MEDIA_URL: "/media" });
   });
 
   it("refuses a database that is not MySQL, without echoing its value", () => {
@@ -26,6 +26,13 @@ describe("getServerEnv", () => {
         { variable: "DATABASE_URL", problem: "invalid_format" },
       ]);
     }
+  });
+
+  it("refuses a media address that is not a plain path", () => {
+    expect(() => getServerEnv(env({ ...valid, MEDIA_URL: "https://cdn.example/media" }))).toThrow(
+      expect.objectContaining({ code: "CONFIG_INVALID" }),
+    );
+    expect(getServerEnv(env({ ...valid, MEDIA_URL: "/uploads" })).MEDIA_URL).toBe("/uploads");
   });
 
   it("refuses a missing site address, and secrets too short to be secret", () => {

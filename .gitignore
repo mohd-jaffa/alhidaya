@@ -19,9 +19,9 @@ next-env.d.ts
 .env*
 !.env.example
 
-# supabase
-supabase/.branches/
-supabase/.temp/
+# uploads made while developing (plan §9.4, §21.3)
+/public/media/
+/.data/
 
 # misc
 .DS_Store

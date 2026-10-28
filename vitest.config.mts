@@ -63,6 +63,8 @@ export default defineConfig({
             MAILPIT_URL: local.MAILPIT_URL ?? "",
             BETTER_AUTH_SECRET: local.BETTER_AUTH_SECRET ?? "",
             HASH_SECRET: local.HASH_SECRET ?? "",
+            MEDIA_DIR: ".data/integration-media",
+            CV_DIR: ".data/integration-cvs",
           },
           // Each file writes its own rows; one at a time keeps them apart.
           fileParallelism: false,

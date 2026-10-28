@@ -21,6 +21,8 @@ export const ERROR_MESSAGES = {
   VALIDATION_ERROR: "Please check the highlighted fields.",
   VALIDATION_INVALID_JSON: "The request could not be read. Please try again.",
   UPLOAD_TOO_LARGE: "That file is too large.",
+  UPLOAD_TYPE_NOT_ALLOWED: "That type of file can't be uploaded here.",
+  STORAGE_FULL: "There is no room left for this file. Please remove older files first.",
 
   AUTH_SESSION_REQUIRED: "Please sign in to continue.",
   AUTH_SESSION_INVALID: "Your session has expired. Please sign in again.",

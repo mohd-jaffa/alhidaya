@@ -46,6 +46,17 @@ const serverEnvSchema = z.object({
   // Keys the hashes that stand in for emails and IPs in the lockout and the
   // rate limits, so neither is ever stored (plan §18, §26.4).
   HASH_SECRET: z.string().min(32),
+
+  // Where uploads live on the server (plan §9.4, §21.3): the media folder
+  // inside public_html, served by Apache at MEDIA_URL; the CV folder outside
+  // it, never served. Both outside the release folders.
+  MEDIA_DIR: z.string().trim().min(1),
+  MEDIA_URL: z
+    .string()
+    .trim()
+    .regex(/^\/[A-Za-z0-9/_-]*$/)
+    .default("/media"),
+  CV_DIR: z.string().trim().min(1),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

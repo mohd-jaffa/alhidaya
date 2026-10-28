@@ -496,3 +496,49 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. The admin sign-in screens arrive with the admin shell (R6.2); until
   then `/admin` redirects to a sign-in page that is not built yet.
+
+## 2026-10-28 — R1.6, file storage
+
+### Added
+- **File types from first bytes** (`src/lib/storage/file-type.ts`, plan
+  R1.6, §26.5): JPEG, PNG, WebP, AVIF, PDF, DOCX (a zip that holds
+  `word/document.xml`, no other zip) and DOC; anything else, SVG and scripts
+  included, is refused whatever its name says. The allowed lists are in
+  `src/constants/uploads.ts`.
+- **The CV folder** (`src/lib/storage/cvs.ts`, plan §9.4, D54): CVs under
+  `CV_DIR/<YYYY-MM>/`, outside `public_html`, **folders `700`, files `600`**,
+  named so a person finds them in cPanel's File Manager
+  (`2026-10-28_registered-general-nurse-home-care_mariam-ali_8f3a2c91d0.pdf`):
+  the job and name reduced to safe ASCII (Arabic and empty fall back to
+  `general` and `applicant`), the extension taken from the detected type, a
+  random part so no two collide. Only PDF and Word files; refused past the
+  250 MB budget (`STORAGE_FULL`); read and deleted only by a key that matches
+  the app's own pattern and stays inside the folder.
+- **The media folder** (`src/lib/storage/media.ts`, plan §15, §21.3): public
+  files under `MEDIA_DIR/<YYYY-MM>/`, **`644` in folders `755`**, named by the
+  app, served at `MEDIA_URL`; only images and PDFs; refused past the 250 MB
+  budget; and **its own `.htaccess`**: no listing, no CGI, PHP and script
+  handlers removed, every file denied unless it is an image or a PDF,
+  `nosniff`, cached a year.
+- **The disk helpers** (`src/lib/storage/disk.ts`): a new file is written with
+  exclusive create (`wx`), so nothing is ever written over or through an
+  existing file or link; a folder's size never follows a link planted in it;
+  a key that would leave its folder is refused.
+- Env: `MEDIA_DIR`, `MEDIA_URL` (a plain path, `/media` by default), `CV_DIR`;
+  locally `public/media` and `.data/cvs`, both git-ignored.
+
+### Changed
+- `.gitignore`: the uploads made while developing; the Supabase lines left
+  from the first plan are gone.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (206), coverage 100% (632 statements,
+  335 branches, 191 functions); the storage tests write real files in
+  temporary folders and check their modes, the refusal of traversal keys,
+  overwrites and planted links.
+- Build passed; the shipped audit passed (89 packages); E2E passed, phone
+  and desktop, axe clean.
+
+### Blockers
+- None.
