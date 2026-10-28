@@ -17,8 +17,8 @@ import { defineConfig } from "vitest/config";
 const local = { ...loadEnv("test", process.cwd(), ""), ...process.env };
 
 const alias = {
-  "@tests": path.resolve(__dirname, "./tests"),
-  "@": path.resolve(__dirname, "./src"),
+  "@tests": path.resolve(import.meta.dirname, "./tests"),
+  "@": path.resolve(import.meta.dirname, "./src"),
 };
 
 export default defineConfig({

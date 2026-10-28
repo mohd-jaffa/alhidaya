@@ -217,3 +217,49 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — R0.6, the core library
+
+### Added
+- **Errors** (`src/lib/errors`, plan R0.6), ported from clinicdesk: one
+  `AppError` with `code`, `kind` and `traceId`, built only through the
+  factories, now with a **429 rate-limited** kind for the forms and sign-in;
+  `toAppError`, `errorMessage`; and **`fromDatabaseError`** for MySQL
+  (duplicate key, deadlock, references → 409; `CHECK` → 422; bad values →
+  400; connection lost → 503; everything else, a refused grant included,
+  internals), reaching the driver's error inside Drizzle's wrapper. The
+  driver's text never reaches a response.
+- **The error catalogue** (`ERROR_MESSAGES`, `getErrorMessage`,
+  `isErrorMessageCode`) in `src/constants/messages.ts`.
+- **The logger** (`src/lib/logger.ts`): one JSON line per event, redacting
+  credentials (passwords, tokens, sessions, database URLs) and anything
+  personal on this site (names, phones, WhatsApp, emails, addresses,
+  messages, notes, CVs, licence details, IPs), by key.
+- **The API layer** (`src/lib/api`): the envelope (`no-store`, `nosniff`,
+  `x-request-id`), `withApiHandler` (refusals logged as warnings, faults as
+  errors with their cause, never returned), `readJson`, `readQuery`,
+  `readBody` (oversized uploads refused before reading, and when the declared
+  length lies), and a request id that **refuses a caller's id that could forge
+  a log line**; the browser client (`getJson`, `postJson`, `patchJson`,
+  `putJson`, `deleteJson`, `postForm` for CVs and images), with offline and
+  unreachable told apart. No session-refresh dance: Better Auth's cookies need
+  none.
+- **Env validation** (`src/lib/env`, from R0.4): `DATABASE_URL` must be a MySQL
+  address, `NEXT_PUBLIC_SITE_URL` a URL; a failure names the variable, **never
+  its value** (a database URL carries a password).
+- `cspell.json` (British English and the project's words), as clinicdesk.
+- Zod 4.
+
+### Changed
+- `vitest.config.mts` uses `import.meta.dirname` (Vite's native loader).
+- The tracker: `params` arrives with the first route (R1.2) and `lib/query`
+  (SWR) with the admin screens (R6.2), not before they are needed.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (55), coverage 100% (169 statements,
+  101 branches, 51 functions).
+- Build passed; E2E passed, phone and desktop, axe clean.
+
+### Blockers
+- None.
