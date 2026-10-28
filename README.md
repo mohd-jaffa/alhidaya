@@ -5,14 +5,17 @@ The public website and admin panel of **Al Hidaya Health Care Services**
 and in clinics, and nurse staffing for hospitals, clinics and schools.
 
 **Stack:** Next.js 16 · TypeScript · Tailwind CSS 4 · GSAP + Lenis ·
-Supabase (PostgreSQL, Auth, Storage, RLS) · hosted on the client's cPanel as a
-Node.js app.
+MySQL 8.0 with Drizzle ORM · Better Auth · everything on the client's cPanel
+server as a Node.js app.
 
 - [`healthcare-portfolio-website-studio.md`](./healthcare-portfolio-website-studio.md):
   the plan, the source of truth for what is built and in what order.
 - [`AGENTS.md`](./AGENTS.md): how to work in this repository.
 - [`PRODUCT.md`](./PRODUCT.md): product context for design work.
 - [`changelog.md`](./changelog.md): every change, as it is made.
+
+> **Nothing is deployed to the client's server until full payment is
+> confirmed** (plan D48). Until then the server is only read, never changed.
 
 ---
 
@@ -21,33 +24,24 @@ Node.js app.
 ### What you need
 
 - **Node 22** (`.nvmrc`; `nvm use` picks it).
-- **Docker**, running: the local Supabase stack runs in it.
-- **The Supabase CLI** (`brew install supabase/tap/supabase`).
+- **npm 11** for installs: npm 10.9, which ships with Node 22, fails on
+  Vitest's peer dependencies (plan D47). Use `npx -y npm@11 install` instead
+  of `npm install`; nothing global changes.
+- **Docker**, running: the local MySQL 8.0 and Mailpit run in it (from R0.4).
 
 ### First run
 
 ```bash
 nvm use
-npm install
-cp .env.example .env.local
-npm run db:start        # Postgres, Auth, Storage and Mailpit, in Docker
-npm run db:reset        # applies the migrations and loads the local seed
+npx -y npm@11 install
 npm run dev
 ```
 
 Then open <http://localhost:3000>.
 
-The local Supabase runs on **563xx** ports, so it can run beside other local
-Supabase projects (clinicdesk uses 553xx):
-
-| | |
-|---|---|
-| The app | <http://localhost:3000> |
-| Supabase API | <http://127.0.0.1:56321> |
-| Supabase Studio | <http://127.0.0.1:56323> |
-| Mail (Mailpit) | <http://127.0.0.1:56324> |
-
-`supabase status` prints every URL and key the running stack uses.
+The local database and mail catcher (`compose.yaml`, on **563xx** ports so
+they run beside other projects) arrive with plan R0.4; this section gains
+their commands then.
 
 ---
 
@@ -57,11 +51,7 @@ Supabase projects (clinicdesk uses 553xx):
 npm run lint
 npm run format:check
 npm run typecheck
-npm test                          # unit tests
-npm run test:integration          # against the local Supabase (npm run db:start)
-npm run test:coverage             # unit + integration; fails below 100%
-npm run build && npm run test:e2e # browser journeys, phone and desktop, port 3100
+npm run build
 ```
 
-CI (`.github/workflows/ci.yml`) runs all of them on every push to `main` and
-every pull request.
+Tests, coverage and CI arrive with plan R0.3 and R0.5.

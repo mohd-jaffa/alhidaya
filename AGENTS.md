@@ -12,13 +12,16 @@ nurses, and a Content CMS that one admin runs without a developer.
 Primary stack:
 
 - Next.js 16 (App Router, React Compiler, `output: "standalone"`) · TypeScript (strict)
-- Supabase PostgreSQL · Supabase Auth · Supabase RLS · Supabase Storage
+- MySQL 8.0 on the client's server · Drizzle ORM (+ Drizzle Kit migrations) ·
+  Better Auth (the admin's sign-in)
 - Tailwind CSS 4 · GSAP + ScrollTrigger + Lenis · Zod · React Hook Form · SWR
-- Nodemailer over the client's cPanel SMTP · Google Drive API (CVs) ·
+- Nodemailer over the server's cPanel SMTP (recipients on Microsoft 365) ·
   Cloudflare Turnstile · Cloudflare Web Analytics
 - Vitest · Testing Library · Playwright + axe
-- Hosted on the client's **cPanel server as a Node.js app**, deployed by
-  GitHub Actions over SSH; hosted Supabase nearest Qatar
+- Everything on the client's **cPanel server** (HostCarts, Singapore): the
+  site as a **Node.js app** (Node 22, Passenger), the database, the image and
+  CV folders, a cron job; deployed by GitHub Actions over SSH **only after the
+  user confirms full payment** (§23)
 
 The authoritative product and architecture specification is:
 
@@ -72,7 +75,7 @@ protects functionality the plan already specifies.
   commit. Docs are never committed on their own.
 - **Testing mandate:** unit, database, integration and E2E tests at each step,
   not later. Coverage is 100% and CI enforces it (§24).
-- **Local environment:** Docker and the local Supabase. Every env variable is
+- **Local environment:** Docker (MySQL 8.0 and Mailpit, `compose.yaml`). Every env variable is
   documented in `.env.example` and set in `.env.local`.
 
 ---
@@ -104,7 +107,8 @@ Answer internally before touching code:
 
 - What exact requirement am I implementing, and which plan section defines it?
 - Which feature owns it?
-- Which tables does it touch? Do they have RLS, and does `anon` stay locked out?
+- Which tables does it touch? Does every public read select only published
+  rows, and does every admin route check the session?
 - Is it **content**? Then it has a draft and a published copy, and the public
   site reads only the published one (§7).
 - Does it handle **personal data** (enquiries, applications, CVs)? Then §8
@@ -139,6 +143,7 @@ src/
 │   ├── sections/         # one component per section type (plan §7.2)
 │   └── ui/               # the shared kit
 ├── constants/            # messages, routes, site, sections, statuses, limits, redirects, uploads
+├── db/                   # the Drizzle schema (one file per area) and the client
 ├── features/<domain>/
 │   ├── api.ts            # server data functions
 │   ├── api.client.ts     # the endpoints the browser calls
@@ -146,8 +151,8 @@ src/
 │   ├── hooks/            # useXxx.ts
 │   └── types.ts
 ├── hooks/                # shared hooks
-├── lib/                  # api, audit, crypto, env, errors, files, google-drive, mail,
-│                         # motion, query, rate-limit, seo, supabase, text, turnstile, validation
+├── lib/                  # api, audit, auth, env, errors, files, mail, motion, query,
+│                         # rate-limit, seo, storage, text, turnstile, validation
 ├── proxy.ts              # the /admin signed-in gate (not authorization)
 └── instrumentation.ts
 ```
@@ -180,12 +185,13 @@ features/
 ├── enquiries/    Request a Quote and Contact
 ├── clients/      client logos
 ├── media/        uploads, sizes, usage
-├── settings/     site content, operations, the Drive connection
+├── settings/     site content, operations
 └── activity/     the audit trail screen
 ```
 
-Do not create a feature the plan does not list. Mail, Drive, Turnstile, rate
-limiting, audit, the error log and SEO are infrastructure in `src/lib`.
+Do not create a feature the plan does not list. Auth, mail, file storage,
+Turnstile, rate limiting, audit, the error log and SEO are infrastructure in
+`src/lib`.
 
 ---
 
@@ -196,8 +202,9 @@ limiting, audit, the error log and SEO are infrastructure in `src/lib`.
 - **Every editable thing keeps a draft and a published copy** (plan §14).
   Save writes the draft; Publish copies it to published in **one SQL
   function**, writes an audit row and **revalidates exactly its cache tags**.
-- **The public site reads only published copies**, through `published_*`
-  views or functions. A draft is never reachable without the admin session.
+- **The public site reads only published copies**, through published-only
+  read functions in `features/*/api.ts`. A draft is never reachable without
+  the admin session.
 - Preview uses Next.js draft mode, entered only by the signed-in admin.
 - Hiding or removing something from a section never deletes the record.
 - **The design is locked** (plan D12): never add colour, font, size, spacing,
@@ -213,13 +220,14 @@ Enquiries, applications and CVs are personal data.
 - **Never** put them in logs, the error log, URLs, query strings, analytics or
   audit `before/after` values. The logger and `captureError` redact by key; a
   test proves it.
-- **CVs are never stored by this app**: held in memory for the request,
-  uploaded to the client's Google Drive and attached to the HR email, never
-  written to the server's disk or Supabase Storage (plan §9.3).
+- **CVs live only in the private CV folder** on the server: outside
+  `public_html` and the release folders, mode `700`, named by a random id,
+  downloadable only by the signed-in admin, and attached to the HR email
+  (plan §9.3, §9.4). Never in the media folder, never served by Apache.
 - **IPs are stored only as a keyed hash** for rate limiting.
 - Every answer that carries personal data is `Cache-Control: no-store`.
 - **Retention** (plan §18): everything personal is deleted automatically when
-  the admin's retention period passes, its Drive files included.
+  the admin's retention period passes, CV files included.
 - When the site starts collecting something new, the Privacy page changes
   with it.
 
@@ -227,21 +235,24 @@ Enquiries, applications and CVs are personal data.
 
 # 9. Security
 
-- **RLS on every table.** `anon` has no direct table access. Public reads go
-  through published views; public writes only through route handlers that
-  verify Turnstile and call `security definer` functions enforcing the rate
-  limit. There is no public insert policy.
-- Admin access is `(select public.is_admin())` in policies.
-- The **service role** is server-only and never acts for the admin; it is used
-  for the retention job and for writing audit and error rows.
-- The admin session lives in **HttpOnly cookies** set by the server, never in
-  `localStorage` (as clinicdesk). Sign-up is disabled. Lockout after repeated
-  failures (plan §26.4).
+- **The database is reachable only from the app on the same server**; there
+  is no row-level security, so access is enforced in the server code, in one
+  place per kind (plan §26.1):
+  - public reads only through published-only read functions;
+  - public writes only through their route handlers (Turnstile, honeypot,
+    rate limit, then one transaction);
+  - admin reads and writes only through `withAdminRoute`, which checks the
+    Better Auth session on every request (`proxy.ts` is not authorization).
+- **Least privilege:** the app's database user has data rights only; the
+  migration user (schema rights) is used only by the release workflow.
+- Every query goes through Drizzle with bound parameters; SQL is never built
+  from input.
+- The admin session lives in **HttpOnly, Secure, SameSite=Lax cookies** set by
+  the server, never in `localStorage`. Public sign-up is disabled. Lockout
+  after repeated failures (plan §26.4).
 - Secrets live only on the server, validated at start by
   `src/lib/env/server.ts`, listed in `.env.example`, never committed, never
   `NEXT_PUBLIC_`.
-- The Google refresh token is **encrypted at rest** (AES-256-GCM) and never
-  reaches the browser.
 - Never log a password, token or secret; never return a token in a body.
 
 ---
@@ -256,9 +267,9 @@ and `traceId`, built only through the factories in `src/lib/errors/kinds.ts`
 `rateLimitError` 429, `externalServiceError` 502, `internalError` 500).
 
 Never invent an error string at a call site. Never expose stack traces, SQL,
-Supabase errors, secrets or tokens; a driver failure goes through
-`fromSupabaseError`. **A visitor never sees an internal error from a form**:
-a failed email or Drive upload after the submission is saved is logged and
+database errors, secrets or tokens; a driver failure goes through
+`fromDatabaseError`. **A visitor never sees an internal error from a form**:
+a failed email or CV save after the submission is saved is logged and
 retried from the admin, and the visitor sees success.
 
 ---
@@ -268,7 +279,7 @@ retried from the admin, and the visitor sees success.
 - Structured JSON logs (`src/lib/logger.ts`) with the request id, redacted.
 - Every API answer carries `x-request-id`; error cards show it.
 - **Audit** every admin change (publish, edit, delete, status, settings,
-  Drive connect/disconnect) through `logActionSafe(...)`: written by the
+  sign-in and sign-out) through `logActionSafe(...)`: written by the
   server, never failing the request.
 - **The error log** takes the server's own failures through `captureError`.
 - Retention: error log 30 days; audit log one year.
@@ -297,21 +308,21 @@ retried from the admin, and the visitor sees success.
 
 # 13. Database
 
-- Supabase migrations only: `supabase/migrations/NNNN_snake_name.sql`,
-  sequential, never edited once released. Never change a production schema by
-  hand.
+- **MySQL 8.0** (plan D49), `utf8mb4`, InnoDB. The schema lives in Drizzle
+  (`src/db/schema`); **Drizzle Kit generates the migrations** into
+  `drizzle/`, each reviewed and committed, sequential, never edited once
+  released. Never change a production schema by hand.
 - Foreign keys, unique constraints, `CHECK`s for every vocabulary and bound,
   indexes for real query patterns (every public read is served by an index in
   its own filter and order).
 - **Every vocabulary in `src/constants` that the database also knows has its
   `CHECK` kept equal by a DB contract test.**
-- Every multi-row or rule-heavy write (publish, submit, purge) is **one SQL
-  function** (`security definer`, `set search_path = ''`, checks inside).
-- RLS helpers are called as `(select fn())` in policies.
+- Every multi-row or rule-heavy write (publish, submit, purge) is **one
+  transaction** in a feature's `api.ts`, with its checks inside.
 - No `select *`. A screen or page waits on at most two round trips.
 - Every migration has a DB contract test; behaviour that matters has an
-  integration test.
-- `supabase/seed.sql` is for local development only.
+  integration test against the local MySQL.
+- The seed script is for local development only.
 
 ---
 
@@ -341,7 +352,8 @@ REST route handlers, wrapped in `withApiHandler`, admin routes in
 
 - **Admin images** (photos, client logos): JPEG, PNG, WebP or AVIF, typed by
   first bytes, at most 10 MB, SVG refused, metadata stripped, sizes made once
-  at upload with sharp, stored in the public `site-media` bucket. Alt text
+  at upload with sharp (one at a time: the server has 1 GB of memory), stored
+  in the server's media folder, which no release touches. Alt text
   required.
 - **The brochure:** PDF, at most 10 MB, typed by first bytes.
 - **CVs:** PDF, DOC or DOCX, at most 5 MB, typed by first bytes; never stored
@@ -366,9 +378,9 @@ REST route handlers, wrapped in `withApiHandler`, admin routes in
 # 17. Background Work
 
 **There is no worker, queue or Redis.** Work happens in the request. The one
-timed job, the daily retention purge, runs from Supabase pg_cron + pg_net
-calling `POST /api/cron/retention` with `CRON_SECRET` as a bearer token; its
-address and secret live in Supabase Vault, never in a migration.
+timed job, the daily retention purge, is a **cPanel cron entry** calling
+`POST /api/cron/retention` with `CRON_SECRET` as a bearer token; the secret
+lives in the server's environment, never in the repository.
 
 ---
 
@@ -470,18 +482,27 @@ authority.
 
 # 23. Hosting and Deployment
 
-- Production is the client's **cPanel server** running the Next.js
-  **standalone** build as a Node.js app under Passenger (plan §35.3). Build on
-  GitHub, never on the server.
-- **A release deploys; a push does not.** The release workflow re-runs CI,
-  migrates the hosted Supabase, builds, checks the output (no source, source
-  maps or env files), uploads over SSH into a new release folder, switches,
-  restarts, and keeps the previous release for rollback.
-- **Never** run destructive commands on the client's server without the
-  user's explicit go-ahead for that command. Read-only checks (versions,
-  limits, disk) are fine once SSH access is given.
-- The server's credentials are never written into the repository, the plan or
-  the changelog.
+- **No deployment and no change of any kind on the client's server until the
+  user confirms full payment** (plan D48). Until then SSH (port 2200, the key
+  `~/.ssh/alhidaya_cpanel_rsa` on the developer's machine) is used **only for
+  read-only checks**: no files written, moved or deleted, no settings changed,
+  not even a backup.
+- After that, **every step that changes the server is confirmed with the user
+  first** (plan D44), and the current site is backed up and the backup
+  downloaded before anything else (R0.9).
+- Production is the client's **cPanel server** (plan §21.1): the Next.js
+  **standalone** build as a Node.js app under Passenger (Node 22), MySQL 8.0
+  on localhost, 1 GB of memory, **1 GB of disk** (keep to plan §21.2's
+  budget). Build on GitHub, never on the server.
+- **A release deploys; a push does not.** The release workflow re-runs CI and,
+  only when it passes, builds, checks the output (no source, source maps or
+  env files), uploads over SSH into a new release folder, migrates the
+  database as the migration user, switches, restarts, and keeps the previous
+  release for rollback. The media and CV folders sit outside the releases.
+- The domain's mail is **Microsoft 365**; the cPanel mail routing must stay
+  **Remote**.
+- The server's credentials and the content of its `.env` files are never
+  written into the repository, the plan, the changelog or a log.
 
 ---
 
@@ -494,7 +515,7 @@ tests/
 ├── unit/          mirrors src/ exactly: src/lib/x.ts → tests/unit/lib/x.test.ts
 ├── contract/      route-shape contracts
 ├── db/            migration contracts (SQL read as text)
-│   └── integration/   against the local Supabase
+│   └── integration/   against the local MySQL
 ├── e2e/           Playwright journeys
 └── support/       setup, factories, helpers
 ```
@@ -507,9 +528,10 @@ tests/
   E2E), `src/instrumentation.ts`. `/* v8 ignore */` only with a reason on the
   same line.
 - Components are tested with Testing Library by role and accessible name.
-- Integration tests run against the **local** Supabase only.
+- Integration tests run against the **local** MySQL in Docker only (a guard
+  refuses any other database).
 - E2E: the built app on port 3100, phone (390×844) and desktop (1440×900),
-  **axe on every page**; Drive, mail and Turnstile mocked.
+  **axe on every page**; mail caught by Mailpit, Turnstile in test mode.
 
 ---
 
@@ -519,7 +541,7 @@ CI (`.github/workflows/ci.yml`) on every push to `main` and every PR:
 
 ```text
 checks: install → lint → format check → typecheck → unit tests
-app:    local Supabase (every migration) → test:coverage (100%) → build → E2E (phone + desktop, axe)
+app:    MySQL 8.0 service (every migration) → test:coverage (100%) → build → E2E (phone + desktop, axe)
 ```
 
 From Phase 7, the performance budgets too, and `npm run verify` with a
@@ -564,7 +586,8 @@ A task is complete only when:
 - Architecture boundaries are respected.
 - Validation exists at the client, the route and the database.
 - Errors are catalogue errors.
-- RLS is correct and tested; `anon` reaches only published content.
+- Access is correct and tested: public reads return only published content;
+  admin routes refuse without a session.
 - Personal data stays out of logs and is covered by retention.
 - No hard-coded words or vocabularies.
 - The screen works at phone, tablet and desktop widths with no axe violations,

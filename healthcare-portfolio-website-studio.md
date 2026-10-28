@@ -120,6 +120,17 @@ question (§41) the user may overturn.
 | D36 | **The design direction is "Follow the Line"**: hospital wayfinding (§30.1), chosen on the Impeccable decision page after one re-roll. **Code-led build**: no image generation was available, so no mock-up comps; the direction contract carries the ambition. | 2026-10-28 |
 | D37 | **Email is sent from a new `no-reply@alhidaya.qa` mailbox** on their cPanel. | 2026-10-28 |
 | D38 | **Dependency majors follow clinicdesk** (TypeScript 5.9, ESLint 9, Vitest 4), not the newest majors (TypeScript 7, ESLint 10, Vitest 5); everything else at its current release. **(agent default, Q13)** | 2026-10-28 |
+| D39 | **Supabase is replaced by the client's cPanel database** (supersedes the Supabase part of D1, and D20): **PostgreSQL if their cPanel offers it, otherwise MySQL/MariaDB**, confirmed over SSH (R0.8). The database is reachable only from the app on the same server. | 2026-10-28 |
+| D40 | **Images are files on the cPanel server**, in a permanent media folder outside the release folders, served as static files; their records are in the database. **(agent default inside D39; the user asked for images on their cPanel)** | 2026-10-28 |
+| D41 | **CVs are saved in a private folder on the cPanel server** (outside `public_html`, never web-reachable) **and attached to the HR email**; deleted at retention (D24). Supersedes D23: no Google Drive. | 2026-10-28 |
+| D42 | **Drizzle ORM** for the database: a typed schema and generated SQL migrations (Drizzle Kit). | 2026-10-28 |
+| D43 | **Better Auth** for the admin's sign-in (email and password, D33): sessions in the database, HttpOnly cookies. | 2026-10-28 |
+| D44 | **The current site is backed up before any change on the server**: its files, its admin panel and its database, kept outside `public_html` and downloaded to the developer's machine. Every step that changes the server is confirmed with the user first. | 2026-10-28 |
+| D45 | **Releases deploy from GitHub** once the pipeline passes on the release (confirms §35.3). | 2026-10-28 |
+| D46 | **SSH access by key**: a dedicated key pair made on the developer's machine; the client authorises its public key in cPanel; no password is shared. **(agent default)** | 2026-10-28 |
+| D47 | **Installs use npm 11**: npm 10.9, bundled with Node 22, fails to resolve Vitest's peer dependencies. **(agent default)** | 2026-10-28 |
+| D48 | **Nothing is deployed to, and nothing is changed on, the client's server until the user confirms full payment.** Until then SSH is used only for read-only checks. The backup (D44) and every server step wait for that confirmation. | 2026-10-28 |
+| D49 | **The database is MySQL 8.0** (8.0.46 on the server): the server's cPanel does not support PostgreSQL (R0.8), so D39 resolves to MySQL. | 2026-10-28 |
 
 ## 3. Audiences and the admin
 
@@ -135,8 +146,8 @@ question (§41) the user may overturn.
 ### 3.2 The admin
 
 One Al Hidaya staff member (D14), signing in at `/admin` with email and
-password (D33). They edit content, publish, read and work through enquiries and
-applications, connect the Drive folder, and set retention. Never a developer.
+password (D33). They edit content, publish, work through enquiries and applications, and set
+retention. Never a developer.
 
 ### 3.3 Words
 
@@ -155,12 +166,14 @@ logo is shown), **section**, **draft**, **published**, **publish**, **line**
   Lenis motion with a reduced-motion path.
 - Forms: Request a Quote, Contact, Job application with CV; Turnstile,
   honeypot, rate limit; email alerts; the admin inbox.
-- CVs to Google Drive and attached to the HR email; automatic retention.
+- CVs kept privately on the server and attached to the HR email; automatic
+  retention.
 - The admin Content CMS (D11) with draft, preview and publish (D32).
 - SEO: metadata, Open Graph images, structured data, sitemap, robots, and 301s
   from every old URL.
 - Cloudflare Web Analytics.
-- Deployment to the client's cPanel through GitHub Actions; hosted Supabase.
+- Deployment to the client's cPanel through GitHub Actions; the database on
+  the same server (D39).
 
 ### 4.2 Later (§42)
 
@@ -205,8 +218,8 @@ Arabic arrives later under `/ar` with the same paths (D4, §33).
 `/admin/login`, `/admin` (overview), `/admin/pages/[page]`, `/admin/services`,
 `/admin/jobs`, `/admin/clients`, `/admin/media`, `/admin/enquiries`,
 `/admin/applications`, `/admin/settings` (content, contact, navigation, footer,
-SEO, brochure), `/admin/settings/operations` (recipients, retention, Google
-Drive), `/admin/activity`. Never indexed (`noindex`, disallowed in robots).
+SEO, brochure), `/admin/settings/operations` (recipients, retention),
+`/admin/activity`. Never indexed (`noindex`, disallowed in robots).
 
 ### 5.3 Redirects from the current site (D21)
 
@@ -302,7 +315,8 @@ Page sign and the Quote form (§10). Arriving from a service preselects it.
 ### 6.9 Privacy and Terms
 
 Rich text the admin edits. Privacy says exactly what the site collects, why,
-where it goes (Supabase, the client's mail, Google Drive, Cloudflare), and for
+where it goes (the company's own server and database, its Microsoft 365
+mail, Cloudflare for the bot check and analytics), and for
 how long (§18). Drafted in Phase 3, reviewed by the client before launch (Q18).
 
 ### 6.10 System pages
@@ -400,35 +414,34 @@ limit as §10.3.
 
 1. The route checks Turnstile, the honeypot and the rate limit, then parses
    the fields and the file (type by magic bytes, size).
-2. The **application row** is written in Supabase (no file).
-3. **The CV is uploaded to the connected Google Drive folder** (D23), named
-   `<date> <job> <name>.<ext>`; its Drive file id is stored on the row.
+2. The **application row** is written in the database (no file).
+3. **The CV is saved in the private CV folder on the server** (D41) under a
+   random file name; its original name, size and type are stored on the row.
 4. **The HR email** goes to the applications recipient (default
-   `hr@alhidaya.qa`) with the details and **the CV attached** (D23).
+   `hr@alhidaya.qa`) with the details and **the CV attached** (D41).
 5. The applicant sees a confirmation. They never see an internal error: if
-   Drive or mail fails, the application is still saved, the failure is
-   logged, and the admin inbox shows the CV as **not stored** or the email
-   as **not sent**, with a Retry.
-6. The CV is held in memory only for the request. It is **never written to
-   the server's disk** or to Supabase Storage.
+   saving the file or sending the mail fails, the application is still
+   saved, the failure is logged, and the admin inbox shows the CV as **not
+   stored** or the email as **not sent**, with a Retry.
 
-### 9.4 Connecting Google Drive (admin)
+### 9.4 Keeping CVs (D41)
 
-`/admin/settings/operations` → **Connect Google Drive**: Google's consent screen
-with the narrowest scope (`drive.file`, which only reaches files the app
-creates), then the admin picks or creates the folder. The refresh token is
-**encrypted at rest** (AES-256-GCM, `TOKEN_ENCRYPTION_KEY`) and never sent to the
-browser. The screen shows the connected account, the folder, the last
-successful upload, and **Disconnect**. Works with a Workspace or a personal
-Google account (Q1); with a personal account the Google Cloud OAuth app must be
-in **production** status, or Google expires the connection every 7 days.
+- The **CV folder** is on the cPanel server, **outside `public_html` and
+  outside the app's release folders** (so a deploy never touches it),
+  readable and writable only by the app's own system user (mode `700`).
+- Files are named by a random id, never by anything the applicant typed.
+- Only the signed-in admin can download a CV, through
+  `GET /api/admin/applications/[id]/cv` (`Content-Disposition: attachment`,
+  `no-store`); nothing in the folder is ever served publicly.
+- A CV is deleted with its application, by the admin or at retention (§18).
+- The server's own backups include the folder; nothing else copies it.
 
 ### 9.5 The applications inbox
 
 List (newest first; filter by job and status; search by name, email, phone),
-detail (every field as submitted, the job, **Open CV in Drive**, the email and
-Drive status with Retry), status (`NEW`, `IN_REVIEW`, `SHORTLISTED`,
-`CLOSED`), internal notes. Deleting an application deletes its Drive file.
+detail (every field as submitted, the job, **Download CV**, the CV and email
+status with Retry), status (`NEW`, `IN_REVIEW`, `SHORTLISTED`, `CLOSED`),
+internal notes. Deleting an application deletes its CV file.
 
 ## 10. Enquiry forms
 
@@ -493,8 +506,7 @@ link, "available 24/7" line); social links (Instagram today); header navigation
 approved external URLs); footer columns; SEO defaults; the brochure.
 
 **Operations** (take effect on save, audited): the enquiries recipient(s),
-the applications recipient(s), **retention days (1 – 365, D24)**, and the Google
-Drive connection (§9.4).
+the applications recipient(s), and **retention days (1 – 365, D24)**.
 
 ## 14. Draft, preview and publish
 
@@ -509,14 +521,16 @@ Drive connection (§9.4).
 - Each item publishes on its own (Q19 default); the admin overview lists every
   item with **unpublished changes**.
 - The public site reads **only** published copies; drafts are unreachable
-  without the admin session (RLS, §26).
+  without the admin session (§26).
 - States shown in the admin: *Saved*, *Unsaved changes*, *Draft*, *Publishing*,
   *Published*, *Publish failed*. A failed publish keeps the draft intact.
 
 ## 15. Media
 
-- **Public images** (photos, client logos) are uploaded by the admin to a
-  public Supabase Storage bucket, `site-media`. At upload the server checks the
+- **Public images** (photos, client logos) are uploaded by the admin to the
+  **media folder on the server** (D40), outside the release folders so a
+  deploy never touches it, and served as static files with long-lived cache
+  headers. At upload the server checks the
   type by first bytes (JPEG, PNG, WebP, AVIF; SVG is refused), the size (at most
   10 MB), strips metadata, and **makes the responsive sizes once** with sharp
   (AVIF and WebP at fixed widths), so the cPanel server never resizes images
@@ -537,7 +551,7 @@ scroll. Desktop first; usable on a phone for reading the inbox.
 | Screen | Purpose |
 |---|---|
 | Sign in | Email and password; lockout after 5 failures for 15 minutes (§26.4); forgotten password by email link. |
-| Overview | New enquiries and applications; items with unpublished changes; Drive status; quick links. |
+| Overview | New enquiries and applications; items with unpublished changes; failed mails or CV saves; quick links. |
 | Pages | Each page's sections: show/hide, move up/down and drag to reorder, edit, preview, publish, discard. |
 | Services | List, order, create, edit, preview, publish, archive. |
 | Jobs | List by status, create, edit, close, publish, archive. |
@@ -546,22 +560,28 @@ scroll. Desktop first; usable on a phone for reading the inbox.
 | Enquiries | §10.5. |
 | Applications | §9.5. |
 | Settings | Site content (§13), brochure. |
-| Operations | Recipients, retention, Google Drive. |
+| Operations | Recipients, retention. |
 | Activity | The audit trail of admin changes. |
 
 Irreversible actions ask first: publish, delete or archive a record, delete an
-enquiry or application, disconnect Drive, change retention.
+enquiry or application, change retention.
 
 ## 17. Email
 
 - Sent by the app through the client's cPanel mail over SMTP (D17), from
   `no-reply@alhidaya.qa` (D37), behind one mail interface (`src/lib/mail`) so
-  the provider is an env change only. Locally: Mailpit, started with the local
-  Supabase.
+  the provider is an env change only. Locally: Mailpit, in Docker beside the
+  local database.
 - **Messages:** new enquiry → enquiries recipient; new application (CV
   attached) → applications recipient; admin password reset → the admin.
 - Reply-To is the visitor's email, so the team answers from their own inbox.
-- SPF, DKIM and DMARC for alhidaya.qa are verified before launch (R8.3).
+- **The recipients are on Microsoft 365** (§21.1): the cPanel server relays
+  the site's mail to Outlook because the domain's mail routing is set to
+  Remote; that setting must stay Remote, or the site's mail would stop in
+  unread local cPanel mailboxes.
+- SPF already passes for this server. **DKIM is added in cPanel and a DMARC
+  record (`p=none` first) is published** before launch, then verified with
+  real sends to info@ and hr@ (R8.3).
 - A failed send never undoes what it was for; it is logged and retryable.
 
 ## 18. Retention and privacy
@@ -569,10 +589,9 @@ enquiry or application, disconnect Drive, change retention.
 - **The retention period** (D24) is set by the admin, 1 – 365 days (Q8 default
   180 until set).
 - A **daily job** deletes enquiries and applications older than the period,
-  their notes, and their CVs in Drive. It runs from the database's scheduler
-  (pg_cron + pg_net) calling `POST /api/cron/retention` with `CRON_SECRET`, as
-  clinicdesk does (Q20). A Drive file that cannot be deleted is retried next day
-  and shown in the admin.
+  their notes, and their CV files: a **cPanel cron job** calls
+  `POST /api/cron/retention` with `CRON_SECRET` (D39). A file that cannot be
+  deleted is retried the next day and shown in the admin.
 - **Personal data never goes into logs**, error logs, URLs or analytics. The
   logger redacts by key; a test proves it.
 - IP addresses are stored only as a keyed hash (`IP_HASH_SECRET`) for rate
@@ -608,21 +627,64 @@ preview. No cookie banner is needed. Its token is an env value.
 Visitor's browser
    │  HTTPS
    ▼
-alhidaya.qa ──► the client's cPanel server
-                 └─ Node.js app (Phusion Passenger) running Next.js 16 "standalone"
-                     ├─ public pages: pre-rendered, cached on disk, revalidated on publish
-                     ├─ admin panel and REST route handlers (/api/*)
-                     ├─ ──► Supabase (PostgreSQL + Auth + Storage), region nearest Qatar
-                     ├─ ──► cPanel mail (SMTP, no-reply@alhidaya.qa)
-                     ├─ ──► Google Drive API (CVs)
-                     └─ ──► Cloudflare Turnstile (server-side verification)
-Browser ──► Cloudflare Web Analytics beacon · Turnstile widget · Supabase Storage images
-Supabase pg_cron ──► POST /api/cron/retention (daily)
-GitHub Actions ──► build ──► rsync over SSH ──► restart the Node app
+alhidaya.qa ──► the client's cPanel server (everything below is on this one machine)
+                 ├─ Node.js app (Phusion Passenger) running Next.js 16 "standalone"
+                 │   ├─ public pages: pre-rendered, cached on disk, revalidated on publish
+                 │   ├─ admin panel (Better Auth) and REST route handlers (/api/*)
+                 │   ├─ ──► the database: PostgreSQL or MySQL/MariaDB, localhost only (Drizzle)
+                 │   ├─ ──► the CV folder (private, outside public_html)
+                 │   ├─ ──► cPanel mail (SMTP, no-reply@alhidaya.qa)
+                 │   └─ ──► Cloudflare Turnstile (server-side verification)
+                 ├─ the media folder (public images, served as static files)
+                 └─ cron (daily) ──► POST /api/cron/retention
+Browser ──► Cloudflare Web Analytics beacon · Turnstile widget
+GitHub Actions (on a release) ──► build ──► rsync over SSH ──► migrate ──► switch ──► restart
 ```
 
-- **No worker, queue, Redis or Edge Function.** Work happens in the request;
-  the one timed job uses the database's scheduler.
+- **No worker, queue, Redis or external database.** Work happens in the
+  request; the one timed job is a cPanel cron entry.
+- **The database never listens to the internet**: only the app on the same
+  machine connects to it (D39).
+
+### 21.1 The server (R0.8, read-only check, 2026-10-28)
+
+| Fact | Found | What it means for the build |
+|---|---|---|
+| Host | HostCarts shared cPanel, `asian-node010.hostcarts.com`, OVH, **Singapore**; CloudLinux 8 with CageFS; Apache; Let's Encrypt (AutoSSL) | Qatar visitors reach Singapore: caching and the speed check at R8.5 matter (D25) |
+| SSH | Port **2200**, user `alhidaya`, key authorised (D46) | The release workflow deploys over port 2200 with its own deploy key (R8.2) |
+| Node.js | CloudLinux Node.js Selector with Passenger; **Node 22.22.0** available (also 24.14.0); no apps yet | Matches `.nvmrc` (22) |
+| Memory and CPU | **1 GB** physical memory, **1 core** (100 %), 20 entry processes, 100 processes | Build on GitHub only; image processing at upload runs one at a time with sharp's limits; no server-side builds |
+| **Disk** | **1 GB** quota: 291 MB used, **733 MB free** (shared with mail, databases and backups) | Tight. Releases, media sizes and CVs are budgeted (§21.2); a plan upgrade is Q25 |
+| **Bandwidth** | **5 GB a month**; 1.3 GB already used this month | Image-heavy pages need edge caching or a plan upgrade (Q25, D25) |
+| Database | **MySQL 8.0.46**, localhost; **PostgreSQL not supported** by this server; **at most 2 databases** (1 used by the old site, 222 KB) | MySQL 8 (D49); the new site takes the second database slot |
+| Email accounts | at most 5; **`noreply@alhidaya.qa` already exists** | Q24: send from the existing `noreply@` |
+| Mail | **MX is Microsoft 365** (`alhidaya-qa.mail.protection.outlook.com`): info@ and hr@ live in Outlook. cPanel **mail routing is Remote** (correct). SPF valid and includes this server; **DKIM missing; no DMARC** | Mail sent through cPanel reaches Outlook; DKIM and DMARC are added at R8.3 so it is not junked |
+| Outbound | Local SMTP 25/587/465 open; Microsoft 365 and Gmail SMTP reachable; Cloudflare, npm and GitHub reachable | Turnstile verification and mail work from the app |
+| Cron | Available; no jobs today | The daily retention job (§18) |
+| Subdomains | at most 1, none used | Q22's hidden pre-switch check is possible |
+| DNS | Authoritative `ns1/ns2.alhidaya.qa` → `115.84.171.158` (HostCarts DNS); the zone is also present in cPanel's Zone Editor | DKIM/DMARC records are added in cPanel and verified on the public resolvers (R8.3) |
+| The current site | **Laravel 9** (end of life) on **PHP 8.1** in `public_html/application` (152 MB), bootstrapped by `public_html/index.php`; uploads in `public_html/upload` (`Services`, `CV`); `profile.pdf` (2.9 MB, the brochure); database `alhidaya_hidaya` | Backed up whole before the switch (D44, R0.9); the brochure can be reused (Q3) |
+
+### 21.2 Living within 1 GB of disk
+
+Until the plan is upgraded (Q25), the new site keeps to this budget on the
+server: **two release folders at most** (the live one and one for rollback),
+each a standalone build of about 100 MB; **media** kept to the sizes the design
+uses (each image in a few widths, AVIF and WebP), checked against a quota the
+admin sees; **CVs** at most 5 MB each (Q4), deleted at retention; **the database**
+small (text only). The old site and its uploads (about 260 MB with the
+public zip) are removed from the server only after the switch and only after
+the backup is downloaded (R0.9, R8.6). The admin overview shows disk use, and
+warns at 80 %.
+
+### 21.3 Serving uploaded images
+
+Next.js serves only the files that were in `public/` when it was built, so
+images the admin uploads later are **not** in the build. They are written to a
+**media folder inside `public_html` that no release touches**, and Apache
+serves them directly as static files with long-lived cache headers; the app
+only writes them (Q26). The CV folder is the opposite: outside `public_html`,
+never served by Apache (§9.4).
 - **One app instance** on cPanel: Next's disk cache and on-demand revalidation
   work as-is; nothing needs a shared cache.
 
@@ -649,7 +711,7 @@ handlers (§29), answered `Cache-Control: no-store`.
 Next's runtime image optimiser is **not used** for CMS media: shared hosting
 should not resize images per request. Sizes are made once at upload (§15) and
 served by a custom `next/image` loader that picks the right pre-made width
-straight from Supabase Storage. Images that ship with the code (pictograms,
+straight from the media folder. Images that ship with the code (pictograms,
 the map, brand marks) are SVG or pre-made at build.
 
 ### 22.4 Fonts
@@ -661,23 +723,25 @@ WOFF2, subset, with metric-matched fallbacks so text never shifts on load.
 
 | Layer | Choice | Version at Phase 0 |
 |---|---|---|
-| Runtime | Node.js 22 (`.nvmrc`, `engines`); the server must offer ≥ 20.9 (R0.8) | 22.x |
+| Runtime | Node.js 22 (`.nvmrc`, `engines`); the server offers 22.22.0 (§21.1) | 22.x |
 | Framework | Next.js (App Router, React Compiler, `output: "standalone"`) | 16.4 |
 | UI | React | 19.3 |
 | Language | TypeScript, strict (D38) | 5.9 |
 | Styling | Tailwind CSS with design tokens in `src/app/globals.css` | 4.3 |
 | Motion | GSAP + ScrollTrigger (+ `@gsap/react`), Lenis (D29) | 3.15 / 1.3 |
 | Forms | React Hook Form + Zod | 7.x / 4.x |
-| Data | Supabase JS (Postgres, Auth, Storage), RLS | 2.x |
+| Database | MySQL on the client's server (D39, D49) | 8.0 |
+| Data layer | Drizzle ORM + Drizzle Kit migrations (D42) | 0.45 / 0.31 |
+| Admin auth | Better Auth (D43) | 1.7 |
 | Client reads (admin) | SWR, as clinicdesk | 2.x |
 | Email | Nodemailer over SMTP | 10.x |
-| Drive | `@googleapis/drive` | 27.x |
 | Images | sharp (at upload only) | 0.35 |
 | Bot check | Cloudflare Turnstile | — |
 | Analytics | Cloudflare Web Analytics | — |
 | Tests | Vitest + Testing Library; Playwright + axe | 4.x / 1.6x |
 | Lint/format | ESLint (next config) / Prettier, 120 columns | 9.x / 3.9 |
-| Database tooling | Supabase CLI, local stack in Docker | 2.109 |
+| Local services | Docker: the database (same engine and major version as the server) and Mailpit | — |
+| Package manager | npm 11 (D47) | 11.x |
 
 ## 24. Folder structure
 
@@ -704,6 +768,7 @@ src/
 │   ├── sections/             # one component per section type (§7.2)
 │   └── ui/                   # the shared kit, kebab-case files
 ├── constants/                # messages, routes, site, sections, statuses, limits, redirects, uploads
+├── db/                       # the Drizzle schema (one file per area) and the client
 ├── features/
 │   ├── auth/                 # the admin session, sign-in, lockout, password reset
 │   ├── content/              # pages and sections: read, edit, publish, preview
@@ -712,15 +777,16 @@ src/
 │   ├── enquiries/            # Quote and Contact
 │   ├── clients/              # client logos
 │   ├── media/                # uploads, sizes, usage
-│   ├── settings/             # site content, operations, Drive connection
+│   ├── settings/             # site content, operations
 │   └── activity/             # the audit trail screen
 │       (each: api.ts · api.client.ts · components/ · hooks/ · types.ts)
 ├── hooks/                    # shared hooks
-├── lib/                      # api, audit, crypto, env, errors, files, google-drive, mail,
-│                             # motion, query, rate-limit, seo, supabase, text, turnstile, validation
+├── lib/                      # api, audit, auth, env, errors, files, mail, motion, query,
+│                             # rate-limit, seo, storage, text, turnstile, validation
 ├── proxy.ts                  # the /admin signed-in gate (not authorization)
 └── instrumentation.ts        # server errors to the error log
-supabase/                     # config.toml (local, 563xx ports), migrations/, seed.sql
+drizzle/                      # generated SQL migrations, committed
+compose.yaml                  # local services in Docker: the database and Mailpit (563xx ports)
 tests/                        # unit/ (mirrors src/), contract/, db/ (+ integration/), e2e/, support/
 scripts/                      # check-test-paths, check-deploy-output, deploy helpers
 docs/                         # planning/ (the archived draft), brand/, RELEASE.md (Phase 8)
@@ -742,43 +808,49 @@ docs/                         # planning/ (the archived draft), brand/, RELEASE.
 
 ## 26. Security model
 
-### 26.1 Row-level security
+### 26.1 Who can reach the data (D39)
 
-- **RLS on every table**, no exceptions. `anon` has **no** direct table
-  access.
-- **Public reads** go through `published_*` views or `security definer`
-  functions that return only published, visible rows. Drafts are never
-  reachable without the admin.
-- **Public writes** (enquiries, applications) go only through route
-  handlers, which verify Turnstile and then call `security definer` functions
-  that enforce the rate limit and the `CHECK`s. There is no public insert
-  policy on any table.
-- **Admin access:** `is_admin()` (the caller's `auth.uid()` is in `admins`),
-  called as `(select public.is_admin())` in policies.
-- The **service role** is used only by server code for work no person does as
-  themselves (the retention job, writing audit and error rows), never to act
-  for the admin.
+- **The database is reachable only from the app on the same server**
+  (localhost); no browser, and no other machine, ever talks to it. There is
+  no public API to the database, so access is enforced **in the server code**,
+  in one place per kind of access:
+  - **Public reads** go only through `src/features/*/api.ts` functions that
+    select **published, visible** rows and published copies. A draft is
+    never selected by a public read; a test proves it for every entity.
+  - **Public writes** (enquiries, applications) go only through their route
+    handlers, which verify Turnstile, the honeypot and the rate limit before
+    one transaction writes the row.
+  - **Admin reads and writes** go only through `withAdminRoute`, which checks
+    the Better Auth session on every request (the proxy's cookie check is not
+    authorization).
+- **Least privilege in the database:** the app connects as a user with data
+  rights only (select, insert, update, delete on its own tables); migrations
+  run as a separate user with schema rights, used only by the release
+  workflow.
+- Every query is built by Drizzle with bound parameters; no SQL is ever
+  assembled from input.
 
 ### 26.2 Secrets
 
 Only on the server, validated at start (`src/lib/env/server.ts`), documented
-in `.env.example`, never committed: the Supabase service-role key, SMTP
-credentials, the Turnstile secret, the Google OAuth client secret,
-`TOKEN_ENCRYPTION_KEY`, `IP_HASH_SECRET`, `CRON_SECRET`. On cPanel they are
-set in the Node.js app's environment, never in a file inside `public_html`.
+in `.env.example`, never committed: `DATABASE_URL` (and the migration user's
+URL, release workflow only), `BETTER_AUTH_SECRET`, SMTP credentials, the
+Turnstile secret, `IP_HASH_SECRET`, `CRON_SECRET`. On cPanel they are set in
+the Node.js app's environment, never in a file inside `public_html`.
 
 ### 26.3 Headers
 
 HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`,
 frame-ancestors `none`, and a Content-Security-Policy allowing only the app,
-Supabase, Turnstile and the analytics beacon; the CSP form that keeps public
+Turnstile and the analytics beacon; the CSP form that keeps public
 pages statically cached is settled in R7.3.
 
 ### 26.4 Admin sign-in
 
-Supabase Auth email and password; the session in **HttpOnly cookies** set by
-the server, never in `localStorage` (as clinicdesk). Sign-up is disabled; the
-one admin is created by a script at setup. **Lockout:** 5 failed attempts for an
+**Better Auth** (D43) with email and password; sessions stored in the
+database and carried in **HttpOnly, Secure, SameSite=Lax cookies** set by the
+server, never in `localStorage`. Public sign-up is disabled; the one admin is
+created by a script at setup. **Lockout:** 5 failed attempts for an
 email or a hashed IP lock sign-in for 15 minutes (constants). Password reset by
 an emailed link.
 
@@ -792,13 +864,14 @@ never trusted; storage paths never shown.
 
 Every table: `id uuid` primary key, `created_at`, `updated_at` (trigger),
 `created_by`/`updated_by` where a person edits it. Content fields that the
-admin edits live in `draft` and `published` JSONB, validated by the type's Zod
-schema on write and by `CHECK`s on their required keys; the columns a query
-filters or orders on are real columns.
+admin edits live in `draft` and `published` MySQL `JSON` columns, validated
+by the type's Zod schema on every write; the columns a query filters or orders
+on are real columns. The schema is written in Drizzle (`src/db/schema`) for
+MySQL 8.0 (D49): `utf8mb4` throughout (Arabic later), InnoDB, enforced `CHECK`s.
 
 | Table | Purpose |
 |---|---|
-| `admins` | the admin's `auth.users` id and email (D14) |
+| `user`, `session`, `account`, `verification` | Better Auth's tables: the one admin and their sessions (D14, D43) |
 | `pages` | the fixed pages: key, slug, SEO draft/published, `published_at` |
 | `page_sections` | page, type, sort order, visible, fixed, `draft` and `published` content |
 | `services` | §8: slug, audience, status, sort order, draft/published, `previous_slugs` |
@@ -806,37 +879,39 @@ filters or orders on are real columns.
 | `clients` | §11: status, sort order, draft/published (name, media, alt, url) |
 | `media` | §15: path, type, bytes, size, alt, the made sizes |
 | `site_content` | §13 site content: one row, draft/published |
-| `site_operations` | §13 operations: one row: recipients, retention days, Drive connection (token encrypted) |
+| `site_operations` | §13 operations: one row: recipients, retention days |
 | `enquiries` | §10: form, status, fields as submitted (labels and values), name/email/phone for search |
 | `enquiry_notes` | internal notes |
-| `applications` | §9: job (or none), job title as applied, fields, CV name/size, Drive file id, email and Drive status |
+| `applications` | §9: job (or none), job title as applied, fields, the CV's stored id, original name, size and type, CV and email status |
 | `application_notes` | internal notes |
 | `rate_limits` | hashed key, form, window start, count |
 | `sign_in_attempts` | hashed email/IP, count, locked until |
 | `audit_log` | admin changes: action, entity, before/after for non-personal fields, actor |
 | `error_log` | server failures (no personal data), with a retention |
 
-Storage: `site-media` (public read, admin write). No bucket for CVs (D23).
+Files: the **media folder** (public, D40) and the **CV folder** (private, D41),
+both on the server outside the release folders.
 
 ## 28. Migrations
 
-`supabase/migrations/NNNN_snake_name.sql`, sequential, never edited once
-released; each with a DB contract test.
+The schema lives in `src/db/schema`; **Drizzle Kit generates the SQL
+migrations** into `drizzle/`, each reviewed and committed, sequential, and
+never edited once released (D42). Every multi-row write (publish, submit,
+purge) is **one transaction** in the server code, so the rules hold on either
+engine. Each migration has a DB contract test.
 
 | # | Migration |
 |---|---|
-| 0001 | `foundation`: extensions, `updated_at` trigger, text hygiene helpers |
-| 0002 | `admins`: `admins`, `is_admin()`, the lockout table, `anon` locked out |
-| 0003 | `logs`: `audit_log`, `error_log`, their retention |
-| 0004 | `media`: the table, the `site-media` bucket and its policies |
-| 0005 | `site`: `site_content`, `site_operations`, publish functions |
-| 0006 | `pages`: `pages`, `page_sections`, the section-type `CHECK`, `publish_page()` |
-| 0007 | `services` |
-| 0008 | `jobs` |
-| 0009 | `clients` |
-| 0010 | `enquiries`: tables, `submit_enquiry()` with the rate limit |
-| 0011 | `applications`: tables, `submit_application()` with the rate limit |
-| 0012 | `retention`: `purge_expired()`, the pg_cron schedule (address and secret in Vault) |
+| 0001 | `auth`: Better Auth's tables; the lockout table |
+| 0002 | `logs`: `audit_log`, `error_log` |
+| 0003 | `media` |
+| 0004 | `site`: `site_content`, `site_operations` |
+| 0005 | `pages`: `pages`, `page_sections`, the section-type `CHECK` |
+| 0006 | `services` |
+| 0007 | `jobs` |
+| 0008 | `clients` |
+| 0009 | `enquiries`: tables, notes, the rate-limit table |
+| 0010 | `applications`: tables, notes |
 
 ## 29. API
 
@@ -851,16 +926,15 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `POST /api/applications` | multipart application with the CV |
 | `GET /api/preview`, `GET /api/preview/exit` | enter and leave draft mode (admin only) |
 | `POST /api/cron/retention` | the daily purge (`CRON_SECRET`) |
-| `/api/admin/session` | sign in, sign out, refresh, forgotten and reset password |
+| `/api/auth/[...all]` | Better Auth: sign in, sign out, session, forgotten and reset password |
 | `/api/admin/pages/[key]` (+ `/sections`, `/publish`, `/discard`) | pages |
 | `/api/admin/services` (+ `[id]`, `/publish`, `/order`) | services |
 | `/api/admin/jobs` (+ `[id]`, `/publish`) | jobs |
 | `/api/admin/clients` (+ `[id]`, `/publish`, `/order`) | client logos |
 | `/api/admin/media` (+ `[id]`) | upload, list, alt text, delete |
 | `/api/admin/enquiries` (+ `[id]`, `/notes`, `/retry-mail`) | the inbox |
-| `/api/admin/applications` (+ `[id]`, `/notes`, `/retry`) | the inbox |
+| `/api/admin/applications` (+ `[id]`, `/notes`, `/cv`, `/retry`) | the inbox; `/cv` downloads the CV (§9.4) |
 | `/api/admin/site` (+ `/publish`), `/api/admin/operations` | settings |
-| `/api/admin/drive/connect`, `/callback`, `/disconnect` | Google Drive |
 | `/api/admin/activity` | the audit trail |
 
 ## 30. Design system and motion
@@ -1027,21 +1101,22 @@ As clinicdesk (D26, `AGENTS.md` §31):
 |---|---|---|
 | Unit | Vitest + Testing Library (jsdom) | `tests/unit/` mirrors `src/` exactly |
 | Route contracts | Vitest | `tests/contract/` |
-| Migrations | Vitest (SQL read as text) | `tests/db/` |
-| Integration | Vitest against the local Supabase only | `tests/db/integration/` |
+| Schema and migrations | Vitest (schema and SQL read as text) | `tests/db/` |
+| Integration | Vitest against the local database in Docker only | `tests/db/integration/` |
 | End to end | Playwright, phone 390×844 and desktop 1440×900, axe on every page | `tests/e2e/` |
 
 **Coverage 100%** (lines, branches, functions, statements) over `src/**`,
 enforced in CI; pages and layouts are composition only and covered by E2E.
 
-Must cover: anon sees only published content; drafts never leak; enquiries
-and applications unreadable by anon; rate limit and honeypot; Turnstile
-failure; CV type and size refusals; Drive and mail failure paths; publish and
+Must cover: public reads return only published content; drafts never leak;
+enquiries, applications and CVs unreachable without the admin session; rate
+limit and honeypot; Turnstile failure; CV type and size refusals; CV storage
+and mail failure paths; publish and
 revalidation; section rules (fixed, maxima); redirects (every old URL);
 retention purge; lockout; redaction of personal data; reduced motion.
 
 **The critical journey (E2E):** a family taps WhatsApp from Home; an
-institution sends a quote; a nurse applies with a CV (Drive and mail mocked);
+institution sends a quote; a nurse applies with a CV (mail caught by Mailpit);
 the admin signs in, edits a service, previews, publishes, and the public page
 changes.
 
@@ -1051,9 +1126,9 @@ changes.
 
 | | Where | Database |
 |---|---|---|
-| Local | `npm run dev` | local Supabase in Docker (563xx ports, beside clinicdesk's 553xx) |
-| CI | GitHub Actions | local Supabase in the runner |
-| Production | the client's cPanel Node.js app | hosted Supabase, nearest Qatar (D20) |
+| Local | `npm run dev` | MySQL 8.0 and Mailpit in Docker (`compose.yaml`, 563xx ports), as the server |
+| CI | GitHub Actions | the same database as a service container |
+| Production | the client's cPanel Node.js app | the cPanel database on the same server (D39) |
 
 No staging (D21).
 
@@ -1061,7 +1136,7 @@ No staging (D21).
 
 ```text
 checks: install → lint → format check → typecheck → unit tests
-app:    local Supabase (every migration) → test:coverage (unit + integration, 100%)
+app:    the database service (every migration) → test:coverage (unit + integration, 100%)
         → build → E2E (phone + desktop, axe)
 ```
 
@@ -1070,12 +1145,20 @@ From Phase 7 also the performance budgets (§31).
 ### 35.3 Deploying to cPanel
 
 - **A release deploys; a push does not** (as clinicdesk). Publishing a GitHub
-  release `vX.Y.Z` (equal to `package.json`) re-runs CI on the tag, applies new
-  migrations to the hosted Supabase, **builds on GitHub** (shared hosting has
-  too little memory to build), checks the output (`scripts/check-deploy-output.mjs`:
-  no source, source maps or env files), **uploads the standalone build over
-  SSH with rsync** into a new release folder, switches the app to it, and
-  restarts Passenger. The previous release folder stays for an instant rollback.
+  release `vX.Y.Z` (equal to `package.json`) re-runs CI on the tag and, only
+  when it passes (D45), **builds on GitHub** (shared hosting has too little
+  memory to build), checks the output (`scripts/check-deploy-output.mjs`: no
+  source, source maps or env files), **uploads the standalone build over SSH
+  with rsync** into a new release folder, **applies new migrations** to the
+  server's database as the migration user, switches the app to the new
+  folder, and restarts Passenger. The previous release folder stays for an
+  instant rollback.
+- **The media folder and the CV folder live outside the release folders**,
+  so no deploy or rollback ever touches them.
+- **Before the first deploy, the current site is backed up** (D44, R0.9): its
+  files, its admin panel and a dump of its database, kept on the server
+  outside `public_html` and downloaded to the developer's machine, with
+  written restore steps.
 - The SSH key, host and paths are GitHub secrets. The app's runtime env is
   set in cPanel's Node.js app settings.
 - `docs/RELEASE.md` (Phase 8) is the step-by-step guide.
@@ -1091,8 +1174,8 @@ order; a pre-push hook runs it (as clinicdesk, from Phase 7).
 - The `error_log` table takes the server's own failures (`captureError`),
   without personal data, kept 30 days.
 - The `audit_log` keeps every admin change (who, what, when), kept a year.
-- A failed mail, Drive upload or purge is visible in the admin, not only in
-  logs.
+- A failed mail, CV save or purge, and disk use near the quota (§21.2), are
+  visible in the admin, not only in logs.
 
 ---
 
@@ -1102,15 +1185,15 @@ order; a pre-push hook runs it (as clinicdesk, from Phase 7).
 
 | Phase | Name | Outcome |
 |---|---|---|
-| 0 | Groundwork | Plan and docs; the app scaffold; tooling; tests harness; local Supabase; CI; core library; the server checked |
-| 1 | Data and security | Every table, RLS, the admin session, mail, seed content |
+| 0 | Groundwork | Plan and docs; the app scaffold; tooling; tests harness; local MySQL and Mailpit; CI; core library; the server checked; the current site backed up (after payment, D48) |
+| 1 | Data and security | Every table (Drizzle, MySQL), admin sign-in (Better Auth), file storage, mail, seed content |
 | 2 | Design system | "Follow the Line" built: tokens, type, pictograms, logo SVG, motion system, UI kit, site shell |
 | 3 | Public pages | Every public page from published content; SEO; redirects; preview |
 | 4 | Enquiries | Quote and Contact end to end, with the inbox |
-| 5 | Careers | Jobs, applications with CVs to Drive and email, the inbox |
+| 5 | Careers | Jobs, applications with CVs kept privately and emailed, the inbox |
 | 6 | Admin CMS | Editing, ordering, media, settings, publish, retention |
 | 7 | Performance, accessibility and the finish | Budgets in CI; audits; Impeccable finish review; `DESIGN.md`; client approvals |
-| 8 | Deploy and go-live | Hosted Supabase; cPanel; mail DNS; keys; switch alhidaya.qa; v1.0.0 |
+| 8 | Deploy and go-live (after full payment, D48) | The production database and folders on cPanel; the release workflow; mail DNS; keys; switch alhidaya.qa; v1.0.0 |
 
 ## 38. Tracker
 
@@ -1128,25 +1211,26 @@ one commit (D27).
 | R0.1 | This plan; `PRODUCT.md`; the direction contract in the surface brief; `AGENTS.md`; `CLAUDE.md`; `changelog.md`; `README.md`; the archived draft | §2, D30, D36 | — | DONE (2026-10-28) |
 | R0.2 | Next.js 16 app: TypeScript strict, Tailwind 4, React Compiler, `output: "standalone"`, ESLint, Prettier (120), Node 22 (`.nvmrc`, `engines`), `@/` and `@tests/` paths, `.gitignore`, npm scripts as clinicdesk | §23, §24 | — | DONE (2026-10-28) |
 | R0.3 | Test harness: Vitest unit (jsdom) and integration (local-only guard) projects; coverage at 100%; Playwright (phone + desktop, local-only guard, axe); `check-test-paths.mjs`; `tests/support` | §34 | — | TODO |
-| R0.4 | Local Supabase on 563xx ports: `config.toml`, empty `seed.sql`, db scripts; `.env.example`; env validation (`src/lib/env`) | §35.1 | — | TODO |
-| R0.5 | CI workflow (`checks` + `app`), Supabase CLI pinned | §35.2 | GitHub repo (§40) for its first run | TODO |
-| R0.6 | Core library from clinicdesk: `AppError` + kinds + `fromSupabaseError`; logger with redaction; `lib/api` (handler, responses, client, params); `lib/query` | §29, §36 | — | TODO |
+| R0.4 | Local services: MySQL 8.0 and Mailpit in Docker (`compose.yaml`, 563xx ports); Drizzle config and db scripts; `.env.example`; env validation (`src/lib/env`) | §35.1 | — | TODO |
+| R0.5 | CI workflow (`checks` + `app`), MySQL 8.0 as a service container, npm 11 | §35.2 | GitHub repo (§40) for its first run | TODO |
+| R0.6 | Core library from clinicdesk: `AppError` + kinds + `fromDatabaseError`; logger with redaction; `lib/api` (handler, responses, client, params); `lib/query` | §29, §36 | — | TODO |
 | R0.7 | Constants skeleton (`messages`, `routes`, `limits`, `site`); validation primitives and text hygiene; phone (+974 and international) | §25 | — | TODO |
-| R0.8 | The cPanel server checked over SSH: Node versions, memory and CPU limits, Passenger, disk, outbound SMTP and HTTPS, server location; findings recorded here | §21, D19 | SSH access (§40) | TODO |
+| R0.8 | The cPanel server checked over SSH, read-only: Node versions, memory and CPU limits, Passenger, disk, databases, mail routing, outbound SMTP and HTTPS, server location; findings recorded in §21.1 | §21, D19 | — | DONE (2026-10-28) |
+| R0.9 | Backup of the current site before any server change: `public_html` (the Laravel app, uploads, brochure), a dump of `alhidaya_hidaya`, the cPanel account backup; downloaded to the developer's machine and checked; restore steps in `docs/RELEASE.md` | D44 | Full payment (D48) | TODO |
 
 ### Phase 1 — Data and security
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R1.1 | `0001_foundation` | §28 | — | TODO |
-| R1.2 | `0002_admins`: `is_admin()`, lockout table, `anon` locked out; the create-admin script | §26 | — | TODO |
-| R1.3 | `0003_logs`: `logActionSafe`, `captureError`, retention | §36 | — | TODO |
-| R1.4 | `0004_media` – `0009_clients`: content tables with draft/published, publish functions, `published_*` views, RLS | §27, §14 | — | TODO |
-| R1.5 | `0010_enquiries`, `0011_applications`: submit functions with rate limit | §10, §9 | Q16 | TODO |
-| R1.6 | Admin session: cookies, sign-in, lockout, refresh, sign-out, password reset; `proxy.ts`; `withAdminRoute` | §26.4 | — | TODO |
-| R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | — | TODO |
+| R1.1 | The Drizzle client and schema conventions (MySQL 8, `utf8mb4`, timestamps, ids); `0001_auth`: Better Auth's tables and the lockout table | §27, §28 | — | TODO |
+| R1.2 | Admin sign-in with Better Auth: email and password, sign-up disabled, lockout, sign-out, password reset by email; the create-admin script; `proxy.ts`; `withAdminRoute` | §26.4 | — | TODO |
+| R1.3 | `0002_logs`: `logActionSafe`, `captureError`, retention | §36 | — | TODO |
+| R1.4 | `0003_media` – `0008_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
+| R1.5 | `0009_enquiries`, `0010_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
+| R1.6 | File storage (`src/lib/storage`): the media folder and the private CV folder, paths from env, the disk-use reading for the admin | §9.4, §15, §21.2 | Q26 | TODO |
+| R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | TODO |
 | R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | TODO |
-| R1.9 | Integration: anon reads only published; drafts and inboxes unreachable; admin-only writes; rate limit | §34 | — | TODO |
+| R1.9 | Integration: public reads return only published rows; drafts, inboxes and CVs unreachable without the admin; admin-only writes; rate limit | §34 | — | TODO |
 
 ### Phase 2 — Design system ("Follow the Line")
 
@@ -1190,10 +1274,10 @@ one commit (D27).
 |---|---|---|---|---|
 | R5.1 | Careers page, job page, closed and empty states, `JobPosting` | §6.5, §6.6 | — | TODO |
 | R5.2 | Application form with CV (type by bytes, size); general application | §9.2 | Q4, Q7 | TODO |
-| R5.3 | Google Drive connection in Operations (OAuth `drive.file`, folder, encrypted token, status, disconnect) | §9.4 | Q1 | TODO |
-| R5.4 | Submit: row, Drive upload, HR email with the CV attached, failure paths and retry | §9.3 | — | TODO |
+| R5.3 | The CV folder in use: save under a random id, admin-only download, delete with the application | §9.4 | — | TODO |
+| R5.4 | Submit: row, CV saved, HR email with the CV attached, failure paths and retry | §9.3 | — | TODO |
 | R5.5 | Applications inbox | §9.5 | — | TODO |
-| R5.6 | Integration + E2E (Drive and mail mocked) | §34 | — | TODO |
+| R5.6 | Integration + E2E (mail caught by Mailpit) | §34 | — | TODO |
 
 ### Phase 6 — Admin CMS
 
@@ -1205,7 +1289,7 @@ one commit (D27).
 | R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |
-| R6.7 | Operations: recipients, retention (1 – 365); the daily purge job | §13, §18 | Q8, Q20 | TODO |
+| R6.7 | Operations: recipients, retention (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2 | Q8 | TODO |
 | R6.8 | Activity (audit trail) | §36 | — | TODO |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | TODO |
 
@@ -1223,12 +1307,12 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R8.1 | Hosted Supabase (region with the user), migrations, the admin account | D20 | — | TODO |
-| R8.2 | cPanel Node.js app; env; the release workflow (build, check, rsync, switch, restart, rollback); `docs/RELEASE.md` | §35.3 | R0.8 | TODO |
-| R8.3 | `no-reply@` mailbox; SPF, DKIM, DMARC verified; test sends | §17, D37 | Client DNS access (§40) | TODO |
-| R8.4 | Google OAuth app in production; Turnstile keys for alhidaya.qa; Cloudflare Web Analytics site | §9.4, §10.3, §20 | — | TODO |
+| R8.1 | The production MySQL database (the second slot) with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media and CV folders | D39, D49, §21.1 | Full payment (D48), R0.9 | TODO |
+| R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron; `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
+| R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM added in cPanel; DMARC `p=none` published; verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
+| R8.4 | Turnstile keys for alhidaya.qa; Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
 | R8.5 | Pre-switch check on the server; speed from Qatar; the Cloudflare-proxy decision | D25 | Q22 | TODO |
-| R8.6 | Switch alhidaya.qa; every 301 verified live; sitemap to Search Console | D21, §19 | — | TODO |
+| R8.6 | Switch alhidaya.qa to the Node.js app; every 301 verified live; sitemap to Search Console; the old site's files removed from the server only after the backup is verified (§21.2) | D21, §19 | — | TODO |
 | R8.7 | Smoke test; release `v1.0.0` | §35 | — | TODO |
 
 ## 39. Definition of shippable
@@ -1236,23 +1320,42 @@ one commit (D27).
 V1 ships when: every tracker row up to R8.7 is DONE; coverage is 100%; E2E and
 axe pass on phone and desktop; every page meets §31; the finish review's
 verdict is *ship*; `DESIGN.md` exists; the client has approved the copy, images,
-logos and legal pages; mail, Drive and Turnstile work in production; every old
+logos and legal pages; mail and Turnstile work in production; every old
 URL answers with its 301; and no personal data appears in logs.
 
 ## 40. Prerequisites from the client
 
 | Item | Needed by |
 |---|---|
-| SSH access to the cPanel server (host, user, key or password) | R0.8 |
+| ~~SSH access to the cPanel server~~ (done: port 2200, user `alhidaya`, key authorised, 2026-10-28) | R0.8 |
+| **Full payment confirmed by the user** (D48) | R0.9 and every server step |
+| **Urgent, today's site:** remove the public `.well-known.zip` and rotate the secrets it exposed; protect `upload/CV` (§40.1) | now, independent of the build |
+| A decision on the hosting plan's disk and bandwidth (Q25) | before R8.1 |
 | The GitHub repository (created by the user) | R0.5's first CI run |
 | Approval of the rewritten copy | R3.1, R7.5 |
 | Client names and permission for their logos, and the logo files | before the Clients section shows (D7) |
 | The brochure PDF (or approval to reuse `profile.pdf`) | R6.6 |
 | The logo as a vector file, if they have one (Q2) | R2.2 |
-| A `no-reply@alhidaya.qa` mailbox and its password; DNS access for SPF/DKIM/DMARC | R8.3 |
-| A Google account for the CV folder (Workspace or personal, Q1) and a Google Cloud project for the OAuth app | R5.3, R8.4 |
+| The sender mailbox's password (Q24); cPanel access for the DKIM and DMARC records | R8.3 |
 | A Cloudflare account (Turnstile, Web Analytics) | R4.2, R8.4 |
-| A Supabase account / organisation for the hosted project | R8.1 |
+
+### 40.1 Found on today's site (R0.8), for the client to act on now
+
+Found during the read-only check; **nothing was changed** (D48). Both concern
+the current site, not the new build:
+
+1. **`public_html/.well-known.zip` (82 MB) is publicly downloadable** at
+   `https://alhidaya.qa/.well-known.zip` (HTTP 200, checked by headers only).
+   It is a full copy of the old site from September 2023: 13,195 files,
+   including **`application/.env`** (which normally holds the database
+   password, the app key and mail passwords) and Laravel logs. **Recommended
+   now:** move it out of `public_html` (or delete it once the backup exists),
+   then **change every secret in that `.env`**: the database user's password,
+   the mail account's password, `APP_KEY`, and any API keys.
+2. **83 CVs (20 MB) are stored in `public_html/upload/CV`** with no access
+   rule. Folder listing is off (404), but each file can be downloaded by anyone
+   who knows or guesses its address. **Recommended now:** add a deny rule for
+   that folder, and decide how long old CVs should be kept.
 
 ## 41. Open questions
 
@@ -1260,7 +1363,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 
 | Q | Question | Default |
 |---|---|---|
-| Q1 | Is the CV Google account Workspace or personal Gmail? | The Drive connection supports both; with Gmail the OAuth app is set to production status. |
+| Q1 | ~~Is the CV Google account Workspace or personal Gmail?~~ | **Answered by D41:** no Google Drive. |
 | Q2 | Does the client have the logo as a vector (SVG/AI/EPS/PDF)? | The mark and wordmark are redrawn as SVG from the JPG, faithfully, for the client to approve. |
 | Q3 | Reuse the current `profile.pdf` as the brochure? | Yes, until the admin uploads a new one. |
 | Q4 | CV rules | PDF, DOC or DOCX; at most 5 MB. |
@@ -1279,10 +1382,15 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q17 | Who receives which email | Quote and Contact → `info@alhidaya.qa`; applications → `hr@alhidaya.qa`; both editable in Operations. |
 | Q18 | Legal review of Privacy and Terms | Drafted from what the site actually does; the client reviews before launch. |
 | Q19 | Publish per item, or one "publish all"? | Per item, with an overview of unpublished changes. |
-| Q20 | Where the daily purge job runs | Supabase pg_cron + pg_net calling the app, as clinicdesk. |
+| Q20 | ~~Where the daily purge job runs~~ | **Answered by D39:** a cPanel cron job. |
 | Q21 | Store content per locale now (`{ "en": … }`)? | Yes (§33). |
 | Q22 | Pre-switch check under a hidden temporary subdomain on the server (not a public staging site)? | Yes. |
 | Q23 | A floating WhatsApp button on every page, as today? | Decided in R2.6 with the user, from the built shell. |
+| Q24 | Send from the existing `noreply@alhidaya.qa` instead of creating `no-reply@` (D37)? | Use the existing `noreply@` (one fewer of the 5 mailboxes; the old site likely sends from it). |
+| Q25 | Upgrade the HostCarts plan? Today: 1 GB disk (733 MB free), 5 GB bandwidth a month, 1 GB memory. | Build within §21.2's budget; measure at R7.1 and decide before R8.1. A larger disk and bandwidth is strongly advised for an image-led site with a year of CVs. |
+| Q26 | How uploaded images are served | From a media folder inside `public_html` that no release touches, served by Apache (§21.3); verified on the server at R8.2. |
+| Q27 | What happens to the old site's 83 CVs and its database after the switch? | Kept only in the downloaded backup, then deleted from the server; not imported into the new site. |
+| Q28 | Reuse the old site's service photos (`upload/Services`)? | Only where they are good enough for the new design; otherwise licensed stock (D8). |
 
 ## 42. Later (unscheduled)
 
@@ -1305,8 +1413,12 @@ Hidaya:
 - **Hosting moved from a Cloudflare Pages static export to the client's
   cPanel as a Node.js app** (D19); rendering, caching and deployment rewritten
   for it (§21, §22, §35). The draft's static-export caveats no longer apply.
-- **Careers:** applications on the site with CVs to Google Drive and email
-  (D13, D23), instead of external Google Form links.
+- **Supabase replaced by the client's own server** (D39, D49): MySQL 8.0 on
+  their cPanel, Drizzle ORM (D42), Better Auth (D43), images and CVs as files
+  on the server (D40, D41), a cPanel cron job; shaped by the server check
+  (§21.1). Nothing is deployed until full payment (D48).
+- **Careers:** applications on the site with CVs kept privately on the server
+  and emailed to HR (D13, D41), instead of external Google Form links.
 - **Forms:** two fixed forms (D15) instead of a form builder.
 - **Colours** come from the logo (sky blue, deep blue, leaf green) instead of
   the draft's navy-and-teal palette (§30.2), and the design direction is

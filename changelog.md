@@ -58,3 +58,47 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-28 — the client's server instead of Supabase; R0.8, the server check
+
+### Changed
+- **Supabase is replaced by the client's own cPanel server** (plan D39 – D43,
+  D49), at the user's request: **MySQL 8.0** on the server (its cPanel does not
+  support PostgreSQL), **Drizzle ORM** with Drizzle Kit migrations, **Better
+  Auth** for the admin's sign-in, images in a media folder and **CVs in a
+  private folder on the server, attached to the HR email** (no Google Drive),
+  and a cPanel cron job for the retention purge. The plan's architecture,
+  security model (§26: no row-level security; access enforced in the server
+  code, a least-privilege database user), data model, migrations, API,
+  testing, environments, deployment and tracker follow; `PRODUCT.md`,
+  `AGENTS.md` and `README.md` with them.
+- **Nothing is deployed to or changed on the client's server until the user
+  confirms full payment** (D48); until then SSH is read-only. The current
+  site is backed up and downloaded before any change (D44, new row R0.9).
+- SSH by a dedicated key pair on this machine, authorised by the client in
+  cPanel (D46); installs use npm 11 (D47).
+
+### Added
+- **R0.8, the server check** (read-only, over SSH port 2200), recorded in plan
+  §21.1: HostCarts shared cPanel on OVH in Singapore; CloudLinux 8; Node 22.22
+  with Passenger; **1 GB memory, 1 core, 1 GB disk (733 MB free), 5 GB
+  bandwidth a month**; MySQL 8.0.46, at most 2 databases (1 used); the
+  domain's **mail is Microsoft 365** with cPanel routing set to Remote; SPF
+  valid, **DKIM missing, no DMARC**; `noreply@alhidaya.qa` already exists; the
+  current site is Laravel 9 on PHP 8.1.
+- Plan §21.2 (living within 1 GB of disk), §21.3 (serving uploaded images),
+  §40.1 (findings on today's site for the client), and open questions Q24 –
+  Q28 (sender mailbox, a hosting-plan upgrade, image serving, the old site's
+  CVs and data, reusing its service photos). Q1 and Q20 are answered.
+
+### Validation
+- Documentation only. The server was read, never changed: no file written,
+  moved or deleted. No `.env` content was read or printed; the public zip was
+  checked by response headers and its file list only.
+
+### Blockers
+- **Security, today's site (plan §40.1), for the client to act on now:**
+  `public_html/.well-known.zip` is publicly downloadable and contains the old
+  site's `application/.env`; 83 CVs sit in `public_html/upload/CV` without an
+  access rule. Not changed by us (D48); waiting on the user's decision.
+- Full payment (D48) for R0.9 and every server step.

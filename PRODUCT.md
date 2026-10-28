@@ -14,16 +14,16 @@ and the admin panel are the same app. No store app.
 Chosen by the user (2026-10-28), recorded in the plan's decision log:
 
 - Next.js 16 (App Router, React Compiler) · TypeScript (strict) · Tailwind CSS 4
-- Supabase: PostgreSQL, Auth, Storage (public media), RLS
 - GSAP + ScrollTrigger + Lenis for motion and smooth scroll
 - Zod · React Hook Form
-- Hosted on the client's own **cPanel server as a Node.js app** (SSH and
-  "Setup Node.js App" confirmed available); built and deployed by GitHub
-  Actions over SSH
-- Email through the client's **cPanel mail** (SMTP) from a new
-  `no-reply@alhidaya.qa` mailbox
-- CVs to the client's **Google Drive** (connected from the admin panel) and
-  attached to the HR email
+- Everything on the client's own **cPanel server** (HostCarts, Singapore):
+  the site as a **Node.js app** (Node 22, Passenger), **MySQL 8.0** through
+  Drizzle ORM, admin sign-in with Better Auth, images and CVs as files on the
+  server, a cPanel cron job. Supabase was dropped (2026-10-28).
+- Built and deployed by GitHub Actions over SSH on each release, **and only
+  after the user confirms the client's full payment**
+- Email sent through the server's cPanel mail from `noreply@alhidaya.qa`; the
+  company's mailboxes (info@, hr@) are on **Microsoft 365**
 - Cloudflare Turnstile (forms) · Cloudflare Web Analytics (cookieless)
 - Vitest · Testing Library · Playwright + axe; 100% coverage, as clinicdesk
 
@@ -100,9 +100,9 @@ Confirmed by the user (2026-10-28); the plan holds the full decision log.
 - **Forms:** Request a Quote and Contact (fixed in code), protected by
   Turnstile, a honeypot and a rate limit. Every submission goes to the admin
   inbox and is emailed to the right mailbox.
-- **Job applications** with a CV upload: the CV goes to the client's Google
-  Drive folder and is attached to the HR email. The application details live
-  in Supabase.
+- **Job applications** with a CV upload: the CV is kept in a private folder
+  on the company's server and attached to the HR email; the application
+  details are in the database.
 - **Retention:** submissions and CVs are deleted automatically after a period
   the admin sets, at most one year.
 - **Admin:** a Content CMS. Edit all text and images, show, hide and reorder
@@ -113,9 +113,9 @@ Confirmed by the user (2026-10-28); the plan holds the full decision log.
 - **The design is locked:** no colour, font, layout or theme controls in the
   admin.
 - **Light theme only** on the public site.
-- **Undecided:** whether the client's Google account is Workspace or a
-  personal Gmail (the Drive connection works with both); the Supabase region
-  (nearest to Qatar, chosen at setup).
+- **The server is small:** 1 GB of disk, 5 GB of bandwidth a month and 1 GB
+  of memory on today's hosting plan; whether to upgrade is undecided (plan
+  Q25).
 
 ## Brand Commitments
 
