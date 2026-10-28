@@ -129,3 +129,34 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None new. Plan §40.1 (today's site) still waits on the client.
+
+## 2026-10-28 — R0.3, the test harness
+
+### Added
+- **Vitest** (plan R0.3): a `unit` project in jsdom over `tests/` and an
+  `integration` project whose global setup (`tests/support/local-database.ts`)
+  refuses any database but the local MySQL; coverage over `src/**` at 100%
+  (pages and layouts excluded, as composition).
+- **Playwright**: the built standalone app on port 3100, phone (390×844) and
+  desktop (1440×900), axe on every page; it refuses a non-local database.
+- `scripts/check-test-paths.mjs` (every unit test mirrors a file in `src/`,
+  none inside `src/`), run before `npm test` and coverage.
+- `scripts/standalone-assets.mjs`: `npm run build` now copies `public/` and
+  `.next/static` into `.next/standalone`, so the journeys run the folder
+  exactly as Passenger will; `npm start` runs it.
+- The first tests: `UI_TEXT` (unit) and Home with axe (E2E).
+
+### Changed
+- Installs use npm 11 (plan D47): `npx -y npm@11 install`. npm 11 holds back
+  one install script (`unrs-resolver`, ESLint's resolver; its optional
+  fallback), which lint does not need.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit tests passed (2), coverage 100%.
+- E2E passed, phone and desktop, axe clean.
+- The integration project has no tests yet; its first, against the local
+  MySQL, arrives with R0.4.
+
+### Blockers
+- None.
