@@ -1302,3 +1302,46 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R3.3, Home
+
+### Added
+- **Home** (`src/app/(site)/page.tsx`, plan §6.1, §30.1), built from its
+  published sections: the sign, the three lines from their "You are here"
+  station, who we are, every published service as a stop on its line, why
+  Al Hidaya, the staffing offer, the nurses' line with the open job, and
+  the contact band. The clients section stays off the page until a logo
+  can be shown (D7). A Home never published answers 404.
+- **The page's line** (`pageStations`, `components/sections/anchors.ts`): a
+  station for each section shown, named by its heading (the sign by the
+  page's short name, `PAGE_NAMES`), linking to its anchor; Home's line is
+  deep blue.
+
+### Changed
+- The browser journeys wait for the app on `/kit`, which needs no published
+  content: Home is a 404 until the global setup publishes the seed, and the
+  integration tests empty the same database first.
+- `UI_TEXT.placeholderNote` removed with the placeholder Home.
+- Plan: R3.3 DONE; Q41 asks about the photos.
+
+### Performance (local build, Home)
+- JavaScript at first paint: **151.6 KB** gzip (modern browsers, within
+  170 KB; the placeholder Home was 149.3 KB by the same count); motion
+  after paint as before (D65).
+- Phone, 4× CPU slowdown, 9 Mbps, 60 ms: LCP 268 ms, CLS 0.000. Desktop:
+  LCP 28 ms, CLS 0.001. Served from this machine, so the server's own
+  response time is not in these; the full profile runs in CI from R7.1.
+
+### Validation
+- Impeccable's detector on Home: no findings. Screenshots at 1440 and
+  390 px, the first viewport and the full page.
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (466), coverage 100%.
+- Build passed; E2E passed (49, phone and desktop), axe clean: the sign and
+  the three lines with working actions, every seeded service on its line,
+  the open job, the contact band, no clients section, the stations and a
+  jump to one, and no sideways scroll down to 320 px.
+
+### Blockers
+- None. The sign's photo, and those of the introduction and the staffing
+  section, wait on Q41.

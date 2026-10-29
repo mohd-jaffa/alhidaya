@@ -8,6 +8,14 @@ import { SectionFrame, SectionHeading } from "./SectionFrame";
 
 type ClientsContent = Extract<Section, { type: "CLIENTS" }>["content"];
 
+/** The clients whose logos can be shown, each with its logo named by the organisation. */
+export function shownClients(clients: readonly PublishedClient[], images: ReadonlyMap<string, SiteImage>) {
+  return clients.flatMap((client) => {
+    const logo = images.get(client.published.logo.mediaId);
+    return logo ? [{ client: client.published, id: client.id, logo: { ...logo, alt: client.published.name.en } }] : [];
+  });
+}
+
 /**
  * The organisations Al Hidaya works with (plan §11, D7): each logo on its own
  * tile, named by the organisation, linked to its site when the admin gave
@@ -25,10 +33,7 @@ export function ClientsSection({
   clients: readonly PublishedClient[];
   images: ReadonlyMap<string, SiteImage>;
 }) {
-  const shown = clients.flatMap((client) => {
-    const logo = images.get(client.published.logo.mediaId);
-    return logo ? [{ client: client.published, id: client.id, logo: { ...logo, alt: client.published.name.en } }] : [];
-  });
+  const shown = shownClients(clients, images);
   if (shown.length === 0) return null;
 
   return (

@@ -2,14 +2,74 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 import { UI_TEXT } from "@/constants/messages";
+import { ROUTES } from "@/constants/routes";
+import { SEED_SERVICES, seedJob, seedPages } from "@/db/seed/content";
 
-test("Home names the company and passes axe", async ({ page }) => {
+const sign = seedPages().HOME.sections[0];
+
+test("Home opens on its sign and the three lines, each line's actions working (plan §6.1)", async ({ page }) => {
   await page.goto("/");
 
   await expect(page).toHaveTitle(UI_TEXT.siteName);
-  await expect(page.getByRole("heading", { level: 1, name: UI_TEXT.siteName })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  if (sign.type !== "SIGN") throw new Error("Home opens with its sign");
+  await expect(page.getByRole("heading", { level: 1, name: sign.content.headline.en })).toBeVisible();
 
+  const lines = page.getByRole("main").locator("#start");
+  await expect(lines.getByText(UI_TEXT.youAreHere, { exact: true })).toBeVisible();
+  for (const name of [UI_TEXT.lineCareAtHome, UI_TEXT.lineStaffing, UI_TEXT.lineCareers])
+    await expect(lines.getByRole("heading", { level: 2, name })).toBeVisible();
+  await expect(lines.getByRole("link", { name: UI_TEXT.whatsapp })).toHaveAttribute(
+    "href",
+    /^https:\/\/wa\.me\/97431306555\?text=/,
+  );
+  await expect(lines.getByRole("link", { name: UI_TEXT.call })).toHaveAttribute("href", "tel:+97431306555");
+  await lines.getByRole("link", { name: UI_TEXT.requestQuote }).click();
+  await expect(page).toHaveURL(ROUTES.quote);
+});
+
+test("Home shows every published service on its line, the open job and the way to reach us", async ({ page }) => {
+  await page.goto("/");
+  const services = page.getByRole("region", { name: "Our services" });
+  for (const service of SEED_SERVICES)
+    await expect(services.getByRole("link", { name: service.name.en })).toHaveAttribute(
+      "href",
+      ROUTES.service(service.slug),
+    );
+
+  const job = seedJob("2026-10-29");
+  await expect(
+    page.getByRole("region", { name: "Nurses: join us" }).getByRole("link", { name: job.title.en }),
+  ).toHaveAttribute("href", ROUTES.job(job.slug));
+  await expect(
+    page.getByRole("region", { name: "Talk to us" }).getByRole("link", { name: UI_TEXT.whatsapp }),
+  ).toBeVisible();
+  // No client has given its logo yet (D7): the section is not on the page, nor on the line.
+  await expect(page.locator("#clients")).toHaveCount(0);
+});
+
+test("on a wide screen each section is a station on the line, and a station takes the visitor there", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "the line in the margin is drawn on a wide screen");
+  await page.goto("/");
+  const line = page.getByRole("navigation", { name: UI_TEXT.onThisPage });
+  await expect(line.getByRole("link")).toHaveText([
+    "Home",
+    "Who we are",
+    "Our services",
+    "Why Al Hidaya",
+    "Nurse staffing for hospitals, clinics and schools",
+    "Nurses: join us",
+    "Talk to us",
+  ]);
+  await line.getByRole("link", { name: "Why Al Hidaya" }).click();
+  await expect(page).toHaveURL(/#values$/);
+  await expect(page.getByRole("heading", { level: 2, name: "Why Al Hidaya" })).toBeInViewport();
+});
+
+test("Home passes axe", async ({ page }) => {
+  await page.goto("/");
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(violations).toEqual([]);
 });

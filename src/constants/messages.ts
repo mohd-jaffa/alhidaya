@@ -7,7 +7,6 @@ export const UI_TEXT = {
   siteName: "Al Hidaya Health Care Services",
   siteDescription:
     "Nursing care at home and in clinics, and nurse staffing for hospitals, clinics and schools, in Doha, Qatar.",
-  placeholderNote: "Our new website is on its way.",
   /** The first line of a WhatsApp chat a visitor starts; they still press send (plan Q14). */
   whatsappPrefill: "Hello Al Hidaya, I would like to ask about nursing care.",
   /** The line's own words (plan §30.1). */
@@ -67,6 +66,18 @@ export const UI_TEXT = {
   hours: "Hours",
   openInMaps: "Open in Google Maps",
   downloadBrochure: "Download our brochure",
+} as const;
+
+/** Each page's short name (plan §7.1): where its line starts, as "You are here" names it. */
+export const PAGE_NAMES = {
+  HOME: "Home",
+  ABOUT: "About",
+  SERVICES: "Services",
+  CAREERS: "Careers",
+  CONTACT: "Contact",
+  QUOTE: "Request a quote",
+  PRIVACY: "Privacy",
+  TERMS: "Terms",
 } as const;
 
 /**

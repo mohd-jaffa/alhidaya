@@ -1323,7 +1323,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R3.1 | Copy: every public text rewritten from real facts, sent to the client for approval | D6 | — | DONE (2026-10-29; written at R1.8; reviewed with the client at the user's demo and changed in the admin, D70; sign-off at R7.5) |
 | R3.2 | Section components for the catalogue | §7.2 | — | DONE (2026-10-29; first seen on Home at R3.3) |
-| R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | — | TODO |
+| R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | Q41 | DONE (2026-10-29; its photos wait on Q41) |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | TODO |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | TODO |
 | R3.6 | Caching with tags; draft-mode preview | §22, §14 | — | TODO |
@@ -1475,6 +1475,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q38 | ~~The three lines' names on Home: edited by the admin, or fixed in code?~~ | **Answered by D71:** fixed in code. |
 | Q39 | ~~How many open jobs Home's careers section shows~~ | **Answered by D72:** the three most recent, then a link to all. |
 | Q40 | Uploaded images as a `<picture>` from their made sizes, or through a custom `next/image` loader? | A `<picture>` (D73): AVIF with a WebP fallback, at every made width, and no script. |
+| Q41 | Home's sign, its introduction and the staffing section have a place for a photo, and there are none yet: the media library that makes their sizes is R6.5. Choose the licensed stock photos now (Q11) and bring forward only the step that makes an image's sizes, so the demo shows them? | Yes: a handful of licensed stock photos, each source and licence recorded, imported by the seed through the same sizing step the admin's uploads will use; the admin's media screens stay at R6.5. |
 
 ## 42. Later (unscheduled)
 

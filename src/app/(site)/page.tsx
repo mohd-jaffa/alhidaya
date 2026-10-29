@@ -1,11 +1,22 @@
-import { UI_TEXT } from "@/constants/messages";
+import { notFound } from "next/navigation";
 
-/** A placeholder until Home is built in "Follow the Line" (plan §6.1, R3.3). */
-export default function Home() {
+import { TheLine } from "@/components/motion/TheLine";
+import { pageStations } from "@/components/sections/anchors";
+import { PageSections } from "@/components/sections/PageSections";
+import { getPublishedPageContent } from "@/features/content/api";
+
+/**
+ * Home (plan §6.1, §30.1): the sign with the three lines beneath it, then
+ * each section a station on the deep-blue line.
+ */
+export default async function Home() {
+  const content = await getPublishedPageContent("HOME");
+  if (!content) notFound();
+  const { document, data } = content;
   return (
-    <div className="mx-auto flex min-h-[60dvh] max-w-xl flex-col justify-center gap-2 p-6">
-      <h1 className="text-page font-bold">{UI_TEXT.siteName}</h1>
-      <p>{UI_TEXT.placeholderNote}</p>
-    </div>
+    <>
+      <TheLine stations={pageStations("HOME", document.sections, data)} tone="deep" />
+      <PageSections page="HOME" sections={document.sections} data={data} />
+    </>
   );
 }

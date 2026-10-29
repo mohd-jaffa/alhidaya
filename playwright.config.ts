@@ -50,7 +50,9 @@ export default defineConfig({
     command: "node .next/standalone/server.js",
     // KIT_PREVIEW serves /kit, where the motion system and the kit are tested (plan D64).
     env: { PORT: String(PORT), HOSTNAME: "127.0.0.1", KIT_PREVIEW: "true" },
-    url: `http://localhost:${PORT}/`,
+    // Ready once it answers a page that needs no published content: Home is a 404 until the
+    // global setup publishes the seed, and the integration tests empty the same database.
+    url: `http://localhost:${PORT}/kit`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
