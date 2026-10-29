@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { CV_EXPIRY_DAYS, DISK_BUDGETS, RETENTION_DAYS, UPLOAD_LIMITS } from "@/constants/limits";
+import {
+  CV_EXPIRY_DAYS,
+  DISK_BUDGETS,
+  FORM_RATE_LIMIT,
+  RETENTION_DAYS,
+  TEXT_LIMITS,
+  UPLOAD_LIMITS,
+} from "@/constants/limits";
 
 const MB = 1024 * 1024;
 
@@ -21,5 +28,14 @@ describe("the limits", () => {
 
   it("leave room on the 1 GB disk (plan §21.2)", () => {
     expect(DISK_BUDGETS.mediaBytes + DISK_BUDGETS.cvBytes).toBeLessThanOrEqual(500 * MB);
+  });
+
+  it("let a visitor send each form five times in ten minutes (plan Q16)", () => {
+    expect(FORM_RATE_LIMIT).toEqual({ limit: 5, windowMinutes: 10 });
+  });
+
+  it("fit the longest CV key the storage makes in its column", () => {
+    const longest = `2026-10/2026-10-29_${"j".repeat(40)}_${"a".repeat(40)}_${"0".repeat(10)}.docx`;
+    expect(longest.length).toBeLessThanOrEqual(TEXT_LIMITS.fileKey);
   });
 });

@@ -21,6 +21,10 @@ export const TEXT_LIMITS = {
   seoTitle: 70,
   seoDescription: 160,
   url: 500,
+  fileName: 255,
+  /** A stored file's key: its month folder and generated name. */
+  fileKey: 160,
+  note: 2000,
 } as const;
 
 /** How many of a repeated thing a document may hold (plan §7.2, §8, §9.1, §13). */
@@ -61,7 +65,7 @@ export const RETENTION_DAYS = { min: 1, max: 365, default: 180 } as const;
 export const CV_EXPIRY_DAYS = { min: 1, max: 365, default: 180 } as const;
 
 /** Public form submissions per form per visitor (plan §10.3, Q16). */
-export const FORM_RATE_LIMIT = { submissions: 5, windowMinutes: 10 } as const;
+export const FORM_RATE_LIMIT = { limit: 5, windowMinutes: 10 } as const;
 
 /** The admin's sign-in lockout (plan §26.4). */
 export const SIGN_IN_LOCKOUT = { failedAttempts: 5, lockMinutes: 15 } as const;

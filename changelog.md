@@ -607,3 +607,59 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R1.5, enquiries and applications
+
+### Added
+- **`0004_enquiries`** (`src/db/schema/enquiries.ts`, plan §10, §27): the
+  Quote and Contact submissions, each with its form, status (`NEW`,
+  `IN_PROGRESS`, `RESOLVED`), email status (`PENDING`, `SENT`, `NOT_SENT`),
+  name, email and phone for the inbox's search, and every answer **with its
+  label as the visitor saw it**; `enquiry_notes`, deleted with their enquiry.
+  Indexed for the inbox (status, newest first) and the purge (by date). No IP
+  is stored.
+- **`0005_applications`** (`src/db/schema/applications.ts`, plan §9.3,
+  §9.4): the job (or none, for a general application), its title as
+  published when applied for, the answers with their labels, the CV's name
+  as uploaded, its type (from its first bytes) and size, its key once saved,
+  the CV status (`PENDING`, `STORED`, `NOT_STORED`, `EXPIRED`) and the email
+  status; the database refuses a CV type outside PDF and Word, and an empty
+  CV or one over 5 MB; `application_notes`, deleted with their application;
+  an application outlives its job's record.
+- **Submit in one transaction with the rate limit** (plan §10.3, Q16):
+  `submitEnquiry` (`src/features/enquiries/api.ts`) and `submitApplication`
+  (`src/features/careers/api.ts`) count the visitor's submission (five per
+  form per ten minutes, by keyed hash) and store it in the same transaction:
+  past the limit nothing is stored (`RATE_LIMITED`, 429), and a submission
+  that fails to store is not counted. An application to a job that is not
+  published, is archived, is not a job, or has closed in Doha today is
+  refused (`JOB_CLOSED`, 422, plan §6.6).
+- `consumeRateLimit` takes a transaction (`src/lib/rate-limit`).
+- `src/constants/statuses.ts`: the enquiry, application, email and CV
+  statuses; `src/constants/limits.ts`: the note, file-name and file-key
+  lengths; `FORM_RATE_LIMIT` shaped as the other limits.
+
+### Changed
+- Plan §27: the enquiry and application rows name their statuses; R1.5 DONE.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (291), coverage 100% (884 statements,
+  442 branches, 280 functions). Against the local MySQL: the sixth
+  submission in a window refused and not stored, another form and the next
+  window still taken, a failed submission not counted, a count in a rolled
+  back transaction not kept; an application keeping the job's published
+  title while the admin edits it, taken until midnight in Doha on its closing
+  day, refused for closed, archived, draft, unknown and non-job ids; the
+  database refusing an unknown form and wrong or out-of-bounds CVs; notes
+  deleted with their submission. The migrations' `CHECK`s equal the
+  constants.
+- Build passed; the shipped audit passed (89 packages); E2E passed, phone
+  and desktop, axe clean.
+
+### Migration
+- `0004_enquiries` and `0005_applications` add four tables; nothing existing
+  changes. Applied to the local database.
+
+### Blockers
+- None.

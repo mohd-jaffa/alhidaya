@@ -39,6 +39,7 @@ export const ERROR_MESSAGES = {
   SLUG_TAKEN: "Another one already uses this web address. Please choose a different one.",
   NOTHING_PUBLISHED: "There is no published version to go back to yet.",
   RATE_LIMITED: "Too many attempts. Please wait a few minutes and try again.",
+  JOB_CLOSED: "This job is no longer open. You can apply for an open job, or send a general application.",
 
   NETWORK_OFFLINE: "You're offline. Check your connection and try again.",
   NETWORK_UNREACHABLE: "We couldn't reach the server. Please try again in a moment.",

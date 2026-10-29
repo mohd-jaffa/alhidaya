@@ -1,12 +1,29 @@
 import { describe, expect, it } from "vitest";
 
-import { AUDIT_ACTIONS, ERROR_SOURCES } from "@/constants/statuses";
+import {
+  APPLICATION_STATUSES,
+  AUDIT_ACTIONS,
+  CV_STATUSES,
+  EMAIL_STATUSES,
+  ENQUIRY_STATUSES,
+  ERROR_SOURCES,
+  FORM_KINDS,
+  MEDIA_KINDS,
+  RECORD_COLLECTIONS,
+} from "@/constants/statuses";
 
 describe("the vocabularies", () => {
   it("have no repeats and fit their columns", () => {
     for (const [list, width] of [
       [AUDIT_ACTIONS, 32],
       [ERROR_SOURCES, 16],
+      [RECORD_COLLECTIONS, 16],
+      [MEDIA_KINDS, 8],
+      [FORM_KINDS, 8],
+      [ENQUIRY_STATUSES, 16],
+      [APPLICATION_STATUSES, 16],
+      [EMAIL_STATUSES, 8],
+      [CV_STATUSES, 16],
     ] as const) {
       expect(new Set(list).size).toBe(list.length);
       for (const value of list) expect(value.length).toBeLessThanOrEqual(width);
@@ -15,5 +32,10 @@ describe("the vocabularies", () => {
 
   it("record the admin's CV downloads (plan §9.4)", () => {
     expect(AUDIT_ACTIONS).toContain("CV_DOWNLOAD");
+  });
+
+  it("start every submission new, with its email and CV still to come (plan §9.3, §10.4)", () => {
+    expect([ENQUIRY_STATUSES[0], APPLICATION_STATUSES[0]]).toEqual(["NEW", "NEW"]);
+    expect([EMAIL_STATUSES[0], CV_STATUSES[0]]).toEqual(["PENDING", "PENDING"]);
   });
 });
