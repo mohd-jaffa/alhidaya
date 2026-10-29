@@ -81,6 +81,7 @@ const richBlockSchema = z.discriminatedUnion("type", [
 export const richTextSchema = z
   .array(richBlockSchema)
   .max(LIST_LIMITS.richBlocks, VALIDATION_MESSAGES.atMost("The text", LIST_LIMITS.richBlocks));
+export type RichText = z.output<typeof richTextSchema>;
 
 export const seoSchema = z.object({
   title: localized(optionalLine("SEO title", TEXT_LIMITS.seoTitle)),

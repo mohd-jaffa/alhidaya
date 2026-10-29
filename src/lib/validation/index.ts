@@ -38,6 +38,7 @@ export {
   richTextSchema,
   seoSchema,
   slugSchema,
+  type RichText,
 } from "./schemas/content";
 
 export { pageDocumentSchema, sectionSchema, type PageDocument, type Section } from "./schemas/pages";

@@ -1218,3 +1218,34 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R3.2 (doing): rich text and uploaded images
+
+### Added
+- **`RichText`** (`src/components/ui/rich-text.tsx`): the admin's text
+  blocks (headings, paragraphs, lists, links) at a reading width, never as
+  HTML; a paragraph keeps the admin's line breaks; its headings sit one level
+  under the section's own.
+- **`getImages`** (`src/features/media/api.ts`): the images published content
+  refers to, by id, in one query, with their made sizes and words; anything
+  that is not a whole image (a PDF, one without its shape, one that is gone)
+  is left out, so a page shows no photo rather than one that shifts.
+- **`MediaImage`** (`src/components/ui/media-image.tsx`): an uploaded image as
+  a `<picture>` from its made sizes, AVIF first, then WebP, each at every
+  width; width and height set; the page's main photo fetched first, the rest
+  lazily; decorative images have empty alt text.
+
+### Changed
+- **Plan D73 (agent default, Q40):** images are drawn as a `<picture>`, not
+  through a custom `next/image` loader (§22.3): a loader answers one address
+  per width in one type, so it could not offer AVIF with a WebP fallback, and
+  `next/image` would add script to every page with a photo. §22.3 updated.
+- Plan: R3.2 DOING.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed, coverage 100%.
+- Build passed; E2E passed (phone, desktop), axe clean.
+
+### Blockers
+- None.

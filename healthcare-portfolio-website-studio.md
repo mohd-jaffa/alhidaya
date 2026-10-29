@@ -154,6 +154,7 @@ question (§41) the user may overturn.
 | D70 | **The copy is reviewed with the client at the user's demo**, not sent as a document now (answers Q37): whatever the client wants changed is changed **in the admin**, where every page's text, the services, the jobs, the contact details, the links and the SEO are editable (D11). The copy written at R1.8 stands as the launch draft; sign-off is R7.5. | 2026-10-29 |
 | D71 | **The three lines' names are fixed in code** (answers Q38, option b): *Care at home*, *Staffing for hospitals, clinics and schools*, *Nurses: join us* live in the message catalogue, like the lines' actions and colours (D9); the Home sign holds only its headline, supporting line and photo. | 2026-10-29 |
 | D72 | **Home's careers section shows the three most recent open jobs**, then a link to all of them (answers Q39). | 2026-10-29 |
+| D73 | **Uploaded images are drawn as a `<picture>` from their made sizes**, not through a custom `next/image` loader (§22.3 first said a loader): each type is offered at every width it was made at, AVIF first and WebP after it, which a loader cannot do (it answers one address per width, in one type), and no script is sent for an image. **(agent default; Q40)** | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -772,8 +773,9 @@ handlers (§29), answered `Cache-Control: no-store`.
 
 Next's runtime image optimiser is **not used** for CMS media: shared hosting
 should not resize images per request. Sizes are made once at upload (§15) and
-served by a custom `next/image` loader that picks the right pre-made width
-straight from the media folder. Images that ship with the code (pictograms,
+drawn as a `<picture>` that offers every made size of each type straight from
+the media folder, AVIF first, then WebP (D73); the browser fetches the
+smallest that fills its place. Images that ship with the code (pictograms,
 the map, brand marks) are SVG or pre-made at build.
 
 ### 22.4 Fonts
@@ -1320,7 +1322,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R3.1 | Copy: every public text rewritten from real facts, sent to the client for approval | D6 | — | DONE (2026-10-29; written at R1.8; reviewed with the client at the user's demo and changed in the admin, D70; sign-off at R7.5) |
-| R3.2 | Section components for the catalogue | §7.2 | — | TODO |
+| R3.2 | Section components for the catalogue | §7.2 | — | DOING (2026-10-29: rich text and uploaded images) |
 | R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | — | TODO |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | TODO |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | TODO |
@@ -1472,6 +1474,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q37 | ~~How the copy goes to the client for approval (R3.1)~~ | **Answered by D70:** reviewed at the user's demo; changes are made in the admin. |
 | Q38 | ~~The three lines' names on Home: edited by the admin, or fixed in code?~~ | **Answered by D71:** fixed in code. |
 | Q39 | ~~How many open jobs Home's careers section shows~~ | **Answered by D72:** the three most recent, then a link to all. |
+| Q40 | Uploaded images as a `<picture>` from their made sizes, or through a custom `next/image` loader? | A `<picture>` (D73): AVIF with a WebP fallback, at every made width, and no script. |
 
 ## 42. Later (unscheduled)
 
