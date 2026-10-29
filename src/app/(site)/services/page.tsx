@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { TheLine } from "@/components/motion/TheLine";
 import { pageStations } from "@/components/sections/anchors";
 import { PageSections } from "@/components/sections/PageSections";
-import { PAGE_NAMES } from "@/constants/messages";
-import { getPublishedPageContent } from "@/features/content/api";
+import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
 
-export const metadata: Metadata = { title: PAGE_NAMES.SERVICES };
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("SERVICES");
+}
 
 /** Services (plan §6.3): the sign, every service on its line, the staffing offer and the contact band. */
 export default async function Services() {

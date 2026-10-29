@@ -1506,3 +1506,38 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - R3.6 waits on Q42.
+
+## 2026-10-29 — R3.7 (doing): titles, descriptions, canonical addresses, structured data
+
+### Added
+- **Each page's title and description from its published content** (plan
+  §19, `getPageMetadata`, `features/content/api.ts`): the admin's SEO words
+  for the page, else the page's name and the site's description; Home's
+  title is the site's own SEO title, whole. A service's page takes its SEO
+  words or its own name and summary. Each names its **canonical address**
+  and its Open Graph title, description and address, all absolute on the
+  site's domain (`metadataBase`, `lib/seo/metadata.ts`).
+- **Structured data** (`lib/seo/structured-data.ts`, `components/site/JsonLd.tsx`):
+  `MedicalBusiness` on every public page from the published site content
+  (address, phone, email, logo, Instagram; the office's coordinates once
+  set, D74; open 24/7 only while the site's hours say so); `Service` and
+  `BreadcrumbList` on each service's page. Written escaped, so no content can
+  close its script tag.
+- The page and site reads are made once a request (React `cache`): the
+  title and the page share one read.
+
+### Changed
+- `PAGE_ROUTES` names where each fixed page lives (`constants/routes.ts`).
+- Plan: R3.7 DOING (share images next).
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (495), coverage 100%: the titles with and
+  without the admin's words, before and after publishing; the structured
+  data with and without hours, place and profiles; the escaping.
+- Build passed; E2E passed (80): Home's title, description, canonical
+  address and `MedicalBusiness`; a service's canonical address with its
+  `Service` and `BreadcrumbList`.
+
+### Blockers
+- R3.6 waits on Q42.

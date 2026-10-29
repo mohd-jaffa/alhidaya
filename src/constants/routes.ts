@@ -1,3 +1,5 @@
+import type { PageKey } from "./sections";
+
 /**
  * Every page the site serves (plan §5.1, §5.2), named once. English at the
  * root; Arabic arrives later under /ar with the same paths (plan D4).
@@ -19,6 +21,18 @@ export const ROUTES = {
   terms: "/terms",
   brochure: "/brochure",
 } as const;
+
+/** Where each of the fixed pages lives (plan §7.1). */
+export const PAGE_ROUTES: Record<PageKey, string> = {
+  HOME: ROUTES.home,
+  ABOUT: ROUTES.about,
+  SERVICES: ROUTES.services,
+  CAREERS: ROUTES.careers,
+  CONTACT: ROUTES.contact,
+  QUOTE: ROUTES.quote,
+  PRIVACY: ROUTES.privacy,
+  TERMS: ROUTES.terms,
+};
 
 export const ADMIN_ROUTES = {
   login: "/admin/login",

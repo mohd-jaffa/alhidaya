@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { UI_TEXT } from "@/constants/messages";
+import { ROUTES } from "@/constants/routes";
 import { orderingDocumentKey } from "@/constants/sections";
 import { readPublishedDocument } from "@/lib/content/documents";
 import { inOrder } from "@/lib/content/ordering";
@@ -59,6 +61,14 @@ export async function getPublishedServicePage(slug: string): Promise<
 export async function getServiceMetadata(slug: string): Promise<Metadata> {
   const found = await findPublishedService(slug);
   if (!found || "movedTo" in found) return {};
-  const { seo, name, summary } = found.record.published;
-  return { title: seo.title.en ?? name.en, description: seo.description.en ?? summary.en };
+  const { seo, name, summary, slug: current } = found.record.published;
+  const title = seo.title.en ?? name.en;
+  const description = seo.description.en ?? summary.en;
+  const url = ROUTES.service(current);
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: "website", siteName: UI_TEXT.siteName },
+  };
 }

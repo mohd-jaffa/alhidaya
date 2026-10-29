@@ -1,4 +1,8 @@
-import { ROUTES } from "@/constants/routes";
+import type { Metadata } from "next";
+import { cache } from "react";
+
+import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
+import { PAGE_ROUTES, ROUTES } from "@/constants/routes";
 import { pageDocumentKey, PAGE_RULES, type PageKey, type SectionType } from "@/constants/sections";
 import { listPublishedJobs } from "@/features/careers/api";
 import { listPublishedClients } from "@/features/clients/api";
@@ -14,10 +18,10 @@ import type { SectionData } from "./types";
  * A page as the public sees it (plan §6, §7): the published copy only, with
  * its hidden sections left out; a page never published is null.
  */
-export async function getPublishedPage(page: PageKey): Promise<PageDocument | null> {
+export const getPublishedPage = cache(async (page: PageKey): Promise<PageDocument | null> => {
   const document = await readPublishedDocument<PageDocument>(pageDocumentKey(page));
   return document ? { ...document, sections: document.sections.filter((section) => section.visible) } : null;
-}
+});
 
 /** The images a page's sections show: its photos and its client logos. */
 function imageIds(document: PageDocument, clients: SectionData["clients"]): string[] {
@@ -69,4 +73,24 @@ export async function listPublicPaths(): Promise<{ path: string; modified?: Date
       .filter((job) => job.open)
       .map((job) => ({ path: ROUTES.job(job.published.slug), modified: job.publishedAt })),
   ];
+}
+
+/**
+ * A page's title, description and address for search engines and shares
+ * (plan §19): the admin's SEO words for the page, else the page's name and the
+ * site's description. Home's title is the site's own, whole.
+ */
+export async function getPageMetadata(page: PageKey): Promise<Metadata> {
+  const [document, site] = await Promise.all([getPublishedPage(page), getPublishedSite()]);
+  const named = document?.seo.title.en ?? PAGE_NAMES[page];
+  const title =
+    page === "HOME" && !document?.seo.title.en ? { absolute: site?.seo.title.en ?? UI_TEXT.siteName } : named;
+  const description = document?.seo.description.en ?? site?.seo.description.en ?? UI_TEXT.siteDescription;
+  const shared = typeof title === "string" ? title : title.absolute;
+  return {
+    title,
+    description,
+    alternates: { canonical: PAGE_ROUTES[page] },
+    openGraph: { title: shared, description, url: PAGE_ROUTES[page], type: "website", siteName: UI_TEXT.siteName },
+  };
 }

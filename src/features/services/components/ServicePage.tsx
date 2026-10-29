@@ -1,4 +1,5 @@
 import { TheLine } from "@/components/motion/TheLine";
+import { JsonLd } from "@/components/site/JsonLd";
 import { SectionFrame, SectionHeading } from "@/components/sections/SectionFrame";
 import { LineActions, SERVICE_LINES, ServiceStops } from "@/components/sections/ServiceLine";
 import { ImageFrame } from "@/components/ui/frames";
@@ -7,8 +8,11 @@ import { MediaImage } from "@/components/ui/media-image";
 import { Pictogram } from "@/components/ui/pictogram";
 import { RichText } from "@/components/ui/rich-text";
 import { SignPanel } from "@/components/ui/sign-panel";
-import { UI_TEXT } from "@/constants/messages";
+import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
+import { ROUTES } from "@/constants/routes";
 import type { SiteImage } from "@/features/media/types";
+import { publicSiteUrl } from "@/lib/env/public";
+import { breadcrumbs, serviceData } from "@/lib/seo/structured-data";
 import type { SiteDocument } from "@/lib/validation";
 
 import type { PublishedService } from "../api";
@@ -37,8 +41,20 @@ export function ServicePage({
     { id: "line", label: line.title },
   ];
 
+  const siteUrl = publicSiteUrl();
   return (
     <>
+      <JsonLd data={serviceData(published, siteUrl)} />
+      <JsonLd
+        data={breadcrumbs(
+          [
+            { name: PAGE_NAMES.HOME, path: ROUTES.home },
+            { name: PAGE_NAMES.SERVICES, path: ROUTES.services },
+            { name: published.name.en, path: ROUTES.service(published.slug) },
+          ],
+          siteUrl,
+        )}
+      />
       <TheLine stations={stations} tone={line.tone} />
       <div className="grid gap-section pt-16 pb-section xl:pt-12">
         <div id="start" className="mx-auto w-full max-w-site px-gutter">

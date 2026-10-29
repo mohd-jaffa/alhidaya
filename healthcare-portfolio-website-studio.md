@@ -1330,7 +1330,7 @@ one commit (D27).
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | DONE (2026-10-29; photos wait on Q41) |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DONE (2026-10-29; the office's spot on the map waits on the client, D74) |
 | R3.6 | Caching with tags; draft-mode preview | §22, §14 | Q42 | TODO |
-| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DOING (2026-10-29: the 301 map, robots, the sitemap) |
+| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DOING (2026-10-29: the 301 map, robots, the sitemap; titles, descriptions, canonical addresses, structured data; share images next) |
 | R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | TODO |
 
 ### Phase 4 — Enquiries

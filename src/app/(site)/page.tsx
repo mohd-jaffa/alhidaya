@@ -1,9 +1,14 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { TheLine } from "@/components/motion/TheLine";
 import { pageStations } from "@/components/sections/anchors";
 import { PageSections } from "@/components/sections/PageSections";
-import { getPublishedPageContent } from "@/features/content/api";
+import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
+
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("HOME");
+}
 
 /**
  * Home (plan §6.1, §30.1): the sign with the three lines beneath it, then

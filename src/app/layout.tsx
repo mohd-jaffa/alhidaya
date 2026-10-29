@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 
 import { UI_TEXT } from "@/constants/messages";
+import { siteMetadataBase } from "@/lib/seo/metadata";
 
 import "./globals.css";
 
@@ -24,6 +25,8 @@ export const metadata: Metadata = {
   title: { default: UI_TEXT.siteName, template: `%s · ${UI_TEXT.siteName}` },
   description: UI_TEXT.siteDescription,
   applicationName: UI_TEXT.siteName,
+  // Canonical and share addresses are absolute, on the site's own domain (plan §19).
+  metadataBase: siteMetadataBase(),
 };
 
 export const viewport: Viewport = {

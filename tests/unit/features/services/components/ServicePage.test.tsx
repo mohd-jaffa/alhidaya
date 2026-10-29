@@ -40,6 +40,10 @@ describe("ServicePage", () => {
       ROUTES.service("elderly-care"),
     );
     expect(screen.getByRole("navigation", { name: UI_TEXT.onThisPage })).toBeInTheDocument();
+    const data = [...container.querySelectorAll('script[type="application/ld+json"]')].map(
+      (script) => JSON.parse(script.innerHTML)["@type"],
+    );
+    expect(data).toEqual(["Service", "BreadcrumbList"]);
   });
 
   it("opens a staffing service on a deep-blue sign with a quote for it, and keeps to what it has", () => {

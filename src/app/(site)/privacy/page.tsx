@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PageSections } from "@/components/sections/PageSections";
-import { PAGE_NAMES } from "@/constants/messages";
-import { getPublishedPageContent } from "@/features/content/api";
+import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
 
-export const metadata: Metadata = { title: PAGE_NAMES.PRIVACY };
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("PRIVACY");
+}
 
 /** The privacy notice (plan §6.9): the admin's text, drafted from what the site actually does (Q18). */
 export default async function Privacy() {

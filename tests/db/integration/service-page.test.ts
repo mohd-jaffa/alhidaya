@@ -90,9 +90,11 @@ describe("a service's page, against the local MySQL", () => {
   });
 
   it("titles the page with the admin's SEO words, or the service's own", async () => {
-    expect(await getServiceMetadata("home-nursing-care")).toEqual({
+    expect(await getServiceMetadata("home-nursing-care")).toMatchObject({
       title: "Home nursing care",
       description: "Qualified nurses at home.",
+      alternates: { canonical: "/services/home-nursing-care" },
+      openGraph: { title: "Home nursing care", url: "/services/home-nursing-care" },
     });
     const [record] = await getDb()
       .select({ id: records.id })
@@ -110,7 +112,7 @@ describe("a service's page, against the local MySQL", () => {
       actor,
     );
     await publishRecord("SERVICES", record.id, "school-nurse-staffing", actor);
-    expect(await getServiceMetadata("school-nurse-staffing")).toEqual({
+    expect(await getServiceMetadata("school-nurse-staffing")).toMatchObject({
       title: "School nurses in Qatar",
       description: "A nurse for your school.",
     });

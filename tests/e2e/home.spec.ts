@@ -3,14 +3,14 @@ import { expect, test } from "@playwright/test";
 
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
-import { SEED_SERVICES, seedJob, seedPages } from "@/db/seed/content";
+import { SEED_SERVICES, SEED_SITE, seedJob, seedPages } from "@/db/seed/content";
 
 const sign = seedPages().HOME.sections[0];
 
 test("Home opens on its sign and the three lines, each line's actions working (plan §6.1)", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page).toHaveTitle(UI_TEXT.siteName);
+  await expect(page).toHaveTitle(SEED_SITE.seo.title.en);
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   if (sign.type !== "SIGN") throw new Error("Home opens with its sign");
   await expect(page.getByRole("heading", { level: 1, name: sign.content.headline.en })).toBeVisible();

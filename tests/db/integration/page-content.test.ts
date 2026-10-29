@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { closeDb, getDb } from "@/db/client";
 import { auditLog, documents, media, records } from "@/db/schema";
-import { getPublishedPageContent, listPublicPaths } from "@/features/content/api";
+import { getPageMetadata, getPublishedPageContent, listPublicPaths } from "@/features/content/api";
 import { publishDocument, saveDocumentDraft } from "@/lib/content/documents";
 import { createRecord, publishRecord } from "@/lib/content/records";
 import {
@@ -64,6 +64,15 @@ describe("a page with everything it shows, against the local MySQL", () => {
     expect(await getPublishedPageContent("HOME")).toBeNull();
   });
 
+  it("titles a page that is not published yet with its name and the site's description", async () => {
+    expect(await getPageMetadata("HOME")).toMatchObject({
+      title: { absolute: "Al Hidaya Health Care Services" },
+      description: expect.stringContaining("Nursing care at home"),
+      alternates: { canonical: "/" },
+    });
+    expect(await getPageMetadata("ABOUT")).toMatchObject({ title: "About", openGraph: { title: "About" } });
+  });
+
   it("reads Home with the site, its services, jobs and clients, and the images its sections show", async () => {
     const photo = await image();
     const logo = await image();
@@ -119,5 +128,28 @@ describe("a page with everything it shows, against the local MySQL", () => {
       { path: "/services/home-nursing-care", modified: expect.any(Date) },
       { path: "/careers/registered-general-nurse-home-care", modified: expect.any(Date) },
     ]);
+  });
+
+  it("titles a page with the admin's SEO words, else its name; Home with the site's own title", async () => {
+    expect(await getPageMetadata("HOME")).toMatchObject({
+      title: { absolute: "Al Hidaya Health Care Services" },
+      description: "Nursing care in Doha.",
+      openGraph: { title: "Al Hidaya Health Care Services", url: "/" },
+    });
+    const privacy = pageFixture("PRIVACY");
+    await publishedPage("PRIVACY", {
+      ...privacy,
+      seo: { title: { en: "How we use your details" }, description: { en: "What we keep." } },
+    });
+    expect(await getPageMetadata("PRIVACY")).toMatchObject({
+      title: "How we use your details",
+      description: "What we keep.",
+      alternates: { canonical: "/privacy" },
+    });
+    await publishedPage("HOME", {
+      ...pageFixture("HOME"),
+      seo: { title: { en: "Nurses at home in Doha" }, description: { en: null } },
+    });
+    expect(await getPageMetadata("HOME")).toMatchObject({ title: "Nurses at home in Doha" });
   });
 });

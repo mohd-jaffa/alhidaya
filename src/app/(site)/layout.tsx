@@ -3,11 +3,14 @@ import { connection } from "next/server";
 
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
+import { JsonLd } from "@/components/site/JsonLd";
 import { PreviewBar } from "@/components/site/PreviewBar";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SkipLink } from "@/components/site/SkipLink";
 import { getPublishedSite } from "@/features/settings/api";
+import { publicSiteUrl } from "@/lib/env/public";
+import { medicalBusiness } from "@/lib/seo/structured-data";
 
 /**
  * The public site's frame (plan R2.6): the skip link, the preview bar for the
@@ -28,6 +31,7 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
       </main>
       <SiteFooter site={site} />
       <FloatingWhatsApp site={site} />
+      {site ? <JsonLd data={medicalBusiness(site, publicSiteUrl())} /> : null}
     </MotionProvider>
   );
 }
