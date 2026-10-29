@@ -869,3 +869,39 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R2.3, the pictograms
+
+### Added
+- **The pictogram set** (`src/assets/brand/pictograms.ts`, plan §30.1, Q12):
+  18 drawings made for this site in the manner of hospital symbol systems,
+  on a 24-unit grid inside a 2-unit margin, as round-capped 2-unit strokes:
+  the three lines (*care at home*: a house with a cross; *staffing*: a
+  hospital building; *careers*: a person joining), reaching the company
+  (phone, chat, mail, location, clock), finding the way (arrow, chevron,
+  menu, close, external link, download, upload a file) and status (check,
+  error, info).
+- **`Pictogram`** (`src/components/ui/pictogram.tsx`), the first component
+  of the kit: draws one in the colour of the text around it at four sizes
+  (20, 24, 40 and 56 px); hidden from screen readers unless given a label;
+  the arrow and the external link mirror on right-to-left pages (plan §33).
+- Tests: every drawing stays inside its grid's margin; the component's
+  labelled and decorative forms, sizes, stroke and mirroring.
+
+### Changed
+- Plan: R2.3 DONE; **Q32 asks whether WhatsApp actions show WhatsApp's own
+  logo** (default: no, the chat pictogram with the word *WhatsApp*; their
+  logo must be used unaltered in its own green, outside the logo's colours).
+- `globals.css`: the unused pictogram-stroke token is gone; the stroke is
+  part of each drawing.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (326), coverage 100%.
+- The set was drawn at 16, 24 and 48 px, on white and on deep blue, and in
+  the three line stations, and checked by eye.
+- Build passed; the shipped audit passed (89 packages); E2E passed (12, phone
+  and desktop), axe clean.
+
+### Blockers
+- None.

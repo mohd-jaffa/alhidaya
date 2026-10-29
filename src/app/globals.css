@@ -99,7 +99,6 @@
 :root {
   --line-width: 6px;
   --line-station: 22px;
-  --pictogram-stroke: 2px;
   --duration-press: 120ms;
   --duration-state: 200ms;
   --duration-reveal: 640ms;

@@ -1293,7 +1293,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R2.1 | Type specimen page → **the user picks the face**; tokens (logo colours AA-checked, type scale, spacing, radii, motion); self-hosted fonts | §30.1, §30.2 | Q10 | DONE (2026-10-29; Atkinson Hyperlegible Next, D61; the error red, D63) |
 | R2.2 | The logo as SVG (traced faithfully, or the client's vector); favicon and app icons | §30 | Q2 | DONE (2026-10-29; redrawn from the JPG, D62, for the client's approval at R7.5) |
-| R2.3 | Pictogram set | §30.1 | Q12 | TODO |
+| R2.3 | Pictogram set | §30.1 | Q12 | DONE (2026-10-29; 18 pictograms on a 24-unit grid, `src/assets/brand/pictograms.ts`; WhatsApp's own glyph is Q32) |
 | R2.4 | Motion system: Lenis + GSAP ticker, ScrollTrigger lifecycle, `TheLine` (scrubbed draw, stations, the travelling marker), reveals, reduced-motion path | §30.4 | — | TODO |
 | R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | TODO |
 | R2.6 | Site shell: header sign bar, mobile menu, footer, skip link, "You are here", preview bar | §30.1 | — | TODO |
@@ -1429,7 +1429,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q9 | Service names, slugs, order and "what's included" | The current eight, renamed in plain English during the copy rewrite, in the current order; "included" items only where the client confirms them. |
 | Q10 | ~~Typeface~~ | **Answered by D61:** Atkinson Hyperlegible Next, with Noto Sans Arabic. |
 | Q11 | Stock photo source | Unsplash and Pexels (free licences), each image's source recorded. |
-| Q12 | Pictograms | Drawn for this site in the system's line weight. |
+| Q12 | Pictograms | Drawn for this site in the system's line weight (built in R2.3). |
 | Q13 | Dependency majors | clinicdesk's (D38). |
 | Q14 | WhatsApp prefilled message | "Hello Al Hidaya, I would like to ask about nursing care." |
 | Q15 | CSV export of enquiries and applications | Later. |
@@ -1449,6 +1449,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q29 | Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)? | Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
 | Q30 | How does the approved copy reach the production database? | The seed (`npm run db:seed`, local only today) runs once against the empty production database at R8.1, with the user's go-ahead, after the client approves the copy (R3.1, R7.5); it writes drafts, and the admin publishes them. |
 | Q31 | ~~May form errors use a red, the one colour outside the logo's (D35)?~~ | **Answered by D63:** yes, for errors only. |
+| Q32 | Show WhatsApp's own logo on WhatsApp actions? | No: the site's chat pictogram with the word *WhatsApp*, in the site's colours. WhatsApp's logo must be used unaltered in its own green, which is outside the logo's colours (D35). |
 
 ## 42. Later (unscheduled)
 
