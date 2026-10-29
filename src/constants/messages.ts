@@ -13,6 +13,10 @@ export const UI_TEXT = {
   /** The line's own words (plan §30.1). */
   onThisPage: "On this page",
   youAreHere: "You are here",
+  /** The three lines' names (plan §6.1, D71): fixed, like their actions and colours. */
+  lineCareAtHome: "Care at home",
+  lineStaffing: "Staffing for hospitals, clinics and schools",
+  lineCareers: "Nurses: join us",
   /** The kit preview page, local and test only (plan D64). */
   kitPreview: "Kit preview",
   /** The ways to reach the company (plan §6.7, D9); WhatsApp keeps the site's chat pictogram (D66). */
@@ -41,6 +45,7 @@ export const UI_TEXT = {
   tryAgain: "Try again",
   home: "Home",
   services: "Services",
+  careers: "Careers",
   contact: "Contact",
   errorReference: "Reference",
   /** The kit's own words (plan §30.3). */

@@ -66,16 +66,16 @@ export default function KitPage() {
 
       <section id="kit-lines">
         <LineStart>
-          <LineRow tone="sky" pictogram="careAtHome" title="Care at home">
+          <LineRow tone="sky" pictogram="careAtHome" title={UI_TEXT.lineCareAtHome}>
             <ContactAction kind="whatsapp" to={phone} variant="sky" />
             <ContactAction kind="call" to={phone} variant="sky" />
           </LineRow>
-          <LineRow tone="deep" pictogram="staffing" title="Staffing for hospitals, clinics and schools">
-            <ButtonLink href={ROUTES.quote}>Request a quote</ButtonLink>
+          <LineRow tone="deep" pictogram="staffing" title={UI_TEXT.lineStaffing}>
+            <ButtonLink href={ROUTES.quote}>{UI_TEXT.requestQuote}</ButtonLink>
           </LineRow>
-          <LineRow tone="leaf" pictogram="careers" title="Nurses: join us">
+          <LineRow tone="leaf" pictogram="careers" title={UI_TEXT.lineCareers}>
             <ButtonLink href={ROUTES.careers} variant="leaf">
-              Careers
+              {UI_TEXT.careers}
             </ButtonLink>
           </LineRow>
         </LineStart>

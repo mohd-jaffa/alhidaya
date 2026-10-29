@@ -1195,3 +1195,26 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — Q36 – Q39 answered; R3.1 closed
+
+### Changed
+- **Both "You are here" stay on a phone** (D69, Q36): the progress line under
+  the header and the station where the three lines start.
+- **The copy is reviewed with the client at the user's demo** (D70, Q37),
+  not sent as a document; their changes are made in the admin, which edits
+  every page's text, the services, the jobs, the contact details, the links
+  and the SEO. R3.1 DONE: the copy written at R1.8 is the launch draft;
+  sign-off stays at R7.5.
+- **The three lines' names are fixed in code** (D71, Q38): `UI_TEXT.lineCareAtHome`,
+  `lineStaffing`, `lineCareers` (`src/constants/messages.ts`), with
+  `UI_TEXT.careers` for the nurses' action; `/kit` reads them.
+- **Home's careers section will show the three most recent open jobs**, then
+  a link to all of them (D72, Q39).
+- Plan: D69 – D72; Q36 – Q39 answered; §6.1, §7.2 and §40 follow them.
+
+### Validation
+- Lint, format check and typecheck passed; unit tests passed (362).
+
+### Blockers
+- None.

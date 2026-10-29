@@ -150,6 +150,10 @@ question (§41) the user may overturn.
 | D66 | **WhatsApp actions use the site's chat pictogram and the word *WhatsApp*** (answers Q32), not WhatsApp's own logo. | 2026-10-29 |
 | D67 | **The floating WhatsApp button stays on every public page**, as on today's site (answers Q23); **the admin can turn it off** in the site content (§13), published like any other edit. | 2026-10-29 |
 | D68 | **"You are here" is said where the visitor stands, not above the headline** (answers Q35, option b): on Home the three lines start from a navy "You are here" station, and the line's travelling marker keeps the words; every page's headline stands alone, so the sign has no eyebrow (§7.2). | 2026-10-29 |
+| D69 | **On a phone, "You are here" may show twice in the first screen**, in the progress line under the header and where the three lines start; **both stay** (answers Q36, option a): the progress line goes on to name each section as the visitor scrolls. | 2026-10-29 |
+| D70 | **The copy is reviewed with the client at the user's demo**, not sent as a document now (answers Q37): whatever the client wants changed is changed **in the admin**, where every page's text, the services, the jobs, the contact details, the links and the SEO are editable (D11). The copy written at R1.8 stands as the launch draft; sign-off is R7.5. | 2026-10-29 |
+| D71 | **The three lines' names are fixed in code** (answers Q38, option b): *Care at home*, *Staffing for hospitals, clinics and schools*, *Nurses: join us* live in the message catalogue, like the lines' actions and colours (D9); the Home sign holds only its headline, supporting line and photo. | 2026-10-29 |
+| D72 | **Home's careers section shows the three most recent open jobs**, then a link to all of them (answers Q39). | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -275,7 +279,7 @@ content from the record.
 
 1. **The sign** (fixed, first): the headline, standing alone, the
    supporting line, and **the three lines**, starting from a "You are here"
-   station (D68): *Care at home* (WhatsApp, Call),
+   station (D68), their names and actions fixed (D71): *Care at home* (WhatsApp, Call),
    *Staffing for hospitals, clinics and schools* (Request a Quote), and
    *Nurses: join us* (Careers). These are the working actions, not links to
    them (§30.1).
@@ -287,7 +291,8 @@ content from the record.
 5. **For institutions**: the staffing offer for hospitals, clinics and
    schools, ending on Request a Quote.
 6. **Clients**: the client logo wall (§11). Hidden until logos are supplied.
-7. **Careers**: the nurse's line, the latest open jobs, Apply.
+7. **Careers**: the nurse's line, the three most recent open jobs and a link
+   to all of them (D72), Apply.
 8. **Contact**: WhatsApp, phone, email, address, the brochure.
 
 ### 6.2 About — `/about`
@@ -363,14 +368,14 @@ says where the visitor is and the way back.
 
 | Type | Content | Used on |
 |---|---|---|
-| `SIGN` | headline, supporting line, photo, and for Home the three lines from their "You are here" station (D68) | every page (fixed, first) |
+| `SIGN` | headline, supporting line, photo; on Home the three lines follow, from their "You are here" station (D68), their names fixed (D71) | every page (fixed, first) |
 | `INTRO` | heading, rich text, optional photo | Home, About |
 | `SERVICES_INDEX` | heading, intro; shows every published service, in order | Home, Services |
 | `VALUES` | heading, up to six items (title, line) | Home, About |
 | `MISSION` | mission, vision | About |
 | `INSTITUTIONS` | heading, text, photo; ends on Request a Quote | Home, Services |
 | `CLIENTS` | heading; shows every published client logo, in order | Home, About |
-| `CAREERS_BAND` | heading, text; shows the latest open jobs | Home |
+| `CAREERS_BAND` | heading, text; shows the three most recent open jobs and a link to all (D72) | Home |
 | `JOBS_LIST` | intro, empty-state text | Careers |
 | `CONTACT_BAND` | heading, text; reads the contact details (§13) | most pages |
 | `CONTACT_DETAILS` | heading; contact details and the static map | Contact |
@@ -1314,7 +1319,7 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R3.1 | Copy: every public text rewritten from real facts, sent to the client for approval | D6 | Client approval (§40) | TODO |
+| R3.1 | Copy: every public text rewritten from real facts, sent to the client for approval | D6 | — | DONE (2026-10-29; written at R1.8; reviewed with the client at the user's demo and changed in the admin, D70; sign-off at R7.5) |
 | R3.2 | Section components for the catalogue | §7.2 | — | TODO |
 | R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | — | TODO |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | TODO |
@@ -1397,7 +1402,7 @@ URL answers with its 301; and no personal data appears in logs.
 | **Urgent, today's site:** remove the public `.well-known.zip` and rotate the secrets it exposed; protect `upload/CV` (§40.1) | now, independent of the build |
 | The old site backed up by the user, given to the client, and cleared from the server with its database (D50) | before R8.1 |
 | The GitHub repository (created by the user) | R0.5's first CI run |
-| Approval of the rewritten copy | R3.1, R7.5 |
+| Approval of the rewritten copy, at the user's demo (D70) | R7.5 |
 | Client names and permission for their logos, and the logo files | before the Clients section shows (D7) |
 | The brochure PDF (or approval to reuse `profile.pdf`) | R6.6 |
 | The logo as a vector file, if they have one (Q2) | R2.2 |
@@ -1463,6 +1468,10 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q33 | ~~Keep the kit preview page (`/kit`, D64), local and test only?~~ | **Answered:** yes, local and test only (D64). |
 | Q34 | ~~Motion's weight against the JavaScript budget (§31: ≤ 170 KB, motion included). Measured at R2.4: 133.5 KB at first paint (Next.js and React) + 51.7 KB of motion after paint (GSAP 26.7, ScrollTrigger 17.1, Lenis 5.3) = 185 KB before any page content.~~ | **Answered by D65:** motion is counted outside the first-load budget. |
 | Q35 | ~~The sign's "You are here" marker sits above the headline, which Impeccable's audit flags as a kicker. Keep it there, or move it?~~ | **Answered by D68:** (b), moved to where the three lines start; each headline stands alone. |
+| Q36 | ~~On a phone, "You are here" can show twice in the first screen (the progress line and where the three lines start). Keep both, or hide the progress line while the lines are on screen?~~ | **Answered by D69:** keep both. |
+| Q37 | ~~How the copy goes to the client for approval (R3.1)~~ | **Answered by D70:** reviewed at the user's demo; changes are made in the admin. |
+| Q38 | ~~The three lines' names on Home: edited by the admin, or fixed in code?~~ | **Answered by D71:** fixed in code. |
+| Q39 | ~~How many open jobs Home's careers section shows~~ | **Answered by D72:** the three most recent, then a link to all. |
 
 ## 42. Later (unscheduled)
 
