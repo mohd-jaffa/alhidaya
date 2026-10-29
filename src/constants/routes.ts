@@ -13,6 +13,8 @@ export const ROUTES = {
   applyGeneral: "/careers/apply",
   contact: "/contact",
   quote: "/request-a-quote",
+  /** The quote form with a service already chosen (plan §6.8). */
+  quoteFor: (slug: string) => `/request-a-quote?service=${slug}`,
   privacy: "/privacy",
   terms: "/terms",
   brochure: "/brochure",

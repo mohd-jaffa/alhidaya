@@ -66,6 +66,10 @@ export const UI_TEXT = {
   hours: "Hours",
   openInMaps: "Open in Google Maps",
   downloadBrochure: "Download our brochure",
+  /** A service's page (plan §6.4). */
+  aboutService: "About this service",
+  whoItIsFor: "Who it is for",
+  whatItIncludes: "What it includes",
 } as const;
 
 /** Each page's short name (plan §7.1): where its line starts, as "You are here" names it. */

@@ -28,4 +28,10 @@ describe("SignPanel", () => {
     expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
     expect(container.querySelector("p")).toBeNull();
   });
+
+  it("takes its line's colour: sky blue with navy type, its focus rings navy", () => {
+    const { container } = render(<SignPanel tone="sky" headline="Home nursing care" lede="Nurses at home." />);
+    expect(container.querySelector("section")).toHaveClass("bg-sky", "text-navy");
+    expect(screen.getByText("Nurses at home.")).toHaveClass("text-navy");
+  });
 });

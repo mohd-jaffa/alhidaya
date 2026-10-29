@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
+
 import { orderingDocumentKey } from "@/constants/sections";
 import { readPublishedDocument } from "@/lib/content/documents";
 import { inOrder } from "@/lib/content/ordering";
 import { findPublishedRecord, listPublishedRecords, type PublishedRecord } from "@/lib/content/records";
-import type { OrderingDocument, ServiceDocument } from "@/lib/validation";
+import { getImages } from "@/features/media/api";
+import type { SiteImage } from "@/features/media/types";
+import { getPublishedSite } from "@/features/settings/api";
+import type { OrderingDocument, ServiceDocument, SiteDocument } from "@/lib/validation";
 
 export type PublishedService = PublishedRecord<ServiceDocument>;
 
@@ -18,4 +23,42 @@ export async function listPublishedServices(): Promise<PublishedService[]> {
 /** The published service at a web address, or where it moved to (plan §8). */
 export function findPublishedService(slug: string) {
   return findPublishedRecord<ServiceDocument>("SERVICES", slug);
+}
+
+/**
+ * A service's page (plan §6.4), published copies only, in two round trips:
+ * the service (or where it moved to), every service for the others on its
+ * line, and the site's numbers together; then its photo.
+ */
+export async function getPublishedServicePage(slug: string): Promise<
+  | {
+      service: PublishedService;
+      related: PublishedService[];
+      site: SiteDocument | null;
+      image: SiteImage | null;
+    }
+  | { movedTo: string }
+  | null
+> {
+  const [found, services, site] = await Promise.all([
+    findPublishedService(slug),
+    listPublishedServices(),
+    getPublishedSite(),
+  ]);
+  if (!found || "movedTo" in found) return found;
+  const { record: service } = found;
+  const photo = service.published.image?.mediaId;
+  const image = photo ? ((await getImages([photo])).get(photo) ?? null) : null;
+  const related = services.filter(
+    (other) => other.id !== service.id && other.published.audience === service.published.audience,
+  );
+  return { service, related, site, image };
+}
+
+/** A service page's title and description (plan §19): the admin's SEO words, or the service's own. */
+export async function getServiceMetadata(slug: string): Promise<Metadata> {
+  const found = await findPublishedService(slug);
+  if (!found || "movedTo" in found) return {};
+  const { seo, name, summary } = found.record.published;
+  return { title: seo.title.en ?? name.en, description: seo.description.en ?? summary.en };
 }

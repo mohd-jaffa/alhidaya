@@ -1345,3 +1345,46 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. The sign's photo, and those of the introduction and the staffing
   section, wait on Q41.
+
+## 2026-10-29 — R3.4, About, Services and a service
+
+### Added
+- **About** (`/about`) and **Services** (`/services`), built from their
+  published sections on the deep-blue line, as Home.
+- **A service's page** (`/services/[slug]`, plan §6.4,
+  `features/services/components/ServicePage.tsx`):
+  - its sign in its line's colour: **sky blue with navy type** for families'
+    services (white on sky fails AA, §30.2; focus rings turn navy there),
+    deep blue for staffing; the line's actions on it;
+  - what the service is, who it is for and what it includes (each shown only
+    when the admin filled it in);
+  - the line it runs on, with its actions and the other services on it.
+  - Families get WhatsApp and a call; institutions get **Request a quote**
+    with the service already chosen (`ROUTES.quoteFor`, read by the quote
+    form at R4.1). An address the service had before moves on for good
+    (308); an unknown one is a 404. Its title and description are the
+    admin's SEO words or the service's own.
+- `getPublishedServicePage` and `getServiceMetadata`
+  (`features/services/api.ts`): published copies only, in two round trips.
+- `SignPanel` takes a `tone`; the services' stops, lines and actions are
+  shared (`components/sections/ServiceLine.tsx`).
+
+### Changed
+- Plan: R3.4 DONE.
+
+### Performance (local build)
+- JavaScript at first paint: 151.7 KB gzip on each (within 170 KB).
+- Phone, 4× CPU, 9 Mbps, 60 ms: LCP 264 ms (About), 268 ms (Services),
+  252 ms (a service); CLS 0.000 each. Desktop: LCP 28 ms, CLS ≤ 0.001.
+
+### Validation
+- Impeccable's detector on all three: no findings. Screenshots at 1440 and
+  390 px.
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (477), coverage 100%: the service read
+  against the local MySQL (its photo, the others on its line, a moved
+  address, a missing one, a photo since deleted, the SEO words).
+- Build passed; E2E passed (57, phone and desktop), axe clean on each page.
+
+### Blockers
+- None. The photos wait on Q41.
