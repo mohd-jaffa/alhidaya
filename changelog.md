@@ -810,3 +810,25 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. Q31 (the error colour) is needed before the form fields are built in
   R2.5; until then the default holds.
+
+## 2026-10-29 — The error red
+
+### Added
+- **`--color-error: #B42318`** (`src/app/globals.css`, plan D63): the user
+  allowed red for errors (answers Q31), the one colour outside the logo's;
+  6.6:1 on white, 6.1:1 on the quiet panel, and white on it 6.6:1. For
+  errors only, always with an icon and words.
+
+### Changed
+- Plan: D62 (no vector logo: it is redrawn from the JPG, answers Q2) and D63
+  (the error red, answers Q31); §30.2 lists the red and its contrast.
+- AGENTS.md §18 names the error red as the one exception to the logo's
+  colours.
+- The token contract checks the red's pairings and that it is the only colour
+  beyond the logo's.
+
+### Validation
+- Lint, format check, typecheck and unit tests passed; coverage 100%.
+
+### Blockers
+- None.

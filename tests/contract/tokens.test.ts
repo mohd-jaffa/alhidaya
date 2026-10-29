@@ -24,7 +24,7 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe("the design tokens (plan §30.2)", () => {
-  it("are the logo's colours and their navy ink, and nothing else", () => {
+  it("are the logo's colours, their navy ink and the error red, and nothing else", () => {
     expect(Object.keys(colours).sort()).toEqual(
       [
         "deep",
@@ -39,6 +39,7 @@ describe("the design tokens (plan §30.2)", () => {
         "on-deep-2",
         "focus",
         "focus-on-deep",
+        "error",
       ].sort(),
     );
     expect(colours).toMatchObject({ deep: "#0f64ac", sky: "#33a0da", leaf: "#86ae3c" });
@@ -62,6 +63,9 @@ describe("the design tokens (plan §30.2)", () => {
       ["on-deep", "navy"],
       ["navy", "sky"],
       ["navy", "leaf"],
+      ["error", "ground"],
+      ["error", "mist"],
+      ["on-deep", "error"],
     ]) {
       expect(contrast(text, surface), `${text} on ${surface}`).toBeGreaterThanOrEqual(4.5);
     }
@@ -77,6 +81,7 @@ describe("the design tokens (plan §30.2)", () => {
     expect(contrast("focus", "mist")).toBeGreaterThanOrEqual(3);
     expect(contrast("focus-on-deep", "deep")).toBeGreaterThanOrEqual(3);
     expect(contrast("ink-2", "ground")).toBeGreaterThanOrEqual(3);
+    expect(contrast("error", "ground")).toBeGreaterThanOrEqual(3);
   });
 
   it("set the site in Atkinson Hyperlegible Next, with tabular figures available (plan D61)", () => {

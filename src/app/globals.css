@@ -37,6 +37,8 @@
   --color-rule: #d5e1ed;
   --color-on-deep: #ffffff;
   --color-on-deep-2: #dce9f6;
+  /* Errors only (D63): the one colour outside the logo's, always with an icon and words. */
+  --color-error: #b42318;
   /* Focus rings: deep blue on light ground, white on a deep-blue or navy panel. */
   --color-focus: #0f64ac;
   --color-focus-on-deep: #ffffff;

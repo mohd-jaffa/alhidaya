@@ -143,6 +143,8 @@ question (§41) the user may overturn.
 | D59 | **A new order of services or client logos waits for Publish** like any other edit (D32): the draft order and the published order are kept apart. | 2026-10-28 |
 | D60 | **Content lives in two tables**, following D58: `documents` (keyed: each page, the site's content, each ordering) and `records` (collections: services, jobs, client logos), each row a draft and a published copy, with every kind's rules in its own schema; plus `media` and `site_operations`. Publishing is the same atomic step everywhere. **(agent default)** | 2026-10-29 |
 | D61 | **Typeface: Atkinson Hyperlegible Next**, with **Noto Sans Arabic** as its Arabic companion, chosen by the user from the specimen of three (R2.1; answers Q10). Self-hosted: one variable file (weights 200 – 800), Latin subset, 34 KB, with a metric-matched fallback; the Arabic file is added when Arabic arrives (§33). | 2026-10-29 |
+| D62 | **The client has no vector logo** (answers Q2): the mark and the wordmark are redrawn as SVG from the JPG, faithfully, for the client to approve (R2.2, R7.5). | 2026-10-29 |
+| D63 | **Errors may use red** (answers Q31), the one colour outside the logo's (D35): `#B42318`, 6.6:1 on white, for errors only, always with an icon and words (§30.3). | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -1046,10 +1048,10 @@ performs.
   `#33A0DA`, deep blue `#0F64AC`, leaf green `#86AE3C`; the navy ink
   `#0B2440` (the deep blue, darkened) and a secondary ink `#3A5272`; ground
   white, a quiet panel `#F1F6FB`, hairlines `#D5E1ED`; on deep blue, white and
-  `#DCE9F6`.
+  `#DCE9F6`. **Errors only:** red `#B42318` (D63), with an icon and words.
 - **Checked** (`tests/contract/tokens.test.ts`): navy on white 15.7:1; white
   on deep blue 6.1:1; navy on sky blue 5.4:1 and on leaf green 6.1:1; the
-  secondary ink 8.0:1 on white. Focus rings are deep blue on light surfaces
+  secondary ink 8.0:1 on white; the error red 6.6:1 on white. Focus rings are deep blue on light surfaces
   and white on deep blue (each at least 3:1).
 - **Type roles** (`src/app/globals.css`): sign 38 – 68 px, page 32 – 44 px,
   section 28 px, title and supporting line 21 px, body 17 px, small and label
@@ -1289,7 +1291,7 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R2.1 | Type specimen page → **the user picks the face**; tokens (logo colours AA-checked, type scale, spacing, radii, motion); self-hosted fonts | §30.1, §30.2 | Q10 | DONE (2026-10-29; Atkinson Hyperlegible Next, D61; error colour is Q31) |
+| R2.1 | Type specimen page → **the user picks the face**; tokens (logo colours AA-checked, type scale, spacing, radii, motion); self-hosted fonts | §30.1, §30.2 | Q10 | DONE (2026-10-29; Atkinson Hyperlegible Next, D61; the error red, D63) |
 | R2.2 | The logo as SVG (traced faithfully, or the client's vector); favicon and app icons | §30 | Q2 | TODO |
 | R2.3 | Pictogram set | §30.1 | Q12 | TODO |
 | R2.4 | Motion system: Lenis + GSAP ticker, ScrollTrigger lifecycle, `TheLine` (scrubbed draw, stations, the travelling marker), reveals, reduced-motion path | §30.4 | — | TODO |
@@ -1417,7 +1419,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q | Question | Default |
 |---|---|---|
 | Q1 | ~~Is the CV Google account Workspace or personal Gmail?~~ | **Answered by D41:** no Google Drive. |
-| Q2 | Does the client have the logo as a vector (SVG/AI/EPS/PDF)? | The mark and wordmark are redrawn as SVG from the JPG, faithfully, for the client to approve. |
+| Q2 | ~~Does the client have the logo as a vector (SVG/AI/EPS/PDF)?~~ | **Answered by D62:** no; it is redrawn as SVG from the JPG, for the client to approve. |
 | Q3 | Reuse the current `profile.pdf` as the brochure? | Yes, until the admin uploads a new one. |
 | Q4 | CV rules | PDF, DOC or DOCX; at most 5 MB (size limits confirmed, D52). |
 | Q5 | Quote form fields | As §10.1. |
@@ -1446,7 +1448,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q28 | Reuse the old site's service photos (`upload/Services`)? | Only where they are good enough for the new design; otherwise licensed stock (D8). |
 | Q29 | Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)? | Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
 | Q30 | How does the approved copy reach the production database? | The seed (`npm run db:seed`, local only today) runs once against the empty production database at R8.1, with the user's go-ahead, after the client approves the copy (R3.1, R7.5); it writes drafts, and the admin publishes them. |
-| Q31 | May form errors use a red, the one colour outside the logo's (D35)? | No: an error is the navy ink with an error icon, the message beside its field and a heavier field border, so it never rests on colour (§30.3). |
+| Q31 | ~~May form errors use a red, the one colour outside the logo's (D35)?~~ | **Answered by D63:** yes, for errors only. |
 
 ## 42. Later (unscheduled)
 

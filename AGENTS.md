@@ -402,7 +402,8 @@ lives in the server's environment, never in the repository.
   size, shadow or duration.
 - **The logo's colours only** (plan D35): sky blue, deep blue, leaf green and
   the navy ink. White text only on deep blue or navy; sky and green carry
-  navy text (plan §30.2).
+  navy text (plan §30.2). The one exception is **the error red** (plan D63),
+  for errors only, always with an icon and words.
 - **Light theme only** (plan D28).
 - **Nothing childish:** no cartoons, mascots, clip-art, emoji or playful
   decoration.
