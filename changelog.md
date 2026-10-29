@@ -1136,3 +1136,32 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R2.8 (in progress), the kit's audit
+
+### Audit (Impeccable, source and rendered at 1440, 390 and 360 px)
+- **Score 19/20.** Accessibility 4 (axe clean on every page, labels, focus,
+  44 px targets, reduced motion); performance 4 (146.9 KB at first paint,
+  motion after it, transform and opacity only); theming 4 (tokens only;
+  light only by D28); responsive 4 after the fix below; implementation
+  integrity 3: one finding.
+- **Finding, P2:** the sign's "You are here" marker reads as a kicker above
+  the headline (`kicker-above-heading`, on `/kit`). It is the direction
+  contract's sign grammar, but the craft floor bans the form. Asked as Q35.
+- **Fixed:** at 320 px the header's logo pushed the page 10 px sideways; the
+  logo is 32 px tall below 360 px (213 px wide) and the header's gap
+  tighter on a phone. A journey now checks for sideways scroll at 320 and
+  360 px on Home, `/kit` and a missing page.
+
+### Changed
+- Plan: R2.8 IN PROGRESS (waits on the user's check of the screenshots);
+  Q35.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (419), coverage 100%.
+- Build passed; the shipped audit passed (91 packages); E2E passed (44,
+  phone and desktop), axe clean.
+
+### Blockers
+- None; R2.8 closes with the user's check and Q35.

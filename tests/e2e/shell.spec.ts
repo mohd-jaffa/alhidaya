@@ -50,3 +50,16 @@ test("the footer carries the contact details and the admin's columns", async ({ 
     await expect(footer.getByRole("navigation", { name: column.heading.en })).toBeVisible();
   }
 });
+
+test("nothing scrolls sideways, down to a 320 px phone", async ({ page }) => {
+  for (const width of [320, 360]) {
+    await page.setViewportSize({ width, height: 740 });
+    for (const path of ["/", "/kit", "/missing"]) {
+      await page.goto(path);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth),
+        `${path} at ${width}`,
+      ).toBe(0);
+    }
+  }
+});

@@ -1305,7 +1305,7 @@ one commit (D27).
 | R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | DONE (2026-10-29; shown on `/kit`) |
 | R2.6 | Site shell: header sign bar, mobile menu, footer, skip link, "You are here", preview bar | §30.1 | — | DONE (2026-10-29; with the floating WhatsApp button, D67) |
 | R2.7 | System pages: not found, error, global error, loading | §6.10 | — | DONE (2026-10-29; the public site has no route-level loading state: it would hide content without JavaScript and turn a 404 into a 200; the admin's come with it, R6) |
-| R2.8 | `/impeccable audit` of the kit; screenshots checked by the user | §30 | — | TODO |
+| R2.8 | `/impeccable audit` of the kit; screenshots checked by the user | §30 | Q35 | IN PROGRESS (2026-10-29: audit 19/20, one finding, Q35; waits on the user's check of the screenshots) |
 
 ### Phase 3 — Public pages
 
@@ -1459,6 +1459,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q32 | ~~Show WhatsApp's own logo on WhatsApp actions?~~ | **Answered by D66:** the site's chat pictogram and the word *WhatsApp*. |
 | Q33 | ~~Keep the kit preview page (`/kit`, D64), local and test only?~~ | **Answered:** yes, local and test only (D64). |
 | Q34 | ~~Motion's weight against the JavaScript budget (§31: ≤ 170 KB, motion included). Measured at R2.4: 133.5 KB at first paint (Next.js and React) + 51.7 KB of motion after paint (GSAP 26.7, ScrollTrigger 17.1, Lenis 5.3) = 185 KB before any page content.~~ | **Answered by D65:** motion is counted outside the first-load budget. |
+| Q35 | The sign's "You are here" marker sits above the headline, which Impeccable's audit flags as a kicker (a small uppercase label above a heading, banned in its craft floor). Keep it there, or move it? | Open. (a) Keep it, as the direction contract draws the sign (§30.1). (b) Move it to where the three lines start on Home, the point the visitor stands at, and let each page's headline stand alone (the sign's eyebrow field goes); the line's travelling marker still says "You are here". |
 
 ## 42. Later (unscheduled)
 

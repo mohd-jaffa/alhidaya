@@ -25,9 +25,9 @@ export function SiteHeader({ site }: { site: SiteDocument | null }) {
 
   return (
     <header className="sticky top-0 z-(--z-header) border-b border-rule bg-ground">
-      <div className="mx-auto flex h-(--header-height) max-w-site items-center justify-between gap-6 px-gutter">
+      <div className="mx-auto flex h-(--header-height) max-w-site items-center justify-between gap-3 px-gutter sm:gap-6">
         <Link href={ROUTES.home} className="shrink-0">
-          <Logo priority className="h-10 w-auto lg:h-12" />
+          <Logo priority className="h-8 w-auto min-[22.5rem]:h-10 lg:h-12" />
         </Link>
         <nav aria-label={UI_TEXT.mainNavigation} className="hidden h-full lg:block">
           <ul className="flex h-full items-stretch gap-2">

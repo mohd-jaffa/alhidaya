@@ -51,7 +51,7 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
         className="m-0 h-dvh max-h-none w-full max-w-none bg-ground p-0 text-navy backdrop:bg-navy/60"
       >
         <div className="flex h-(--header-height) items-center justify-between border-b border-rule px-gutter">
-          <Logo className="h-10 w-auto" />
+          <Logo className="h-8 w-auto min-[22.5rem]:h-10" />
           <button
             type="button"
             onClick={() => setOpen(false)}
