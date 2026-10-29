@@ -2,6 +2,8 @@ import { ROUTES } from "@/constants/routes";
 import type { PageKey, SectionType } from "@/constants/sections";
 import type { JobDocument, PageDocument, Section, ServiceDocument, SiteDocument } from "@/lib/validation";
 
+import { NO_PHOTOS, type SeedPhotoRefs } from "./photos";
+
 /**
  * The current site's content (alhidaya.qa, read 2026-10-28), rewritten in
  * plain professional English from the company's own facts (plan D6) as
@@ -26,17 +28,17 @@ const contactBand = () =>
     text: en("Message us on WhatsApp or call us, at any hour of the day or night."),
   });
 
-const institutions = () =>
+const institutions = (image: { mediaId: string } | null) =>
   section("INSTITUTIONS", {
     heading: en("Nurse staffing for hospitals, clinics and schools"),
     text: en(
       "We supply nurses to hospitals, clinics and schools in Qatar. Tell us the roles you need to fill and we will prepare a quote.",
     ),
-    image: null,
+    image,
   });
 
-/** Each page with its sections in the order plan §6 gives. */
-export function seedPages(): Record<PageKey, PageDocument> {
+/** Each page with its sections in the order plan §6 gives, with the seed's photographs once imported (D75). */
+export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, PageDocument> {
   return {
     HOME: {
       seo: noSeo,
@@ -46,7 +48,7 @@ export function seedPages(): Record<PageKey, PageDocument> {
           lede: en(
             "Nursing care at home and in clinics across Doha, and nurse staffing for hospitals, clinics and schools.",
           ),
-          image: null,
+          image: photos.careAtHome,
         }),
         section("INTRO", {
           heading: en("Who we are"),
@@ -55,7 +57,7 @@ export function seedPages(): Record<PageKey, PageDocument> {
               "Al Hidaya Health Care Services is a nursing care company in Doha. Our nurses care for patients at home and in clinics, and we supply nurses to hospitals, clinics and schools across Qatar.",
             ),
           ],
-          image: null,
+          image: photos.clinicCheck,
         }),
         section("SERVICES_INDEX", {
           heading: en("Our services"),
@@ -86,7 +88,7 @@ export function seedPages(): Record<PageKey, PageDocument> {
             },
           ],
         }),
-        institutions(),
+        institutions(photos.hospitalCorridor),
         section("CLIENTS", { heading: en("Our clients") }),
         section("CAREERS_BAND", {
           heading: en("Nurses: join us"),
@@ -113,7 +115,7 @@ export function seedPages(): Record<PageKey, PageDocument> {
               "Our knowledgeable, compassionate nurses work with each patient and family on a care plan that fits their needs and their budget, and they are available around the clock.",
             ),
           ],
-          image: null,
+          image: photos.clinicCheck,
         }),
         section("MISSION", {
           mission: en(
@@ -153,7 +155,7 @@ export function seedPages(): Record<PageKey, PageDocument> {
           image: null,
         }),
         section("SERVICES_INDEX", { heading: en("All services"), intro: en(null) }),
-        institutions(),
+        institutions(photos.hospitalCorridor),
         contactBand(),
       ],
     },

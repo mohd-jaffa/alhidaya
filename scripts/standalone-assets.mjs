@@ -10,7 +10,12 @@ if (!fs.existsSync(STANDALONE)) {
   process.exit(1);
 }
 
-// `public/` may be empty, and git keeps no empty folder.
-if (fs.existsSync("public")) fs.cpSync("public", `${STANDALONE}/public`, { recursive: true });
+// `public/` may be empty, and git keeps no empty folder. Its local media folder (uploads, plan
+// §21.3) is never part of a build: on the server the media folder lives outside the releases.
+if (fs.existsSync("public"))
+  fs.cpSync("public", `${STANDALONE}/public`, {
+    recursive: true,
+    filter: (source) => !source.split(/[\\/]/).includes("media"),
+  });
 fs.cpSync(".next/static", `${STANDALONE}/.next/static`, { recursive: true });
 console.log("Copied public/ and .next/static into the standalone build.");

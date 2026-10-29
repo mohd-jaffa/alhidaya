@@ -61,6 +61,16 @@ function mediaPath(key: string): string {
   return insideFolder(getServerEnv().MEDIA_DIR, key);
 }
 
+const MIME_BY_EXTENSION: Record<string, string> = Object.fromEntries(
+  Object.values(FILE_TYPES).map((type) => [type.extension, type.mime]),
+);
+
+/** A stored file and its type, by key; an address that is not a key the app made is refused. */
+export async function readMediaFile(key: string): Promise<{ bytes: Uint8Array<ArrayBuffer>; mime: string }> {
+  const bytes = new Uint8Array(await fs.readFile(mediaPath(key)));
+  return { bytes, mime: MIME_BY_EXTENSION[key.slice(key.lastIndexOf(".") + 1)] };
+}
+
 /**
  * Keeps one public file (an image size or the brochure) and answers with its
  * key. Only images and PDFs are taken, and only while the folder stays within

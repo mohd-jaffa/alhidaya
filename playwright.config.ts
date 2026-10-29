@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs";
+import path from "node:path";
 
 import { defineConfig, devices } from "@playwright/test";
 
@@ -23,6 +24,10 @@ if (databaseUrl === undefined || !LOCAL_DATABASE.test(databaseUrl)) {
 }
 // The app, the global setup and the journeys all read DATABASE_URL.
 process.env.DATABASE_URL = databaseUrl;
+// The standalone server runs from its own folder, so the folders it shares with the global setup are absolute.
+const MEDIA_DIR = path.resolve(process.env.MEDIA_DIR ?? "public/media");
+const CV_DIR = path.resolve(process.env.CV_DIR ?? ".data/cvs");
+Object.assign(process.env, { MEDIA_DIR, CV_DIR });
 
 const PORT = 3100;
 
@@ -49,7 +54,7 @@ export default defineConfig({
   webServer: {
     command: "node .next/standalone/server.js",
     // KIT_PREVIEW serves /kit, where the motion system and the kit are tested (plan D64).
-    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1", KIT_PREVIEW: "true" },
+    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1", KIT_PREVIEW: "true", SERVE_MEDIA: "true", MEDIA_DIR, CV_DIR },
     // Ready once it answers what reads no content: the global setup publishes the seed after
     // this, and a page read before it would keep "nothing published" in the app's data cache.
     url: `http://localhost:${PORT}/robots.txt`,

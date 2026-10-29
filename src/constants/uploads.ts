@@ -21,5 +21,14 @@ export const CV_TYPES: readonly FileType[] = ["pdf", "docx", "doc"];
 /** An image the admin uploads; SVG is refused (plan §15). */
 export const IMAGE_TYPES: readonly FileType[] = ["jpeg", "png", "webp", "avif"];
 
+/** The widths an image is made at once, at upload (plan §15, §22.3); the largest is the one kept largest. */
+export const IMAGE_WIDTHS = [480, 800, 1200, 1600, 2400] as const;
+
+/** The types an image is made in, the smallest files first, each at its quality (plan §15). */
+export const IMAGE_OUTPUTS = [
+  { type: "avif", quality: 50 },
+  { type: "webp", quality: 78 },
+] as const satisfies readonly { type: FileType; quality: number }[];
+
 /** The brochure (plan §12). */
 export const BROCHURE_TYPES: readonly FileType[] = ["pdf"];

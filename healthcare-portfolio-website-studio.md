@@ -1370,7 +1370,7 @@ one commit (D27).
 | R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | TODO |
 | R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | TODO |
 | R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
-| R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO |
+| R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO (the sizing step and `storeImage` came forward with D75, 2026-10-29) |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | TODO |
 | R6.8 | Activity (audit trail) | §36 | — | TODO |

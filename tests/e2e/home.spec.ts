@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { SEED_SERVICES, SEED_SITE, seedJob, seedPages } from "@/db/seed/content";
+import { SEED_PHOTOS } from "@/db/seed/photos";
 
 const sign = seedPages().HOME.sections[0];
 
@@ -24,6 +25,12 @@ test("Home opens on its sign and the three lines, each line's actions working (p
     /^https:\/\/wa\.me\/97431306555\?text=/,
   );
   await expect(lines.getByRole("link", { name: UI_TEXT.call })).toHaveAttribute("href", "tel:+97431306555");
+  // The sign's photograph (D75), served in its made sizes and loaded first.
+  const photo = lines.getByRole("img", { name: SEED_PHOTOS.careAtHome.alt });
+  await expect(photo).toHaveAttribute("fetchpriority", "high");
+  await expect
+    .poll(() => photo.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth))
+    .toBeGreaterThan(0);
   await lines.getByRole("link", { name: UI_TEXT.requestQuote }).click();
   await expect(page).toHaveURL(ROUTES.quote);
 });

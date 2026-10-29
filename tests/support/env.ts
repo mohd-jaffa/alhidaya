@@ -10,6 +10,8 @@ export const TEST_ENV = {
   CV_DIR: ".data/test-cvs",
 } as const;
 
-export function stubServerEnv(overrides: Partial<Record<keyof typeof TEST_ENV | "MEDIA_URL", string>> = {}) {
+export function stubServerEnv(
+  overrides: Partial<Record<keyof typeof TEST_ENV | "MEDIA_URL" | "SERVE_MEDIA", string>> = {},
+) {
   for (const [name, value] of Object.entries({ ...TEST_ENV, ...overrides })) vi.stubEnv(name, value);
 }

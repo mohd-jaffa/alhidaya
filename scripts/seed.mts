@@ -19,11 +19,11 @@ if (!["localhost", "127.0.0.1"].includes(site.hostname)) {
 const { seedContent } = await import("../src/db/seed/seed");
 const { closeDb } = await import("../src/db/client");
 try {
-  const { documents, services, jobs } = await seedContent();
+  const { documents, services, jobs, photos } = await seedContent();
   console.log(
-    documents.length + services + jobs === 0
+    documents.length + services + jobs + photos === 0
       ? "Nothing was missing; nothing was written."
-      : `Seeded as drafts: ${documents.join(", ") || "no documents"}; ${services} services; ${jobs} job.`,
+      : `Seeded as drafts: ${documents.join(", ") || "no documents"}; ${services} services; ${jobs} job; ${photos} photographs stored.`,
   );
 } finally {
   await closeDb();

@@ -1,9 +1,16 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+
 import { inArray } from "drizzle-orm";
+import sharp from "sharp";
 import { afterAll, describe, expect, it } from "vitest";
 
 import { closeDb, getDb } from "@/db/client";
 import { media, type MediaVariant } from "@/db/schema";
-import { getImages } from "@/features/media/api";
+import { ERROR_MESSAGES } from "@/constants/messages";
+import { findImageBySource, getImages, storeImage } from "@/features/media/api";
+import { getServerEnv } from "@/lib/env/server";
+import { deleteMediaFile } from "@/lib/storage/media";
 
 const ids: string[] = [];
 
@@ -19,6 +26,9 @@ async function stored(row: Partial<typeof media.$inferInsert>) {
 const variant = (key: string, width: number | null, mime: string): MediaVariant => ({ key, width, mime, bytes: 1 });
 
 afterAll(async () => {
+  // The files a stored image wrote go with its row.
+  const rows = await getDb().select({ variants: media.variants }).from(media).where(inArray(media.id, ids));
+  await Promise.all(rows.flatMap((row) => row.variants.map((variant) => deleteMediaFile(variant.key).catch(() => {}))));
   await getDb().delete(media).where(inArray(media.id, ids));
   await closeDb();
 });
@@ -53,5 +63,80 @@ describe("the images a page refers to, against the local MySQL", () => {
 
   it("asks nothing when the page has no images", async () => {
     expect(await getImages([])).toEqual(new Map());
+  });
+});
+
+const SOURCE = {
+  provider: "Unsplash (test)",
+  url: `https://unsplash.com/photos/test-${crypto.randomUUID()}`,
+  licence: "Unsplash License",
+};
+const jpeg = async (width: number, height: number) =>
+  new Uint8Array(
+    await sharp({ create: { width, height, channels: 3, background: "#33a0da" } })
+      .jpeg()
+      .toBuffer(),
+  );
+const exists = (key: string) =>
+  fs.access(path.join(getServerEnv().MEDIA_DIR, key)).then(
+    () => true,
+    () => false,
+  );
+
+describe("storeImage, against the local MySQL and the media folder", () => {
+  it("keeps an image in its made sizes, with its words and where it came from, found again by its source", async () => {
+    const id = await storeImage({
+      bytes: await jpeg(900, 600),
+      alt: "A nurse at home",
+      source: SOURCE,
+      createdBy: null,
+    });
+    ids.push(id);
+    const [row] = await getDb()
+      .select()
+      .from(media)
+      .where(inArray(media.id, [id]));
+    expect(row).toMatchObject({
+      kind: "IMAGE",
+      width: 900,
+      height: 600,
+      alt: { en: "A nurse at home" },
+      source: SOURCE,
+    });
+    expect(row.variants.map((variant) => `${variant.mime} ${variant.width}`)).toEqual([
+      "image/avif 480",
+      "image/webp 480",
+      "image/avif 800",
+      "image/webp 800",
+      "image/avif 900",
+      "image/webp 900",
+    ]);
+    expect(row.bytes).toBe(row.variants.reduce((sum, variant) => sum + variant.bytes, 0));
+    for (const variant of row.variants) expect(await exists(variant.key)).toBe(true);
+    expect(await findImageBySource(SOURCE.url)).toBe(id);
+    expect(await findImageBySource("https://unsplash.com/photos/never-kept")).toBeNull();
+  });
+
+  it("refuses what is not an image, or too large, before making anything", async () => {
+    await expect(
+      storeImage({ bytes: new TextEncoder().encode("%PDF-1.7"), alt: "x", source: null, createdBy: null }),
+    ).rejects.toThrow(ERROR_MESSAGES.UPLOAD_TYPE_NOT_ALLOWED);
+    await expect(
+      storeImage({ bytes: new TextEncoder().encode("<svg/>"), alt: "x", source: null, createdBy: null }),
+    ).rejects.toThrow(ERROR_MESSAGES.UPLOAD_TYPE_NOT_ALLOWED);
+    const huge = new Uint8Array(10 * 1024 * 1024 + 1);
+    huge.set([0xff, 0xd8, 0xff]);
+    await expect(storeImage({ bytes: huge, alt: "x", source: null, createdBy: null })).rejects.toThrow(
+      ERROR_MESSAGES.UPLOAD_TOO_LARGE,
+    );
+  });
+
+  it("removes the files it wrote when the row cannot be kept", async () => {
+    const before = await fs.readdir(getServerEnv().MEDIA_DIR, { recursive: true });
+    // An admin who does not exist: the database refuses the row.
+    await expect(
+      storeImage({ bytes: await jpeg(500, 300), alt: "x", source: null, createdBy: crypto.randomUUID() }),
+    ).rejects.toThrow();
+    expect((await fs.readdir(getServerEnv().MEDIA_DIR, { recursive: true })).toSorted()).toEqual(before.toSorted());
   });
 });

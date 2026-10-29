@@ -1630,3 +1630,60 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — D75: the launch's stock photographs
+
+### Added
+- **The sizing step** (`src/lib/storage/images.ts`, plan §15, brought
+  forward from R6.5): an image is stood upright, its metadata removed, and
+  made once at each width up to its own (480, 800, 1200, 1600, 2400; never
+  enlarged) in AVIF and WebP; the original is not kept. One image at a time
+  (`sharp.concurrency(1)`), decoding bounded at 40 megapixels; anything sharp
+  cannot read is refused. `sharp` ^0.35.5 is a direct dependency, as the
+  plan's stack names it.
+- **`storeImage`** (`features/media/api.ts`): typed by its first bytes,
+  within 10 MB, made into its sizes, each written to the media folder, then
+  its row with its alt text and, for stock, its source and licence; files
+  already written are removed if any step fails. `findImageBySource` finds an
+  image kept from a source before. The admin's upload screen comes at R6.5.
+- **Three licensed stock photographs** (`src/db/seed/photos/`, Unsplash
+  License, sources in its README and in each image's record; never
+  presented as Al Hidaya's staff, D8): a nurse smiling with an older woman
+  (Home's sign), a nurse checking a woman's blood pressure (Who we are, on
+  Home and About), hospital staff in a corridor (the staffing offer, on Home
+  and Services). The seed imports them through `storeImage` when it writes
+  the pages, and uses an image kept from the same source again.
+- **The media folder served by the app itself, locally and in the browser
+  tests only** (`src/app/media/[...key]/route.ts`, `SERVE_MEDIA`): the
+  standalone build serves only what `public/` held when it was built; on the
+  server Apache serves the folder (§21.3) and the route answers 404. Only
+  keys the app made are read; `nosniff`; cached for a year.
+
+### Changed
+- A photograph's frame has a hairline over its edge, so a pale photo still
+  reads as a panel on a white page.
+- The browser journeys give the server and the global setup the same
+  absolute media and CV folders (the standalone server runs from its own
+  folder); the build never copies `public/media`.
+- Plan: R6.5 notes what came forward.
+
+### Performance (local build, Home)
+- JavaScript at first paint: 153.9 KB gzip (within 170 KB).
+- Phone, 4× CPU, 9 Mbps, 60 ms: LCP 236 ms with the sign's photograph
+  (fetched first, AVIF at 800 px for a 460 px frame), CLS 0.000. Desktop:
+  LCP 40 ms, CLS 0.001. Made sizes 5 – 190 KB each.
+
+### Validation
+- Impeccable's detector on Home, About and Services: no findings.
+  Screenshots of the three photographs in place.
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (524), coverage 100%: the sizes, the
+  upright turn, no metadata, the refusals; storing against the local MySQL
+  and folder (sizes, words, source, refusals before any work, files removed
+  when the row cannot be kept); the seed stores each photograph once and
+  places it on its pages; the local media route (type, `nosniff`, 404s).
+- Build passed; E2E passed (83), the sign's photograph loaded in its made
+  size; the shipped audit passed (91 packages).
+
+### Blockers
+- None.

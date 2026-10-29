@@ -19,7 +19,10 @@ export function ImageFrame({
 }) {
   return (
     <figure className="grid gap-2">
-      <div className={`overflow-hidden rounded-panel bg-mist ${RATIOS[ratio]} [&_img]:size-full [&_img]:object-cover`}>
+      {/* A hairline drawn over the photo's edge, so a pale photo still reads as a panel on a white page. */}
+      <div
+        className={`overflow-hidden rounded-panel bg-mist outline -outline-offset-1 outline-navy/10 ${RATIOS[ratio]} [&_img]:size-full [&_img]:object-cover`}
+      >
         {children}
       </div>
       {credit ? <figcaption className="text-small text-ink-2">{credit}</figcaption> : null}

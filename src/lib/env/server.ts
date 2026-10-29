@@ -63,6 +63,9 @@ const serverEnvSchema = z.object({
   // The kit preview page (/kit) exists only where this is "true": locally and
   // in the browser tests, never in production (plan D64).
   KIT_PREVIEW: optionalBoolean,
+  // The app serves the media folder itself only where this is "true": locally and in the
+  // browser tests. On the server Apache serves it (plan §21.3); never set in production.
+  SERVE_MEDIA: optionalBoolean,
 });
 
 /** Whether one folder is the other, or inside it. */

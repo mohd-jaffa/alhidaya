@@ -50,6 +50,8 @@ export const UPLOAD_LIMITS = {
   brochureBytes: 10 * MB,
   /** The largest width an image is kept at; the original is discarded (plan §15). */
   imageMaxWidth: 2400,
+  /** The most pixels an image may decode to: the server has 1 GB of memory (plan §21.1). */
+  imageMaxPixels: 40_000_000,
 } as const;
 
 /** The 1 GB disk, shared out (plan §21.2, D51): an upload past its budget is refused. */
