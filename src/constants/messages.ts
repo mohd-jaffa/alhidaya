@@ -32,6 +32,18 @@ export const UI_TEXT = {
   copyright: "All rights reserved.",
   previewBar: "You are seeing a preview of unpublished changes.",
   previewExit: "Leave preview",
+  /** The system pages (plan §6.10): a sign that says where the visitor is, and the way back. */
+  notFoundMarker: "Page not found",
+  notFoundHeadline: "This page is not on our map",
+  notFoundLede: "The address may be mistyped, or the page may have moved. These will take you on.",
+  errorMarker: "Something went wrong",
+  errorHeadline: "This page did not load",
+  errorLede: "Please try again. If it keeps happening, call or message us and we will help.",
+  tryAgain: "Try again",
+  home: "Home",
+  services: "Services",
+  contact: "Contact",
+  errorReference: "Reference",
   /** The kit's own words (plan §30.3). */
   close: "Close",
   optional: "optional",

@@ -1100,3 +1100,39 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R2.7, the system pages
+
+### Added
+- **Not found** (`src/app/(site)/not-found.tsx`, plan §6.10): a sign saying
+  the page is not on the map, with the ways on (home, services, contact,
+  `WayBack`), inside the site's frame and kept out of search engines. Any
+  address the site does not have reaches it through a catch-all route
+  (`(site)/[...missing]`), so it answers **404** with the header and footer.
+- **Error** (`(site)/error.tsx`): a sign saying the page did not load, a
+  retry, the ways back, and the reference that ties it to the server's log;
+  never the error's own words.
+- **Global error** (`app/global-error.tsx`): when the site's own frame
+  fails, a page standing alone with its own document, a retry, and a full
+  load home (the client router is not trusted then).
+- Tests: each page's words, actions and reference, the error text kept out;
+  E2E: a missing address answers 404 with the sign inside the frame, its
+  way home works, `noindex`; axe clean.
+
+### Changed
+- **No route-level loading state on the public site.** One was built and
+  removed: Next.js's streaming boundary hid the page behind the skeleton
+  without JavaScript (against plan §30.4, content visible by default) and
+  answered 200 for a missing page. The public pages will be cached (R3.6);
+  the admin's loading states come with it (R6). The skeleton stays in the
+  kit for them.
+- Plan: R2.7 DONE, with the note above.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed, coverage 100%.
+- Build passed; the shipped audit passed (91 packages); E2E passed (42,
+  phone and desktop), axe clean.
+
+### Blockers
+- None.

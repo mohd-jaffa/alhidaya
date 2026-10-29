@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import Link from "next/link";
 import { describe, expect, it } from "vitest";
 
 import { LineRow } from "@/components/ui/line-row";
@@ -7,7 +8,7 @@ describe("LineRow", () => {
   it("is a line in its colour, named by its heading, with its actions", () => {
     const { container } = render(
       <LineRow tone="leaf" pictogram="careers" title="Nurses: join us">
-        <a href="/careers">Careers</a>
+        <Link href="/careers">Careers</Link>
       </LineRow>,
     );
     expect(screen.getByRole("heading", { level: 2, name: "Nurses: join us" })).toBeInTheDocument();

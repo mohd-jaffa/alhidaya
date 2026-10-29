@@ -1304,7 +1304,7 @@ one commit (D27).
 | R2.4 | Motion system: Lenis + GSAP ticker, ScrollTrigger lifecycle, `TheLine` (scrubbed draw, stations, the travelling marker), reveals, reduced-motion path | §30.4 | — | DONE (2026-10-29; tested on `/kit`, D64; its weight is Q34) |
 | R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | DONE (2026-10-29; shown on `/kit`) |
 | R2.6 | Site shell: header sign bar, mobile menu, footer, skip link, "You are here", preview bar | §30.1 | — | DONE (2026-10-29; with the floating WhatsApp button, D67) |
-| R2.7 | System pages: not found, error, global error, loading | §6.10 | — | TODO |
+| R2.7 | System pages: not found, error, global error, loading | §6.10 | — | DONE (2026-10-29; the public site has no route-level loading state: it would hide content without JavaScript and turn a 404 into a 200; the admin's come with it, R6) |
 | R2.8 | `/impeccable audit` of the kit; screenshots checked by the user | §30 | — | TODO |
 
 ### Phase 3 — Public pages
