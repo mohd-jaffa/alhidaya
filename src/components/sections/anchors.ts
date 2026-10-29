@@ -46,10 +46,9 @@ function stationLabel(page: PageKey, section: Section): string {
       return UI_TEXT.mission;
     case "JOBS_LIST":
       return UI_TEXT.openJobs;
-    case "RICH_TEXT": {
-      const first = section.content.body.find((block) => block.type === "heading");
-      return section.content.heading.en ?? (first?.type === "heading" ? first.text.en : PAGE_NAMES[page]);
-    }
+    case "RICH_TEXT":
+      // Text with no heading of its own is the page's own text: Privacy, Terms.
+      return section.content.heading.en ?? PAGE_NAMES[page];
     default:
       return section.content.heading.en;
   }

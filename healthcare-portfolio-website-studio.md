@@ -1325,7 +1325,7 @@ one commit (D27).
 | R3.2 | Section components for the catalogue | §7.2 | — | DONE (2026-10-29; first seen on Home at R3.3) |
 | R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | Q41 | DONE (2026-10-29; its photos wait on Q41) |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | DONE (2026-10-29; photos wait on Q41) |
-| R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | TODO |
+| R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DOING (2026-10-29: the four pages; the static map next) |
 | R3.6 | Caching with tags; draft-mode preview | §22, §14 | — | TODO |
 | R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | TODO |
 | R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | TODO |

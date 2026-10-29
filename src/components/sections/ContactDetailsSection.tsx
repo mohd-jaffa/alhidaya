@@ -16,7 +16,7 @@ const LINK = "font-semibold text-deep underline decoration-transparent underline
 
 function Detail({ pictogram, term, children }: { pictogram: PictogramName; term: string; children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 border-t border-rule pt-5">
+    <div className="grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 gap-y-1 border-t border-rule pt-5">
       <Pictogram name={pictogram} size="md" className="row-span-2 text-navy" />
       <dt className="text-small text-ink-2">{term}</dt>
       <dd className="grid gap-1">{children}</dd>

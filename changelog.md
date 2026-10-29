@@ -1388,3 +1388,39 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None. The photos wait on Q41.
+
+## 2026-10-29 — R3.5 (doing): Contact, Request a Quote, Privacy, Terms
+
+### Added
+- **Contact** (`/contact`): the sign, every way to reach the company (each
+  detail now sits at the top of its cell), and the Contact form's place; the
+  static map joins it next, the form at R4.1.
+- **Request a Quote** (`/request-a-quote`): the sign and the Quote form's
+  place (R4.1).
+- **Privacy** (`/privacy`) and **Terms** (`/terms`): the admin's text, as
+  drafted from what the site actually does, for the client's review (Q18).
+  As one run of text each, they have no line of stations, which would only
+  repeat the page's name.
+
+### Changed
+- **The reading width** (`--container-measure`) is 48 `ch`, not 65:
+  Atkinson Hyperlegible's figures are wide, so 65 `ch` held about 93
+  characters a line (Impeccable's detector flagged Privacy); 48 `ch` holds
+  about 70.
+- A text section with no heading of its own is named on the line by its
+  page, not by its first heading (on a phone the bar said "What we collect"
+  at the top of Privacy).
+- Plan: R3.5 DOING.
+
+### Performance (local build)
+- JavaScript at first paint: 151.7 KB gzip on each page.
+- Phone, 4× CPU, 9 Mbps, 60 ms: LCP 256 – 260 ms, CLS 0.000 on each.
+
+### Validation
+- Impeccable's detector on every public page: no findings.
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (477), coverage 100%.
+- Build passed; E2E passed (65, phone and desktop), axe clean on each page.
+
+### Blockers
+- None.

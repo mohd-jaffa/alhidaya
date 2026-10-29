@@ -75,7 +75,8 @@
   --spacing-touch: 2.75rem;
   --spacing-sign: clamp(1.5rem, 1rem + 3vw, 3.25rem);
   --container-site: 78rem;
-  --container-measure: 65ch;
+  /* About 70 characters of running text: Atkinson's figures are wide, so its `ch` is larger than an average letter. */
+  --container-measure: 48ch;
 
   /* Signs have small, firm corners; stations are round. */
   --radius-panel: 6px;

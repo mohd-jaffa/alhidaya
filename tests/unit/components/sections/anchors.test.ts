@@ -31,7 +31,6 @@ describe("pageStations", () => {
         { type: "paragraph", text: en("Text.") },
         { type: "heading", text: en("What we collect") },
       ]),
-      richText(null, [{ type: "paragraph", text: en("Text.") }]),
     ];
     expect(pageStations("ABOUT", sections, noData)).toEqual([
       { id: "start", label: PAGE_NAMES.ABOUT },
@@ -39,8 +38,7 @@ describe("pageStations", () => {
       { id: "jobs", label: UI_TEXT.openJobs },
       { id: "values", label: "Why us" },
       { id: "text", label: "Our story" },
-      { id: "text-2", label: "What we collect" },
-      { id: "text-3", label: PAGE_NAMES.ABOUT },
+      { id: "text-2", label: PAGE_NAMES.ABOUT },
     ]);
   });
 

@@ -58,3 +58,43 @@ test("a staffing service asks for a quote with the service already chosen; an un
   const missing = await page.goto(ROUTES.service("no-such-service"));
   expect(missing?.status()).toBe(404);
 });
+
+test("Contact lists every way to reach the company and the way to the office, and passes axe (plan §6.7)", async ({
+  page,
+}) => {
+  await page.goto(ROUTES.contact);
+  await expect(page).toHaveTitle(new RegExp(`^${PAGE_NAMES.CONTACT} · `));
+  const details = page.getByRole("region", { name: "Reach us" });
+  await expect(details.getByRole("link", { name: "+974 3130 6555" })).toHaveCount(2);
+  await expect(details.getByRole("link", { name: "info@alhidaya.qa" })).toHaveAttribute(
+    "href",
+    "mailto:info@alhidaya.qa",
+  );
+  await expect(details.getByText("Retaj Building, Bin Naifaa 80")).toBeVisible();
+  await expect(details.getByRole("link", { name: UI_TEXT.openInMaps })).toHaveAttribute(
+    "href",
+    /^https:\/\/www\.google\.com\/maps\//,
+  );
+  await expect(page.getByRole("region", { name: "Send us a message" })).toBeVisible();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});
+
+test("Request a Quote opens on its sign above the form's place, and passes axe (plan §6.8)", async ({ page }) => {
+  await page.goto(ROUTES.quote);
+  await expect(page).toHaveTitle(new RegExp(`^${PAGE_NAMES.QUOTE} · `));
+  await expect(page.getByRole("heading", { level: 1, name: "Tell us the care you need" })).toBeVisible();
+  await expect(page.getByRole("region", { name: UI_TEXT.requestQuote })).toBeVisible();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});
+
+for (const [route, key, heading] of [
+  [ROUTES.privacy, "PRIVACY", "What we collect"],
+  [ROUTES.terms, "TERMS", "Quotes and care"],
+] as const) {
+  test(`${PAGE_NAMES[key]} reads as the admin wrote it, and passes axe (plan §6.9)`, async ({ page }) => {
+    await page.goto(route);
+    await expect(page).toHaveTitle(new RegExp(`^${PAGE_NAMES[key]} · `));
+    await expect(page.getByRole("heading", { level: 2, name: heading })).toBeVisible();
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  });
+}
