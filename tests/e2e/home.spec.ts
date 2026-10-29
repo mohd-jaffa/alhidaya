@@ -13,3 +13,19 @@ test("Home names the company and passes axe", async ({ page }) => {
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(violations).toEqual([]);
 });
+
+test("the site's own typeface loads, from the site itself (plan D61, §22.4)", async ({ page }) => {
+  const fontRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.resourceType() === "font") fontRequests.push(new URL(request.url()).host);
+  });
+  await page.goto("/");
+
+  const loaded = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return [...document.fonts].filter((face) => face.status === "loaded").map((face) => face.family);
+  });
+  expect(loaded.some((family) => family.toLowerCase().includes("atkinson"))).toBe(true);
+  expect(fontRequests.length).toBeGreaterThan(0);
+  expect(new Set(fontRequests)).toEqual(new Set([new URL(page.url()).host]));
+});

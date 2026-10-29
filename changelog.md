@@ -759,3 +759,54 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. Phase 2 starts with the typeface (Q10): the user picks one from a
   specimen of three (R2.1).
+
+## 2026-10-29 — R2.1, the typeface and the design tokens
+
+### Added
+- **The type specimen** (a private page for the user): Atkinson Hyperlegible
+  Next, Barlow and Readex Pro, each with an Arabic companion, set in the
+  site's own sign, three lines, scale, reading text, figures, form and Arabic
+  beside English. **The user chose Atkinson Hyperlegible Next** with Noto Sans
+  Arabic (D61, answers Q10).
+- **The font, self-hosted** (`src/assets/fonts/atkinson-hyperlegible-next/`):
+  the variable WOFF2 (weights 200 – 800), Latin subset, 34 KB, from
+  `@fontsource-variable/atkinson-hyperlegible-next` 5.3.0 (tarball SHA-256
+  recorded in the folder's README), with its SIL Open Font License. Loaded by
+  `next/font/local` in `src/app/layout.tsx`: preloaded, `swap`, with an
+  Arial fallback sized to its metrics, served from the site itself.
+- **The design tokens** (`src/app/globals.css`, plan §30.2): the logo's
+  colours (`#0F64AC`, `#33A0DA`, `#86AE3C`), the navy ink `#0B2440`, a
+  secondary ink, the quiet panel, hairlines and the colours on deep blue;
+  focus colours; type roles (sign, page, section, title, lead, body, small,
+  label) at signage sizes; the gutter, section spacing, page and reading
+  widths, the 44 px touch size; radii; two shadows for floating things;
+  the line's width and station size; durations, eases and layers. **Tailwind's
+  own palette, sizes, shadows, radii and eases are removed**, so a component
+  can use only these. Base styles theme the browser's own surfaces: text
+  selection, the caret, focus rings, link underlines, balanced headings, and
+  the reduced-motion path.
+- **The token contract** (`tests/contract/tokens.test.ts`): the palette is
+  exactly the logo's colours and their inks; every text pairing passes WCAG
+  AA (navy on white 15.7:1, white on deep blue 6.1:1, navy on sky blue 5.4:1
+  and on leaf green 6.1:1); white is kept off sky blue and leaf green, where
+  it fails; focus rings and field borders reach 3:1.
+- E2E: the typeface loads, and every font request goes to the site itself.
+
+### Changed
+- Plan: D61; §30.1, §30.2, §22.4 and §33 name the face, the token values and
+  their contrast; Q10 answered; **Q31 asks whether form errors may use a red**
+  (default: no, logo colours only, D35; an error is navy with an icon, its
+  message and a heavier border); R2.1 DONE.
+- The Home placeholder uses the page heading size; `.gitignore` takes the
+  Impeccable design hook's local cache.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (311), coverage 100%.
+- Build passed: the font is emitted to `/_next/static/media` and preloaded on
+  Home. The shipped audit passed (89 packages); E2E passed (10, phone and
+  desktop), axe clean.
+
+### Blockers
+- None. Q31 (the error colour) is needed before the form fields are built in
+  R2.5; until then the default holds.

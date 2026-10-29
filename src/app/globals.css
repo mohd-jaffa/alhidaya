@@ -1,14 +1,160 @@
 @import "tailwindcss";
 
 /*
- * The design tokens of "Follow the Line" (plan §30.2) arrive in R2.1. Until
- * then the page keeps the browser's light defaults with an explicit ground.
+ * The design tokens of "Follow the Line" (plan §30.2, R2.1): the only colours,
+ * type sizes, radii, shadows and eases the site has. Tailwind's own palette,
+ * sizes, shadows and eases are removed, so a component cannot pick a value of
+ * its own (AGENTS.md §18); tests/contract/tokens.test.ts checks the contrast
+ * of every pairing the design uses.
  */
-:root {
-  color-scheme: light;
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --tracking-*: initial;
+  --leading-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --radius-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+  --blur-*: initial;
+
+  /*
+   * The logo's colours (D35), sampled from the logo file. Deep blue carries
+   * white text; sky blue and leaf green are line colours and carry navy text
+   * only (white on them fails AA). The navy ink is the deep blue, darkened.
+   */
+  --color-deep: #0f64ac;
+  --color-sky: #33a0da;
+  --color-leaf: #86ae3c;
+  --color-navy: #0b2440;
+  --color-ink-2: #3a5272;
+  --color-ground: #ffffff;
+  --color-mist: #f1f6fb;
+  --color-rule: #d5e1ed;
+  --color-on-deep: #ffffff;
+  --color-on-deep-2: #dce9f6;
+  /* Focus rings: deep blue on light ground, white on a deep-blue or navy panel. */
+  --color-focus: #0f64ac;
+  --color-focus-on-deep: #ffffff;
+
+  /*
+   * One family, Atkinson Hyperlegible Next (D61), at signage sizes. Roles,
+   * not sizes: the sign's headline, a page's heading, a section's, a title
+   * (a job, a service), the supporting line, body, small print, a label.
+   */
+  --text-sign: clamp(2.375rem, 1.5rem + 4.2vw, 4.25rem);
+  --text-sign--line-height: 1.04;
+  --text-sign--letter-spacing: -0.015em;
+  --text-page: clamp(2rem, 1.4rem + 2.6vw, 2.75rem);
+  --text-page--line-height: 1.08;
+  --text-page--letter-spacing: -0.015em;
+  --text-section: 1.75rem;
+  --text-section--line-height: 1.15;
+  --text-section--letter-spacing: -0.01em;
+  --text-title: 1.3125rem;
+  --text-title--line-height: 1.25;
+  --text-lead: 1.3125rem;
+  --text-lead--line-height: 1.45;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.6;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.45;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.06em;
+
+  /* Layout: the gutter, the space between sections, the page and reading widths, a touch target. */
+  --spacing-gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --spacing-section: clamp(3.5rem, 2rem + 6vw, 7rem);
+  --spacing-touch: 2.75rem;
+  --container-site: 78rem;
+  --container-measure: 65ch;
+
+  /* Signs have small, firm corners; stations are round. */
+  --radius-panel: 6px;
+  --radius-control: 6px;
+  --radius-tag: 4px;
+
+  /* Flat signage: depth only where something floats over the page. */
+  --shadow-raised: 0 8px 24px -12px rgb(11 36 64 / 0.28);
+  --shadow-overlay: 0 24px 56px -16px rgb(11 36 64 / 0.38);
+
+  /* Motion (plan §30.4): an exponential ease-out for arrivals, a symmetric one for moves. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-body {
-  background: #ffffff;
-  color: #0b2440;
+@theme inline {
+  --font-sans: var(--font-atkinson), system-ui, sans-serif;
+  --default-font-family: var(--font-sans);
+}
+
+/* Tokens that are not utilities: the line's geometry, durations, layers. */
+:root {
+  --line-width: 6px;
+  --line-station: 22px;
+  --pictogram-stroke: 2px;
+  --duration-press: 120ms;
+  --duration-state: 200ms;
+  --duration-reveal: 640ms;
+  --z-header: 40;
+  --z-overlay: 50;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-ground);
+    color: var(--color-navy);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    caret-color: var(--color-deep);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  ::selection {
+    background: var(--color-sky);
+    color: var(--color-navy);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

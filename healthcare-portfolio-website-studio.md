@@ -142,6 +142,7 @@ question (§41) the user may overturn.
 | D58 | **Each page is stored as one document**, a draft copy and a published copy, with its sections inside in order (not a row per section, as §27 first had it): publishing a page is one atomic write, and every save is checked against the section rules (§7.2). | 2026-10-28 |
 | D59 | **A new order of services or client logos waits for Publish** like any other edit (D32): the draft order and the published order are kept apart. | 2026-10-28 |
 | D60 | **Content lives in two tables**, following D58: `documents` (keyed: each page, the site's content, each ordering) and `records` (collections: services, jobs, client logos), each row a draft and a published copy, with every kind's rules in its own schema; plus `media` and `site_operations`. Publishing is the same atomic step everywhere. **(agent default)** | 2026-10-29 |
+| D61 | **Typeface: Atkinson Hyperlegible Next**, with **Noto Sans Arabic** as its Arabic companion, chosen by the user from the specimen of three (R2.1; answers Q10). Self-hosted: one variable file (weights 200 – 800), Latin subset, 34 KB, with a metric-matched fallback; the Arabic file is added when Arabic arrives (§33). | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -764,7 +765,9 @@ the map, brand marks) are SVG or pre-made at build.
 ### 22.4 Fonts
 
 Self-hosted with `next/font/local` (no third-party font requests), variable
-WOFF2, subset, with metric-matched fallbacks so text never shifts on load.
+WOFF2, subset, with metric-matched fallbacks so text never shifts on load:
+Atkinson Hyperlegible Next (D61), one 34 KB file for every weight, preloaded,
+with an Arial fallback sized to its metrics (`src/assets/fonts/`).
 
 ## 23. Technology stack
 
@@ -1000,9 +1003,9 @@ strip, a testimonial carousel).
   **deep blue** = Staffing (hospitals, clinics, schools), **leaf green** =
   Careers (nurses). Colour is never the only signal: every line also carries
   its name and pictogram.
-- **Type:** one highly legible signage sans with an Arabic companion,
-  chosen by the user from a specimen page (R2.1, Q10); large, confident sizes
-  like real signage; tabular figures.
+- **Type:** **Atkinson Hyperlegible Next** (D61), a signage-grade sans made
+  for readers with low vision, with Noto Sans Arabic as its companion; large,
+  confident sizes like real signage; tabular figures where digits line up.
 - **Pictograms:** one consistent set in the line weight of the system, in the
   manner of hospital symbol systems (Q12).
 - **Sign grammar:** "You are here" markers, station dots, arrows, panel
@@ -1039,9 +1042,19 @@ performs.
 
 ### 30.2 Tokens
 
-- **Logo colours** (sampled from the logo file; exact values are set and
-  contrast-checked in R2.1): sky blue ≈ `#33A0DA`, deep blue ≈ `#0F64AC`,
-  leaf green ≈ `#86AE3C`, with a navy ink derived from the deep blue.
+- **Logo colours** (sampled from the logo file, set in R2.1): sky blue
+  `#33A0DA`, deep blue `#0F64AC`, leaf green `#86AE3C`; the navy ink
+  `#0B2440` (the deep blue, darkened) and a secondary ink `#3A5272`; ground
+  white, a quiet panel `#F1F6FB`, hairlines `#D5E1ED`; on deep blue, white and
+  `#DCE9F6`.
+- **Checked** (`tests/contract/tokens.test.ts`): navy on white 15.7:1; white
+  on deep blue 6.1:1; navy on sky blue 5.4:1 and on leaf green 6.1:1; the
+  secondary ink 8.0:1 on white. Focus rings are deep blue on light surfaces
+  and white on deep blue (each at least 3:1).
+- **Type roles** (`src/app/globals.css`): sign 38 – 68 px, page 32 – 44 px,
+  section 28 px, title and supporting line 21 px, body 17 px, small and label
+  14 px. Radii 6 px (panels, controls) and 4 px (tags); the line 6 px wide,
+  stations 22 px; durations 120, 200 and 640 ms; an exponential ease-out.
 - **Contrast rules (WCAG AA):** white text only on deep blue or navy; sky
   blue and leaf green are line and accent colours, carrying navy text when text
   sits on them; body text is navy on white.
@@ -1130,7 +1143,8 @@ Arabic is Later (D3), but V1 must not need a redesign to add it:
   can sit beside it; no text in images.
 - **Content fields stored per locale** (`{ "en": … }`) from day one, so adding
   Arabic adds data, not migrations (Q21).
-- **The chosen typeface has an Arabic companion** (Q10).
+- **The chosen typeface has an Arabic companion**: Noto Sans Arabic (D61),
+  self-hosted beside the Latin file when Arabic arrives.
 - Routes ready for an `/ar` segment without changing English URLs (D4).
 
 ## 34. Testing and coverage
@@ -1275,7 +1289,7 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R2.1 | Type specimen page → **the user picks the face**; tokens (logo colours AA-checked, type scale, spacing, radii, motion); self-hosted fonts | §30.1, §30.2 | Q10 | TODO |
+| R2.1 | Type specimen page → **the user picks the face**; tokens (logo colours AA-checked, type scale, spacing, radii, motion); self-hosted fonts | §30.1, §30.2 | Q10 | DONE (2026-10-29; Atkinson Hyperlegible Next, D61; error colour is Q31) |
 | R2.2 | The logo as SVG (traced faithfully, or the client's vector); favicon and app icons | §30 | Q2 | TODO |
 | R2.3 | Pictogram set | §30.1 | Q12 | TODO |
 | R2.4 | Motion system: Lenis + GSAP ticker, ScrollTrigger lifecycle, `TheLine` (scrubbed draw, stations, the travelling marker), reveals, reduced-motion path | §30.4 | — | TODO |
@@ -1411,7 +1425,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q7 | Keep a general application (no job), like today's "Submit your resume"? | Yes, at `/careers/apply`. |
 | Q8 | Retention and CV expiry before the admin sets them | 180 days each. |
 | Q9 | Service names, slugs, order and "what's included" | The current eight, renamed in plain English during the copy rewrite, in the current order; "included" items only where the client confirms them. |
-| Q10 | Typeface | Chosen by the user from a specimen of three signage sans faces with Arabic companions (R2.1). |
+| Q10 | ~~Typeface~~ | **Answered by D61:** Atkinson Hyperlegible Next, with Noto Sans Arabic. |
 | Q11 | Stock photo source | Unsplash and Pexels (free licences), each image's source recorded. |
 | Q12 | Pictograms | Drawn for this site in the system's line weight. |
 | Q13 | Dependency majors | clinicdesk's (D38). |
@@ -1432,6 +1446,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q28 | Reuse the old site's service photos (`upload/Services`)? | Only where they are good enough for the new design; otherwise licensed stock (D8). |
 | Q29 | Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)? | Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
 | Q30 | How does the approved copy reach the production database? | The seed (`npm run db:seed`, local only today) runs once against the empty production database at R8.1, with the user's go-ahead, after the client approves the copy (R3.1, R7.5); it writes drafts, and the admin publishes them. |
+| Q31 | May form errors use a red, the one colour outside the logo's (D35)? | No: an error is the navy ink with an error icon, the message beside its field and a heavier field border, so it never rests on colour (§30.3). |
 
 ## 42. Later (unscheduled)
 
