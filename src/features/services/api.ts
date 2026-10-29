@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 
-import { UI_TEXT } from "@/constants/messages";
+import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { orderingDocumentKey } from "@/constants/sections";
-import { readPublishedDocument } from "@/lib/content/documents";
-import { inOrder } from "@/lib/content/ordering";
-import { findPublishedRecord, listPublishedRecords, type PublishedRecord } from "@/lib/content/records";
 import { getImages } from "@/features/media/api";
 import type { SiteImage } from "@/features/media/types";
 import { getPublishedSite } from "@/features/settings/api";
+import { readPublishedDocument } from "@/lib/content/documents";
+import { inOrder } from "@/lib/content/ordering";
+import { findPublishedRecord, listPublishedRecords, type PublishedRecord } from "@/lib/content/records";
+import { renderShareImage } from "@/lib/seo/share-image";
 import type { OrderingDocument, ServiceDocument, SiteDocument } from "@/lib/validation";
 
 export type PublishedService = PublishedRecord<ServiceDocument>;
@@ -71,4 +72,12 @@ export async function getServiceMetadata(slug: string): Promise<Metadata> {
     alternates: { canonical: url },
     openGraph: { title, description, url, type: "website", siteName: UI_TEXT.siteName },
   };
+}
+
+/** A service's share picture (plan §19): its name on its line's sign; the services' own for an address it does not have. */
+export async function getServiceShareImage(slug: string) {
+  const found = await findPublishedService(slug);
+  if (!found || "movedTo" in found) return renderShareImage({ title: PAGE_NAMES.SERVICES });
+  const { name, audience } = found.record.published;
+  return renderShareImage({ title: name.en, tone: audience === "FAMILIES" ? "sky" : "deep" });
 }

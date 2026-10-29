@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { closeDb, getDb } from "@/db/client";
 import { auditLog, documents, media, records } from "@/db/schema";
-import { getPageMetadata, getPublishedPageContent, listPublicPaths } from "@/features/content/api";
+import { getPageMetadata, getPageShareImage, getPublishedPageContent, listPublicPaths } from "@/features/content/api";
 import { publishDocument, saveDocumentDraft } from "@/lib/content/documents";
 import { createRecord, publishRecord } from "@/lib/content/records";
 import {
@@ -151,5 +151,12 @@ describe("a page with everything it shows, against the local MySQL", () => {
       seo: { title: { en: "Nurses at home in Doha" }, description: { en: null } },
     });
     expect(await getPageMetadata("HOME")).toMatchObject({ title: "Nurses at home in Doha" });
+  });
+
+  it("draws a page's share picture from its sign, or its name before it is published", async () => {
+    for (const page of ["HOME", "TERMS"] as const) {
+      const image = await getPageShareImage(page);
+      expect(image.headers.get("content-type")).toBe("image/png");
+    }
   });
 });

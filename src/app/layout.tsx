@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   applicationName: UI_TEXT.siteName,
   // Canonical and share addresses are absolute, on the site's own domain (plan §19).
   metadataBase: siteMetadataBase(),
+  // A shared page shows its picture large (plan §19).
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {

@@ -28,7 +28,13 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json-summary", "html"],
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/app/**/layout.tsx", "src/app/**/page.tsx", "src/instrumentation.ts"],
+      exclude: [
+        "src/app/**/layout.tsx",
+        "src/app/**/page.tsx",
+        // A share picture's route only names its page and calls the feature that draws it.
+        "src/app/**/opengraph-image.tsx",
+        "src/instrumentation.ts",
+      ],
       thresholds: { lines: 100, branches: 100, functions: 100, statements: 100 },
     },
     projects: [

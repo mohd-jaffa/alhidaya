@@ -1182,7 +1182,8 @@ As clinicdesk (D26, `AGENTS.md` §31):
 | End to end | Playwright, phone 390×844 and desktop 1440×900, axe on every page | `tests/e2e/` |
 
 **Coverage 100%** (lines, branches, functions, statements) over `src/**`,
-enforced in CI; pages and layouts are composition only and covered by E2E.
+enforced in CI; pages, layouts and share-picture routes are composition only
+and covered by E2E.
 
 Must cover: public reads return only published content; drafts never leak;
 enquiries, applications and CVs unreachable without the admin session; rate
@@ -1330,7 +1331,7 @@ one commit (D27).
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | DONE (2026-10-29; photos wait on Q41) |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DONE (2026-10-29; the office's spot on the map waits on the client, D74) |
 | R3.6 | Caching with tags; draft-mode preview | §22, §14 | Q42 | TODO |
-| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DOING (2026-10-29: the 301 map, robots, the sitemap; titles, descriptions, canonical addresses, structured data; share images next) |
+| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DONE (2026-10-29; `JobPosting` and the closed jobs' `noindex` come with the job page, R5.1; the preview's `noindex` with R3.6) |
 | R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | TODO |
 
 ### Phase 4 — Enquiries

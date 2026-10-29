@@ -10,6 +10,7 @@ import { getImages } from "@/features/media/api";
 import { listPublishedServices } from "@/features/services/api";
 import { getPublishedSite } from "@/features/settings/api";
 import { readPublishedDocument } from "@/lib/content/documents";
+import { renderShareImage } from "@/lib/seo/share-image";
 import type { PageDocument } from "@/lib/validation";
 
 import type { SectionData } from "./types";
@@ -93,4 +94,10 @@ export async function getPageMetadata(page: PageKey): Promise<Metadata> {
     alternates: { canonical: PAGE_ROUTES[page] },
     openGraph: { title: shared, description, url: PAGE_ROUTES[page], type: "website", siteName: UI_TEXT.siteName },
   };
+}
+
+/** The picture a page shows when it is shared (plan §19): its published sign's headline, or its name before it is published. */
+export async function getPageShareImage(page: PageKey) {
+  const sign = (await getPublishedPage(page))?.sections[0];
+  return renderShareImage({ title: sign?.type === "SIGN" ? sign.content.headline.en : PAGE_NAMES[page] });
 }

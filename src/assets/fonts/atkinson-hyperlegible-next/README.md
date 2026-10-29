@@ -17,3 +17,13 @@ The site's typeface (plan D61, R2.1), chosen by the user from the specimen.
 Letters outside the subset (Latin Extended, in some names) fall back to the
 matched Arial. The Arabic companion, Noto Sans Arabic, is added here when
 Arabic arrives (plan §33).
+
+## For share images
+
+`share/` holds the regular (400) and bold (700) weights as WOFF, Latin
+subset, 15 KB each, for the pictures a page shows when it is shared (plan
+§19): the image renderer reads WOFF but not WOFF2. They are never sent to a
+visitor's browser.
+
+- **From:** `@fontsource/atkinson-hyperlegible-next` 5.3.0 on npm (tarball
+  SHA-256 `33dcb7d0d4e2ea98a96985ca7448f738c3b5b370cfc5230b1e40e4f728920cc2`), same licence.

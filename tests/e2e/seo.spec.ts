@@ -41,4 +41,16 @@ test.describe("what search engines read (plan §19)", () => {
       .evaluateAll((scripts) => scripts.map((script) => JSON.parse(script.textContent ?? "{}")["@type"]));
     expect(types.toSorted()).toEqual(["BreadcrumbList", "MedicalBusiness", "Service"]);
   });
+
+  test("each page has a share picture, drawn from its published sign", async ({ page, request }) => {
+    for (const path of [ROUTES.home, ROUTES.about, ROUTES.contact, ROUTES.service("elderly-care")]) {
+      await page.goto(path);
+      const image = await page.locator('meta[property="og:image"]').getAttribute("content");
+      expect(image, path).toBeTruthy();
+      await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary_large_image");
+      const response = await request.get(new URL(image ?? "", page.url()).pathname);
+      expect(response.status(), path).toBe(200);
+      expect(response.headers()["content-type"]).toBe("image/png");
+    }
+  });
 });

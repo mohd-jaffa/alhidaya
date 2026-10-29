@@ -1541,3 +1541,39 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - R3.6 waits on Q42.
+
+## 2026-10-29 — R3.7, share pictures
+
+### Added
+- **A share picture for each page** (plan §19, `lib/seo/share-image.tsx`,
+  each page's `opengraph-image.tsx`): 1200 × 630, the page's sign in its
+  line's colour (deep blue; sky with navy type for families' services) with
+  its published headline in Atkinson Hyperlegible Next, the company's name
+  at its foot by a station, and the three lines along the bottom edge. Drawn
+  when asked for, from what is published; X shows it large
+  (`summary_large_image`).
+- The typeface's regular and bold weights as WOFF for the renderer, which
+  cannot read WOFF2 (`src/assets/fonts/atkinson-hyperlegible-next/share/`,
+  15 KB each, same licence, source recorded in the README); the build
+  carries them into the standalone folder (`outputFileTracingIncludes`).
+  They are never sent to a visitor's browser.
+
+### Changed
+- Coverage leaves out `src/app/**/opengraph-image.tsx` with the pages and
+  layouts: each only names its page and calls the feature that draws it
+  (`getPageShareImage`, `getServiceShareImage`), which is tested. AGENTS.md
+  §24 and plan §34 say so.
+- Plan: R3.7 DONE; `JobPosting` and the closed jobs' `noindex` come with the
+  job page (R5.1), the preview's `noindex` with R3.6.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (499), coverage 100%: the picture's size
+  and type in both colours; each page's and service's picture from the
+  local MySQL, published or not.
+- Build passed; E2E passed (81): each page names its share picture, which
+  answers as a PNG; X's large card. Home's and a service's pictures checked
+  by eye.
+
+### Blockers
+- R3.6 waits on Q42.

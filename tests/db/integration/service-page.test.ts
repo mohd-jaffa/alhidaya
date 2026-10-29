@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { closeDb, getDb } from "@/db/client";
 import { auditLog, documents, media, records } from "@/db/schema";
-import { getPublishedServicePage, getServiceMetadata } from "@/features/services/api";
+import { getPublishedServicePage, getServiceMetadata, getServiceShareImage } from "@/features/services/api";
 import { publishDocument, saveDocumentDraft } from "@/lib/content/documents";
 import { createRecord, publishRecord, saveRecordDraft } from "@/lib/content/records";
 import { serviceFixture, siteFixture } from "@tests/support/fixtures/content";
@@ -118,5 +118,12 @@ describe("a service's page, against the local MySQL", () => {
     });
     expect(await getServiceMetadata("elderly-care")).toEqual({});
     expect(await getServiceMetadata("no-such-service")).toEqual({});
+  });
+
+  it("draws a service's share picture on its line's sign, and the services' own for an address it does not have", async () => {
+    for (const slug of ["home-nursing-care", "school-nurse-staffing", "elderly-care", "no-such-service"]) {
+      const image = await getServiceShareImage(slug);
+      expect(image.headers.get("content-type"), slug).toBe("image/png");
+    }
   });
 });

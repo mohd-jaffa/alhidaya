@@ -538,8 +538,9 @@ tests/
   orphan or a test inside `src/`.
 - Imports and mocks use `@/` and `@tests/`, never `./` or `../`.
 - **Coverage is 100%** over `src/**`, enforced in CI. Excluded:
-  `src/app/**/layout.tsx`, `src/app/**/page.tsx` (composition only, covered by
-  E2E), `src/instrumentation.ts`. `/* v8 ignore */` only with a reason on the
+  `src/app/**/layout.tsx`, `src/app/**/page.tsx` and
+  `src/app/**/opengraph-image.tsx` (composition only, covered by E2E),
+  `src/instrumentation.ts`. `/* v8 ignore */` only with a reason on the
   same line.
 - Components are tested with Testing Library by role and accessible name.
 - Integration tests run against the **local** MySQL in Docker only (a guard
