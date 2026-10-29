@@ -7,7 +7,7 @@
  * its own (AGENTS.md §18); tests/contract/tokens.test.ts checks the contrast
  * of every pairing the design uses.
  */
-@theme {
+@theme static {
   --color-*: initial;
   --font-*: initial;
   --text-*: initial;
@@ -99,6 +99,15 @@
 :root {
   --line-width: 6px;
   --line-station: 22px;
+  /* The line in the margin (plan §30.1): halfway between the window's edge and the text, below the header. */
+  --line-rail-start: calc(
+    (max(0px, (100vw - var(--container-site)) / 2) + var(--spacing-gutter)) / 2 - var(--line-station) / 2
+  );
+  --line-rail-centre: calc(var(--line-station) / 2 - var(--line-width) / 2);
+  --line-rail-top: calc(var(--header-height) + 3rem);
+  --line-rail-bottom: 3rem;
+  /* The site header's height, set with the header (R2.6). */
+  --header-height: 0px;
   --duration-press: 120ms;
   --duration-state: 200ms;
   --duration-reveal: 640ms;
@@ -146,6 +155,26 @@
   :focus-visible {
     outline: 3px solid var(--color-focus);
     outline-offset: 3px;
+  }
+
+  /* Lenis, smoothing the wheel on the public site (plan §30.4); its own stylesheet's rules. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+
+  .lenis [data-lenis-prevent],
+  .lenis [data-lenis-prevent-wheel],
+  .lenis [data-lenis-prevent-touch] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {

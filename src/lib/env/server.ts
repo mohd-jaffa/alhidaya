@@ -59,6 +59,10 @@ const serverEnvSchema = z.object({
     .regex(/^\/[A-Za-z0-9/_-]*$/)
     .default("/media"),
   CV_DIR: z.string().trim().min(1),
+
+  // The kit preview page (/kit) exists only where this is "true": locally and
+  // in the browser tests, never in production (plan D64).
+  KIT_PREVIEW: optionalBoolean,
 });
 
 /** Whether one folder is the other, or inside it. */

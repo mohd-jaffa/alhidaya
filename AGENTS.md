@@ -432,8 +432,9 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 - **Content is visible by default**; reveals only enhance.
 - Motion code is client-only, public-site only, and loaded after first paint;
   the admin never loads it.
-- Create ScrollTriggers inside `useGSAP` scopes and let them die with the
-  component; refresh once after fonts and images settle; never leak listeners
+- Create ScrollTriggers inside `gsap.context` scopes (what `useGSAP` wraps),
+  from the engine `useMotion()` gives once it has loaded, and let them die
+  with the component; refresh once after fonts and images settle; never leak listeners
   across navigations.
 - **Reduced motion:** Lenis off, lines drawn in full, no scrub, no reveals.
 - Durations and eases are tokens. One signature (the line), restrained

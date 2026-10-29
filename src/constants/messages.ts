@@ -10,6 +10,11 @@ export const UI_TEXT = {
   placeholderNote: "Our new website is on its way.",
   /** The first line of a WhatsApp chat a visitor starts; they still press send (plan Q14). */
   whatsappPrefill: "Hello Al Hidaya, I would like to ask about nursing care.",
+  /** The line's own words (plan §30.1). */
+  onThisPage: "On this page",
+  youAreHere: "You are here",
+  /** The kit preview page, local and test only (plan D64). */
+  kitPreview: "Kit preview",
 } as const;
 
 /**

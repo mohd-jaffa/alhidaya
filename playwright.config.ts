@@ -44,7 +44,8 @@ export default defineConfig({
   ],
   webServer: {
     command: "node .next/standalone/server.js",
-    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1" },
+    // KIT_PREVIEW serves /kit, where the motion system and the kit are tested (plan D64).
+    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1", KIT_PREVIEW: "true" },
     url: `http://localhost:${PORT}/`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

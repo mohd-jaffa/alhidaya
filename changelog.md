@@ -905,3 +905,80 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R2.4, the motion system
+
+### Added
+- **GSAP 3.15 and Lenis 1.3** (D29). `@gsap/react` is not used: it imports
+  GSAP at once, which would put it in the first paint; the same cleanup
+  scope, `gsap.context`, is used on the engine once it has loaded.
+- **The engine** (`src/lib/motion/`): `loadMotionEngine` fetches GSAP,
+  ScrollTrigger and Lenis only when asked; `startSmoothScroll` drives Lenis
+  from GSAP's ticker (one frame loop, lag smoothing off) and tells
+  ScrollTrigger of every scroll. Motion's tokens mirror the CSS durations and
+  curves (a test keeps them equal); the preference queries.
+- **`MotionProvider`** (`src/components/motion/`), in the public site's new
+  layout only, so the admin never loads motion: loads the engine when the
+  browser is idle after the first paint; Lenis only for a wheel, never a
+  touch screen; nothing at all with reduced motion, and lets go of it if the
+  visitor turns reduced motion on; a new page starts at its top with its
+  triggers measured afresh, never a jump on load; measured again once fonts
+  and images settle. `useMediaQuery` (`src/hooks/`) follows a query live.
+- **`Reveal`**: a block rises into place the first time it scrolls into
+  view, by opacity and transform only; visible by default, never hiding
+  anything already on screen, and opacity rather than visibility so screen
+  readers and search always have it.
+- **`TheLine`**, the signature: on a wide screen a line in the margin with a
+  station for each section, each a link with `aria-current="location"` on
+  where the visitor is; it draws onward with the scroll (scrubbed
+  `scaleY`) while the marker travels it. On a phone, a slim progress line
+  under the header naming the current station. Which station is current
+  never depends on motion (an IntersectionObserver at 45 % of the viewport,
+  and an end-of-page sentinel so a short last section still arrives); with
+  motion reduced or not yet loaded the line is drawn in full.
+- **The kit preview page** `/kit` (D64, agent default, Q33): served only
+  where `KIT_PREVIEW=true` (documented in `.env.example`; set for the browser
+  tests), a long page of the seeded services with the line, reveals and the
+  pictograms.
+- Tokens: the line's rail placement (halfway between the window's edge and
+  the text), `--header-height` (set in R2.6), Lenis's own CSS rules; the
+  theme's variables are now always emitted (`@theme static`) for the CSS
+  that reads them.
+- Tests: the engine's wiring and teardown, the provider's loading, touch,
+  reduced-motion and navigation paths, `Reveal`, `TheLine` (stations,
+  positions, current and passed, the end of the page, scrubbing, cleanup).
+  E2E on `/kit`, phone and desktop: Lenis on a wheel and not on a touch
+  screen; the current station follows the scroll to the last section; a
+  block below the fold rises in while one on screen never hides; reduced
+  motion leaves the line drawn in full and nothing moving; without
+  JavaScript every word is visible; axe clean.
+
+### Changed
+- Plan §30.4 and AGENTS.md §19: ScrollTriggers live in `gsap.context`
+  scopes from the loaded engine.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (350), coverage 100% (1,097 statements,
+  508 branches, 345 functions).
+- Build passed; the shipped audit passed (91 packages); E2E passed (24,
+  phone and desktop), axe clean.
+- **Measured JavaScript (gzip):** Home's first paint 133.5 KB for modern
+  browsers (172.2 KB counting the 38.7 KB polyfill only legacy browsers
+  load); motion after paint 51.7 KB (GSAP 26.7, ScrollTrigger 17.1, Lenis
+  5.3, glue 2.6).
+
+### Blocker
+- Status: OPEN
+- Area: performance budget (plan §31) against the motion stack (D29).
+- Description: the budget is 170 KB per public route, motion included; the
+  framework (133.5 KB) and motion (51.7 KB) already make 185 KB before any
+  page content.
+- What was attempted: motion is split out and loaded only after the first
+  paint, on idle; `@gsap/react` is left out.
+- Why it is blocked: meeting the budget means changing either the budget's
+  rule or the approved motion stack, both the user's decisions.
+- Required decision/input: Q34, options (a) count motion outside the
+  first-load budget, (b) drop ScrollTrigger for a small scroll observer,
+  (c) CSS scroll-driven animations with Lenis instead of GSAP.
+- Temporary workaround: none needed before R7.1; the system works as built.
