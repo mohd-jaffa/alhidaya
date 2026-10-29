@@ -1329,8 +1329,8 @@ one commit (D27).
 | R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | Q41 | DONE (2026-10-29; its photos wait on Q41) |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | DONE (2026-10-29; photos wait on Q41) |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DONE (2026-10-29; the office's spot on the map waits on the client, D74) |
-| R3.6 | Caching with tags; draft-mode preview | §22, §14 | — | TODO |
-| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | TODO |
+| R3.6 | Caching with tags; draft-mode preview | §22, §14 | Q42 | TODO |
+| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DOING (2026-10-29: the 301 map, robots, the sitemap) |
 | R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | TODO |
 
 ### Phase 4 — Enquiries
@@ -1479,6 +1479,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q39 | ~~How many open jobs Home's careers section shows~~ | **Answered by D72:** the three most recent, then a link to all. |
 | Q40 | Uploaded images as a `<picture>` from their made sizes, or through a custom `next/image` loader? | A `<picture>` (D73): AVIF with a WebP fallback, at every made width, and no script. |
 | Q41 | Home's sign, its introduction and the staffing section have a place for a photo, and there are none yet: the media library that makes their sizes is R6.5. Choose the licensed stock photos now (Q11) and bring forward only the step that makes an image's sizes, so the demo shows them? | Yes: a handful of licensed stock photos, each source and licence recorded, imported by the seed through the same sizing step the admin's uploads will use; the admin's media screens stay at R6.5. |
+| Q42 | How public pages are cached (§22.1). Cache Components (`use cache`) prerenders cached reads when the site is built, and the release builds on GitHub, which cannot reach the client's database; without it, each page would stream behind a shell, so a visitor without JavaScript would not see the content (against §30.4) and a missing page would answer 200, not 404. Which way? | (b) Keep each page rendered on the server per request, as now (correct 404s, visible without JavaScript), and cache its database reads with tags through Next's previous model (`unstable_cache`, still supported in 16); Publish revalidates exactly its tags (§14). (a) Cache Components with streaming, accepting the two costs. (c) No cache: the reads go to MySQL on the same machine (a few milliseconds each) and Publish needs no revalidation. |
 
 ## 42. Later (unscheduled)
 

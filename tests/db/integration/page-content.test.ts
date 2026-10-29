@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { closeDb, getDb } from "@/db/client";
 import { auditLog, documents, media, records } from "@/db/schema";
-import { getPublishedPageContent } from "@/features/content/api";
+import { getPublishedPageContent, listPublicPaths } from "@/features/content/api";
 import { publishDocument, saveDocumentDraft } from "@/lib/content/documents";
 import { createRecord, publishRecord } from "@/lib/content/records";
 import {
@@ -96,5 +96,28 @@ describe("a page with everything it shows, against the local MySQL", () => {
 
     await publishedPage("PRIVACY", pageFixture("PRIVACY"));
     expect((await getPublishedPageContent("PRIVACY"))?.data).toMatchObject({ services: [], jobs: [], clients: [] });
+  });
+
+  it("lists every public page for search engines: the fixed pages, the services and the open jobs", async () => {
+    await published(
+      "JOBS",
+      jobFixture({ slug: "closed-job", postedOn: "2020-01-01", closesOn: "2020-02-01" }),
+      "closed-job",
+    );
+    const paths = await listPublicPaths();
+    expect(paths.slice(0, 8).map((entry) => entry.path)).toEqual([
+      "/",
+      "/about",
+      "/services",
+      "/careers",
+      "/contact",
+      "/request-a-quote",
+      "/privacy",
+      "/terms",
+    ]);
+    expect(paths.slice(8)).toEqual([
+      { path: "/services/home-nursing-care", modified: expect.any(Date) },
+      { path: "/careers/registered-general-nurse-home-care", modified: expect.any(Date) },
+    ]);
   });
 });

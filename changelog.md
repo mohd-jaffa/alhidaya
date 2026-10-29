@@ -1469,3 +1469,40 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R3.7 (doing): the 301 map, robots, the sitemap
+
+### Added
+- **The 301 map from the current site** (`src/constants/redirects.ts`,
+  served by `next.config.ts`, plan §5.3): `/about_us`, `/contact-us`, each
+  of the eight `/service-detail/…` addresses to its service's new page, any
+  other `/service-detail/…` to Services, `/profile.pdf` to the brochure. All
+  answer **301** (`statusCode`, not Next's default 308), as the old site's
+  links expect; a journey checks each.
+- **`robots.txt`** (`src/app/robots.ts`): the public site open; `/admin`,
+  `/api` and `/kit` closed; the sitemap named.
+- **`sitemap.xml`** (`src/app/sitemap.ts`): the fixed pages, every published
+  service and every open job, read when it is asked for
+  (`listPublicPaths`, `features/content/api.ts`), with when each record was
+  published.
+
+### Open question
+- **Q42, how public pages are cached (R3.6, plan §22.1).** Cache Components
+  prerenders cached reads at build, and the release builds on GitHub, where
+  the client's database is out of reach; streaming instead would hide the
+  content from visitors without JavaScript and turn a missing page's 404
+  into a 200 (the R2.7 finding). Recommended: (b) keep per-request
+  rendering and cache the database reads with tags, Publish revalidating
+  exactly its tags. R3.6 waits on the answer.
+
+### Changed
+- Plan: Q42; R3.6 waits on it; R3.7 DOING.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (487), coverage 100%.
+- Build passed; E2E passed (79), including each redirect, robots.txt and the
+  sitemap.
+
+### Blockers
+- R3.6 waits on Q42.

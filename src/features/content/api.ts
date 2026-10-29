@@ -1,3 +1,4 @@
+import { ROUTES } from "@/constants/routes";
 import { pageDocumentKey, PAGE_RULES, type PageKey, type SectionType } from "@/constants/sections";
 import { listPublishedJobs } from "@/features/careers/api";
 import { listPublishedClients } from "@/features/clients/api";
@@ -47,4 +48,25 @@ export async function getPublishedPageContent(
   if (!document) return null;
   const images = await getImages(imageIds(document, clients));
   return { document, data: { site, services, jobs, clients, images } };
+}
+
+/** Every public page a search engine should know (plan §19): the fixed pages, each published service, each open job. */
+export async function listPublicPaths(): Promise<{ path: string; modified?: Date }[]> {
+  const [services, jobs] = await Promise.all([listPublishedServices(), listPublishedJobs()]);
+  return [
+    ...[
+      ROUTES.home,
+      ROUTES.about,
+      ROUTES.services,
+      ROUTES.careers,
+      ROUTES.contact,
+      ROUTES.quote,
+      ROUTES.privacy,
+      ROUTES.terms,
+    ].map((path) => ({ path })),
+    ...services.map((service) => ({ path: ROUTES.service(service.published.slug), modified: service.publishedAt })),
+    ...jobs
+      .filter((job) => job.open)
+      .map((job) => ({ path: ROUTES.job(job.published.slug), modified: job.publishedAt })),
+  ];
 }

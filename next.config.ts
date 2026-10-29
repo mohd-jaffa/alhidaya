@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 import { version } from "./package.json";
+import { OLD_SITE_REDIRECTS } from "./src/constants/redirects";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -10,6 +11,10 @@ const nextConfig: NextConfig = {
   output: "standalone",
   // Every error report can name the build it came from.
   env: { NEXT_PUBLIC_APP_VERSION: version },
+  // The current site's addresses, moved for good (plan §5.3): 301, as the old site's links expect.
+  async redirects() {
+    return OLD_SITE_REDIRECTS.map((redirect) => ({ ...redirect, statusCode: 301 as const }));
+  },
 };
 
 export default nextConfig;
