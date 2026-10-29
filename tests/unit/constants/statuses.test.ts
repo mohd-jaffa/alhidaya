@@ -5,6 +5,8 @@ import {
   AUDIT_ACTIONS,
   CV_STATUSES,
   EMAIL_STATUSES,
+  EMPLOYMENT_TYPE_LABELS,
+  EMPLOYMENT_TYPES,
   ENQUIRY_STATUSES,
   ERROR_SOURCES,
   FORM_KINDS,
@@ -43,5 +45,6 @@ describe("the vocabularies", () => {
 
   it("name every social network the footer may link", () => {
     expect(Object.keys(SOCIAL_NETWORK_LABELS)).toEqual([...SOCIAL_NETWORKS]);
+    expect(Object.keys(EMPLOYMENT_TYPE_LABELS)).toEqual([...EMPLOYMENT_TYPES]);
   });
 });

@@ -1249,3 +1249,56 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R3.2, the section components
+
+### Added
+- **One component per section type** (`src/components/sections/`, plan §7.2),
+  each drawing its published content in "Follow the Line":
+  - `SignSection`: the page's sign, its photo fetched first; on Home,
+    `HomeLines` follows it: the three lines from their "You are here"
+    station, their names and actions fixed (D71), the numbers the site's.
+  - `IntroSection` (text and a portrait photo), `ValuesSection` (each value
+    a stop on a hairline, as many across as fit), `MissionSection` (mission
+    and vision side by side on a quiet panel).
+  - `ServicesIndexSection`: each audience's services as stops down its line
+    (sky for care at home with WhatsApp and Call, deep blue for staffing
+    with Request a Quote), each stop the link to its service; a line with
+    no published services is left out.
+  - `InstitutionsSection` and `CareersBandSection` on their lines' edges
+    (`LineEdge`, a new kit part); the careers band shows the three most
+    recent open jobs (D72) and **All open jobs**.
+  - `JobsListSection`: every open job with where, its terms and its closing
+    day; the admin's empty-state words when none is open; the general
+    application always offered (Q7).
+  - `ClientsSection`: logos named by their organisation, linked when the
+    admin gave a site; not shown at all until there are logos (D7).
+  - `ContactBandSection` (a deep-blue sign with WhatsApp, Call, the number,
+    the email and the hours) and `ContactDetailsSection` (every way to reach
+    the company, the office with **Open in Google Maps**, the hours, the
+    brochure when there is one; the static map joins it at R3.5).
+  - `FormSection` (the admin's heading and text above the form the page
+    gives) and `RichTextSection`.
+- **`PageSections`**: a page's visible sections in the admin's order, each at
+  an anchor named by its type (`start`, `services`, `text-2`), which the
+  line's stations will link to (R3.3); a jump lands below the header.
+- **`getPublishedPageContent`** (`features/content/api.ts`): a page with all
+  it shows, published copies only, in two round trips: the page, the site
+  and only the collections its section types may show; then its images.
+- Words: the sections' fixed words in `UI_TEXT`; employment-type labels in
+  `statuses.ts`; `readableDay` ("30 November 2026") in `lib/dates.ts`.
+
+### Changed
+- Plan: R3.2 DONE.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (464), coverage 100%: every section's
+  content, actions, empty and missing states; the renderer's order and
+  anchors; the page read against the local MySQL (only what a page may show,
+  and its images).
+- Build passed; E2E passed (44, phone and desktop), axe clean. The sections
+  are first seen on a page at R3.3.
+
+### Blockers
+- None.

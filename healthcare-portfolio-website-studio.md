@@ -1322,7 +1322,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R3.1 | Copy: every public text rewritten from real facts, sent to the client for approval | D6 | — | DONE (2026-10-29; written at R1.8; reviewed with the client at the user's demo and changed in the admin, D70; sign-off at R7.5) |
-| R3.2 | Section components for the catalogue | §7.2 | — | DOING (2026-10-29: rich text and uploaded images) |
+| R3.2 | Section components for the catalogue | §7.2 | — | DONE (2026-10-29; first seen on Home at R3.3) |
 | R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | — | TODO |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | TODO |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | TODO |

@@ -55,6 +55,18 @@ export const UI_TEXT = {
   replaceFile: "Choose another file",
   noFileChosen: "No file chosen",
   loading: "Loading",
+  /** The pages' sections (plan §7.2): the words the admin does not edit. */
+  mission: "Our mission",
+  vision: "Our vision",
+  openJobs: "Open jobs",
+  allOpenJobs: "All open jobs",
+  generalApplication: "Send a general application",
+  closes: "Closes",
+  phone: "Phone",
+  address: "Address",
+  hours: "Hours",
+  openInMaps: "Open in Google Maps",
+  downloadBrochure: "Download our brochure",
 } as const;
 
 /**

@@ -1,4 +1,5 @@
 import type { PageKey, SectionType } from "@/constants/sections";
+import type { SiteImage } from "@/features/media/types";
 import type {
   ClientDocument,
   JobDocument,
@@ -33,6 +34,10 @@ const CONTENT: Record<SectionType, Section["content"]> = {
 
 export const section = (type: SectionType, visible = true): Section =>
   ({ id: crypto.randomUUID(), type, visible, content: CONTENT[type] }) as Section;
+
+/** A section type's valid content, typed as that type's. */
+export const contentFixture = <T extends SectionType>(type: T) =>
+  structuredClone(CONTENT[type]) as Extract<Section, { type: T }>["content"];
 
 const seo = { title: en(null), description: en(null) };
 
@@ -107,4 +112,21 @@ export const siteFixture = (overrides: Partial<SiteDocument> = {}): SiteDocument
   brochure: null,
   whatsappButton: true,
   ...overrides,
+});
+
+/** A record as the public reads it, published. */
+export const publishedFixture = <T extends object>(document: T) => ({
+  id: crypto.randomUUID(),
+  slug: "slug" in document && typeof document.slug === "string" ? document.slug : null,
+  published: document,
+  publishedAt: new Date("2026-10-29T09:00:00Z"),
+});
+
+/** An image as a page shows it: one made size, in WebP. */
+export const imageFixture = (alt = "A nurse at a patient's bedside"): SiteImage => ({
+  id: crypto.randomUUID(),
+  width: 1600,
+  height: 1067,
+  alt,
+  sources: [{ url: "/media/2026-10/abcdefghij-w960.webp", width: 960, mime: "image/webp" }],
 });

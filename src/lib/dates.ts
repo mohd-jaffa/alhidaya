@@ -13,3 +13,11 @@ export function dohaDay(at: Date = new Date()): string {
     day: "2-digit",
   }).format(at);
 }
+
+/** A calendar day as a visitor reads it: "2026-11-30" is "30 November 2026". */
+export function readableDay(day: string): string {
+  const [year, month, date] = day.split("-").map(Number);
+  return new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", day: "numeric", month: "long", year: "numeric" }).format(
+    new Date(Date.UTC(year, month - 1, date)),
+  );
+}

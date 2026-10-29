@@ -35,6 +35,11 @@ export type Audience = (typeof AUDIENCES)[number];
 /** A job's terms (plan §9.1). */
 export const EMPLOYMENT_TYPES = ["FULL_TIME", "PART_TIME", "CONTRACT"] as const;
 export type EmploymentType = (typeof EMPLOYMENT_TYPES)[number];
+export const EMPLOYMENT_TYPE_LABELS: Record<EmploymentType, string> = {
+  FULL_TIME: "Full time",
+  PART_TIME: "Part time",
+  CONTRACT: "Contract",
+};
 
 /** The collections kept as records (plan D60). */
 export const RECORD_COLLECTIONS = ["SERVICES", "JOBS", "CLIENTS"] as const;
