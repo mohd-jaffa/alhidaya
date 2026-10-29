@@ -1784,3 +1784,73 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R4.2: Turnstile and the trap for bots
+
+### Added
+- **Turnstile in both forms** (`src/components/ui/bot-check.tsx`, plan
+  §10.3): Cloudflare's script is added when the visitor first reaches into
+  a form, never in the page's first load; the check is seen only when
+  Cloudflare needs the visitor to tick a box (D78), and takes no room
+  otherwise. Its token goes into the form as `turnstileToken`; a token works
+  once, so each send the server answered asks for a fresh one. If the
+  script cannot load or the check fails, the form says so under the check,
+  with the phone and WhatsApp as the way round.
+- **The server's check** (`src/lib/turnstile/verify.ts`): each token is
+  verified with Cloudflare's siteverify before anything is stored, sending
+  only the token and the secret (never the visitor's address), with a
+  10-second limit. A token Cloudflare does not confirm is refused
+  (`BOT_CHECK_FAILED`, 403); when Cloudflare cannot be reached, the form is
+  refused as an outside service's failure (502). Both forms' schemas need
+  the token, so a form sent before the check passed says so beside it.
+- **The trap for bots** (`src/lib/api/honeypot.ts`): a field hidden from
+  sight and from screen readers, out of the tab order, named so no browser
+  fills it in. A form that comes back with it filled is answered as taken
+  and thrown away (logged by its request id, nothing personal), before the
+  schema and before Cloudflare is asked.
+- `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY`, required, checked at
+  start; the site key is read on the server at request time. `.env.example`
+  holds Cloudflare's published test keys (always pass); `.env.local` was
+  given them without its contents being read. The site's own keys come from
+  the client's Cloudflare account at R8.4.
+- Wording: the check's two messages and the trap's label in the catalogue;
+  `BOT_CHECK_FAILED` in `ERROR_MESSAGES`.
+
+### Changed
+- The route's order: the site's own origin; the trap; the fields; Turnstile;
+  then the chosen service and the store with the rate limit (R1.5), in one
+  transaction.
+- The send action, Turnstile's box and a failed send's reason are one group,
+  so the hidden check adds no space above the send action.
+- `useSchemaForm` counts the sends the server answered (`answered`).
+
+### Decisions
+- D78 (agent default, Q44): Turnstile seen only when needed and loaded on
+  first reach; when Cloudflare cannot be reached the form is refused, so
+  nothing is kept unchecked.
+
+### Performance (local build)
+- JavaScript at first paint: Contact and Request a Quote 164.9 KB, Home
+  156.4 KB gzip (within 170 KB). Cloudflare's script is not in the first
+  load; with the test keys the token arrives about 1.6 – 2 s after the
+  visitor first reaches into a form.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed (577), coverage 100%: the widget (added
+  on first reach and only once, drawn with its options, room only when
+  shown, its failures said and cleared, a failed load tried again, a fresh
+  token after each answered send, removed with the form, nothing drawn for
+  a form gone); siteverify (what is sent, refusals, Cloudflare unreachable
+  or answering badly); the trap; the route (a filled trap thanked and
+  dropped without asking Cloudflare, an unconfirmed token keeping nothing,
+  no token asking nothing); both schemas needing the token; both keys
+  required.
+- E2E: both forms sent through Cloudflare's test keys and checked by the
+  server; a form with the trap filled thanked and nothing stored. Screenshots
+  of the check hidden and, with Cloudflare's always-ask test key, shown above
+  the send action at both widths.
+
+### Blockers
+- None. The site's Turnstile keys wait on the client's Cloudflare account
+  (§40, R8.4).

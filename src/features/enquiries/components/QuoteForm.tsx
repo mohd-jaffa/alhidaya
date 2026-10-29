@@ -25,11 +25,14 @@ export function QuoteForm({
   services,
   chosen,
   whatsapp,
+  siteKey,
 }: {
   services: readonly { slug: string; name: string }[];
   /** The service the visitor came from, or "" for none. */
   chosen: string;
   whatsapp: string | null;
+  /** Turnstile's site key (plan §10.3). */
+  siteKey: string;
 }) {
   return (
     <EnquiryForm
@@ -39,6 +42,7 @@ export function QuoteForm({
       sent={UI_TEXT.quoteSent}
       notSent={UI_TEXT.quoteNotSent}
       whatsapp={whatsapp}
+      botCheck={{ siteKey, action: "quote" }}
     >
       {(errors) => (
         <>

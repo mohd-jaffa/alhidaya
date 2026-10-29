@@ -11,7 +11,7 @@ import { EnquiryForm } from "./EnquiryForm";
 const schema = () => import("@/lib/validation/schemas/enquiries").then((module) => module.contactFormSchema);
 
 /** The Contact form (plan §10.2): name, phone, email and message. */
-export function ContactForm({ whatsapp }: { whatsapp: string | null }) {
+export function ContactForm({ whatsapp, siteKey }: { whatsapp: string | null; siteKey: string }) {
   return (
     <EnquiryForm
       schema={schema}
@@ -20,6 +20,7 @@ export function ContactForm({ whatsapp }: { whatsapp: string | null }) {
       sent={UI_TEXT.messageSent}
       notSent={UI_TEXT.messageNotSent}
       whatsapp={whatsapp}
+      botCheck={{ siteKey, action: "contact" }}
     >
       {(errors) => (
         <>

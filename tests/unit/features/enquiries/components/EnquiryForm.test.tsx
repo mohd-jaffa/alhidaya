@@ -7,6 +7,26 @@ import { ERROR_MESSAGES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messag
 import { ROUTES } from "@/constants/routes";
 import { EnquiryForm } from "@/features/enquiries/components/EnquiryForm";
 import { ApiError } from "@/lib/api/client";
+import { HONEYPOT_FIELD } from "@/lib/api/honeypot";
+
+/** Turnstile as the form sees it: its error, and how many fresh tokens it was asked for. */
+vi.mock("@/components/ui/bot-check", () => ({
+  BotCheck: ({
+    siteKey,
+    action,
+    error,
+    renewal,
+  }: {
+    siteKey: string;
+    action: string;
+    error?: string;
+    renewal: number;
+  }) => (
+    <p data-testid="bot-check" data-site-key={siteKey} data-action={action} data-renewal={renewal}>
+      {error}
+    </p>
+  ),
+}));
 
 const schema = async () =>
   z.object({
@@ -22,7 +42,15 @@ function Form({
   whatsapp?: string | null;
 }) {
   return (
-    <EnquiryForm schema={schema} send={send} action="Send it" sent="Thanks." notSent="Not sent." whatsapp={whatsapp}>
+    <EnquiryForm
+      schema={schema}
+      send={send}
+      action="Send it"
+      sent="Thanks."
+      notSent="Not sent."
+      whatsapp={whatsapp}
+      botCheck={{ siteKey: "site-key", action: "contact" }}
+    >
       {(errors) => (
         <label>
           Name <input name="name" aria-describedby="name-error" />
@@ -44,6 +72,22 @@ beforeEach(() => {
 });
 
 describe("EnquiryForm", () => {
+  it("lays a trap for bots that no person sees, reaches or has filled in for them (plan §10.3)", () => {
+    const { container } = render(<Form />);
+    const trap = container.querySelector(`input[name="${HONEYPOT_FIELD}"]`);
+    expect(trap).toHaveAttribute("tabindex", "-1");
+    expect(trap).toHaveAttribute("autocomplete", "off");
+    expect(trap?.closest("[aria-hidden]")).toHaveClass("sr-only");
+    expect(screen.queryByRole("textbox", { name: UI_TEXT.honeypot })).not.toBeInTheDocument();
+  });
+
+  it("checks that a person is sending with Turnstile, under its site key and the form's name", () => {
+    render(<Form />);
+    expect(screen.getByTestId("bot-check")).toHaveAttribute("data-site-key", "site-key");
+    expect(screen.getByTestId("bot-check")).toHaveAttribute("data-action", "contact");
+    expect(screen.getByTestId("bot-check")).toHaveAttribute("data-renewal", "0");
+  });
+
   it("asks for consent beside a privacy notice that opens apart, so nothing typed is lost", async () => {
     const user = userEvent.setup();
     render(<Form />);
@@ -108,8 +152,12 @@ describe("EnquiryForm", () => {
     expect(alert).toHaveTextContent(`${UI_TEXT.errorReference}: req_1`);
     expect(screen.getByRole("textbox", { name: /Name/ })).toHaveValue("Mariam");
 
+    // Each send the server answered spent Turnstile's token: a fresh one is asked for.
+    expect(screen.getByTestId("bot-check")).toHaveAttribute("data-renewal", "1");
+
     await user.click(screen.getByRole("button", { name: "Send it" }));
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(ERROR_MESSAGES.NETWORK_OFFLINE));
     expect(screen.getByRole("alert")).not.toHaveTextContent(UI_TEXT.errorReference);
+    expect(screen.getByTestId("bot-check")).toHaveAttribute("data-renewal", "2");
   });
 });

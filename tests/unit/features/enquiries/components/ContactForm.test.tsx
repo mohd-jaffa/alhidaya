@@ -7,13 +7,16 @@ import { ContactForm } from "@/features/enquiries/components/ContactForm";
 
 const { submit } = vi.hoisted(() => ({ submit: vi.fn(async () => ({ received: true })) }));
 vi.mock("@/features/enquiries/api.client", () => ({ EnquiriesClient: { submit } }));
+vi.mock("@/components/ui/bot-check", () => ({
+  BotCheck: () => <input type="hidden" name="turnstileToken" value="token-from-cloudflare" readOnly />,
+}));
 
 const field = (label: string) => screen.getByRole("textbox", { name: label });
 
 describe("ContactForm (plan §10.2)", () => {
   it("asks for a name, phone, email and message, each checked by the Contact schema", async () => {
     const user = userEvent.setup();
-    render(<ContactForm whatsapp="+97431306555" />);
+    render(<ContactForm whatsapp="+97431306555" siteKey="site-key" />);
     await user.click(screen.getByRole("button", { name: UI_TEXT.sendMessage }));
     await waitFor(() =>
       expect(field(UI_TEXT.yourName)).toHaveAccessibleDescription(VALIDATION_MESSAGES.required(UI_TEXT.yourName)),
@@ -29,7 +32,7 @@ describe("ContactForm (plan §10.2)", () => {
   it("sends the message as a Contact enquiry, as typed", async () => {
     const user = userEvent.setup();
     Element.prototype.scrollIntoView = vi.fn();
-    render(<ContactForm whatsapp={null} />);
+    render(<ContactForm whatsapp={null} siteKey="site-key" />);
     await user.type(field(UI_TEXT.yourName), "Mariam Ali");
     await user.type(field(UI_TEXT.phone), "5551 2345");
     await user.type(field(UI_TEXT.email), "mariam@example.com");
@@ -43,6 +46,8 @@ describe("ContactForm (plan §10.2)", () => {
       email: "mariam@example.com",
       message: "A nurse at night?",
       consent: true,
+      your_reference: "",
+      turnstileToken: "token-from-cloudflare",
     });
   });
 });

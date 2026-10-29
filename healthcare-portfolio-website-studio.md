@@ -159,6 +159,7 @@ question (§41) the user may overturn.
 | D75 | **Stock photos come now** (answers Q41): a handful of licensed stock photos (Q11), each source and licence recorded, imported by the seed through the same sizing step the admin's uploads will use (brought forward from R6.5); the admin's media screens stay at R6.5. | 2026-10-29 |
 | D76 | **Public pages render per request from cached reads** (answers Q42, option b): each page is server-rendered on request (visible without JavaScript, correct 404s); its database reads are cached with tags (`unstable_cache`) and Publish revalidates exactly its tags, never serving stale content (§22.1). Cache Components is not used: it prerenders cached reads at build, where the client's database is out of reach. | 2026-10-29 |
 | D77 | **The public forms load their checks after first paint**: React Hook Form with Zod in the Quote and Contact pages' first load measured ≈ 40 KB gzip more (≈ 194 KB against the 170 KB budget, §31). The forms are plain fields of the browser's own, checked by the same Zod schema the route parses (`src/lib/validation/schemas/enquiries.ts`) through one small hook (`src/hooks/useSchemaForm.ts`), which fetches the schema when the visitor first reaches into the form; React Hook Form stays for the admin (Phase 6), which has no such budget. Each mistake shows beside its field in the catalogue's words, on the visitor's side and the server's alike. **(agent default; Q43)** | 2026-10-29 |
+| D78 | **Turnstile is seen only when Cloudflare needs the visitor to act** (`appearance: interaction-only`, Cloudflare's managed check) and is loaded when the visitor first reaches into a form, never in a page's first load (as D77). Its site key is read on the server at request time, so the site's own keys need no new build. When Cloudflare cannot be reached, the form is refused with the outside service's message: nothing is stored unchecked (§10.3: verified before anything is stored). Locally and in the tests, Cloudflare's published test keys. **(agent default; Q44)** | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -513,6 +514,8 @@ Every page with a FORM section can show either form: the section names it.
 
 - **Cloudflare Turnstile**, verified on the server before anything is stored.
 - A **honeypot** field; a filled one is accepted silently and discarded.
+  It is hidden from sight and from screen readers, out of the tab order, and
+  named so that no browser fills it in (`src/lib/api/honeypot.ts`).
 - A **rate limit** per hashed IP and per form, in the database (Q16 default:
   5 submissions per 10 minutes); refusals answer with a calm message.
 - Every field validated by Zod on the client and again on the server; the
@@ -1356,7 +1359,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R4.1 | Quote and Contact forms: schemas, UI, success and error states | §10 | Q5, Q6 | DONE (2026-10-29; Q5 and Q6 as their defaults; checks after first paint, D77; Turbopack's grouping of shared code is for R7.1) |
-| R4.2 | Turnstile verification, honeypot, rate limit | §10.3 | — | TODO |
+| R4.2 | Turnstile verification, honeypot, rate limit | §10.3 | — | DONE (2026-10-29; Cloudflare's test keys until R8.4; seen only when needed, D78; the rate limit came at R1.5) |
 | R4.3 | Alert emails, failure logging, retry | §10.4, §17 | Q17 | TODO |
 | R4.4 | Enquiries inbox: list, filters, detail, status, notes | §10.5 | — | TODO |
 | R4.5 | Integration + E2E | §34 | — | TODO |
@@ -1403,7 +1406,7 @@ one commit (D27).
 | R8.1 | The production MySQL database, created after the old one is cleared (D50), with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media folder (with its `.htaccess`) and the CV folder (`700`) | D39, D49, D54, §21.1 | Full payment (D48), R0.9 | TODO |
 | R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron; `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
 | R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM added in cPanel; DMARC `p=none` published; verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
-| R8.4 | Turnstile keys for alhidaya.qa; Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
+| R8.4 | Turnstile keys for alhidaya.qa (replacing the test keys, which always pass; checked before go-live); Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
 | R8.5 | Pre-switch check on the server; speed from Qatar; the Cloudflare-proxy decision | D25 | Q22 | TODO |
 | R8.6 | Switch alhidaya.qa to the Node.js app; every 301 verified live; sitemap to Search Console; the old site's files removed from the server only after the backup is verified (§21.2) | D21, §19 | — | TODO |
 | R8.7 | Smoke test; release `v1.0.0` | §35 | — | TODO |
@@ -1499,6 +1502,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q41 | ~~Choose the licensed stock photos now and bring forward the step that makes an image's sizes?~~ | **Answered by D75:** yes. |
 | Q42 | ~~How public pages are cached (§22.1)~~ | **Answered by D76:** (b), per-request rendering from cached reads, Publish revalidating exactly its tags. |
 | Q43 | The public forms' checks: Zod fetched when the visitor first reaches into the form, without React Hook Form (≈ 164 KB at first paint), or React Hook Form and Zod in the first load (≈ 194 KB, over the 170 KB budget)? | The first (D77). |
+| Q44 | Turnstile: seen only when Cloudflare needs the visitor to tick a box, or always shown under the form? And when Cloudflare cannot be reached: refuse the form (nothing kept unchecked), or keep it marked unchecked? | Seen only when needed; refused (D78). |
 
 ## 42. Later (unscheduled)
 

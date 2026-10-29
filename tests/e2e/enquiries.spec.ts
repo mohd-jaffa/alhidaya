@@ -6,12 +6,15 @@ import { ERROR_MESSAGES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messag
 import { API_ROUTES, ROUTES } from "@/constants/routes";
 import { closeDb, getDb } from "@/db/client";
 import { enquiries } from "@/db/schema";
+import { HONEYPOT_FIELD } from "@/lib/api/honeypot";
+import { TURNSTILE_FIELD } from "@/lib/turnstile/endpoints";
 
 /**
- * The Quote and Contact forms (plan §10, R4.1): each mistake beside its
- * field, the thanks in place of the form, and nothing typed lost when a
- * send fails. Each journey is a visitor of its own, so the rate limit
- * (§10.3) never mixes them up.
+ * The Quote and Contact forms (plan §10, R4.1, R4.2): each mistake beside its
+ * field, the thanks in place of the form, and nothing typed lost when a send
+ * fails. Turnstile runs on Cloudflare's test keys, which always pass, and the
+ * server checks each token with Cloudflare. Each journey is a visitor of its
+ * own, so the rate limit (§10.3) never mixes them up.
  */
 test.beforeEach(async ({ page }) => {
   await page.setExtraHTTPHeaders({ "x-forwarded-for": `198.51.100.${Math.floor(Math.random() * 250) + 1}` });
@@ -23,6 +26,9 @@ test.afterAll(async () => {
 
 /** A text field by its exact label: "Phone" is not "A phone call", "Message" not "Send us a message". */
 const field = (page: Page, label: string) => page.getByRole("textbox", { name: label, exact: true });
+
+/** Cloudflare's token in the form: the check, loaded when the visitor reached in, has passed. */
+const checked = (page: Page) => expect(page.locator(`input[name="${TURNSTILE_FIELD}"]`)).toHaveValue(/.+/);
 
 const stored = async (email: string) =>
   getDb()
@@ -54,6 +60,7 @@ test("the Contact form shows each mistake beside its field, then takes the messa
   await fillContact(page, email);
   // A mistake fixed clears as it is fixed.
   await expect(form.getByText(VALIDATION_MESSAGES.required(UI_TEXT.yourName))).toHaveCount(0);
+  await checked(page);
   await form.getByRole("button", { name: UI_TEXT.sendMessage }).click();
 
   const thanks = page.getByRole("group", { name: UI_TEXT.messageSent });
@@ -94,6 +101,7 @@ test("the Quote form starts on the service the visitor came from, and keeps the 
   await field(page, UI_TEXT.message).fill("Two school nurses from January.");
   await page.getByRole("checkbox", { name: new RegExp(UI_TEXT.consent) }).check();
   expect((await new AxeBuilder({ page }).include("form").analyze()).violations).toEqual([]);
+  await checked(page);
   await page.getByRole("button", { name: UI_TEXT.sendQuote }).click();
 
   await expect(page.getByRole("group", { name: UI_TEXT.quoteSent })).toBeFocused();
@@ -128,6 +136,7 @@ test("a send that fails says so, gives its reference, and keeps everything typed
   );
   await page.goto(ROUTES.contact);
   await fillContact(page, "kept@example.com");
+  await checked(page);
   await page.getByRole("button", { name: UI_TEXT.sendMessage }).click();
 
   const alert = page.getByRole("alert").filter({ hasText: UI_TEXT.messageNotSent });
@@ -136,4 +145,18 @@ test("a send that fails says so, gives its reference, and keeps everything typed
   await expect(alert).toContainText("req_e2e");
   await expect(field(page, UI_TEXT.email)).toHaveValue("kept@example.com");
   await expect(field(page, UI_TEXT.message)).toHaveValue("Do you have a nurse for my father at night?");
+});
+
+test("a form that comes back with the trap filled is thanked and thrown away (plan §10.3)", async ({ page }) => {
+  const email = `trap-${crypto.randomUUID()}@example.com`;
+  await page.goto(ROUTES.contact);
+  await fillContact(page, email);
+  // What a bot does: fill every field it finds, the hidden one too.
+  await page.locator(`input[name="${HONEYPOT_FIELD}"]`).evaluate((input: HTMLInputElement, value) => {
+    input.value = value;
+  }, "https://spam.example");
+  await checked(page);
+  await page.getByRole("button", { name: UI_TEXT.sendMessage }).click();
+  await expect(page.getByRole("group", { name: UI_TEXT.messageSent })).toBeVisible();
+  expect(await stored(email)).toEqual([]);
 });

@@ -9,6 +9,7 @@ const contact = {
   email: "Mariam@Example.com",
   message: "Do you have a nurse\r\nfor my father at night?",
   consent: true,
+  turnstileToken: "token-from-cloudflare",
 };
 
 const quote = {
@@ -21,6 +22,7 @@ const quote = {
   contactMethod: "EMAIL",
   message: "Two school nurses from January.",
   consent: true,
+  turnstileToken: "token-from-cloudflare",
 };
 
 /** The first problem with each field, as the form shows it. */
@@ -35,6 +37,7 @@ describe("the Contact form (plan §10.2)", () => {
       email: "mariam@example.com",
       message: "Do you have a nurse\nfor my father at night?",
       consent: true,
+      turnstileToken: "token-from-cloudflare",
     });
   });
 
@@ -45,6 +48,7 @@ describe("the Contact form (plan §10.2)", () => {
       email: VALIDATION_MESSAGES.required(UI_TEXT.email),
       message: VALIDATION_MESSAGES.required(UI_TEXT.message),
       consent: VALIDATION_MESSAGES.consent,
+      turnstileToken: VALIDATION_MESSAGES.botCheck,
     });
     expect(
       problems(contactFormSchema.safeParse({ ...contact, phone: "12", email: "mariam", message: "x".repeat(2001) })),
@@ -72,6 +76,18 @@ describe("the Quote form (plan §10.1)", () => {
       careFor: VALIDATION_MESSAGES.careFor,
       contactMethod: VALIDATION_MESSAGES.contactMethod,
     });
+  });
+});
+
+describe("Turnstile's token (plan §10.3)", () => {
+  it("is needed by both forms, and bounded as Cloudflare bounds it", () => {
+    for (const schema of [contactFormSchema, quoteFormSchema]) {
+      const form = schema === contactFormSchema ? contact : quote;
+      expect(problems(schema.safeParse({ ...form, turnstileToken: "" }))).toEqual({
+        turnstileToken: VALIDATION_MESSAGES.botCheck,
+      });
+      expect(schema.safeParse({ ...form, turnstileToken: "x".repeat(2049) }).success).toBe(false);
+    }
   });
 });
 

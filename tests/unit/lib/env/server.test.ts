@@ -28,6 +28,16 @@ describe("getServerEnv", () => {
     }
   });
 
+  it("needs both of Turnstile's keys (plan §10.3)", () => {
+    for (const name of ["TURNSTILE_SITE_KEY", "TURNSTILE_SECRET_KEY"] as const) {
+      const without = Object.fromEntries(Object.entries(valid).filter(([key]) => key !== name));
+      expect(() => getServerEnv(env(without))).toThrow(expect.objectContaining({ code: "CONFIG_INVALID" }));
+      expect(() => getServerEnv(env({ ...valid, [name]: " " }))).toThrow(
+        expect.objectContaining({ code: "CONFIG_INVALID" }),
+      );
+    }
+  });
+
   it("refuses a media address that is not a plain path", () => {
     expect(() => getServerEnv(env({ ...valid, MEDIA_URL: "https://cdn.example/media" }))).toThrow(
       expect.objectContaining({ code: "CONFIG_INVALID" }),

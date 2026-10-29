@@ -22,7 +22,7 @@ function Probe({
   load?: () => Promise<z.ZodType>;
   send?: (values: Record<string, unknown>) => Promise<unknown>;
 }) {
-  const { form, errors, status, failure } = useSchemaForm({ schema: load, send });
+  const { form, errors, status, failure, answered } = useSchemaForm({ schema: load, send });
   return (
     <form {...form} aria-label="Probe">
       <label>
@@ -53,6 +53,7 @@ function Probe({
       <a href="#terms">Terms</a>
       <button type="submit">Send</button>
       <output>{status}</output>
+      <p data-testid="answered">{answered}</p>
       {failure ? <p role="alert">{`${failure.code}: ${failure.message}`}</p> : null}
     </form>
   );
@@ -139,8 +140,10 @@ describe("useSchemaForm", () => {
     await user.click(send());
     expect(sent).toHaveBeenCalledOnce();
     expect(sent).toHaveBeenCalledWith({ name: "Mariam", choice: "B", size: "s", agree: true });
+    expect(screen.getByTestId("answered")).toHaveTextContent("0");
     await act(async () => finish());
     expect(screen.getByRole("status")).toHaveTextContent("sent");
+    expect(screen.getByTestId("answered")).toHaveTextContent("1");
   });
 
   it("shows what the route refused beside its field", async () => {
@@ -181,6 +184,8 @@ describe("useSchemaForm", () => {
     await user.click(send());
     await user.click(send());
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("RATE_LIMITED"));
+    // Each send the server answered counts, refused or not: a one-time token is spent by each.
+    expect(screen.getByTestId("answered")).toHaveTextContent("3");
     // Nothing typed is lost.
     expect(name()).toHaveValue("Mariam");
   });

@@ -25,7 +25,7 @@ const optionalBoolean = z.preprocess((value) => {
  * Everything the server reads from its environment, checked once (plan
  * §26.2): a missing or malformed value stops with `CONFIG_INVALID` rather
  * than failing somewhere deeper with a stranger message. `.env.example` lists
- * these; later rows add theirs (mail, Turnstile, secrets) as they arrive.
+ * these; later rows add theirs (the cron secret) as they arrive.
  * Production values live in the cPanel Node.js app's environment.
  */
 const serverEnvSchema = z.object({
@@ -48,6 +48,13 @@ const serverEnvSchema = z.object({
   // Keys the hashes that stand in for emails and IPs in the lockout and the
   // rate limits, so neither is ever stored (plan §18, §26.4).
   HASH_SECRET: z.string().min(32),
+
+  // Cloudflare Turnstile, the public forms' check that a person is sending
+  // (plan §10.3): the site key the widget is drawn with, given to the page at
+  // request time, and the secret the server verifies a token with. Locally
+  // and in the tests, Cloudflare's test keys; the site's own at R8.4.
+  TURNSTILE_SITE_KEY: z.string().trim().min(1),
+  TURNSTILE_SECRET_KEY: z.string().trim().min(1),
 
   // Where uploads live on the server (plan §9.4, §21.3): the media folder
   // inside public_html, served by Apache at MEDIA_URL; the CV folder outside

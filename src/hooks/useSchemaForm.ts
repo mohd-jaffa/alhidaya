@@ -71,6 +71,8 @@ export function useSchemaForm({
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<FormStatus>("editing");
   const [failure, setFailure] = useState<ApiError | null>(null);
+  /** How many sends the server has answered: a one-time token in the form (Turnstile's) is spent by each. */
+  const [answered, setAnswered] = useState(0);
   const loading = useRef<Promise<ZodType> | null>(null);
   const tried = useRef(false);
 
@@ -123,6 +125,8 @@ export function useSchemaForm({
       const refused = error instanceof ApiError ? refusedFields(error, form) : {};
       if (Object.keys(refused).length > 0) return showErrors(form, refused);
       fail(error);
+    } finally {
+      setAnswered((count) => count + 1);
     }
   }
 
@@ -159,5 +163,6 @@ export function useSchemaForm({
     errors,
     status,
     failure,
+    answered,
   };
 }

@@ -116,6 +116,7 @@ const quote = (service: string) =>
     contactMethod: "WHATSAPP",
     message: "Two school nurses from January.",
     consent: true,
+    turnstileToken: "token-from-cloudflare",
   });
 
 describe("receiveEnquiry, against the local MySQL", () => {
@@ -155,6 +156,7 @@ describe("receiveEnquiry, against the local MySQL", () => {
         email: "mariam@example.com",
         message: "A nurse at night?",
         consent: true,
+        turnstileToken: "token-from-cloudflare",
       }),
       ip(),
       at,

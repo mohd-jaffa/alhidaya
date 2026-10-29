@@ -103,6 +103,10 @@ export const UI_TEXT = {
   messageNotSent: "Your message was not sent.",
   nothingLost: "What you typed is still here.",
   formNeedsScript: "This form needs JavaScript. You can call, email or message us on WhatsApp instead.",
+  /** The forms' trap for bots (plan §10.3): hidden from everyone, said plainly for anyone who meets it. */
+  honeypot: "Leave this empty",
+  botCheckUnavailable:
+    "The check that a person is sending this did not load. Please reload the page, or call or message us on WhatsApp.",
 } as const;
 
 /** Each page's short name (plan §7.1): where its line starts, as "You are here" names it. */
@@ -144,6 +148,7 @@ export const ERROR_MESSAGES = {
   SLUG_TAKEN: "Another one already uses this web address. Please choose a different one.",
   NOTHING_PUBLISHED: "There is no published version to go back to yet.",
   RATE_LIMITED: "Too many attempts. Please wait a few minutes and try again.",
+  BOT_CHECK_FAILED: "We could not confirm that a person sent this. Please send it again.",
   JOB_CLOSED: "This job is no longer open. You can apply for an open job, or send a general application.",
 
   NETWORK_OFFLINE: "You're offline. Check your connection and try again.",
@@ -187,6 +192,7 @@ export const VALIDATION_MESSAGES = {
   contactMethod: "Please choose how we should reach you.",
   service: "Please choose a service from the list, or Not sure yet.",
   consent: "Please agree, so that we can use your details to answer you.",
+  botCheck: "We are still checking that a person is sending this. If a box appears, tick it, then send again.",
 } as const;
 
 export function isErrorMessageCode(code: string | null | undefined): code is ErrorMessageCode {

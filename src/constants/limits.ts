@@ -25,6 +25,8 @@ export const TEXT_LIMITS = {
   /** A stored file's key: its month folder and generated name. */
   fileKey: 160,
   note: 2000,
+  /** Cloudflare's Turnstile tokens are at most 2048 characters. */
+  turnstileToken: 2048,
 } as const;
 
 /** How many of a repeated thing a document may hold (plan §7.2, §8, §9.1, §13). */
@@ -65,6 +67,9 @@ export const DISK_BUDGETS = {
 /** Retention and CV expiry, in days: the admin's range and the default until set (D24, D52, Q8). */
 export const RETENTION_DAYS = { min: 1, max: 365, default: 180 } as const;
 export const CV_EXPIRY_DAYS = { min: 1, max: 365, default: 180 } as const;
+
+/** How long the server waits for Cloudflare to check a form's token (plan §10.3). */
+export const TURNSTILE_VERIFY_MS = 10_000;
 
 /** Public form submissions per form per visitor (plan §10.3, Q16). */
 export const FORM_RATE_LIMIT = { limit: 5, windowMinutes: 10 } as const;

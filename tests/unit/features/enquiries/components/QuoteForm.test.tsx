@@ -7,6 +7,9 @@ import { QuoteForm } from "@/features/enquiries/components/QuoteForm";
 
 const { submit } = vi.hoisted(() => ({ submit: vi.fn(async () => ({ received: true })) }));
 vi.mock("@/features/enquiries/api.client", () => ({ EnquiriesClient: { submit } }));
+vi.mock("@/components/ui/bot-check", () => ({
+  BotCheck: () => <input type="hidden" name="turnstileToken" value="token-from-cloudflare" readOnly />,
+}));
 
 const SERVICES = [
   { slug: "home-nursing-care", name: "Home nursing care" },
@@ -16,7 +19,7 @@ const field = (label: string) => screen.getByRole("textbox", { name: label });
 
 describe("QuoteForm (plan §10.1)", () => {
   it("offers the published services, starting on the one the visitor came from", () => {
-    render(<QuoteForm services={SERVICES} chosen="school-nurse-staffing" whatsapp={null} />);
+    render(<QuoteForm services={SERVICES} chosen="school-nurse-staffing" whatsapp={null} siteKey="site-key" />);
     const service = screen.getByRole("combobox", { name: `${UI_TEXT.service} (${UI_TEXT.optional})` });
     expect(service).toHaveValue("school-nurse-staffing");
     expect(service).toHaveAccessibleDescription(UI_TEXT.serviceHint);
@@ -29,7 +32,7 @@ describe("QuoteForm (plan §10.1)", () => {
 
   it("asks who the care is for and how to reach the visitor", async () => {
     const user = userEvent.setup();
-    render(<QuoteForm services={SERVICES} chosen="" whatsapp={null} />);
+    render(<QuoteForm services={SERVICES} chosen="" whatsapp={null} siteKey="site-key" />);
     expect(screen.getByRole("group", { name: UI_TEXT.careFor })).toBeInTheDocument();
     expect(screen.getAllByRole("radio")).toHaveLength(8);
     await user.click(screen.getByRole("button", { name: UI_TEXT.sendQuote }));
@@ -41,7 +44,7 @@ describe("QuoteForm (plan §10.1)", () => {
   it("sends the request as a Quote enquiry, as typed", async () => {
     const user = userEvent.setup();
     Element.prototype.scrollIntoView = vi.fn();
-    render(<QuoteForm services={SERVICES} chosen="" whatsapp="+97431306555" />);
+    render(<QuoteForm services={SERVICES} chosen="" whatsapp="+97431306555" siteKey="site-key" />);
     await user.type(field(UI_TEXT.yourName), "Omar Haddad");
     await user.click(screen.getByRole("radio", { name: "A school" }));
     await user.selectOptions(screen.getByRole("combobox"), "school-nurse-staffing");
@@ -62,6 +65,8 @@ describe("QuoteForm (plan §10.1)", () => {
         contactMethod: "EMAIL",
         message: "Two school nurses.",
         consent: true,
+        your_reference: "",
+        turnstileToken: "token-from-cloudflare",
       }),
     );
     expect(await screen.findByRole("group", { name: UI_TEXT.quoteSent })).toBeInTheDocument();

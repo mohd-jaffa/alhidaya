@@ -1,10 +1,14 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { UI_TEXT } from "@/constants/messages";
 import type { SectionData } from "@/features/content/types";
 import { enquiryForms } from "@/features/enquiries/components/EnquiryForms";
+import { stubServerEnv, TEST_ENV } from "@tests/support/env";
 import { publishedFixture, serviceFixture, siteFixture } from "@tests/support/fixtures/content";
+
+beforeEach(() => stubServerEnv());
+afterEach(() => vi.unstubAllEnvs());
 
 const data = (site = siteFixture()): SectionData => ({
   site,
@@ -37,6 +41,12 @@ describe("enquiryForms", () => {
       expect(service()).toHaveValue("");
       next();
     }
+  });
+
+  it("gives both forms Turnstile's site key from the server's environment, read at request time", () => {
+    const forms = enquiryForms(data()) as Record<string, { props: { siteKey: string } }>;
+    expect(forms.QUOTE.props.siteKey).toBe(TEST_ENV.TURNSTILE_SITE_KEY);
+    expect(forms.CONTACT.props.siteKey).toBe(TEST_ENV.TURNSTILE_SITE_KEY);
   });
 
   it("offers WhatsApp after sending only when the site has a number", () => {

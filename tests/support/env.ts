@@ -6,6 +6,8 @@ export const TEST_ENV = {
   NEXT_PUBLIC_SITE_URL: "http://localhost:3000",
   BETTER_AUTH_SECRET: "test-better-auth-secret-at-least-32-chars",
   HASH_SECRET: "test-hash-secret-at-least-thirty-two-chars",
+  TURNSTILE_SITE_KEY: "1x00000000000000000000AA",
+  TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA",
   MEDIA_DIR: ".data/test-media",
   CV_DIR: ".data/test-cvs",
 } as const;
