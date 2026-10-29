@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { PictogramName } from "@/assets/brand/pictograms";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Pictogram } from "@/components/ui/pictogram";
+import { StaticMap } from "@/components/ui/static-map";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { displayPhone, mailtoHref, telHref, whatsappHref } from "@/lib/contact";
@@ -27,7 +28,7 @@ function Detail({ pictogram, term, children }: { pictogram: PictogramName; term:
 /**
  * Every way to reach the company (plan §6.7), from the site content: WhatsApp,
  * the phone, the email, the office with the way to it on Google Maps, the
- * hours, and the brochure when there is one. The static map joins it (R3.5).
+ * hours, and the brochure when there is one; beside them, the static map.
  */
 export function ContactDetailsSection({
   anchor,
@@ -42,41 +43,44 @@ export function ContactDetailsSection({
     <SectionFrame anchor={anchor} className="grid gap-8">
       <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
       {site ? (
-        <dl className="grid gap-x-12 gap-y-6 md:grid-cols-2">
-          <Detail pictogram="chat" term={UI_TEXT.whatsapp}>
-            <a href={whatsappHref(site.contact.whatsapp, UI_TEXT.whatsappPrefill)} className={`${LINK} tabular-nums`}>
-              {displayPhone(site.contact.whatsapp)}
-            </a>
-          </Detail>
-          <Detail pictogram="phone" term={UI_TEXT.phone}>
-            <a href={telHref(site.contact.phone)} className={`${LINK} tabular-nums`}>
-              {displayPhone(site.contact.phone)}
-            </a>
-          </Detail>
-          <Detail pictogram="mail" term={UI_TEXT.email}>
-            <a href={mailtoHref(site.contact.email)} className={LINK}>
-              {site.contact.email}
-            </a>
-          </Detail>
-          <Detail pictogram="location" term={UI_TEXT.address}>
-            <address className="grid not-italic">
-              {site.contact.address.map((line) => (
-                <span key={line.en}>{line.en}</span>
-              ))}
-            </address>
-            <ArrowLink href={site.contact.mapUrl}>{UI_TEXT.openInMaps}</ArrowLink>
-          </Detail>
-          {site.contact.hours.en ? (
-            <Detail pictogram="clock" term={UI_TEXT.hours}>
-              <span>{site.contact.hours.en}</span>
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:items-start">
+          <dl className="grid gap-x-12 gap-y-6 md:grid-cols-2 lg:grid-cols-1">
+            <Detail pictogram="chat" term={UI_TEXT.whatsapp}>
+              <a href={whatsappHref(site.contact.whatsapp, UI_TEXT.whatsappPrefill)} className={`${LINK} tabular-nums`}>
+                {displayPhone(site.contact.whatsapp)}
+              </a>
             </Detail>
-          ) : null}
-          {site.brochure ? (
-            <Detail pictogram="download" term={UI_TEXT.brochure}>
-              <ArrowLink href={ROUTES.brochure}>{UI_TEXT.downloadBrochure}</ArrowLink>
+            <Detail pictogram="phone" term={UI_TEXT.phone}>
+              <a href={telHref(site.contact.phone)} className={`${LINK} tabular-nums`}>
+                {displayPhone(site.contact.phone)}
+              </a>
             </Detail>
-          ) : null}
-        </dl>
+            <Detail pictogram="mail" term={UI_TEXT.email}>
+              <a href={mailtoHref(site.contact.email)} className={LINK}>
+                {site.contact.email}
+              </a>
+            </Detail>
+            <Detail pictogram="location" term={UI_TEXT.address}>
+              <address className="grid not-italic">
+                {site.contact.address.map((line) => (
+                  <span key={line.en}>{line.en}</span>
+                ))}
+              </address>
+              <ArrowLink href={site.contact.mapUrl}>{UI_TEXT.openInMaps}</ArrowLink>
+            </Detail>
+            {site.contact.hours.en ? (
+              <Detail pictogram="clock" term={UI_TEXT.hours}>
+                <span>{site.contact.hours.en}</span>
+              </Detail>
+            ) : null}
+            {site.brochure ? (
+              <Detail pictogram="download" term={UI_TEXT.brochure}>
+                <ArrowLink href={ROUTES.brochure}>{UI_TEXT.downloadBrochure}</ArrowLink>
+              </Detail>
+            ) : null}
+          </dl>
+          <StaticMap pin={site.contact.mapPin} office={site.contact.address[0].en} />
+        </div>
       ) : null}
     </SectionFrame>
   );

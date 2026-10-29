@@ -66,6 +66,11 @@ export const UI_TEXT = {
   hours: "Hours",
   openInMaps: "Open in Google Maps",
   downloadBrochure: "Download our brochure",
+  /** The static map on Contact (plan §30.6). */
+  mapLabel: "Map of the streets around Asmakh Mall, Al Sadd, Doha",
+  mapWithOffice: (office: string) =>
+    `Map of the streets around Asmakh Mall, Al Sadd, Doha, with our office at ${office}`,
+  mapAttribution: "Map data © OpenStreetMap contributors",
   /** A service's page (plan §6.4). */
   aboutService: "About this service",
   whoItIsFor: "Who it is for",

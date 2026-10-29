@@ -1424,3 +1424,48 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R3.5, the static map
+
+### Added
+- **The static map on Contact** (plan §30.6, D34;
+  `src/components/ui/static-map.tsx`): the streets around Asmakh Mall,
+  drawn from OpenStreetMap data, with no map script, tiles or cookies.
+  Roads are SVG at a fixed stroke width at any size; the road names and the
+  landmark are text laid over the drawing, so they stay legible (road names
+  step aside on a phone); "Map data © OpenStreetMap contributors" links to
+  the licence, as the ODbL asks. It sits beside the contact details on a
+  wide screen and under them on a phone.
+- **`scripts/make-map.mts`** makes `src/assets/brand/map.ts` from the
+  Overpass API: a 900 × 600 m frame centred on Asmakh Mall, roads by class,
+  the mall's outline, and up to four road labels along their roads.
+- **The office's spot on the map is site content** (`contact.mapPin`, a
+  latitude and longitude, D74): the admin sets it (R6), and the office then
+  shows as a navy station named by the address's first line. It is empty in
+  the seed: OpenStreetMap has Asmakh Mall but neither Retaj Building nor a
+  Bin Naifaa street, so nothing is placed by guesswork. Stored pages need
+  no migration; the seed and the fixtures carry `mapPin: null`.
+
+### Changed
+- Plan: D74; §13 and §30.6 follow it; R3.5 DONE.
+
+### Performance (local build, Contact)
+- JavaScript at first paint: 151.9 KB gzip; the map adds no script (31.6 KB
+  of gzipped HTML for the page).
+- Phone, 4× CPU, 9 Mbps, 60 ms: LCP 256 ms, CLS 0.000.
+
+### Validation
+- Impeccable's detector on Contact: one advisory, a false positive: the
+  vertical "Jawaan Street" label's unrotated box overlaps the drawing; the
+  label is drawn above it and reads clearly in the screenshots.
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (482), coverage 100%: where a spot falls
+  on the map and when it is off it, the station only with a spot set, the
+  credit, the pin's bounds in the schema.
+- Build passed; E2E passed (65, phone and desktop), axe clean.
+
+### For the client to confirm
+- The office's exact spot (a pin, or its coordinates), entered in the admin.
+
+### Blockers
+- None.

@@ -406,6 +406,8 @@ export const SEED_SITE: SiteDocument = {
       en("Al Sadd, Doha, Qatar"),
     ],
     mapUrl: "https://www.google.com/maps/search/?api=1&query=Retaj+Building+Al+Sadd+Doha",
+    // The office's exact spot waits for the client (D74): until then the map marks only Asmakh Mall.
+    mapPin: null,
     hours: en("Available 24/7"),
   },
   social: [{ network: "INSTAGRAM", url: "https://www.instagram.com/alhidayanursingcompany_wll" }],

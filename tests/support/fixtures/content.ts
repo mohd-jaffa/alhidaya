@@ -103,6 +103,7 @@ export const siteFixture = (overrides: Partial<SiteDocument> = {}): SiteDocument
     email: "info@alhidaya.qa",
     address: [en("Retaj Building, Al Sadd, Doha")],
     mapUrl: "https://maps.google.com/?q=Retaj+Building+Al+Sadd",
+    mapPin: null,
     hours: en("Available 24/7"),
   },
   social: [{ network: "INSTAGRAM", url: "https://instagram.com/alhidayanursingcompany_wll" }],

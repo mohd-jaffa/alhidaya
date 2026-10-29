@@ -75,6 +75,11 @@ test("Contact lists every way to reach the company and the way to the office, an
     "href",
     /^https:\/\/www\.google\.com\/maps\//,
   );
+  await expect(details.getByRole("img", { name: UI_TEXT.mapLabel })).toBeVisible();
+  await expect(details.getByRole("link", { name: UI_TEXT.mapAttribution })).toHaveAttribute(
+    "href",
+    "https://www.openstreetmap.org/copyright",
+  );
   await expect(page.getByRole("region", { name: "Send us a message" })).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });

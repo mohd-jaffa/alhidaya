@@ -28,6 +28,30 @@ describe("the site's content", () => {
   });
 });
 
+describe("the office on the map", () => {
+  const withPin = (mapPin: unknown) => siteFixture({ contact: { ...siteFixture().contact, mapPin } as never });
+
+  it("is a spot on the earth, or none until the client confirms it", () => {
+    expect(siteDocumentSchema.parse(withPin({ lat: 25.2827, lon: 51.4959 })).contact.mapPin).toEqual({
+      lat: 25.2827,
+      lon: 51.4959,
+    });
+    expect(siteDocumentSchema.parse(withPin(null)).contact.mapPin).toBeNull();
+  });
+
+  it("refuses a latitude or longitude that is not one", () => {
+    expect(first(siteDocumentSchema.safeParse(withPin({ lat: 91, lon: 51 })))).toBe(
+      VALIDATION_MESSAGES.between("Latitude", -90, 90),
+    );
+    expect(first(siteDocumentSchema.safeParse(withPin({ lat: 25, lon: -181 })))).toBe(
+      VALIDATION_MESSAGES.between("Longitude", -180, 180),
+    );
+    expect(first(siteDocumentSchema.safeParse(withPin({ lat: "north", lon: 51 })))).toBe(
+      VALIDATION_MESSAGES.between("Latitude", -90, 90),
+    );
+  });
+});
+
 describe("an order", () => {
   it("names each record once", () => {
     const id = crypto.randomUUID();

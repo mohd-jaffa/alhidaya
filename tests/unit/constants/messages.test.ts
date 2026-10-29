@@ -14,7 +14,10 @@ describe("UI_TEXT", () => {
   });
 
   it("holds no empty wording", () => {
-    for (const [key, value] of Object.entries(UI_TEXT)) expect(value.trim(), key).not.toBe("");
+    for (const [key, value] of Object.entries(UI_TEXT)) {
+      const words = typeof value === "function" ? value("Retaj Building") : value;
+      expect(words.trim(), key).not.toBe("");
+    }
   });
 });
 

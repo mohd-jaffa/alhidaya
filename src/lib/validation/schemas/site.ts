@@ -10,6 +10,13 @@ import { hrefSchema, httpsUrlSchema, localized, withoutRepeats } from "./content
 
 const link = z.object({ label: localized(requiredLine("Link text", { max: TEXT_LIMITS.label })), href: hrefSchema });
 
+/** A latitude or longitude in degrees, as a map app gives it. */
+const coordinate = (label: string, limit: number) =>
+  z
+    .number(VALIDATION_MESSAGES.between(label, -limit, limit))
+    .min(-limit, VALIDATION_MESSAGES.between(label, -limit, limit))
+    .max(limit, VALIDATION_MESSAGES.between(label, -limit, limit));
+
 /**
  * The site's own content (plan §13): contact details, links, SEO defaults,
  * the brochure, and whether the floating WhatsApp button shows (D67).
@@ -26,6 +33,8 @@ export const siteDocumentSchema = z.object({
       .min(1, VALIDATION_MESSAGES.atLeastOne("The address"))
       .max(LIST_LIMITS.addressLines, VALIDATION_MESSAGES.atMost("The address", LIST_LIMITS.addressLines)),
     mapUrl: httpsUrlSchema,
+    /** The office on the static map (plan §30.6, D74); none until the client confirms the spot. */
+    mapPin: z.object({ lat: coordinate("Latitude", 90), lon: coordinate("Longitude", 180) }).nullable(),
     hours: localized(optionalLine("Hours", TEXT_LIMITS.heading)),
   }),
   social: z

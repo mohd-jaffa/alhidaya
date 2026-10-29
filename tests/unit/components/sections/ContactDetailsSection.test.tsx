@@ -25,6 +25,7 @@ describe("ContactDetailsSection", () => {
       "https://maps.google.com/?q=Retaj+Building+Al+Sadd",
     );
     expect(screen.queryByRole("link", { name: UI_TEXT.downloadBrochure })).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: UI_TEXT.mapLabel })).toBeInTheDocument();
   });
 
   it("offers the brochure when there is one, leaves out hours not given, and waits for published details", () => {

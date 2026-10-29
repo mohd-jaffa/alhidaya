@@ -155,6 +155,7 @@ question (§41) the user may overturn.
 | D71 | **The three lines' names are fixed in code** (answers Q38, option b): *Care at home*, *Staffing for hospitals, clinics and schools*, *Nurses: join us* live in the message catalogue, like the lines' actions and colours (D9); the Home sign holds only its headline, supporting line and photo. | 2026-10-29 |
 | D72 | **Home's careers section shows the three most recent open jobs**, then a link to all of them (answers Q39). | 2026-10-29 |
 | D73 | **Uploaded images are drawn as a `<picture>` from their made sizes**, not through a custom `next/image` loader (§22.3 first said a loader): each type is offered at every width it was made at, AVIF first and WebP after it, which a loader cannot do (it answers one address per width, in one type), and no script is sent for an image. **(agent default; Q40)** | 2026-10-29 |
+| D74 | **The office's spot on the static map is site content**, which the admin can edit (following D70): a latitude and longitude, empty until the client confirms it. OpenStreetMap has Asmakh Mall but neither Retaj Building nor a Bin Naifaa street, so until then the map marks only the mall, which the address names; nothing is placed by guesswork. **(agent default)** | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -541,7 +542,7 @@ Two kinds, kept apart:
 
 **Site content** (draft and published, D32): company name and short
 description; contact details (phone, WhatsApp, email, address lines, map
-link, "available 24/7" line); social links (Instagram today); the floating
+link, the office's spot on the map (D74), "available 24/7" line); social links (Instagram today); the floating
 WhatsApp button, on or off (D67); header navigation
 (labels, order, visibility, from a fixed set of destinations: pages, services,
 approved external URLs); footer columns; SEO defaults; the brochure.
@@ -1124,7 +1125,9 @@ Phase 6 (R6.1).
 An authored SVG of the streets around Retaj Building, Al Sadd (near Asmakh
 Mall), drawn in the line system with a "You are here" station, built from
 OpenStreetMap data with its attribution, plus **Open in Google Maps** (D34).
-No map scripts, no cookies.
+No map scripts, no cookies. `scripts/make-map.mts` makes it (a 900 × 600 m
+frame centred on Asmakh Mall, the landmark); the office is a navy station at
+the spot set in the site content (D74).
 
 ## 31. Performance budgets
 
@@ -1325,7 +1328,7 @@ one commit (D27).
 | R3.2 | Section components for the catalogue | §7.2 | — | DONE (2026-10-29; first seen on Home at R3.3) |
 | R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | Q41 | DONE (2026-10-29; its photos wait on Q41) |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | DONE (2026-10-29; photos wait on Q41) |
-| R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DOING (2026-10-29: the four pages; the static map next) |
+| R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DONE (2026-10-29; the office's spot on the map waits on the client, D74) |
 | R3.6 | Caching with tags; draft-mode preview | §22, §14 | — | TODO |
 | R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | TODO |
 | R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | TODO |
