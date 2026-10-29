@@ -21,3 +21,16 @@ export function readableDay(day: string): string {
     new Date(Date.UTC(year, month - 1, date)),
   );
 }
+
+/** A moment as the team reads it in Doha: "29 October 2026 at 11:01". */
+export function dohaDateTime(at: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: SITE_TIME_ZONE,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(at);
+}

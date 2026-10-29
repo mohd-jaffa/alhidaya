@@ -1854,3 +1854,61 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. The site's Turnstile keys wait on the client's Cloudflare account
   (§40, R8.4).
+
+## 2026-10-29 — R4.3: the enquiry alert email
+
+### Added
+- **The alert** (`src/lib/mail/templates/enquiry-alert.ts`, plan §10.4,
+  §17): "New quote request from …" or "New message from …", from
+  `noreply@alhidaya.qa` to every enquiries recipient set in Operations
+  (`info@alhidaya.qa` until the admin changes it, Q17), Reply-To the
+  visitor. It says who sent it, through which form and when (Doha time),
+  then every answer under the label the visitor saw (a message keeps its
+  lines), and a button to the enquiry in the inbox. Plain-text version
+  alongside; everything typed is escaped. Words in `MAIL_TEXT.enquiryAlert`.
+- **`sendEnquiryAlert`** (`features/enquiries/api.ts`): sends it and marks
+  the enquiry sent or not sent. A failure (mail server down, mail not set
+  up) keeps the enquiry and goes to the error log by the enquiry's id alone,
+  nothing personal.
+- **`retryEnquiryAlert`**: the admin's Retry (its button comes with the
+  inbox, R4.4): an alert not yet sent is sent again and the try is recorded
+  in the audit trail (`UPDATE`, the email status from and to); one already
+  sent is refused (`EMAIL_ALREADY_SENT`).
+- **Sent once the visitor has their answer** (D79): the route stores the
+  enquiry, answers, then sends the alert in the same request (Next's
+  `after`); a failure to record it is logged under the request's id.
+- The email layout can list answers under their labels; in plain text a
+  label that is a question or a sentence keeps its own ending.
+- `dohaDateTime`: a moment as the team reads it in Doha ("29 October 2026
+  at 11:01"). `ADMIN_ROUTES.enquiry(id)`.
+
+### Changed
+- The mail server is given 10 s to connect and to greet, and 30 s between
+  replies (`MAIL_TIMEOUTS_MS`): one that does not answer is a failed send,
+  never a hanging request.
+- In production, mail goes over TLS unless the mail server is on the same
+  machine (localhost): the browser journeys run the production build against
+  Mailpit, which has no STARTTLS, and every alert there was failing.
+- An enquiry's phone answer is kept as people read it ("+974 5551 2345"; any
+  other country's as stored); the phone column keeps E.164 for search and
+  calls.
+- Plan §17 describes the alert; D79 and Q45 recorded.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed (588), coverage 100%: the alert's
+  subject, sentence, answers and inbox link; the layout's answers (escaped,
+  lines kept, both versions); the service (every recipient, Reply-To, the
+  inbox link); the timeouts; TLS except on this machine (and a host that
+  only starts with 127. still needs it); the route sending after the
+  answer and logging a failure to record it. Against Mailpit and the local
+  MySQL: the alert arrives to the recipients with Reply-To and every answer,
+  the enquiry marked sent; with the mail server unreachable the enquiry is
+  kept, marked not sent, and logged without anything personal; Retry sends
+  it, is recorded, and refuses a second send.
+- E2E passed (93): the Contact and Quote alerts arrive in Mailpit and the
+  enquiry is marked sent; a form with the trap filled sends no alert.
+  A sample alert rendered and checked.
+
+### Blockers
+- None.

@@ -38,6 +38,29 @@ describe("emailHtml", () => {
   });
 });
 
+describe("an email's answers", () => {
+  const details = [
+    { label: "Your name", value: "Mariam <b>Ali</b>" },
+    { label: "Message", value: "First line\nSecond line" },
+  ];
+
+  it("stand under their labels, escaped, each keeping its own lines", () => {
+    const html = emailHtml({ ...parts, details });
+    expect(html).toContain(">Your name<");
+    expect(html).toContain("Mariam &lt;b&gt;Ali&lt;/b&gt;");
+    expect(html).toContain("First line<br>Second line");
+    expect(emailHtml(parts)).not.toContain("border-top:1px solid");
+  });
+
+  it("read the same in plain text, a label that is a question or a sentence keeping its own ending", () => {
+    expect(emailText({ ...parts, details })).toContain(
+      "Your name:\nMariam <b>Ali</b>\n\nMessage:\nFirst line\nSecond line",
+    );
+    const asked = emailText({ ...parts, details: [{ label: "Who is the care for?", value: "A school" }] });
+    expect(asked).toContain("Who is the care for?\nA school");
+  });
+});
+
 describe("emailText", () => {
   it("says the same in plain text", () => {
     const text = emailText(parts);

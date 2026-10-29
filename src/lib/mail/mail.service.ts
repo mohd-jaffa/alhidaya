@@ -1,4 +1,7 @@
+import { ADMIN_ROUTES } from "@/constants/routes";
+
 import type { MailProvider } from "./mail.provider";
+import { type EnquiryAlertInput, enquiryAlertTemplate } from "./templates/enquiry-alert";
 import { passwordResetTemplate } from "./templates/password-reset";
 
 interface MailServiceOptions {
@@ -18,6 +21,16 @@ export class MailService {
     this.provider = options.provider;
     this.from = options.from;
     this.siteUrl = options.siteUrl;
+  }
+
+  /** A new enquiry to the enquiries recipients, answered straight to the visitor (plan §10.4, §17). */
+  async sendEnquiryAlert(
+    input: Omit<EnquiryAlertInput, "siteUrl" | "inboxUrl"> & { id: string; to: readonly string[]; replyTo: string },
+  ) {
+    const { id, to, replyTo, ...alert } = input;
+    const inboxUrl = new URL(ADMIN_ROUTES.enquiry(id), this.siteUrl).toString();
+    const content = enquiryAlertTemplate({ ...alert, siteUrl: this.siteUrl, inboxUrl });
+    await this.provider.send({ from: this.from, to: [...to], replyTo, ...content });
   }
 
   async sendPasswordReset(input: { to: string; name: string; resetUrl: string }) {

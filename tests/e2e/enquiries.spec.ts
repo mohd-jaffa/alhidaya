@@ -8,6 +8,7 @@ import { closeDb, getDb } from "@/db/client";
 import { enquiries } from "@/db/schema";
 import { HONEYPOT_FIELD } from "@/lib/api/honeypot";
 import { TURNSTILE_FIELD } from "@/lib/turnstile/endpoints";
+import { deleteMail, mailText, searchMail, waitForMail } from "@tests/support/mailpit";
 
 /**
  * The Quote and Contact forms (plan §10, R4.1, R4.2): each mistake beside its
@@ -35,6 +36,10 @@ const stored = async (email: string) =>
     .select({ form: enquiries.form, name: enquiries.name, phone: enquiries.phone, fields: enquiries.fields })
     .from(enquiries)
     .where(eq(enquiries.email, email));
+
+const emailStatus = async (email: string) =>
+  (await getDb().select({ status: enquiries.emailStatus }).from(enquiries).where(eq(enquiries.email, email)))[0]
+    ?.status;
 
 async function fillContact(page: Page, email: string) {
   await field(page, UI_TEXT.yourName).fill("Mariam Ali");
@@ -76,13 +81,21 @@ test("the Contact form shows each mistake beside its field, then takes the messa
       phone: "+97455512345",
       fields: [
         { label: UI_TEXT.yourName, value: "Mariam Ali" },
-        { label: UI_TEXT.phone, value: "+97455512345" },
+        { label: UI_TEXT.phone, value: "+974 5551 2345" },
         { label: UI_TEXT.email, value: email },
         { label: UI_TEXT.message, value: "Do you have a nurse for my father at night?" },
         { label: UI_TEXT.consent, value: UI_TEXT.consentGiven },
       ],
     },
   ]);
+
+  // The alert goes once the visitor has their answer (plan §10.4): to the team, Reply-To the visitor.
+  const [alert] = await waitForMail(`"${email}"`);
+  expect(alert.Subject).toBe("New message from Mariam Ali");
+  expect(alert.ReplyTo.map((to) => to.Address)).toEqual([email]);
+  expect(await mailText(alert.ID)).toContain("Do you have a nurse for my father at night?");
+  await expect.poll(() => emailStatus(email)).toBe("SENT");
+  await deleteMail([alert.ID]);
 });
 
 test("the Quote form starts on the service the visitor came from, and keeps the words they chose (plan §10.1)", async ({
@@ -116,6 +129,9 @@ test("the Quote form starts on the service the visitor came from, and keeps the 
       { label: UI_TEXT.contactMethod, value: "Email" },
     ]),
   );
+  const [alert] = await waitForMail(`"${email}"`);
+  expect(alert.Subject).toBe("New quote request from Omar Haddad");
+  await deleteMail([alert.ID]);
 });
 
 test("an address naming no published service starts the Quote form on not sure yet", async ({ page }) => {
@@ -159,4 +175,5 @@ test("a form that comes back with the trap filled is thanked and thrown away (pl
   await page.getByRole("button", { name: UI_TEXT.sendMessage }).click();
   await expect(page.getByRole("group", { name: UI_TEXT.messageSent })).toBeVisible();
   expect(await stored(email)).toEqual([]);
+  expect(await searchMail(`"${email}"`)).toEqual([]);
 });

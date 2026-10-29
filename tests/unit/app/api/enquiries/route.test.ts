@@ -5,16 +5,26 @@ import { authorizationError } from "@/lib/errors";
 import { stubServerEnv } from "@tests/support/env";
 
 const receiveEnquiry = vi.fn(async () => "enquiry-id");
-vi.mock("@/features/enquiries/api", () => ({ receiveEnquiry }));
+const sendEnquiryAlert = vi.fn<(id: string) => Promise<string>>(async () => "SENT");
+vi.mock("@/features/enquiries/api", () => ({ receiveEnquiry, sendEnquiryAlert }));
 const verifyTurnstile = vi.fn<(token: string) => Promise<void>>(async () => {});
 vi.mock("@/lib/turnstile/verify", () => ({ verifyTurnstile }));
-vi.mock("@/lib/audit/errorLog", () => ({ captureError: vi.fn() }));
+const captureError = vi.fn();
+vi.mock("@/lib/audit/errorLog", () => ({ captureError }));
+
+/** Next's `after`, as a test runs it: the task kept, to run once the answer is out. */
+const later: (() => Promise<void>)[] = [];
+vi.mock("next/server", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/server")>()),
+  after: (task: () => Promise<void>) => void later.push(task),
+}));
 
 const { POST } = await import("@/app/api/enquiries/route");
 
 afterEach(() => {
   vi.unstubAllEnvs();
   vi.clearAllMocks();
+  later.length = 0;
 });
 
 const contact = {
@@ -49,6 +59,21 @@ describe("POST /api/enquiries", () => {
     );
   });
 
+  it("sends the alert once the visitor has their answer, and logs a failure to record it", async () => {
+    stubServerEnv();
+    await POST(call(contact));
+    expect(sendEnquiryAlert).not.toHaveBeenCalled();
+    expect(later).toHaveLength(1);
+    await later[0]();
+    expect(sendEnquiryAlert).toHaveBeenCalledWith("enquiry-id");
+
+    sendEnquiryAlert.mockRejectedValueOnce(new Error("database gone"));
+    await later[0]();
+    expect(captureError).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "Enquiry alert not recorded", reference: expect.stringMatching(/^req_/) }),
+    );
+  });
+
   it("answers a filled trap as taken and keeps nothing, asking Cloudflare nothing (plan §10.3)", async () => {
     stubServerEnv();
     const response = await POST(call({ form: "nonsense", your_reference: "https://spam.example" }));
@@ -56,6 +81,7 @@ describe("POST /api/enquiries", () => {
     expect(await response.json()).toEqual({ success: true, data: { received: true } });
     expect(verifyTurnstile).not.toHaveBeenCalled();
     expect(receiveEnquiry).not.toHaveBeenCalled();
+    expect(later).toHaveLength(0);
   });
 
   it("keeps nothing Cloudflare does not confirm was sent by a person", async () => {

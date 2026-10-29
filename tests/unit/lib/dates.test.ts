@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { dohaDay, readableDay } from "@/lib/dates";
+import { dohaDateTime, dohaDay, readableDay } from "@/lib/dates";
 
 describe("dohaDay", () => {
   it("names the day in Doha, three hours ahead of UTC", () => {
@@ -14,5 +14,12 @@ describe("readableDay", () => {
   it("writes a day as a visitor reads it, the same day wherever the server is", () => {
     expect(readableDay("2026-11-30")).toBe("30 November 2026");
     expect(readableDay("2027-01-01")).toBe("1 January 2027");
+  });
+});
+
+describe("dohaDateTime", () => {
+  it("writes a moment as the team reads it in Doha, on a 24-hour clock", () => {
+    expect(dohaDateTime(new Date("2026-10-29T08:01:00Z"))).toBe("29 October 2026 at 11:01");
+    expect(dohaDateTime(new Date("2026-10-28T21:30:00Z"))).toBe("29 October 2026 at 00:30");
   });
 });

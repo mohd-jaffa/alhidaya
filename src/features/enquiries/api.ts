@@ -1,11 +1,19 @@
+import { eq } from "drizzle-orm";
+
 import { FORM_RATE_LIMIT } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { CARE_FOR_LABELS, CONTACT_METHOD_LABELS, type FormKind } from "@/constants/statuses";
+import { CARE_FOR_LABELS, CONTACT_METHOD_LABELS, type EmailStatus, type FormKind } from "@/constants/statuses";
 import { getDb } from "@/db/client";
 import { enquiries, type SubmittedField } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
 import { listPublishedServices } from "@/features/services/api";
-import { rateLimitError, validationError } from "@/lib/errors";
+import { logActionSafe } from "@/lib/audit/auditLog";
+import { captureError } from "@/lib/audit/errorLog";
+import { displayPhone } from "@/lib/contact";
+import type { Actor } from "@/lib/content/actor";
+import { getOperations } from "@/lib/content/operations";
+import { businessRuleError, notFoundError, rateLimitError, validationError } from "@/lib/errors";
+import { createConfiguredMailService } from "@/lib/mail/nodemailer.provider";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
 import type { EnquiryPayload } from "@/lib/validation";
 
@@ -22,7 +30,7 @@ export interface EnquirySubmission {
  * Stores an enquiry (plan §10.3, §10.4) in one transaction with its rate
  * limit, per form and per visitor: past the limit nothing is stored, and a
  * submission that fails to store is not counted. Answers the enquiry's id;
- * the alert email follows it (R4.3).
+ * the alert email follows it (`sendEnquiryAlert`).
  */
 export async function submitEnquiry(
   submission: EnquirySubmission,
@@ -41,8 +49,8 @@ export async function submitEnquiry(
 /**
  * Every answer as the visitor saw and gave it (plan §10.4): each field's
  * label, and a choice's words rather than its code, so the inbox reads the
- * enquiry as it was sent whatever the form says later. Left-out answers are
- * left out.
+ * enquiry as it was sent whatever the form says later; a phone number as it
+ * is read ("+974 5551 2345"). Left-out answers are left out.
  */
 export function enquiryFields(payload: EnquiryPayload, serviceName: string | null): SubmittedField[] {
   const answers: [string, string | null][] =
@@ -52,14 +60,14 @@ export function enquiryFields(payload: EnquiryPayload, serviceName: string | nul
           [UI_TEXT.organisation, payload.organisation],
           [UI_TEXT.careFor, CARE_FOR_LABELS[payload.careFor]],
           [UI_TEXT.service, serviceName],
-          [UI_TEXT.phone, payload.phone],
+          [UI_TEXT.phone, displayPhone(payload.phone)],
           [UI_TEXT.email, payload.email],
           [UI_TEXT.contactMethod, CONTACT_METHOD_LABELS[payload.contactMethod]],
           [UI_TEXT.message, payload.message],
         ]
       : [
           [UI_TEXT.yourName, payload.name],
-          [UI_TEXT.phone, payload.phone],
+          [UI_TEXT.phone, displayPhone(payload.phone)],
           [UI_TEXT.email, payload.email],
           [UI_TEXT.message, payload.message],
         ];
@@ -91,4 +99,64 @@ export async function receiveEnquiry(
   }
   const { form, name, email, phone } = payload;
   return submitEnquiry({ form, name, email, phone, fields: enquiryFields(payload, serviceName) }, visitorIp, at);
+}
+
+/**
+ * The alert for an enquiry (plan §10.4, §17): to the enquiries recipients
+ * set in Operations, Reply-To the visitor, with every answer. The enquiry is
+ * marked sent or not sent; a failure is logged by the enquiry's id alone,
+ * nothing personal, and the enquiry stays, with Retry in the inbox.
+ */
+export async function sendEnquiryAlert(id: string): Promise<EmailStatus> {
+  const db = getDb();
+  const [enquiry] = await db
+    .select({
+      form: enquiries.form,
+      name: enquiries.name,
+      email: enquiries.email,
+      fields: enquiries.fields,
+      createdAt: enquiries.createdAt,
+    })
+    .from(enquiries)
+    .where(eq(enquiries.id, id));
+  if (!enquiry) throw notFoundError("RECORD_NOT_FOUND");
+
+  let status: EmailStatus = "SENT";
+  try {
+    const { enquiriesTo } = await getOperations();
+    await createConfiguredMailService().sendEnquiryAlert({
+      id,
+      to: enquiriesTo,
+      replyTo: enquiry.email,
+      form: enquiry.form as FormKind,
+      name: enquiry.name,
+      receivedAt: enquiry.createdAt,
+      fields: enquiry.fields,
+    });
+  } catch (error) {
+    status = "NOT_SENT";
+    await captureError({ message: "Enquiry alert email not sent", error, context: { enquiryId: id } });
+  }
+  await db.update(enquiries).set({ emailStatus: status, updatedAt: new Date() }).where(eq(enquiries.id, id));
+  return status;
+}
+
+/** The admin's Retry (plan §10.4): an alert not sent is sent again, and the try is recorded. */
+export async function retryEnquiryAlert(id: string, actor: Actor): Promise<EmailStatus> {
+  const [enquiry] = await getDb()
+    .select({ emailStatus: enquiries.emailStatus })
+    .from(enquiries)
+    .where(eq(enquiries.id, id));
+  if (!enquiry) throw notFoundError("RECORD_NOT_FOUND");
+  if (enquiry.emailStatus === "SENT") throw businessRuleError("EMAIL_ALREADY_SENT");
+  const status = await sendEnquiryAlert(id);
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "UPDATE",
+    entityType: "enquiry",
+    entityId: id,
+    changes: { emailStatus: { from: enquiry.emailStatus, to: status } },
+    requestId: actor.requestId,
+  });
+  return status;
 }

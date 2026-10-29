@@ -68,6 +68,13 @@ export const DISK_BUDGETS = {
 export const RETENTION_DAYS = { min: 1, max: 365, default: 180 } as const;
 export const CV_EXPIRY_DAYS = { min: 1, max: 365, default: 180 } as const;
 
+/**
+ * How long the server waits on the mail server (plan §17): to connect, for
+ * its greeting, and between replies. A mail server that does not answer is a
+ * failed send, marked for Retry, never a request left hanging.
+ */
+export const MAIL_TIMEOUTS_MS = { connection: 10_000, greeting: 10_000, socket: 30_000 } as const;
+
 /** How long the server waits for Cloudflare to check a form's token (plan §10.3). */
 export const TURNSTILE_VERIFY_MS = 10_000;
 

@@ -39,6 +39,8 @@ export interface EmailParts {
   heading: string;
   /** Plain text, a paragraph each; the first is the greeting. */
   paragraphs: string[];
+  /** Answers under their labels, after the paragraphs: what a visitor sent (plan §10.4). */
+  details?: readonly { label: string; value: string }[];
   /** The one thing to do, as a button, with its address in words under it. */
   action?: { label: string; url: string; fallback: string };
   /** A line under the button: how long its link lasts. */
@@ -49,6 +51,23 @@ export interface EmailParts {
 
 const paragraph = (text: string, last: boolean) =>
   `<p style="margin:0 0 ${last ? 0 : 16}px;font-family:${SANS};font-size:16px;line-height:26px;color:${COLOUR.muted};">${escapeHtml(text)}</p>`;
+
+/** Each answer under its label; a value's own lines are kept. */
+function detailRows(details: readonly { label: string; value: string }[]): string {
+  const rows = details
+    .map(
+      ({ label, value }) => `<tr>
+              <td style="padding:12px 0;border-top:1px solid ${COLOUR.border};">
+                <p style="margin:0 0 4px;font-family:${SANS};font-size:13px;line-height:20px;font-weight:600;color:${COLOUR.muted};">${escapeHtml(label)}</p>
+                <p style="margin:0;font-family:${SANS};font-size:16px;line-height:24px;color:${COLOUR.text};">${escapeHtml(value).replace(/\n/g, "<br>")}</p>
+              </td>
+            </tr>`,
+    )
+    .join("\n            ");
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0;">
+            ${rows}
+          </table>`;
+}
 
 /**
  * An email in the site's plain voice: the name above a sky-blue line, the
@@ -106,7 +125,7 @@ export function emailHtml(parts: EmailParts): string {
           <td class="mail-card" bgcolor="${COLOUR.surface}" style="background:${COLOUR.surface};border:1px solid ${COLOUR.border};border-radius:12px;padding:40px 40px 36px;">
             <h1 style="margin:0 0 20px;font-family:${SANS};font-size:26px;line-height:32px;font-weight:700;color:${COLOUR.text};">${escapeHtml(parts.heading)}</h1>
             ${parts.paragraphs.map((text, at) => paragraph(text, at === parts.paragraphs.length - 1)).join("\n            ")}
-            ${button}${note}
+            ${parts.details ? detailRows(parts.details) : ""}${button}${note}
           </td>
         </tr>
         <tr>
@@ -126,6 +145,8 @@ export function emailHtml(parts: EmailParts): string {
 export function emailText(parts: EmailParts): string {
   return [
     ...parts.paragraphs.flatMap((text) => [text, ""]),
+    // A label that is a question or a sentence keeps its own ending.
+    ...(parts.details ?? []).flatMap(({ label, value }) => [/[.?!:]$/.test(label) ? label : `${label}:`, value, ""]),
     ...(parts.action ? [`${parts.action.label}: ${parts.action.url}`, ""] : []),
     ...(parts.note ? [parts.note, ""] : []),
     "—",

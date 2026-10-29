@@ -149,6 +149,7 @@ export const ERROR_MESSAGES = {
   NOTHING_PUBLISHED: "There is no published version to go back to yet.",
   RATE_LIMITED: "Too many attempts. Please wait a few minutes and try again.",
   BOT_CHECK_FAILED: "We could not confirm that a person sent this. Please send it again.",
+  EMAIL_ALREADY_SENT: "This email was already sent.",
   JOB_CLOSED: "This job is no longer open. You can apply for an open job, or send a general application.",
 
   NETWORK_OFFLINE: "You're offline. Check your connection and try again.",
@@ -205,14 +206,34 @@ export function getErrorMessage(code: string): string {
 }
 
 /**
- * Every word of every email the site sends (AGENTS.md §16). The enquiry and
- * application alerts join with their forms (R4.3, R5.4).
+ * Every word of every email the site sends (AGENTS.md §16). The application
+ * alert joins with its form (R5.4).
  */
 export const MAIL_TEXT = {
   greeting: (name: string) => `Hello ${name},`,
   /** Under a button, for a mail app that will not show one. */
   linkFallback: "If the button doesn't work, copy this link into your browser:",
   linkValid: (minutes: number) => `The link works for ${minutes} minutes, and only once.`,
+  /** A new Quote or Contact enquiry, to the enquiries recipients (plan §10.4); Reply-To is the visitor. */
+  enquiryAlert: {
+    QUOTE: {
+      subject: (name: string) => `New quote request from ${name}`,
+      preheader: "Sent through the website's Request a Quote form.",
+      heading: "New quote request",
+      form: "Request a Quote",
+    },
+    CONTACT: {
+      subject: (name: string) => `New message from ${name}`,
+      preheader: "Sent through the website's Contact form.",
+      heading: "New message",
+      form: "Contact",
+    },
+    received: (name: string, form: string, when: string) =>
+      `${name} sent this through the ${form} form on ${when}, Doha time.`,
+    action: "Open it in the inbox",
+    footnote: (name: string) =>
+      `Reply to this email to answer ${name} directly. The website sends these alerts to the addresses set in its admin, under Operations.`,
+  },
   passwordReset: {
     subject: `Reset your ${UI_TEXT.siteName} admin password`,
     preheader: "Choose a new password for the website's admin panel.",

@@ -1,12 +1,20 @@
 import { eq } from "drizzle-orm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { FORM_RATE_LIMIT } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { closeDb, getDb } from "@/db/client";
-import { auditLog, enquiries, enquiryNotes, rateLimits, records } from "@/db/schema";
-import { type EnquirySubmission, receiveEnquiry, submitEnquiry } from "@/features/enquiries/api";
+import { auditLog, enquiries, enquiryNotes, errorLog, rateLimits, records } from "@/db/schema";
+import {
+  type EnquirySubmission,
+  receiveEnquiry,
+  retryEnquiryAlert,
+  sendEnquiryAlert,
+  submitEnquiry,
+} from "@/features/enquiries/api";
+import { getOperations } from "@/lib/content/operations";
 import { createRecord, publishRecord } from "@/lib/content/records";
+import { deleteMail, mailText, searchMail, waitForMail } from "@tests/support/mailpit";
 import { enquirySchema } from "@/lib/validation";
 import { serviceFixture } from "@tests/support/fixtures/content";
 
@@ -49,6 +57,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await deleteMail((await searchMail(`subject:"${ALERT_NAME}"`)).map((message) => message.ID));
+  await getDb().delete(errorLog).where(eq(errorLog.message, "Enquiry alert email not sent"));
   await getDb().delete(enquiries);
   await getDb().delete(rateLimits);
   await getDb().delete(records);
@@ -133,6 +143,7 @@ describe("receiveEnquiry, against the local MySQL", () => {
       { label: UI_TEXT.yourName, value: "Omar Haddad" },
       { label: UI_TEXT.careFor, value: "A school" },
       { label: UI_TEXT.service, value: "School nurse staffing" },
+      // A Qatar number reads as people write it; any other as stored.
       { label: UI_TEXT.phone, value: "+442079460958" },
       { label: UI_TEXT.email, value: "omar@example.com" },
       { label: UI_TEXT.contactMethod, value: "WhatsApp" },
@@ -184,5 +195,79 @@ describe("receiveEnquiry, against the local MySQL", () => {
       });
     }
     expect(await stored()).toBe(before);
+  });
+});
+
+/** A name of its own, so this file's alerts are found in Mailpit and nobody else's. */
+const ALERT_NAME = `Alert ${crypto.randomUUID().slice(0, 8)}`;
+
+const contactFor = (name: string) =>
+  enquirySchema.parse({
+    form: "CONTACT",
+    name,
+    phone: "5551 2345",
+    email: "mariam@example.com",
+    message: "A nurse at night?\nFrom Sunday.",
+    consent: true,
+    turnstileToken: "token-from-cloudflare",
+  });
+
+const emailStatus = async (id: string) =>
+  (await getDb().select({ status: enquiries.emailStatus }).from(enquiries).where(eq(enquiries.id, id)))[0].status;
+
+describe("the enquiry's alert, through Mailpit (plan §10.4, §17)", () => {
+  it("goes to the enquiries recipients, answered straight to the visitor, with every answer, and is marked sent", async () => {
+    const id = await receiveEnquiry(contactFor(ALERT_NAME), ip(), at);
+    expect(await emailStatus(id)).toBe("PENDING");
+    expect(await sendEnquiryAlert(id)).toBe("SENT");
+    expect(await emailStatus(id)).toBe("SENT");
+
+    const [message] = await waitForMail(`subject:"New message from ${ALERT_NAME}"`);
+    const { enquiriesTo } = await getOperations();
+    expect(message.To.map((to) => to.Address)).toEqual(enquiriesTo);
+    expect(message.ReplyTo).toEqual([expect.objectContaining({ Address: "mariam@example.com" })]);
+    // SMTP carries lines ended CRLF.
+    const text = (await mailText(message.ID)).replaceAll("\r\n", "\n");
+    expect(text).toContain(`${UI_TEXT.phone}:\n+974 5551 2345`);
+    expect(text).toContain(`${UI_TEXT.message}:\nA nurse at night?\nFrom Sunday.`);
+    expect(text).toContain(`/admin/enquiries/${id}`);
+  });
+
+  it("keeps the enquiry when the mail server cannot be reached: marked not sent, logged without anything personal", async () => {
+    const id = await receiveEnquiry(contactFor(`${ALERT_NAME} unsent`), ip(), at);
+    vi.stubEnv("SMTP_PORT", "9");
+    try {
+      expect(await sendEnquiryAlert(id)).toBe("NOT_SENT");
+    } finally {
+      vi.unstubAllEnvs();
+    }
+    expect(await emailStatus(id)).toBe("NOT_SENT");
+    const [logged] = await getDb()
+      .select({ context: errorLog.context, detail: errorLog.detail, stack: errorLog.stack })
+      .from(errorLog)
+      .where(eq(errorLog.message, "Enquiry alert email not sent"));
+    expect(logged.context).toEqual({ enquiryId: id });
+    expect(JSON.stringify(logged)).not.toContain("mariam@example.com");
+    expect(JSON.stringify(logged)).not.toContain(ALERT_NAME);
+  });
+
+  it("is sent again by the admin's Retry, recorded, and never twice once it went", async () => {
+    const id = await receiveEnquiry(contactFor(`${ALERT_NAME} retried`), ip(), at);
+    await getDb().update(enquiries).set({ emailStatus: "NOT_SENT" }).where(eq(enquiries.id, id));
+    expect(await retryEnquiryAlert(id, actor)).toBe("SENT");
+    expect(await emailStatus(id)).toBe("SENT");
+    const [entry] = await getDb()
+      .select({ action: auditLog.action, changes: auditLog.changes })
+      .from(auditLog)
+      .where(eq(auditLog.entityId, id));
+    expect(entry).toEqual({ action: "UPDATE", changes: { emailStatus: { from: "NOT_SENT", to: "SENT" } } });
+
+    await expect(retryEnquiryAlert(id, actor)).rejects.toMatchObject({ code: "EMAIL_ALREADY_SENT", httpStatus: 422 });
+  });
+
+  it("answers not found for an enquiry that is gone", async () => {
+    const gone = crypto.randomUUID();
+    await expect(sendEnquiryAlert(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    await expect(retryEnquiryAlert(gone, actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
   });
 });

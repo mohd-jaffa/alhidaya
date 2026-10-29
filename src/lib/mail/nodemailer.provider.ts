@@ -1,5 +1,6 @@
 import nodemailer, { type Transporter } from "nodemailer";
 
+import { MAIL_TIMEOUTS_MS } from "@/constants/limits";
 import { SITE } from "@/constants/site";
 import { getServerEnv, type ServerEnv } from "@/lib/env/server";
 import { externalServiceError } from "@/lib/errors";
@@ -27,6 +28,9 @@ export class NodemailerProvider implements MailProvider {
       port: options.port,
       secure: options.secure,
       requireTLS: options.requireTLS,
+      connectionTimeout: MAIL_TIMEOUTS_MS.connection,
+      greetingTimeout: MAIL_TIMEOUTS_MS.greeting,
+      socketTimeout: MAIL_TIMEOUTS_MS.socket,
       auth: options.user && options.password ? { user: options.user, pass: options.password } : undefined,
     });
   }
@@ -43,10 +47,15 @@ export class NodemailerProvider implements MailProvider {
   }
 }
 
+/** A mail server on this machine: what is sent to it never crosses a network. */
+const onThisMachine = (host: string) => host === "localhost" || host === "::1" || /^127(\.\d{1,3}){3}$/.test(host);
+
 /**
  * The site's mail, as the environment sets it up, sent from
  * `noreply@alhidaya.qa` (plan D53). With no SMTP host there is no mail, and
- * saying so is the answer: what it was for is never undone (plan §17).
+ * saying so is the answer: what it was for is never undone (plan §17). In
+ * production a mail server elsewhere is reached only over TLS; one on this
+ * machine (Mailpit, for the browser journeys) is not.
  */
 export function createConfiguredMailService(env: ServerEnv = getServerEnv()) {
   if (!env.SMTP_HOST) throw externalServiceError("MAIL_NOT_CONFIGURED");
@@ -59,7 +68,7 @@ export function createConfiguredMailService(env: ServerEnv = getServerEnv()) {
       host: env.SMTP_HOST,
       port: env.SMTP_PORT ?? 587,
       secure,
-      requireTLS: !secure && env.NODE_ENV === "production",
+      requireTLS: !secure && env.NODE_ENV === "production" && !onThisMachine(env.SMTP_HOST),
       user: env.SMTP_USER,
       password: env.SMTP_PASSWORD,
     }),

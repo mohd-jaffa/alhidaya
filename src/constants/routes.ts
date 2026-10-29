@@ -45,6 +45,7 @@ export const ADMIN_ROUTES = {
   clients: "/admin/clients",
   media: "/admin/media",
   enquiries: "/admin/enquiries",
+  enquiry: (id: string) => `/admin/enquiries/${id}`,
   applications: "/admin/applications",
   settings: "/admin/settings",
   operations: "/admin/settings/operations",

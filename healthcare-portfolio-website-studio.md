@@ -160,6 +160,7 @@ question (§41) the user may overturn.
 | D76 | **Public pages render per request from cached reads** (answers Q42, option b): each page is server-rendered on request (visible without JavaScript, correct 404s); its database reads are cached with tags (`unstable_cache`) and Publish revalidates exactly its tags, never serving stale content (§22.1). Cache Components is not used: it prerenders cached reads at build, where the client's database is out of reach. | 2026-10-29 |
 | D77 | **The public forms load their checks after first paint**: React Hook Form with Zod in the Quote and Contact pages' first load measured ≈ 40 KB gzip more (≈ 194 KB against the 170 KB budget, §31). The forms are plain fields of the browser's own, checked by the same Zod schema the route parses (`src/lib/validation/schemas/enquiries.ts`) through one small hook (`src/hooks/useSchemaForm.ts`), which fetches the schema when the visitor first reaches into the form; React Hook Form stays for the admin (Phase 6), which has no such budget. Each mistake shows beside its field in the catalogue's words, on the visitor's side and the server's alike. **(agent default; Q43)** | 2026-10-29 |
 | D78 | **Turnstile is seen only when Cloudflare needs the visitor to act** (`appearance: interaction-only`, Cloudflare's managed check) and is loaded when the visitor first reaches into a form, never in a page's first load (as D77). Its site key is read on the server at request time, so the site's own keys need no new build. When Cloudflare cannot be reached, the form is refused with the outside service's message: nothing is stored unchecked (§10.3: verified before anything is stored). Locally and in the tests, Cloudflare's published test keys. **(agent default; Q44)** | 2026-10-29 |
+| D79 | **An enquiry's alert is sent once the visitor has their answer** (Next's `after`, in the same request; no queue, AGENTS.md §17): the visitor never waits on the mail server. The enquiry is marked sent or not sent; one not yet sent (also if the app restarted in that moment) shows with Retry. In production a mail server is reached only over TLS, unless it is on the same machine. **(agent default; Q45)** | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -649,6 +650,13 @@ enquiry or application, change retention.
   record (`p=none` first) is published** before launch, then verified with
   real sends to info@ and hr@ (R8.3).
 - A failed send never undoes what it was for; it is logged and retryable.
+- **The enquiry alert** (§10.4, D79): from `noreply@`, to every enquiries
+  recipient set in Operations, Reply-To the visitor; who sent it and when
+  (Doha time), every answer under its label, and a button to the enquiry in
+  the inbox. Sent once the visitor has their answer; marked sent or not
+  sent. The mail server is given 10 s to connect and greet and 30 s between
+  replies; in production it is reached over TLS unless it is on the same
+  machine.
 
 ## 18. Retention and privacy
 
@@ -1360,7 +1368,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R4.1 | Quote and Contact forms: schemas, UI, success and error states | §10 | Q5, Q6 | DONE (2026-10-29; Q5 and Q6 as their defaults; checks after first paint, D77; Turbopack's grouping of shared code is for R7.1) |
 | R4.2 | Turnstile verification, honeypot, rate limit | §10.3 | — | DONE (2026-10-29; Cloudflare's test keys until R8.4; seen only when needed, D78; the rate limit came at R1.5) |
-| R4.3 | Alert emails, failure logging, retry | §10.4, §17 | Q17 | TODO |
+| R4.3 | Alert emails, failure logging, retry | §10.4, §17 | Q17 | DONE (2026-10-29; sent after the answer, D79; Retry is the inbox's, R4.4) |
 | R4.4 | Enquiries inbox: list, filters, detail, status, notes | §10.5 | — | TODO |
 | R4.5 | Integration + E2E | §34 | — | TODO |
 
@@ -1503,6 +1511,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q42 | ~~How public pages are cached (§22.1)~~ | **Answered by D76:** (b), per-request rendering from cached reads, Publish revalidating exactly its tags. |
 | Q43 | The public forms' checks: Zod fetched when the visitor first reaches into the form, without React Hook Form (≈ 164 KB at first paint), or React Hook Form and Zod in the first load (≈ 194 KB, over the 170 KB budget)? | The first (D77). |
 | Q44 | Turnstile: seen only when Cloudflare needs the visitor to tick a box, or always shown under the form? And when Cloudflare cannot be reached: refuse the form (nothing kept unchecked), or keep it marked unchecked? | Seen only when needed; refused (D78). |
+| Q45 | Send an enquiry's alert after the visitor's answer (fast; a restart in that moment leaves it for Retry), or before it (the visitor waits about a second on the mail server)? | After (D79). |
 
 ## 42. Later (unscheduled)
 

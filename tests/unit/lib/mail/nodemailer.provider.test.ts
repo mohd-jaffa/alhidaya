@@ -25,11 +25,12 @@ describe("NodemailerProvider", () => {
   it("connects with credentials only when both are given", () => {
     new NodemailerProvider({ host: "h", port: 465, secure: true, requireTLS: false, user: "u", password: "p" });
     new NodemailerProvider({ host: "h", port: 587, secure: false, requireTLS: true, user: "u" });
+    const timeouts = { connectionTimeout: 10_000, greetingTimeout: 10_000, socketTimeout: 30_000 };
     expect(createTransport.mock.calls[0]).toEqual([
-      { host: "h", port: 465, secure: true, requireTLS: false, auth: { user: "u", pass: "p" } },
+      { host: "h", port: 465, secure: true, requireTLS: false, ...timeouts, auth: { user: "u", pass: "p" } },
     ]);
     expect(createTransport.mock.calls[1]).toEqual([
-      { host: "h", port: 587, secure: false, requireTLS: true, auth: undefined },
+      { host: "h", port: 587, secure: false, requireTLS: true, ...timeouts, auth: undefined },
     ]);
   });
 
@@ -64,6 +65,15 @@ describe("createConfiguredMailService", () => {
     expect(createTransport.mock.calls[0]).toEqual([
       expect.objectContaining({ host: "127.0.0.1", port: 587, secure: false, requireTLS: false }),
     ]);
+  });
+
+  it("lets production reach a mail server on this machine without TLS, and only that", () => {
+    for (const host of ["localhost", "127.0.0.1", "::1"])
+      createConfiguredMailService(env({ SMTP_HOST: host, NODE_ENV: "production" }));
+    createConfiguredMailService(env({ SMTP_HOST: "127.example.com", NODE_ENV: "production" }));
+    expect(
+      (createTransport.mock.calls as unknown as [{ requireTLS: boolean }][]).map(([options]) => options.requireTLS),
+    ).toEqual([false, false, false, true]);
   });
 
   it("requires TLS in production, and takes the port and SSL as set", () => {
