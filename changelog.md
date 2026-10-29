@@ -719,3 +719,43 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R1.9, access tests (Phase 1 complete)
+
+### Added
+- **What the public can reach** (`tests/db/integration/access.test.ts`):
+  every page, the site's content, every service, job and client logo is
+  published, then changed in its draft only, with a marker; drafts that were
+  never published, hidden sections and archived records carry it too. Every
+  public read function is called, and **the marker never comes back**, while
+  each read still returns what was published.
+- **Least privilege, proven** (same file): the app's own database user is
+  refused (`*_DENIED_ERROR`) when it tries to create, alter or drop a table,
+  add an index or grant a right (plan §26.1).
+- **The admin route contract** (`tests/contract/admin-routes.test.ts`): every
+  handler under `src/app/api/admin` must check the session through
+  `withAdminRoute`, except signing in and the password reset, which must
+  refuse another site's request. An inbox, CV download or editing route
+  added later without the check fails the suite.
+- **The HTTP surface** (`tests/e2e/access.spec.ts`, phone and desktop): an
+  admin page without a session redirects to sign-in, keeping where it was
+  headed; the admin API answers 401 with `no-store`, with no cookie and with
+  a forged one (the session is checked in the database, not by the cookie's
+  presence); a write from another site is refused with 403 first.
+- **The CV folder is kept apart from the media folder**
+  (`src/lib/env/server.ts`): the server refuses to start when `CV_DIR` is
+  the public `MEDIA_DIR`, inside it, or around it (plan §9.4).
+
+### Changed
+- Plan: R1.9 DONE. **Phase 1 (data and security) is complete**: R1.1 – R1.9.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (305), coverage 100% (931 statements,
+  453 branches, 294 functions).
+- Build passed; the shipped audit passed (89 packages); E2E passed (8, phone
+  and desktop), axe clean.
+
+### Blockers
+- None. Phase 2 starts with the typeface (Q10): the user picks one from a
+  specimen of three (R2.1).

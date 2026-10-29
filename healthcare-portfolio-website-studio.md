@@ -1269,7 +1269,7 @@ one commit (D27).
 | R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | DONE (2026-10-28; the media folder is served by Apache, Q26, as checked on the server at R8.2) |
 | R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | DONE (2026-10-28; the password-reset email; the enquiry and application alerts come with their forms, R4.3 and R5.4) |
 | R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | DONE (2026-10-29; `npm run db:seed`, local only; the copy goes to the client at R3.1; how it reaches production is Q30) |
-| R1.9 | Integration: public reads return only published rows; drafts, inboxes and CVs unreachable without the admin; admin-only writes; rate limit | §34 | — | TODO |
+| R1.9 | Integration: public reads return only published rows; drafts, inboxes and CVs unreachable without the admin; admin-only writes; rate limit | §34 | — | DONE (2026-10-29; the inbox and CV routes do not exist yet: the route contract holds each to the session check as it arrives, R4.4, R5.3, R5.5) |
 
 ### Phase 2 — Design system ("Follow the Line")
 

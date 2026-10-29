@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import * as z from "zod";
 
 import { internalError } from "@/lib/errors";
@@ -59,10 +61,19 @@ const serverEnvSchema = z.object({
   CV_DIR: z.string().trim().min(1),
 });
 
+/** Whether one folder is the other, or inside it. */
+function overlaps(first: string, second: string): boolean {
+  const [a, b] = [path.resolve(first), path.resolve(second)];
+  return a === b || a.startsWith(`${b}${path.sep}`) || b.startsWith(`${a}${path.sep}`);
+}
+
+/** The CV folder is never the public media folder, nor inside it or around it (plan §9.4). */
+const checkedEnvSchema = serverEnvSchema.refine((env) => !overlaps(env.CV_DIR, env.MEDIA_DIR), { path: ["CV_DIR"] });
+
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
 
 export function getServerEnv(source: NodeJS.ProcessEnv = process.env): ServerEnv {
-  const parsed = serverEnvSchema.safeParse(source);
+  const parsed = checkedEnvSchema.safeParse(source);
   if (!parsed.success) {
     // Which variable failed, never its value: a database URL carries a password.
     throw internalError(

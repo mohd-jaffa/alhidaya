@@ -35,6 +35,22 @@ describe("getServerEnv", () => {
     expect(getServerEnv(env({ ...valid, MEDIA_URL: "/uploads" })).MEDIA_URL).toBe("/uploads");
   });
 
+  it("keeps the CV folder apart from the public media folder (plan §9.4)", () => {
+    for (const [MEDIA_DIR, CV_DIR] of [
+      ["/home/alhidaya/public_html/media", "/home/alhidaya/public_html/media"],
+      ["/home/alhidaya/public_html/media", "/home/alhidaya/public_html/media/cvs"],
+      ["/home/alhidaya/public_html/media/", "/home/alhidaya/public_html"],
+    ]) {
+      expect(() => getServerEnv(env({ ...valid, MEDIA_DIR, CV_DIR }))).toThrow(
+        expect.objectContaining({ code: "CONFIG_INVALID", details: [{ variable: "CV_DIR", problem: "custom" }] }),
+      );
+    }
+    const apart = { MEDIA_DIR: "/home/alhidaya/public_html/media", CV_DIR: "/home/alhidaya/alhidaya-data/cvs" };
+    expect(getServerEnv(env({ ...valid, ...apart }))).toMatchObject(apart);
+    const similar = { MEDIA_DIR: "/home/alhidaya/media", CV_DIR: "/home/alhidaya/media-cvs" };
+    expect(getServerEnv(env({ ...valid, ...similar }))).toMatchObject(similar);
+  });
+
   it("refuses a missing site address, and secrets too short to be secret", () => {
     expect(() => getServerEnv(env({ ...valid, BETTER_AUTH_SECRET: "short" }))).toThrow(
       expect.objectContaining({ code: "CONFIG_INVALID" }),
