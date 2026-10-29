@@ -29,3 +29,19 @@ test("the site's own typeface loads, from the site itself (plan D61, §22.4)", a
   expect(fontRequests.length).toBeGreaterThan(0);
   expect(new Set(fontRequests)).toEqual(new Set([new URL(page.url()).host]));
 });
+
+test("the browser finds the site's icons (plan R2.2)", async ({ page, request }) => {
+  await page.goto("/");
+  await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveCount(1);
+  await expect(page.locator('link[rel="icon"][href^="/favicon.ico"]')).toHaveCount(1);
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);
+
+  for (const [path, type] of [
+    ["/favicon.ico", "image/x-icon"],
+    ["/apple-icon.png", "image/png"],
+  ]) {
+    const response = await request.get(path);
+    expect(response.status(), path).toBe(200);
+    expect(response.headers()["content-type"]).toContain(type);
+  }
+});

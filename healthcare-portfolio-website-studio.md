@@ -1292,7 +1292,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R2.1 | Type specimen page → **the user picks the face**; tokens (logo colours AA-checked, type scale, spacing, radii, motion); self-hosted fonts | §30.1, §30.2 | Q10 | DONE (2026-10-29; Atkinson Hyperlegible Next, D61; the error red, D63) |
-| R2.2 | The logo as SVG (traced faithfully, or the client's vector); favicon and app icons | §30 | Q2 | TODO |
+| R2.2 | The logo as SVG (traced faithfully, or the client's vector); favicon and app icons | §30 | Q2 | DONE (2026-10-29; redrawn from the JPG, D62, for the client's approval at R7.5) |
 | R2.3 | Pictogram set | §30.1 | Q12 | TODO |
 | R2.4 | Motion system: Lenis + GSAP ticker, ScrollTrigger lifecycle, `TheLine` (scrubbed draw, stations, the travelling marker), reveals, reduced-motion path | §30.4 | — | TODO |
 | R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | TODO |

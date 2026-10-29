@@ -832,3 +832,40 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R2.2, the logo as SVG and the icons
+
+### Added
+- **The logo, redrawn as SVG** (`src/assets/brand/`, plan D62): the client
+  has no vector, so it was redrawn from the JPG. The two crosses and the head
+  were measured to sub-pixel edges and drawn exactly; the swoosh, the leaves
+  (with their veins) and both lines of lettering were separated by colour,
+  smoothed and traced at 4×, then compared with the original at 3×
+  enlargement. Colours and gradients are sampled from the logo itself.
+  `logo.svg` (the full logo, 66 KB) and `logo-mark.svg` (the mark, 6 KB); the
+  method, colours and the one known difference (the swoosh's hairline tip)
+  are in the folder's README.
+- **The icons** (`src/app/`): `icon.svg` (the mark in a square),
+  `favicon.ico` (16, 32 and 48 px) and `apple-icon.png` (180 px, on white),
+  linked by Next.js on every page. `scripts/make-icons.mts` redraws the PNGs
+  from `icon.svg` with Playwright's Chromium.
+- **The brand contract** (`tests/contract/brand.test.ts`): the logo files are
+  plain drawing (no script, link, embedded file or style), use only the
+  logo's sampled colours, and the icon is square. E2E: the three icon links
+  are on the page and the files are served.
+
+### Changed
+- Plan: R2.2 DONE.
+
+### For the client to approve (R7.5)
+- The redrawn logo. It reads *Service WLL*, while the site's name is *Al
+  Hidaya Health Care Services*; the logo is kept as drawn.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (319), coverage 100%.
+- Build passed; the shipped audit passed (89 packages); E2E passed (12, phone
+  and desktop), axe clean.
+
+### Blockers
+- None.
