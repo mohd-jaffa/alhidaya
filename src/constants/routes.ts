@@ -56,6 +56,8 @@ export const API_ROUTES = {
   adminSession: "/api/admin/session",
   passwordForgot: "/api/admin/password/forgot",
   passwordReset: "/api/admin/password/reset",
+  /** The Quote and Contact forms send here (plan §10). */
+  enquiries: "/api/enquiries",
   /** Opens a public page in the admin's preview of unpublished changes (plan §14). */
   preview: "/api/preview",
   /** Leaves the admin's preview of unpublished changes (R3.6). */

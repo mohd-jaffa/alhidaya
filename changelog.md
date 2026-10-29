@@ -1687,3 +1687,100 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R4.1: the Quote and Contact forms
+
+### Added
+- **The two forms** (`features/enquiries/components/`, plan §10.1, §10.2,
+  Q5 and Q6 as their defaults): Contact asks a name, phone, email and
+  message; Quote adds the organisation (optional), who the care is for, the
+  service (from the published services, optional) and how to reach the
+  visitor. Both end with the consent to the privacy notice (which opens in a
+  new tab, so nothing typed is lost) and one send action. Built from the
+  kit's fields; labels above, hints under them, each mistake beside its
+  field with the error icon; 16 px inputs, 44 px targets, `autocomplete` on
+  every field.
+- **The outcome in place** (§10.4, §30.3): sent, the form gives way to the
+  thanks, which takes focus and offers WhatsApp as the fastest follow-up;
+  not sent, the reason, "What you typed is still here." and the reference
+  show above the send action, and every field keeps its words.
+- **`POST /api/enquiries`** (§29): only from the site's own pages (the
+  `Origin` check), read by `enquirySchema` (either form, by its kind), the
+  chosen service checked against the published ones (refused beside the
+  service field otherwise), then stored with the rate limit in one
+  transaction (`receiveEnquiry`). Each answer is kept under the label the
+  visitor saw and a choice in its words, not its code (§10.4); a field left
+  empty is left out. The answer says nothing about the enquiry. Turnstile and
+  the honeypot come at R4.2, the alert email at R4.3.
+- **`useSchemaForm`** (`src/hooks/`): the public forms' checks (D77). The
+  schema is fetched when the visitor first reaches into a form; a mistake
+  takes focus; after a first attempt a field is checked again as it changes
+  (a fixed one clears at once) and as it is left; what the route refuses
+  shows beside its field. Before the page's script runs, a sent form posts,
+  so its words never reach the address.
+- The Quote form starts on the service in the address (`?service=`) when it
+  is published, and on "Not sure yet" otherwise. Either form can sit in any
+  page's FORM section; the section names which.
+- Wording: every label, hint, choice, thanks and failure in `UI_TEXT`;
+  four problems in `VALIDATION_MESSAGES`; the choices in `statuses.ts`
+  (`CARE_FOR`, `CONTACT_METHODS`, with their words; only the form knows
+  them, so no CHECK). New copy for the client's review at the demo (D70).
+
+### Changed
+- A page with a FORM section reads the published services (for the Quote
+  form's choice).
+- `Notice` can give its title an id, so the thanks is named by it.
+- The browser journeys' app is told its own address
+  (`NEXT_PUBLIC_SITE_URL=http://localhost:3100`, `tests/support/e2e-app.ts`):
+  every write must come from the site's own origin (§26.4), and a form sent
+  from a page on 3100 names 3100. The page links keep the address the build
+  was made with. The admin and preview journeys send that origin too.
+- The journeys' global setup clears the app's cached reads before it
+  publishes the seed: Next keeps them on disk in the build folder
+  (`.next/cache/fetch-cache`), across restarts, so reads cached from a
+  database the integration tests have since reset would otherwise be served
+  (a service listed beside itself, its ids changed). On the server, each
+  release starts with an empty cache; the folder's size is checked against
+  §21.2 at R8.2.
+- AGENTS.md §12 and plan §10 describe the public forms' checks.
+
+### Decisions
+- D77 (agent default, Q43): the public forms load their checks after first
+  paint, through the same Zod schema the route parses, without React Hook
+  Form; React Hook Form with Zod measured ≈ 40 KB gzip more in the first
+  load (≈ 194 KB against 170 KB). React Hook Form was installed to measure
+  it and removed; it arrives with the admin.
+
+### Performance (local build)
+- JavaScript at first paint: Contact 163.6 KB, Request a Quote 163.6 KB,
+  Home 157.6 KB gzip (all within 170 KB). Before this change: 153.9, 153.9
+  and 152.4 KB. Zod and the schema (≈ 25 KB) arrive when the visitor first
+  reaches into a form. No form code loads on Home: its rise is Turbopack
+  regrouping shared code into the chunks Home loads, with the word catalogue
+  in two of them (≈ 3 KB each); left for R7.1.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed (558), coverage 100%: both schemas
+  (tidying, every problem in the catalogue's words, either form by its
+  kind); the hook (fetched once on first reach, mistakes beside their
+  fields and the first focused, re-checks, what is sent, the route's
+  refusals, failures, a schema that cannot be fetched); both forms, the
+  shared frame (sending, thanks with and without WhatsApp, failure with and
+  without a reference), the page helper, the client, the route (origin,
+  schema, nothing kept on a refusal); against the local MySQL, each answer
+  kept as the visitor saw it, and a service the site does not show refused.
+- E2E: both forms at both widths with axe (mistakes, then sent and stored
+  with their labels; the Quote form on its service; an unknown service;
+  a failed send keeping every field). Screenshots of the Quote form empty
+  and with mistakes, and of the thanks, at both widths.
+- R3.8 marked DONE: every public page of Phase 3 has its journeys with axe at
+  phone and desktop widths, with its numbers in these entries.
+
+### Notes for later
+- Tabbing back up a long form can leave a field under the sticky sign bar
+  (WCAG 2.4.11): a `scroll-padding-top` on the page, with the sections'
+  `scroll-margin` reduced to match, is for R7.3's accessibility pass.
+
+### Blockers
+- None.

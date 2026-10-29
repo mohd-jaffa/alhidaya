@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   APPLICATION_STATUSES,
+  CARE_FOR,
+  CARE_FOR_LABELS,
+  CONTACT_METHOD_LABELS,
+  CONTACT_METHODS,
   AUDIT_ACTIONS,
   CV_STATUSES,
   EMAIL_STATUSES,
@@ -46,5 +50,11 @@ describe("the vocabularies", () => {
   it("name every social network the footer may link", () => {
     expect(Object.keys(SOCIAL_NETWORK_LABELS)).toEqual([...SOCIAL_NETWORKS]);
     expect(Object.keys(EMPLOYMENT_TYPE_LABELS)).toEqual([...EMPLOYMENT_TYPES]);
+  });
+
+  it("word every choice of the Quote form, as the plan lists them (plan §10.1)", () => {
+    expect(Object.values(CARE_FOR_LABELS)).toEqual(["My family", "A hospital", "A clinic", "A school", "Other"]);
+    expect(Object.keys(CARE_FOR_LABELS)).toEqual([...CARE_FOR]);
+    expect(Object.keys(CONTACT_METHOD_LABELS)).toEqual([...CONTACT_METHODS]);
   });
 });

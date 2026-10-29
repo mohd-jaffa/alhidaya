@@ -51,7 +51,7 @@ export async function getPublishedPageContent(
   const [document, site, services, jobs, clients] = await Promise.all([
     getPublishedPage(page, view),
     getPublishedSite(view),
-    may("SERVICES_INDEX") ? listPublishedServices(view) : [],
+    may("SERVICES_INDEX", "FORM") ? listPublishedServices(view) : [],
     may("CAREERS_BAND", "JOBS_LIST") ? listPublishedJobs(new Date(), view) : [],
     may("CLIENTS") ? listPublishedClients(view) : [],
   ]);

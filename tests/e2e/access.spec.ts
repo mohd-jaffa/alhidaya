@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 import { ERROR_MESSAGES } from "@/constants/messages";
 import { ADMIN_ROUTES } from "@/constants/routes";
 
-/** The site's own origin, which every write must come from (plan §26.4). */
-const SITE_ORIGIN = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").origin;
+import { E2E_ORIGIN } from "@tests/support/e2e-app";
+
 const SESSION = "/api/admin/session";
 
 test.describe("without the admin's session", () => {
@@ -12,7 +12,7 @@ test.describe("without the admin's session", () => {
     for (const path of [ADMIN_ROUTES.overview, `${ADMIN_ROUTES.enquiries}?status=NEW`, ADMIN_ROUTES.applications]) {
       const response = await request.get(path, { maxRedirects: 0 });
       expect(response.status()).toBe(307);
-      const location = new URL(response.headers().location, SITE_ORIGIN);
+      const location = new URL(response.headers().location, E2E_ORIGIN);
       expect(location.pathname).toBe(ADMIN_ROUTES.login);
       expect(location.searchParams.get("next")).toBe(path);
     }
@@ -21,7 +21,7 @@ test.describe("without the admin's session", () => {
   test("the admin API refuses, whatever cookie is sent, and caches nothing", async ({ request }) => {
     for (const cookie of [undefined, "alhidaya.session_token=forged.value"]) {
       const response = await request.delete(SESSION, {
-        headers: { origin: SITE_ORIGIN, ...(cookie ? { cookie } : {}) },
+        headers: { origin: E2E_ORIGIN, ...(cookie ? { cookie } : {}) },
       });
       expect(response.status()).toBe(401);
       expect(response.headers()["cache-control"]).toContain("no-store");

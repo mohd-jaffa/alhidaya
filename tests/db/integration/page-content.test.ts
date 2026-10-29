@@ -41,7 +41,7 @@ async function image() {
   return id;
 }
 
-async function publishedPage(key: "HOME" | "CAREERS" | "PRIVACY", page: unknown) {
+async function publishedPage(key: "HOME" | "CAREERS" | "PRIVACY" | "QUOTE", page: unknown) {
   await saveDocumentDraft(`PAGE:${key}`, page, actor);
   await publishDocument(`PAGE:${key}`, actor);
 }
@@ -105,6 +105,12 @@ describe("a page with everything it shows, against the local MySQL", () => {
 
     await publishedPage("PRIVACY", pageFixture("PRIVACY"));
     expect((await getPublishedPageContent("PRIVACY"))?.data).toMatchObject({ services: [], jobs: [], clients: [] });
+
+    // A page with a form reads the services, for the Quote form's choice (plan §10.1).
+    await publishedPage("QUOTE", pageFixture("QUOTE"));
+    const quote = await getPublishedPageContent("QUOTE");
+    expect(quote?.data).toMatchObject({ jobs: [], clients: [] });
+    expect(quote?.data.services).toHaveLength(1);
   });
 
   it("lists every public page for search engines: the fixed pages, the services and the open jobs", async () => {

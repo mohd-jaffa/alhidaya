@@ -28,4 +28,13 @@ describe("Notice", () => {
     expect(info).toHaveTextContent("Applications close at midnight in Doha.");
     expect(success.querySelectorAll("p")).toHaveLength(1);
   });
+
+  it("gives its title an id, so what takes focus with it can be named by it", () => {
+    render(
+      <section aria-labelledby="sent-title">
+        <Notice tone="success" title="Thank you." titleId="sent-title" />
+      </section>,
+    );
+    expect(screen.getByRole("region", { name: "Thank you." })).toBeInTheDocument();
+  });
 });

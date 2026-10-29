@@ -75,6 +75,34 @@ export const UI_TEXT = {
   aboutService: "About this service",
   whoItIsFor: "Who it is for",
   whatItIncludes: "What it includes",
+  /**
+   * The enquiry forms (plan §10). An enquiry keeps each label as the visitor
+   * saw it (§10.4), so a later change here never rewrites one already sent.
+   */
+  yourName: "Your name",
+  organisation: "Organisation",
+  careFor: "Who is the care for?",
+  service: "Service",
+  serviceHint: "Not sure? Leave this as it is, and tell us in your message.",
+  serviceNotSure: "Not sure yet",
+  phoneHint: "A Qatar number, or any number with its country code.",
+  contactMethod: "How should we reach you?",
+  message: "Message",
+  quoteMessageHint: "The care you need, who it is for, and from when.",
+  consent: "I agree that Al Hidaya may use these details to answer me.",
+  privacyNotice: "Read our privacy notice",
+  consentGiven: "Yes",
+  sendQuote: "Send my request",
+  sendMessage: "Send message",
+  sending: "Sending",
+  quoteSent: "Thank you. We have your request.",
+  messageSent: "Thank you. We have your message.",
+  sentNext: "We will be in touch soon.",
+  fasterOnWhatsApp: "For a faster answer, message us on WhatsApp.",
+  quoteNotSent: "Your request was not sent.",
+  messageNotSent: "Your message was not sent.",
+  nothingLost: "What you typed is still here.",
+  formNeedsScript: "This form needs JavaScript. You can call, email or message us on WhatsApp instead.",
 } as const;
 
 /** Each page's short name (plan §7.1): where its line starts, as "You are here" names it. */
@@ -154,6 +182,11 @@ export const VALIDATION_MESSAGES = {
   sectionLimit: (type: string, max: number) =>
     `This page can hold at most ${max} ${type} section${max === 1 ? "" : "s"}.`,
   sectionRequired: (type: string) => `This page needs a visible ${type} section.`,
+  /** The enquiry forms' choices (plan §10.1). */
+  careFor: "Please choose who the care is for.",
+  contactMethod: "Please choose how we should reach you.",
+  service: "Please choose a service from the list, or Not sure yet.",
+  consent: "Please agree, so that we can use your details to answer you.",
 } as const;
 
 export function isErrorMessageCode(code: string | null | undefined): code is ErrorMessageCode {

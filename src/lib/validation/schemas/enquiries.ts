@@ -1,0 +1,45 @@
+import * as z from "zod";
+
+import { TEXT_LIMITS } from "@/constants/limits";
+import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
+import { CARE_FOR, CONTACT_METHODS } from "@/constants/statuses";
+
+import { optionalLine, requiredEmail, requiredLine, requiredLines, requiredPhone } from "../primitives";
+
+/**
+ * The Quote and Contact forms (plan §10.1, §10.2), each field named by the
+ * label the visitor sees. The browser checks a form with its own schema; the
+ * route reads either through `enquirySchema`, which the form's kind decides.
+ */
+const name = requiredLine(UI_TEXT.yourName, { max: TEXT_LIMITS.name });
+const phone = requiredPhone(UI_TEXT.phone);
+const email = requiredEmail(UI_TEXT.email);
+const message = requiredLines(UI_TEXT.message, { max: TEXT_LIMITS.message });
+const consent = z.literal(true, { error: VALIDATION_MESSAGES.consent });
+
+export const contactFormSchema = z.object({ name, phone, email, message, consent });
+export type ContactFormInput = z.input<typeof contactFormSchema>;
+export type ContactFormPayload = z.output<typeof contactFormSchema>;
+
+export const quoteFormSchema = z.object({
+  name,
+  organisation: optionalLine(UI_TEXT.organisation, TEXT_LIMITS.line),
+  careFor: z.enum(CARE_FOR, { error: VALIDATION_MESSAGES.careFor }),
+  /** A published service's slug, or null for "not sure yet"; the route checks it is one (§10.1). */
+  service: optionalLine(UI_TEXT.service, TEXT_LIMITS.slug),
+  phone,
+  email,
+  contactMethod: z.enum(CONTACT_METHODS, { error: VALIDATION_MESSAGES.contactMethod }),
+  message,
+  consent,
+});
+export type QuoteFormInput = z.input<typeof quoteFormSchema>;
+export type QuoteFormPayload = z.output<typeof quoteFormSchema>;
+
+/** What `POST /api/enquiries` accepts: either form, named by its kind. */
+export const enquirySchema = z.discriminatedUnion("form", [
+  contactFormSchema.extend({ form: z.literal("CONTACT") }),
+  quoteFormSchema.extend({ form: z.literal("QUOTE") }),
+]);
+export type EnquiryInput = z.input<typeof enquirySchema>;
+export type EnquiryPayload = z.output<typeof enquirySchema>;

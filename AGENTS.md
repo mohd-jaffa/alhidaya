@@ -295,6 +295,9 @@ retried from the admin, and the visitor sees success.
 
 - **Zod + React Hook Form.** All schemas, form schemas included, live in
   `src/lib/validation/schemas/`. A component never declares its own schema.
+  The public forms check with their Zod schema through `useSchemaForm`, which
+  fetches it after first paint, to keep within the JavaScript budget (plan
+  D77); React Hook Form is the admin's.
 - Reusable pieces in `src/lib/validation/primitives.ts`, bound to
   `VALIDATION_MESSAGES`.
 - Each schema exports `XxxInput` (`z.input`) and `XxxPayload` (`z.output`); a

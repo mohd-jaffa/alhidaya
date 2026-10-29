@@ -1,6 +1,7 @@
 /**
  * Every vocabulary the database also knows (AGENTS.md §13): each list here is
  * the source of its table's CHECK, and a contract test keeps the two equal.
+ * The few only a form knows say so.
  */
 
 /** What the admin's changes are recorded as (plan §16, AGENTS.md §11). */
@@ -52,6 +53,29 @@ export type MediaKind = (typeof MEDIA_KINDS)[number];
 /** The two forms (plan §10, D15). */
 export const FORM_KINDS = ["QUOTE", "CONTACT"] as const;
 export type FormKind = (typeof FORM_KINDS)[number];
+
+/**
+ * The Quote form's choices (plan §10.1): who the care is for, and how the
+ * visitor would like to hear back. Only the form knows them: an enquiry keeps
+ * the words the visitor chose (§10.4), so the database has no CHECK for them.
+ */
+export const CARE_FOR = ["FAMILY", "HOSPITAL", "CLINIC", "SCHOOL", "OTHER"] as const;
+export type CareFor = (typeof CARE_FOR)[number];
+export const CARE_FOR_LABELS: Record<CareFor, string> = {
+  FAMILY: "My family",
+  HOSPITAL: "A hospital",
+  CLINIC: "A clinic",
+  SCHOOL: "A school",
+  OTHER: "Other",
+};
+
+export const CONTACT_METHODS = ["WHATSAPP", "CALL", "EMAIL"] as const;
+export type ContactMethod = (typeof CONTACT_METHODS)[number];
+export const CONTACT_METHOD_LABELS: Record<ContactMethod, string> = {
+  WHATSAPP: "WhatsApp",
+  CALL: "A phone call",
+  EMAIL: "Email",
+};
 
 /** Social networks the footer may link (plan §13). */
 export const SOCIAL_NETWORKS = ["INSTAGRAM", "FACEBOOK", "LINKEDIN", "X", "YOUTUBE"] as const;

@@ -7,6 +7,8 @@ describe("the validation module", () => {
     expect(Object.keys(validation).sort()).toEqual([
       "EMAIL",
       "clientDocumentSchema",
+      "contactFormSchema",
+      "enquirySchema",
       "forgotPasswordSchema",
       "hrefSchema",
       "httpsUrlSchema",
@@ -23,6 +25,7 @@ describe("the validation module", () => {
       "orderingDocumentSchema",
       "pageDocumentSchema",
       "previewQuerySchema",
+      "quoteFormSchema",
       "requiredEmail",
       "requiredLine",
       "requiredLines",

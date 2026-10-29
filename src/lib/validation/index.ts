@@ -41,6 +41,18 @@ export {
   type RichText,
 } from "./schemas/content";
 
+export {
+  contactFormSchema,
+  enquirySchema,
+  quoteFormSchema,
+  type ContactFormInput,
+  type ContactFormPayload,
+  type EnquiryInput,
+  type EnquiryPayload,
+  type QuoteFormInput,
+  type QuoteFormPayload,
+} from "./schemas/enquiries";
+
 export { pageDocumentSchema, sectionSchema, type PageDocument, type Section } from "./schemas/pages";
 
 export { previewQuerySchema, type PreviewQueryPayload } from "./schemas/preview";

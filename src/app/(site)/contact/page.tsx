@@ -5,13 +5,14 @@ import { TheLine } from "@/components/motion/TheLine";
 import { pageStations } from "@/components/sections/anchors";
 import { PageSections } from "@/components/sections/PageSections";
 import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
+import { enquiryForms } from "@/features/enquiries/components/EnquiryForms";
 import { contentView } from "@/lib/content/view";
 
 export function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("CONTACT");
 }
 
-/** Contact (plan §6.7): the sign, every way to reach the company, and the Contact form (R4.1). */
+/** Contact (plan §6.7): the sign, every way to reach the company, and the Contact form (§10.2). */
 export default async function Contact() {
   const content = await getPublishedPageContent("CONTACT", await contentView());
   if (!content) notFound();
@@ -19,7 +20,7 @@ export default async function Contact() {
   return (
     <>
       <TheLine stations={pageStations("CONTACT", document.sections, data)} tone="deep" />
-      <PageSections page="CONTACT" sections={document.sections} data={data} />
+      <PageSections page="CONTACT" sections={document.sections} data={data} forms={enquiryForms(data)} />
     </>
   );
 }

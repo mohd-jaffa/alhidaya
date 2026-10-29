@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { defineConfig, devices } from "@playwright/test";
 
+import { E2E_ORIGIN, E2E_PORT } from "./tests/support/e2e-app";
 import { LOCAL_DATABASE } from "./tests/support/local-database";
 
 /**
@@ -29,8 +30,6 @@ const MEDIA_DIR = path.resolve(process.env.MEDIA_DIR ?? "public/media");
 const CV_DIR = path.resolve(process.env.CV_DIR ?? ".data/cvs");
 Object.assign(process.env, { MEDIA_DIR, CV_DIR });
 
-const PORT = 3100;
-
 export default defineConfig({
   testDir: "tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
@@ -42,7 +41,7 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 10_000 },
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: E2E_ORIGIN,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
@@ -53,11 +52,21 @@ export default defineConfig({
   ],
   webServer: {
     command: "node .next/standalone/server.js",
-    // KIT_PREVIEW serves /kit, where the motion system and the kit are tested (plan D64).
-    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1", KIT_PREVIEW: "true", SERVE_MEDIA: "true", MEDIA_DIR, CV_DIR },
+    // KIT_PREVIEW serves /kit, where the motion system and the kit are tested (plan D64). The app
+    // is told its own address, which every write must come from (plan §26.4), so a form sent from
+    // its pages is taken; the links in its pages keep the address the build was made with.
+    env: {
+      NEXT_PUBLIC_SITE_URL: E2E_ORIGIN,
+      PORT: String(E2E_PORT),
+      HOSTNAME: "127.0.0.1",
+      KIT_PREVIEW: "true",
+      SERVE_MEDIA: "true",
+      MEDIA_DIR,
+      CV_DIR,
+    },
     // Ready once it answers what reads no content: the global setup publishes the seed after
     // this, and a page read before it would keep "nothing published" in the app's data cache.
-    url: `http://localhost:${PORT}/robots.txt`,
+    url: `${E2E_ORIGIN}/robots.txt`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },

@@ -9,10 +9,11 @@ import { createAdmin } from "@/features/auth/createAdmin";
 import { discardDocumentDraft, publishDocument, readDocumentDraft, saveDocumentDraft } from "@/lib/content/documents";
 import type { PageDocument } from "@/lib/validation";
 
+import { E2E_ORIGIN } from "@tests/support/e2e-app";
+
 const ACTOR = { adminId: null, requestId: "e2e-preview" };
 const EMAIL = `preview-${crypto.randomUUID()}@example.com`;
 const PASSWORD = "a long preview password";
-const ORIGIN = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").origin;
 
 /** A copy of a page with its sign's headline changed. */
 async function withHeadline(key: "PAGE:ABOUT" | "PAGE:TERMS", headline: string): Promise<PageDocument> {
@@ -48,7 +49,7 @@ test("the admin's preview shows drafts under its bar, unindexed; the public neve
 
   const signIn = await page.request.post(API_ROUTES.adminSession, {
     data: { email: EMAIL, password: PASSWORD },
-    headers: { origin: ORIGIN },
+    headers: { origin: E2E_ORIGIN },
   });
   expect(signIn.status()).toBe(200);
 

@@ -158,6 +158,7 @@ question (§41) the user may overturn.
 | D74 | **The office's spot on the static map is site content**, which the admin can edit (following D70): a latitude and longitude, empty until the client confirms it. OpenStreetMap has Asmakh Mall but neither Retaj Building nor a Bin Naifaa street, so until then the map marks only the mall, which the address names; nothing is placed by guesswork. **(agent default)** | 2026-10-29 |
 | D75 | **Stock photos come now** (answers Q41): a handful of licensed stock photos (Q11), each source and licence recorded, imported by the seed through the same sizing step the admin's uploads will use (brought forward from R6.5); the admin's media screens stay at R6.5. | 2026-10-29 |
 | D76 | **Public pages render per request from cached reads** (answers Q42, option b): each page is server-rendered on request (visible without JavaScript, correct 404s); its database reads are cached with tags (`unstable_cache`) and Publish revalidates exactly its tags, never serving stale content (§22.1). Cache Components is not used: it prerenders cached reads at build, where the client's database is out of reach. | 2026-10-29 |
+| D77 | **The public forms load their checks after first paint**: React Hook Form with Zod in the Quote and Contact pages' first load measured ≈ 40 KB gzip more (≈ 194 KB against the 170 KB budget, §31). The forms are plain fields of the browser's own, checked by the same Zod schema the route parses (`src/lib/validation/schemas/enquiries.ts`) through one small hook (`src/hooks/useSchemaForm.ts`), which fetches the schema when the visitor first reaches into the form; React Hook Form stays for the admin (Phase 6), which has no such budget. Each mistake shows beside its field in the catalogue's words, on the visitor's side and the server's alike. **(agent default; Q43)** | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -498,6 +499,15 @@ preselected when arriving from a service page); phone; email; preferred contact
 ### 10.2 Contact (Q6 default fields)
 
 Name; phone; email; message; consent.
+
+**Who it is for** and **preferred contact** are fixed choices
+(`CARE_FOR`, `CONTACT_METHODS` in `src/constants/statuses.ts`); the service
+is chosen from the published services, and the route refuses one the site
+does not show. Every word of both forms is in the catalogue. Each form is
+checked by its Zod schema in the browser, fetched once the visitor reaches
+into it (D77), and again by `POST /api/enquiries`; a mistake shows beside
+its field and takes focus; sent, the thanks replaces the form in place.
+Every page with a FORM section can show either form: the section names it.
 
 ### 10.3 Protection (D18)
 
@@ -1339,13 +1349,13 @@ one commit (D27).
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DONE (2026-10-29; the office's spot on the map waits on the client, D74) |
 | R3.6 | Caching with tags; draft-mode preview | §22, §14 | — | DONE (2026-10-29; Publish's revalidation is wired by the admin's publish route, R6) |
 | R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DONE (2026-10-29; `JobPosting` and the closed jobs' `noindex` come with the job page, R5.1; the preview's `noindex` with R3.6) |
-| R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | TODO |
+| R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | DONE (2026-10-29; every public page of Phase 3 has its journeys with axe at both widths; numbers in the changelog) |
 
 ### Phase 4 — Enquiries
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R4.1 | Quote and Contact forms: schemas, UI, success and error states | §10 | Q5, Q6 | TODO |
+| R4.1 | Quote and Contact forms: schemas, UI, success and error states | §10 | Q5, Q6 | DONE (2026-10-29; Q5 and Q6 as their defaults; checks after first paint, D77; Turbopack's grouping of shared code is for R7.1) |
 | R4.2 | Turnstile verification, honeypot, rate limit | §10.3 | — | TODO |
 | R4.3 | Alert emails, failure logging, retry | §10.4, §17 | Q17 | TODO |
 | R4.4 | Enquiries inbox: list, filters, detail, status, notes | §10.5 | — | TODO |
@@ -1488,6 +1498,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q40 | Uploaded images as a `<picture>` from their made sizes, or through a custom `next/image` loader? | A `<picture>` (D73): AVIF with a WebP fallback, at every made width, and no script. |
 | Q41 | ~~Choose the licensed stock photos now and bring forward the step that makes an image's sizes?~~ | **Answered by D75:** yes. |
 | Q42 | ~~How public pages are cached (§22.1)~~ | **Answered by D76:** (b), per-request rendering from cached reads, Publish revalidating exactly its tags. |
+| Q43 | The public forms' checks: Zod fetched when the visitor first reaches into the form, without React Hook Form (≈ 164 KB at first paint), or React Hook Form and Zod in the first load (≈ 194 KB, over the 170 KB budget)? | The first (D77). |
 
 ## 42. Later (unscheduled)
 
