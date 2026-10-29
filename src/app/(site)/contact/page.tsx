@@ -5,6 +5,7 @@ import { TheLine } from "@/components/motion/TheLine";
 import { pageStations } from "@/components/sections/anchors";
 import { PageSections } from "@/components/sections/PageSections";
 import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
+import { contentView } from "@/lib/content/view";
 
 export function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("CONTACT");
@@ -12,7 +13,7 @@ export function generateMetadata(): Promise<Metadata> {
 
 /** Contact (plan §6.7): the sign, every way to reach the company, and the Contact form (R4.1). */
 export default async function Contact() {
-  const content = await getPublishedPageContent("CONTACT");
+  const content = await getPublishedPageContent("CONTACT", await contentView());
   if (!content) notFound();
   const { document, data } = content;
   return (

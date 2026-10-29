@@ -56,6 +56,8 @@ export const API_ROUTES = {
   adminSession: "/api/admin/session",
   passwordForgot: "/api/admin/password/forgot",
   passwordReset: "/api/admin/password/reset",
+  /** Opens a public page in the admin's preview of unpublished changes (plan §14). */
+  preview: "/api/preview",
   /** Leaves the admin's preview of unpublished changes (R3.6). */
   previewExit: "/api/preview/exit",
 } as const;

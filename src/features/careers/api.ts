@@ -5,7 +5,8 @@ import type { FileType } from "@/constants/uploads";
 import { getDb } from "@/db/client";
 import { applications, records, type SubmittedField } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
-import { findPublishedRecord, listPublishedRecords, type PublishedRecord } from "@/lib/content/records";
+import { findPublishedRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
+import type { ContentView } from "@/lib/content/view";
 import { dohaDay } from "@/lib/dates";
 import { businessRuleError, rateLimitError } from "@/lib/errors";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
@@ -24,9 +25,12 @@ const withOpen = (job: PublishedRecord<JobDocument>, today: string): PublishedJo
 });
 
 /** Every published job, open ones first, newest posting first (plan §6.5). */
-export async function listPublishedJobs(at: Date = new Date()): Promise<PublishedJob[]> {
+export async function listPublishedJobs(
+  at: Date = new Date(),
+  view: ContentView = "published",
+): Promise<PublishedJob[]> {
   const today = dohaDay(at);
-  const jobs = (await listPublishedRecords<JobDocument>("JOBS")).map((job) => withOpen(job, today));
+  const jobs = (await listRecords<JobDocument>("JOBS", view)).map((job) => withOpen(job, today));
   return jobs.sort(
     (a, b) => Number(b.open) - Number(a.open) || b.published.postedOn.localeCompare(a.published.postedOn),
   );

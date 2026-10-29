@@ -9,7 +9,8 @@ import { listPublishedClients } from "@/features/clients/api";
 import { getImages } from "@/features/media/api";
 import { listPublishedServices } from "@/features/services/api";
 import { getPublishedSite } from "@/features/settings/api";
-import { readPublishedDocument } from "@/lib/content/documents";
+import { readDocument } from "@/lib/content/documents";
+import type { ContentView } from "@/lib/content/view";
 import { renderShareImage } from "@/lib/seo/share-image";
 import type { PageDocument } from "@/lib/validation";
 
@@ -17,12 +18,15 @@ import type { SectionData } from "./types";
 
 /**
  * A page as the public sees it (plan §6, §7): the published copy only, with
- * its hidden sections left out; a page never published is null.
+ * its hidden sections left out; a page never published is null. In the
+ * admin's preview, the draft (§14).
  */
-export const getPublishedPage = cache(async (page: PageKey): Promise<PageDocument | null> => {
-  const document = await readPublishedDocument<PageDocument>(pageDocumentKey(page));
-  return document ? { ...document, sections: document.sections.filter((section) => section.visible) } : null;
-});
+export const getPublishedPage = cache(
+  async (page: PageKey, view: ContentView = "published"): Promise<PageDocument | null> => {
+    const document = await readDocument<PageDocument>(pageDocumentKey(page), view);
+    return document ? { ...document, sections: document.sections.filter((section) => section.visible) } : null;
+  },
+);
 
 /** The images a page's sections show: its photos and its client logos. */
 function imageIds(document: PageDocument, clients: SectionData["clients"]): string[] {
@@ -41,14 +45,15 @@ function imageIds(document: PageDocument, clients: SectionData["clients"]): stri
  */
 export async function getPublishedPageContent(
   page: PageKey,
+  view: ContentView = "published",
 ): Promise<{ document: PageDocument; data: SectionData } | null> {
   const may = (...types: SectionType[]) => types.some((type) => PAGE_RULES[page].allowed.includes(type));
   const [document, site, services, jobs, clients] = await Promise.all([
-    getPublishedPage(page),
-    getPublishedSite(),
-    may("SERVICES_INDEX") ? listPublishedServices() : [],
-    may("CAREERS_BAND", "JOBS_LIST") ? listPublishedJobs() : [],
-    may("CLIENTS") ? listPublishedClients() : [],
+    getPublishedPage(page, view),
+    getPublishedSite(view),
+    may("SERVICES_INDEX") ? listPublishedServices(view) : [],
+    may("CAREERS_BAND", "JOBS_LIST") ? listPublishedJobs(new Date(), view) : [],
+    may("CLIENTS") ? listPublishedClients(view) : [],
   ]);
   if (!document) return null;
   const images = await getImages(imageIds(document, clients));

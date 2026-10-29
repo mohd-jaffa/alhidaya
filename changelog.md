@@ -1577,3 +1577,56 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - R3.6 waits on Q42.
+
+## 2026-10-29 — R3.6, caching and the admin's preview
+
+### Decided
+- **D75** (Q41): stock photos come now, through the sizing step the admin's
+  uploads will use; next.
+- **D76** (Q42, option b): public pages render per request from cached
+  reads; Cache Components is not used (it prerenders cached reads at build,
+  where the client's database is out of reach).
+
+### Added
+- **Cached published reads** (`src/lib/content/cache.ts`, plan §22.1): a
+  page, the site's content, an order, a collection, a record at an address
+  and the images are each kept in Next's data cache under their tags
+  (`page:HOME`, `site`, `services`, `service:<slug>`, `jobs`, `job:<slug>`,
+  `clients`, `media`). Pages still render on each request, so they work
+  without JavaScript and a missing page answers 404. A cached record's date
+  is made a date again.
+- **`revalidateContent` and `publishedTags`**: what a publish changes, dropped
+  with `expire: 0`, so stale content is never served. The admin's publish
+  route calls them (R6); the seed and the tests publish outside the app and
+  leave the running app's cache alone.
+- **The admin's preview** (plan §14): `GET /api/preview?path=…` turns draft
+  mode on for the signed-in admin only (401 otherwise) and opens a page of
+  the public site (never another site, the admin or the API);
+  `GET /api/preview/exit` turns it off. A request sees drafts only while
+  draft mode is on **and** the admin's session is still valid
+  (`contentView`, `lib/content/view.ts`): pages, the site's content, orders
+  and every unarchived record as its draft reads, at the draft's address,
+  uncached. The preview bar shows; the page is `noindex`.
+
+### Changed
+- The browser journeys wait for the app on `/robots.txt`, which reads no
+  content: a page read before the global setup publishes the seed would keep
+  "nothing published" in the app's data cache.
+- The integration tests read straight from MySQL (`tests/support/next-cache.ts`
+  stands in for Next's data cache, which lives inside the running app).
+- Plan: D75, D76; Q41 and Q42 answered; §22.1 rewritten; R3.6 DONE.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (514), coverage 100%: the tags, the
+  cached read's key and tags, the revalidation; the view (draft mode without
+  a session shows what is published); the preview's reads against the local
+  MySQL (drafts, unpublished and archived records, the draft's address,
+  clients); the preview routes (session, path, exit).
+- Build passed; E2E passed (83): the admin signs in, previews About with a
+  draft headline under the preview bar, `noindex`, while a visitor sees the
+  published page; leaving the preview; a page changed in the database behind
+  the app keeps its cached content until a publish revalidates it.
+
+### Blockers
+- None.

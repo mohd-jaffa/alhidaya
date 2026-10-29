@@ -56,6 +56,7 @@ export default defineConfig({
           name: "integration",
           environment: "node",
           include: ["tests/db/integration/**/*.test.ts"],
+          setupFiles: ["./tests/support/next-cache.ts"],
           globalSetup: ["./tests/support/local-database.ts"],
           // The app's own code reads DATABASE_URL; here it is the test database.
           env: {

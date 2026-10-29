@@ -43,6 +43,8 @@ export {
 
 export { pageDocumentSchema, sectionSchema, type PageDocument, type Section } from "./schemas/pages";
 
+export { previewQuerySchema, type PreviewQueryPayload } from "./schemas/preview";
+
 export {
   clientDocumentSchema,
   jobDocumentSchema,

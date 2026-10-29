@@ -5,6 +5,7 @@ import { TheLine } from "@/components/motion/TheLine";
 import { pageStations } from "@/components/sections/anchors";
 import { PageSections } from "@/components/sections/PageSections";
 import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
+import { contentView } from "@/lib/content/view";
 
 export function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("SERVICES");
@@ -12,7 +13,7 @@ export function generateMetadata(): Promise<Metadata> {
 
 /** Services (plan §6.3): the sign, every service on its line, the staffing offer and the contact band. */
 export default async function Services() {
-  const content = await getPublishedPageContent("SERVICES");
+  const content = await getPublishedPageContent("SERVICES", await contentView());
   if (!content) notFound();
   const { document, data } = content;
   return (

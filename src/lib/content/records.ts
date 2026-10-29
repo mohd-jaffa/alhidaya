@@ -8,6 +8,8 @@ import { logActionSafe } from "@/lib/audit/auditLog";
 import { businessRuleError, conflictError, databaseErrorCode, fromDatabaseError, notFoundError } from "@/lib/errors";
 
 import type { Actor } from "./actor";
+import { CACHE_TAGS, cachedRead } from "./cache";
+import type { ContentView } from "./view";
 
 /**
  * Collection records, a draft and a published copy each (plan §14, D60):
@@ -26,13 +28,53 @@ export interface PublishedRecord<T> {
 const live = (collection: RecordCollection) =>
   and(eq(records.collection, collection), isNotNull(records.published), isNull(records.archivedAt));
 
-/** Every published, unarchived record of a collection: never a draft. */
+/** A cached read answers dates as text; a record's are made dates again. */
+const withDate = <T>(record: PublishedRecord<T>): PublishedRecord<T> => ({
+  ...record,
+  publishedAt: new Date(record.publishedAt),
+});
+
+const publishedRecords = cachedRead(
+  "records",
+  (collection: RecordCollection) =>
+    getDb()
+      .select({ id: records.id, slug: records.slug, published: records.published, publishedAt: records.publishedAt })
+      .from(records)
+      .where(live(collection)),
+  (collection) => [CACHE_TAGS.collection(collection)],
+);
+
+/** Every published, unarchived record of a collection: never a draft. Kept until a publish changes it (plan §22.1). */
 export async function listPublishedRecords<T>(collection: RecordCollection): Promise<PublishedRecord<T>[]> {
+  return ((await publishedRecords(collection)) as PublishedRecord<T>[]).map(withDate);
+}
+
+/**
+ * The admin's preview of a collection (plan §14): every unarchived record as
+ * its draft reads, published or not, at the address the draft gives it.
+ */
+async function previewRecords<T>(collection: RecordCollection): Promise<PublishedRecord<T>[]> {
   const rows = await getDb()
-    .select({ id: records.id, slug: records.slug, published: records.published, publishedAt: records.publishedAt })
+    .select({
+      id: records.id,
+      slug: records.slug,
+      draft: records.draft,
+      publishedAt: records.publishedAt,
+      updatedAt: records.updatedAt,
+    })
     .from(records)
-    .where(live(collection));
-  return rows as PublishedRecord<T>[];
+    .where(and(eq(records.collection, collection), isNull(records.archivedAt)));
+  return rows.map((row) => ({
+    id: row.id,
+    slug: (row.draft as { slug?: string }).slug ?? row.slug,
+    published: row.draft as T,
+    publishedAt: row.publishedAt ?? row.updatedAt,
+  }));
+}
+
+/** What a request sees of a collection (plan §14): the published records, or in the admin's preview the drafts. */
+export function listRecords<T>(collection: RecordCollection, view: ContentView): Promise<PublishedRecord<T>[]> {
+  return view === "preview" ? previewRecords<T>(collection) : listPublishedRecords<T>(collection);
 }
 
 /**
@@ -43,12 +85,41 @@ export async function findPublishedRecord<T>(
   collection: RecordCollection,
   slug: string,
 ): Promise<{ record: PublishedRecord<T> } | { movedTo: string } | null> {
+  const found = (await publishedRecord(collection, slug)) as
+    { record: PublishedRecord<T> } | { movedTo: string } | null;
+  return found && "record" in found ? { record: withDate(found.record) } : found;
+}
+
+/**
+ * What a request finds at a record's address (plan §14): the published record,
+ * or where it moved to; in the admin's preview, the record whose draft has it.
+ */
+export async function findRecord<T>(
+  collection: RecordCollection,
+  slug: string,
+  view: ContentView,
+): Promise<{ record: PublishedRecord<T> } | { movedTo: string } | null> {
+  if (view === "published") return findPublishedRecord<T>(collection, slug);
+  const record = (await previewRecords<T>(collection)).find((candidate) => candidate.slug === slug);
+  return record ? { record } : null;
+}
+
+const publishedRecord = cachedRead(
+  "record",
+  (collection: RecordCollection, slug: string) => findPublishedRecordUncached(collection, slug),
+  (collection, slug) => [CACHE_TAGS.collection(collection), CACHE_TAGS.record(collection, slug)],
+);
+
+async function findPublishedRecordUncached(
+  collection: RecordCollection,
+  slug: string,
+): Promise<{ record: PublishedRecord<unknown> } | { movedTo: string } | null> {
   const db = getDb();
   const [current] = await db
     .select({ id: records.id, slug: records.slug, published: records.published, publishedAt: records.publishedAt })
     .from(records)
     .where(and(live(collection), eq(records.slug, slug)));
-  if (current) return { record: current as PublishedRecord<T> };
+  if (current) return { record: current as PublishedRecord<unknown> };
 
   const [moved] = await db
     .select({ slug: records.slug })

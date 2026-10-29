@@ -156,6 +156,8 @@ question (§41) the user may overturn.
 | D72 | **Home's careers section shows the three most recent open jobs**, then a link to all of them (answers Q39). | 2026-10-29 |
 | D73 | **Uploaded images are drawn as a `<picture>` from their made sizes**, not through a custom `next/image` loader (§22.3 first said a loader): each type is offered at every width it was made at, AVIF first and WebP after it, which a loader cannot do (it answers one address per width, in one type), and no script is sent for an image. **(agent default; Q40)** | 2026-10-29 |
 | D74 | **The office's spot on the static map is site content**, which the admin can edit (following D70): a latitude and longitude, empty until the client confirms it. OpenStreetMap has Asmakh Mall but neither Retaj Building nor a Bin Naifaa street, so until then the map marks only the mall, which the address names; nothing is placed by guesswork. **(agent default)** | 2026-10-29 |
+| D75 | **Stock photos come now** (answers Q41): a handful of licensed stock photos (Q11), each source and licence recorded, imported by the seed through the same sizing step the admin's uploads will use (brought forward from R6.5); the admin's media screens stay at R6.5. | 2026-10-29 |
+| D76 | **Public pages render per request from cached reads** (answers Q42, option b): each page is server-rendered on request (visible without JavaScript, correct 404s); its database reads are cached with tags (`unstable_cache`) and Publish revalidates exactly its tags, never serving stale content (§22.1). Cache Components is not used: it prerenders cached reads at build, where the client's database is out of reach. | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -756,14 +758,19 @@ never served by Apache (§9.4).
 
 ### 22.1 Public pages
 
-- Public pages render on the server and are **cached** (Next.js Cache
-  Components: `"use cache"` with `cacheTag`/`cacheLife`; the exact API is read
-  from `node_modules/next/dist/docs` when Phase 3 starts). The visitor receives
-  finished HTML, with no client-side fetching of content.
-- Every published read is tagged (`page:<key>`, `services`,
-  `service:<slug>`, `jobs`, `job:<slug>`, `clients`, `site`). **Publish**
-  revalidates exactly its tags; the next visitor gets fresh HTML.
-- Draft mode (preview) bypasses the cache for the admin only.
+- Public pages render on the server **per request**, so they work without
+  JavaScript and a missing page answers 404, and their **database reads are
+  cached** (D76: Next's `unstable_cache`, `src/lib/content/cache.ts`). Cache
+  Components was set aside: it prerenders cached reads at build, where the
+  client's database is out of reach. The visitor receives finished HTML, with
+  no client-side fetching of content.
+- Every published read is tagged (`page:<key>`, `site`, `services`,
+  `service:<slug>`, `jobs`, `job:<slug>`, `clients`, `media`). **Publish**
+  revalidates exactly its tags (`revalidateContent(publishedTags(…))`, called
+  by the admin's publish route, R6); stale content is never served, and the
+  next visitor gets fresh HTML.
+- Draft mode (preview) reads the drafts, uncached, for the admin only: draft
+  mode on **and** the admin's session still valid (`contentView`).
 
 ### 22.2 Forms and admin
 
@@ -1330,7 +1337,7 @@ one commit (D27).
 | R3.3 | Home, with the first viewport and the line | §6.1, §30.1 | Q41 | DONE (2026-10-29; its photos wait on Q41) |
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | DONE (2026-10-29; photos wait on Q41) |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DONE (2026-10-29; the office's spot on the map waits on the client, D74) |
-| R3.6 | Caching with tags; draft-mode preview | §22, §14 | Q42 | TODO |
+| R3.6 | Caching with tags; draft-mode preview | §22, §14 | — | DONE (2026-10-29; Publish's revalidation is wired by the admin's publish route, R6) |
 | R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DONE (2026-10-29; `JobPosting` and the closed jobs' `noindex` come with the job page, R5.1; the preview's `noindex` with R3.6) |
 | R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | TODO |
 
@@ -1479,8 +1486,8 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q38 | ~~The three lines' names on Home: edited by the admin, or fixed in code?~~ | **Answered by D71:** fixed in code. |
 | Q39 | ~~How many open jobs Home's careers section shows~~ | **Answered by D72:** the three most recent, then a link to all. |
 | Q40 | Uploaded images as a `<picture>` from their made sizes, or through a custom `next/image` loader? | A `<picture>` (D73): AVIF with a WebP fallback, at every made width, and no script. |
-| Q41 | Home's sign, its introduction and the staffing section have a place for a photo, and there are none yet: the media library that makes their sizes is R6.5. Choose the licensed stock photos now (Q11) and bring forward only the step that makes an image's sizes, so the demo shows them? | Yes: a handful of licensed stock photos, each source and licence recorded, imported by the seed through the same sizing step the admin's uploads will use; the admin's media screens stay at R6.5. |
-| Q42 | How public pages are cached (§22.1). Cache Components (`use cache`) prerenders cached reads when the site is built, and the release builds on GitHub, which cannot reach the client's database; without it, each page would stream behind a shell, so a visitor without JavaScript would not see the content (against §30.4) and a missing page would answer 200, not 404. Which way? | (b) Keep each page rendered on the server per request, as now (correct 404s, visible without JavaScript), and cache its database reads with tags through Next's previous model (`unstable_cache`, still supported in 16); Publish revalidates exactly its tags (§14). (a) Cache Components with streaming, accepting the two costs. (c) No cache: the reads go to MySQL on the same machine (a few milliseconds each) and Publish needs no revalidation. |
+| Q41 | ~~Choose the licensed stock photos now and bring forward the step that makes an image's sizes?~~ | **Answered by D75:** yes. |
+| Q42 | ~~How public pages are cached (§22.1)~~ | **Answered by D76:** (b), per-request rendering from cached reads, Publish revalidating exactly its tags. |
 
 ## 42. Later (unscheduled)
 

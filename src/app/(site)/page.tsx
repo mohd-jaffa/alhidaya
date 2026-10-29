@@ -5,6 +5,7 @@ import { TheLine } from "@/components/motion/TheLine";
 import { pageStations } from "@/components/sections/anchors";
 import { PageSections } from "@/components/sections/PageSections";
 import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
+import { contentView } from "@/lib/content/view";
 
 export function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("HOME");
@@ -15,7 +16,7 @@ export function generateMetadata(): Promise<Metadata> {
  * each section a station on the deep-blue line.
  */
 export default async function Home() {
-  const content = await getPublishedPageContent("HOME");
+  const content = await getPublishedPageContent("HOME", await contentView());
   if (!content) notFound();
   const { document, data } = content;
   return (

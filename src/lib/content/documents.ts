@@ -7,6 +7,8 @@ import { logActionSafe } from "@/lib/audit/auditLog";
 import { businessRuleError, notFoundError } from "@/lib/errors";
 
 import type { Actor } from "./actor";
+import { CACHE_TAGS, cachedRead } from "./cache";
+import type { ContentView } from "./view";
 
 /**
  * Keyed documents, a draft and a published copy each (plan §14, D58, D60).
@@ -15,10 +17,26 @@ import type { Actor } from "./actor";
  * published. Callers parse a draft with its schema before saving it.
  */
 
-/** The published copy, or null: never the draft. */
+const publishedDocument = cachedRead(
+  "document",
+  async (key: DocumentKey) => {
+    const [row] = await getDb()
+      .select({ published: documents.published })
+      .from(documents)
+      .where(eq(documents.key, key));
+    return row?.published ?? null;
+  },
+  (key) => [CACHE_TAGS.document(key)],
+);
+
+/** The published copy, or null: never the draft. Kept until a publish changes it (plan §22.1). */
 export async function readPublishedDocument<T>(key: DocumentKey): Promise<T | null> {
-  const [row] = await getDb().select({ published: documents.published }).from(documents).where(eq(documents.key, key));
-  return (row?.published ?? null) as T | null;
+  return (await publishedDocument(key)) as T | null;
+}
+
+/** What a request sees of a document (plan §14): the published copy, or in the admin's preview the draft. */
+export async function readDocument<T>(key: DocumentKey, view: ContentView): Promise<T | null> {
+  return view === "preview" ? ((await readDocumentDraft<T>(key))?.draft ?? null) : readPublishedDocument<T>(key);
 }
 
 export interface DraftView<T> {

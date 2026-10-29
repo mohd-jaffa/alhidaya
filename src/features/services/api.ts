@@ -6,19 +6,20 @@ import { orderingDocumentKey } from "@/constants/sections";
 import { getImages } from "@/features/media/api";
 import type { SiteImage } from "@/features/media/types";
 import { getPublishedSite } from "@/features/settings/api";
-import { readPublishedDocument } from "@/lib/content/documents";
+import { readDocument } from "@/lib/content/documents";
 import { inOrder } from "@/lib/content/ordering";
-import { findPublishedRecord, listPublishedRecords, type PublishedRecord } from "@/lib/content/records";
+import { findPublishedRecord, findRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
+import type { ContentView } from "@/lib/content/view";
 import { renderShareImage } from "@/lib/seo/share-image";
 import type { OrderingDocument, ServiceDocument, SiteDocument } from "@/lib/validation";
 
 export type PublishedService = PublishedRecord<ServiceDocument>;
 
 /** Every published service, in the published order (plan §8, D59). */
-export async function listPublishedServices(): Promise<PublishedService[]> {
+export async function listPublishedServices(view: ContentView = "published"): Promise<PublishedService[]> {
   const [services, order] = await Promise.all([
-    listPublishedRecords<ServiceDocument>("SERVICES"),
-    readPublishedDocument<OrderingDocument>(orderingDocumentKey("SERVICES")),
+    listRecords<ServiceDocument>("SERVICES", view),
+    readDocument<OrderingDocument>(orderingDocumentKey("SERVICES"), view),
   ]);
   return inOrder(services, order);
 }
@@ -33,7 +34,10 @@ export function findPublishedService(slug: string) {
  * the service (or where it moved to), every service for the others on its
  * line, and the site's numbers together; then its photo.
  */
-export async function getPublishedServicePage(slug: string): Promise<
+export async function getPublishedServicePage(
+  slug: string,
+  view: ContentView = "published",
+): Promise<
   | {
       service: PublishedService;
       related: PublishedService[];
@@ -44,9 +48,9 @@ export async function getPublishedServicePage(slug: string): Promise<
   | null
 > {
   const [found, services, site] = await Promise.all([
-    findPublishedService(slug),
-    listPublishedServices(),
-    getPublishedSite(),
+    findRecord<ServiceDocument>("SERVICES", slug, view),
+    listPublishedServices(view),
+    getPublishedSite(view),
   ]);
   if (!found || "movedTo" in found) return found;
   const { record: service } = found;

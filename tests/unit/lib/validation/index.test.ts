@@ -22,6 +22,7 @@ describe("the validation module", () => {
       "optionalPhone",
       "orderingDocumentSchema",
       "pageDocumentSchema",
+      "previewQuerySchema",
       "requiredEmail",
       "requiredLine",
       "requiredLines",
