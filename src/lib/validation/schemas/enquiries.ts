@@ -55,12 +55,17 @@ export type EnquiryPayload = z.output<typeof enquirySchema>;
 
 /**
  * The enquiries inbox (plan §10.5): which enquiries to list, newest first,
- * by form, by status and by what the admin types (a name, an email, a phone
- * number), a page at a time.
+ * by form, by status, by whether they need the admin, and by what the admin
+ * types (a name, an email, a phone number), a page at a time.
  */
 export const enquiryListQuerySchema = z.object({
   form: z.enum(FORM_KINDS).optional(),
   status: z.enum(ENQUIRY_STATUSES).optional(),
+  /** Only what needs the admin (Today, R6.1): new, or its alert email not sent. */
+  needsYou: z
+    .enum(["true"])
+    .optional()
+    .transform((value) => value === "true"),
   q: optionalLine("Search", TEXT_LIMITS.line),
   page: z.coerce.number().int().min(1).max(10_000).default(1),
 });

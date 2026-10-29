@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { ApiError, deleteJson, getJson, patchJson, postForm, postJson, putJson } from "@/lib/api/client";
+import { ApiError, deleteJson, fetcher, getJson, patchJson, postForm, postJson, putJson } from "@/lib/api/client";
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -31,6 +31,12 @@ describe("the API client", () => {
     await deleteJson("/d");
     expect(fetchMock.mock.calls.map(([, init]) => init?.method)).toEqual(["GET", "PATCH", "PUT", "DELETE"]);
     expect(fetchMock.mock.calls[3][1]?.body).toBeUndefined();
+  });
+
+  it("reads for SWR as a GET, unwrapped the same way", async () => {
+    const fetchMock = answer(200, { success: true, data: { total: 2 } });
+    expect(await fetcher("/api/admin/enquiries")).toEqual({ total: 2 });
+    expect(fetchMock.mock.calls[0][1]?.method).toBe("GET");
   });
 
   it("sends a form as multipart, leaving the boundary to the browser", async () => {

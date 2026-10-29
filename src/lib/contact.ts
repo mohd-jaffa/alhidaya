@@ -1,10 +1,12 @@
 /**
  * The links that reach the company (plan §6.7, D9): a WhatsApp chat with its
- * first line written (Q14), a call, an email. Numbers are E.164
+ * first line written (Q14), a call, an email; and the admin's way back to a
+ * visitor (a chat with nothing written). Numbers are E.164
  * ("+97431306555"), as the site content stores them.
  */
-export function whatsappHref(e164: string, firstLine: string): string {
-  return `https://wa.me/${e164.replace(/^\+/, "")}?text=${encodeURIComponent(firstLine)}`;
+export function whatsappHref(e164: string, firstLine?: string): string {
+  const chat = `https://wa.me/${e164.replace(/^\+/, "")}`;
+  return firstLine ? `${chat}?text=${encodeURIComponent(firstLine)}` : chat;
 }
 
 export function telHref(e164: string): string {

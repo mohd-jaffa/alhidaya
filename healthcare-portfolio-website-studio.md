@@ -162,6 +162,7 @@ question (§41) the user may overturn.
 | D78 | **Turnstile is seen only when Cloudflare needs the visitor to act** (`appearance: interaction-only`, Cloudflare's managed check) and is loaded when the visitor first reaches into a form, never in a page's first load (as D77). Its site key is read on the server at request time, so the site's own keys need no new build. When Cloudflare cannot be reached, the form is refused with the outside service's message: nothing is stored unchecked (§10.3: verified before anything is stored). Locally and in the tests, Cloudflare's published test keys. **(agent default; Q44)** | 2026-10-29 |
 | D79 | **An enquiry's alert is sent once the visitor has their answer** (Next's `after`, in the same request; no queue, AGENTS.md §17): the visitor never waits on the mail server. The enquiry is marked sent or not sent; one not yet sent (also if the app restarted in that moment) shows with Retry. In production a mail server is reached only over TLS, unless it is on the same machine. **(agent default; Q45)** | 2026-10-29 |
 | D80 | **The admin is brought forward into Phase 4**: R6.1 (shape the admin) and R6.2 (its shell, sign-in, overview and data layer) are done before R4.4's inbox screens, so Phase 4 ends with an inbox the team can use. R4.4's server side is done first. | 2026-10-29 |
+| D81 | **The admin is "the day's log"** (R6.1, the user's choice of three dealt layouts, and the brief they confirmed): the admin opens on **Today**, one stream of what needs them, newest first and ruled by day, each arrival handled in its own row (every answer, Call, WhatsApp, Email, Move to, notes); the rail is the line with each section a station. Today is the plan's Overview (§16) and carries what it listed. Built for a non-technical admin at a desktop, read on a phone; never like the public site, never cramped, never several clicks for daily work. | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -619,7 +620,7 @@ scroll. Desktop first; usable on a phone for reading the inbox.
 | Screen | Purpose |
 |---|---|
 | Sign in | Email and password; lockout after 5 failures for 15 minutes (§26.4); forgotten password by email link. |
-| Overview | New enquiries and applications; items with unpublished changes; failed mails or CV saves; quick links. |
+| Today (the Overview, D81) | What needs the admin, newest first in the day's log: new enquiries and applications, failed mails or CV saves, items with unpublished changes (each as its phase builds it); "Everything" for all that arrived. |
 | Pages | Each page's sections: show/hide, move up/down and drag to reorder, edit, preview, publish, discard. |
 | Services | List, order, create, edit, preview, publish, archive. |
 | Jobs | List by status, create, edit, close, publish, archive. |
@@ -1146,8 +1147,15 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 ### 30.5 The admin's look
 
 The same tokens, type and pictograms, quieter: Operate mode, dense where it
-helps, the line only as navigation state. Shaped with `/impeccable shape` before
-Phase 6 (R6.1).
+helps, the line only as navigation state. Shaped with `/impeccable shape` (R6.1,
+brought forward, D80) as **the day's log** (D81): a navy rail that is the line,
+each section a station, the current one the white "You are here" station, what
+waits in a sky count; on a phone a navy bar naming the section, with the rail as
+a menu. The work area is white; a list is ruled by day with times in even
+figures; a row opens in place on mist. Deep blue for actions and "New", sky for
+in progress, leaf for resolved, the error red only for failures. Fixed type
+sizes (28 px headings), no smooth scroll, motion only for state. The sign-in
+screens share the rail's navy beside a plain form.
 
 ### 30.6 The static map
 
@@ -1370,8 +1378,8 @@ one commit (D27).
 | R4.1 | Quote and Contact forms: schemas, UI, success and error states | §10 | Q5, Q6 | DONE (2026-10-29; Q5 and Q6 as their defaults; checks after first paint, D77; Turbopack's grouping of shared code is for R7.1) |
 | R4.2 | Turnstile verification, honeypot, rate limit | §10.3 | — | DONE (2026-10-29; Cloudflare's test keys until R8.4; seen only when needed, D78; the rate limit came at R1.5) |
 | R4.3 | Alert emails, failure logging, retry | §10.4, §17 | Q17 | DONE (2026-10-29; sent after the answer, D79; Retry is the inbox's, R4.4) |
-| R4.4 | Enquiries inbox: list, filters, detail, status, notes | §10.5 | — | IN PROGRESS (2026-10-29; the API done and tested; its screens after R6.1 and R6.2, brought forward, D80) |
-| R4.5 | Integration + E2E | §34 | — | TODO |
+| R4.4 | Enquiries inbox: list, filters, detail, status, notes | §10.5 | — | DONE (2026-10-29; the inbox in the day's log, D81; deletion stays with retention, §18) |
+| R4.5 | Integration + E2E | §34 | — | DONE (2026-10-29; integration against MySQL and Mailpit with each row; the journey from a quote request through its alert's link to the admin moving it along) |
 
 ### Phase 5 — Careers
 
@@ -1388,8 +1396,8 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R6.1 | `/impeccable shape` the admin (Operate) | §30.5 | — | TODO (brought forward into Phase 4, before R4.4's screens, D80) |
-| R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | TODO (brought forward into Phase 4, before R4.4's screens, D80) |
+| R6.1 | `/impeccable shape` the admin (Operate) | §30.5 | — | DONE (2026-10-29; brought forward, D80; the day's log, D81; brief and direction in `.impeccable/surfaces/src-app-admin-page-tsx.md`) |
+| R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | DONE (2026-10-29; brought forward, D80; Today is the Overview, D81; Applications and the content screens join the rail with their rows) |
 | R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | TODO |
 | R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO (the sizing step and `storeImage` came forward with D75, 2026-10-29) |

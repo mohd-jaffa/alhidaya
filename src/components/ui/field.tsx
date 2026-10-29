@@ -43,12 +43,15 @@ export function Field({
   hint,
   error,
   required = false,
+  markOptional = true,
   children,
 }: {
   label: string;
   hint?: string;
   error?: string;
   required?: boolean;
+  /** Whether a field that may be left empty says so; a search box need not. */
+  markOptional?: boolean;
   children: ReactNode;
 }) {
   const id = useId();
@@ -61,7 +64,7 @@ export function Field({
     <div className="grid gap-2">
       <label htmlFor={id} className="font-semibold">
         {label}
-        {required ? null : (
+        {required || !markOptional ? null : (
           <>
             {" "}
             <span className="font-normal text-ink-2">({UI_TEXT.optional})</span>

@@ -19,6 +19,15 @@ describe("Field", () => {
     expect(screen.getByText("Phone must be a Qatar number.").closest("p")).toHaveClass("text-error");
   });
 
+  it("leaves out the optional mark where it would say nothing useful, as on a search box", () => {
+    render(
+      <Field label="Search" markOptional={false}>
+        <TextInput name="q" />
+      </Field>,
+    );
+    expect(screen.getByRole("textbox", { name: "Search" })).not.toBeRequired();
+  });
+
   it("leaves a valid, optional control undescribed", () => {
     render(
       <Field label="Organisation">

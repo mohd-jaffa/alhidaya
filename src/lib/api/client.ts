@@ -64,6 +64,9 @@ const json =
     });
 
 export const getJson = <T>(url: string) => send<T>(url, { method: "GET" });
+
+/** What SWR reads an address with (src/lib/query): the same unwrapping and the same errors. */
+export const fetcher = <T>(url: string) => getJson<T>(url);
 export const postJson = json("POST");
 export const patchJson = json("PATCH");
 export const putJson = json("PUT");

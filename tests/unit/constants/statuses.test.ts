@@ -8,7 +8,9 @@ import {
   CONTACT_METHODS,
   AUDIT_ACTIONS,
   CV_STATUSES,
+  EMAIL_STATUS_LABELS,
   EMAIL_STATUSES,
+  ENQUIRY_STATUS_LABELS,
   EMPLOYMENT_TYPE_LABELS,
   EMPLOYMENT_TYPES,
   ENQUIRY_STATUSES,
@@ -56,5 +58,10 @@ describe("the vocabularies", () => {
     expect(Object.values(CARE_FOR_LABELS)).toEqual(["My family", "A hospital", "A clinic", "A school", "Other"]);
     expect(Object.keys(CARE_FOR_LABELS)).toEqual([...CARE_FOR]);
     expect(Object.keys(CONTACT_METHOD_LABELS)).toEqual([...CONTACT_METHODS]);
+  });
+
+  it("word where an enquiry stands and whether its alert went, for the inbox (plan §10.5)", () => {
+    expect(Object.keys(ENQUIRY_STATUS_LABELS)).toEqual([...ENQUIRY_STATUSES]);
+    expect(Object.keys(EMAIL_STATUS_LABELS)).toEqual([...EMAIL_STATUSES]);
   });
 });

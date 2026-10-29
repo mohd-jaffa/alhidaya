@@ -34,3 +34,27 @@ export function dohaDateTime(at: Date): string {
     hourCycle: "h23",
   }).format(at);
 }
+
+/** The time of day in Doha, on a 24-hour clock: "11:01". */
+export function dohaTime(at: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: SITE_TIME_ZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(at);
+}
+
+/** A day in Doha as a log heads it: "Thursday 29 October 2026". */
+export function dohaDayHeading(at: Date): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: SITE_TIME_ZONE,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).formatToParts(at);
+  // Every part is asked for above, so each is there.
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((piece) => piece.type === type)!.value;
+  return `${part("weekday")} ${part("day")} ${part("month")} ${part("year")}`;
+}

@@ -44,6 +44,7 @@ describe("the pictograms (plan R2.3)", () => {
       expect.arrayContaining(["careAtHome", "staffing", "careers", "phone", "chat", "mail", "location", "clock"]),
     );
     expect(Object.keys(PICTOGRAMS)).toEqual(expect.arrayContaining(["check", "error", "info"]));
+    expect(Object.keys(PICTOGRAMS)).toEqual(expect.arrayContaining(["eye", "eyeOff"]));
   });
 
   it("mirror only drawings that exist", () => {

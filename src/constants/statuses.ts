@@ -91,6 +91,11 @@ export const SOCIAL_NETWORK_LABELS: Record<SocialNetwork, string> = {
 /** Where an enquiry stands in the inbox (plan §10.5). */
 export const ENQUIRY_STATUSES = ["NEW", "IN_PROGRESS", "RESOLVED"] as const;
 export type EnquiryStatus = (typeof ENQUIRY_STATUSES)[number];
+export const ENQUIRY_STATUS_LABELS: Record<EnquiryStatus, string> = {
+  NEW: "New",
+  IN_PROGRESS: "In progress",
+  RESOLVED: "Resolved",
+};
 
 /** Where an application stands in the inbox (plan §9.5). */
 export const APPLICATION_STATUSES = ["NEW", "IN_REVIEW", "SHORTLISTED", "CLOSED"] as const;
@@ -99,6 +104,11 @@ export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 /** Whether a submission's alert email went; one not sent shows in the inbox with Retry (plan §9.3, §10.4). */
 export const EMAIL_STATUSES = ["PENDING", "SENT", "NOT_SENT"] as const;
 export type EmailStatus = (typeof EMAIL_STATUSES)[number];
+export const EMAIL_STATUS_LABELS: Record<EmailStatus, string> = {
+  PENDING: "Sending",
+  SENT: "Sent",
+  NOT_SENT: "Not sent",
+};
 
 /** Where an application's CV is (plan §9.3, §9.4): saved after the row, kept until it expires. */
 export const CV_STATUSES = ["PENDING", "STORED", "NOT_STORED", "EXPIRED"] as const;

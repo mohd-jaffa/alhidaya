@@ -291,7 +291,7 @@ describe("the enquiries inbox, against the local MySQL (plan §10.5)", () => {
     const [first, second, third] = await inbox({ form: "QUOTE" }, { form: "CONTACT" }, { form: "QUOTE" });
     await setEnquiryStatus(first, "RESOLVED", actor);
 
-    const all = await listEnquiries({ q: null, page: 1 });
+    const all = await listEnquiries({ needsYou: false, q: null, page: 1 });
     expect(all.items.map((item) => item.id)).toEqual([third, second, first]);
     expect(all).toMatchObject({ total: 3, page: 1, pageSize: INBOX_PAGE_SIZE });
     expect(all.items[0]).toEqual({
@@ -302,14 +302,14 @@ describe("the enquiries inbox, against the local MySQL (plan §10.5)", () => {
       name: "Mariam Ali",
       email: "mariam@example.com",
       phone: "+97455512345",
+      summary: "Do you have a nurse for my father at night?",
       createdAt: expect.any(Date),
     });
 
-    expect((await listEnquiries({ form: "QUOTE", q: null, page: 1 })).items.map((item) => item.id)).toEqual([
-      third,
-      first,
-    ]);
-    const resolved = await listEnquiries({ status: "RESOLVED", q: null, page: 1 });
+    expect(
+      (await listEnquiries({ needsYou: false, form: "QUOTE", q: null, page: 1 })).items.map((item) => item.id),
+    ).toEqual([third, first]);
+    const resolved = await listEnquiries({ needsYou: false, status: "RESOLVED", q: null, page: 1 });
     expect(resolved.items.map((item) => item.id)).toEqual([first]);
     expect(resolved.total).toBe(1);
   });
@@ -320,7 +320,8 @@ describe("the enquiries inbox, against the local MySQL (plan §10.5)", () => {
       { name: "Aisha Rahman", email: "aisha_r@example.com", phone: "+447700900123" },
       { name: "100% Care Ltd", email: "care@example.com" },
     );
-    const found = async (q: string) => (await listEnquiries({ q, page: 1 })).items.map((item) => item.id);
+    const found = async (q: string) =>
+      (await listEnquiries({ needsYou: false, q, page: 1 })).items.map((item) => item.id);
     expect(await found("omar")).toEqual([omar]);
     expect(await found("SCHOOL.QA")).toEqual([omar]);
     expect(await found("3333 4444")).toEqual([omar]);
@@ -331,12 +332,46 @@ describe("the enquiries inbox, against the local MySQL (plan §10.5)", () => {
     expect(await found("12")).toEqual([]);
   });
 
+  it("lists what needs the admin: new, or its alert email not sent", async () => {
+    const [fresh, moving, unsent] = await inbox({}, {}, {});
+    await setEnquiryStatus(moving, "IN_PROGRESS", actor);
+    await setEnquiryStatus(unsent, "RESOLVED", actor);
+    await getDb().update(enquiries).set({ emailStatus: "NOT_SENT" }).where(eq(enquiries.id, unsent));
+    const needs = await listEnquiries({ needsYou: true, q: null, page: 1 });
+    expect(needs.items.map((item) => item.id)).toEqual([unsent, fresh]);
+    expect(needs.total).toBe(2);
+  });
+
+  it("sums a quote up by its service and organisation, else any enquiry by its message's first line, cut to fit", async () => {
+    const long = "A nurse at night. ".repeat(20).trim();
+    await inbox(
+      {
+        form: "QUOTE",
+        fields: [
+          { label: UI_TEXT.service, value: "School nurse staffing" },
+          { label: UI_TEXT.organisation, value: "Doha Primary School" },
+          { label: UI_TEXT.message, value: "Two nurses." },
+        ],
+      },
+      { form: "QUOTE", fields: [{ label: UI_TEXT.message, value: "Not sure yet.\nCall me." }] },
+      { fields: [{ label: UI_TEXT.message, value: long }] },
+      { fields: [] },
+    );
+    const summaries = (await listEnquiries({ needsYou: false, q: null, page: 1 })).items.map((item) => item.summary);
+    expect(summaries).toEqual([
+      "",
+      `${long.slice(0, 159)}…`,
+      "Not sure yet.",
+      "School nurse staffing · Doha Primary School",
+    ]);
+  });
+
   it("gives the inbox a page at a time", async () => {
     await inbox(...Array.from({ length: INBOX_PAGE_SIZE + 2 }, () => ({})));
-    const second = await listEnquiries({ q: null, page: 2 });
+    const second = await listEnquiries({ needsYou: false, q: null, page: 2 });
     expect(second.items).toHaveLength(2);
     expect(second.total).toBe(INBOX_PAGE_SIZE + 2);
-    expect((await listEnquiries({ q: null, page: 3 })).items).toEqual([]);
+    expect((await listEnquiries({ needsYou: false, q: null, page: 3 })).items).toEqual([]);
   });
 
   it("opens an enquiry with every answer as sent and its notes oldest first, each by its admin", async () => {

@@ -48,6 +48,15 @@ export const PICTOGRAMS = {
   check: ["M4.5 12.5l5 5 10-11"],
   error: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 7.5V13", "M12 16.5v.01"],
   info: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 11v5.5", "M12 7.5v.01"],
+
+  // The admin's password field (R6.2): what was typed, shown or hidden.
+  eye: ["M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z", "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"],
+  eyeOff: [
+    "M9.9 5.8A9.7 9.7 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-2.7 3.5",
+    "M14.1 14.1a3 3 0 0 1-4.2-4.2",
+    "M6.6 7.1A16.8 16.8 0 0 0 2.5 12s3.5 6.5 9.5 6.5a9.4 9.4 0 0 0 4.9-1.4",
+    "M3.5 3.5l17 17",
+  ],
 } as const satisfies Record<string, readonly string[]>;
 
 export type PictogramName = keyof typeof PICTOGRAMS;

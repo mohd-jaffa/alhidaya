@@ -1964,3 +1964,82 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R6.1, R6.2, R4.4, R4.5: the admin, Today and the enquiries inbox (Phase 4 complete)
+
+### Added
+- **The admin's shape (R6.1, brought forward, D80, D81):** shaped with
+  Impeccable: a short interview (the inbox daily at a desktop, a
+  non-technical admin; never like the public site, cramped or click-heavy),
+  three layouts dealt by the surface seed and sketched at 1440 × 900, and the
+  user's choice, **the day's log**, confirmed as a brief. Its direction
+  contract is in `.impeccable/surfaces/src-app-admin-page-tsx.md`; the
+  sketches stay in `.impeccable/mocks/decision/` (not committed).
+- **Sign-in (R6.2, plan §26.4):** `/admin/login` (email and password with
+  show and hide, the server's refusal in its words, then on to the page the
+  admin was headed to, never off the site: `adminReturnPath`),
+  `/admin/forgot-password` (the same answer for any email),
+  `/admin/reset-password` (the link's token unseen; no token, the way to a
+  new link). The rail's navy beside a plain form.
+- **The shell (R6.2):** `AdminShell`: on a wide screen a navy rail that is
+  the line, each section a station, the current one the white station, what
+  waits in a sky count read aloud ("3 need you"); on a phone a navy bar
+  naming the section with the rail in a menu; who is signed in and Sign out.
+  The panel's layout checks the session on the server for every page. The
+  admin loads none of the public site's motion.
+- **Today (R6.2, the Overview, D81):** what needs the admin (an enquiry
+  new, or its alert not sent), newest first, ruled by its day in Doha, times
+  in even figures; Everything for all that arrived; a page at a time; an
+  empty Today says what arrives there.
+- **The inbox (R4.4, plan §10.5):** `/admin/enquiries`, the same log by
+  status (All, New, In progress, Resolved), by form and by a search that
+  works as a plain form; `/admin/enquiries/[id]`, where the alert email's
+  link leads, opens that enquiry, above the list when it is not on the
+  page. A row opens in place: every answer as sent, Call, WhatsApp (a chat
+  with nothing written) and Email, Move to, the alert's Retry when it was
+  not sent, and the team's notes with their admin and time. Loading,
+  failure (with Try again) and empty states throughout.
+- `GET /api/admin/enquiries?needsYou=true`; each listed enquiry carries its
+  line (a quote's service and organisation, else the message's first line,
+  cut to 160 characters).
+- **The data layer** (`src/lib/query`, from clinicdesk): `useApiQuery`,
+  `useApiMutation`, `useRevalidate` on SWR; `fetcher` in the API client.
+  `swr` ^2.5.1, `react-hook-form` ^7.91 and `@hookform/resolvers` ^5.9 for
+  the admin's forms (D77: the public forms keep their own checks).
+- Kit: `PasswordInput`, `StatusChip`; `Field` can leave out "(optional)"
+  (a search box); pictograms `eye` and `eyeOff`, drawn in the set's stroke.
+- `ADMIN_TEXT` in its own catalogue, `src/constants/admin-messages.ts`: in
+  `messages.ts` it reached the public pages whole (Contact rose to 168.3 KB
+  of its 170 KB); AGENTS.md §5 and §21 say so. `ENQUIRY_STATUS_LABELS`,
+  `EMAIL_STATUS_LABELS`, `dohaTime`, `dohaDayHeading`, `pageFrom`.
+
+### Decisions
+- D81 (the user's): the admin is the day's log; Today is the Overview.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: sign-in, forgotten and
+  reset passwords (refusals, pending words, no token); the return path
+  (never another site, the API or sign-in itself); the shell (stations,
+  current, counts read aloud, the phone's menu, sign-out even when the
+  session was gone); Today and the inbox (tabs, filters kept, search carried,
+  unknown filters ignored); the log (days in Doha, one row open, pages, the
+  named enquiry above the list or not found, empty, failure and Try again);
+  a row and an opened enquiry (answers, contact links, moves, Retry, notes,
+  their failures); the ported query hooks; the list's needs-you filter and
+  lines against the local MySQL.
+- E2E: sign-in with a refusal and on to the page asked for; the password
+  pages; Today's row opened, noted and moved (it leaves Needs you); the inbox
+  found by a phone as typed and the email's link opening its enquiry; the
+  phone's menu and sign-out; and the whole of Phase 4: a quote sent, its
+  alert in Mailpit, the admin following its link through sign-in to the
+  enquiry, open, and moving it along. Axe on every screen at both widths.
+- Screenshots of sign-in, Today with a row open, the phone's Today and menu.
+- E2E passed in full (104). JavaScript at first paint: Contact and Request a
+  Quote 166.3 KB, Home 157.0 KB gzip (within 170 KB; no admin word in them).
+  The form pages have 3.7 KB left: Turbopack's grouping and the catalogue
+  shipped twice are R7.1's first look.
+
+### Blockers
+- None. Applications (Phase 5) and the content screens (Phase 6) join the
+  rail and Today with their rows.

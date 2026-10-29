@@ -26,9 +26,9 @@ describe("GET /api/admin/enquiries", () => {
     const response = await GET(call("?form=QUOTE&status=NEW&q=%20Mariam%20&page=2"));
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe("no-store");
-    expect(listEnquiries).toHaveBeenCalledWith({ form: "QUOTE", status: "NEW", q: "Mariam", page: 2 });
-    await GET(call());
-    expect(listEnquiries).toHaveBeenLastCalledWith({ q: null, page: 1 });
+    expect(listEnquiries).toHaveBeenCalledWith({ form: "QUOTE", status: "NEW", needsYou: false, q: "Mariam", page: 2 });
+    await GET(call("?needsYou=true"));
+    expect(listEnquiries).toHaveBeenLastCalledWith({ needsYou: true, q: null, page: 1 });
   });
 
   it("refuses without the admin's session, and a query it does not know", async () => {

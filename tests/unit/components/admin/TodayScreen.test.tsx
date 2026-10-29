@@ -1,0 +1,46 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+
+import { TodayScreen } from "@/components/admin/TodayScreen";
+import { ADMIN_TEXT } from "@/constants/admin-messages";
+import { ADMIN_ROUTES } from "@/constants/routes";
+
+const log = vi.hoisted(() => vi.fn());
+vi.mock("@/features/enquiries/components/EnquiryLog", () => ({
+  EnquiryLog: (props: unknown) => {
+    log(props);
+    return null;
+  },
+}));
+
+describe("TodayScreen", () => {
+  it("opens on what needs the admin, the first page, and says so when nothing does", () => {
+    render(<TodayScreen searchParams={{}} />);
+    expect(screen.getByRole("heading", { level: 1, name: ADMIN_TEXT.today })).toBeVisible();
+    expect(screen.getByRole("link", { name: ADMIN_TEXT.needsYou })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: ADMIN_TEXT.everything })).toHaveAttribute(
+      "href",
+      `${ADMIN_ROUTES.overview}?view=everything`,
+    );
+    expect(log).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        query: { needsYou: true, page: 1 },
+        pageBase: ADMIN_ROUTES.overview,
+        empty: { title: ADMIN_TEXT.todayEmpty, body: ADMIN_TEXT.todayEmptyBody },
+      }),
+    );
+  });
+
+  it("shows everything that arrived, at the page the address names", () => {
+    render(<TodayScreen searchParams={{ view: "everything", page: "3" }} />);
+    expect(screen.getByRole("link", { name: ADMIN_TEXT.everything })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: ADMIN_TEXT.needsYou })).toHaveAttribute("href", ADMIN_ROUTES.overview);
+    expect(log).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        query: { page: 3 },
+        pageBase: `${ADMIN_ROUTES.overview}?view=everything`,
+        empty: { title: ADMIN_TEXT.everythingEmpty, body: ADMIN_TEXT.everythingEmptyBody },
+      }),
+    );
+  });
+});

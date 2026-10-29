@@ -9,6 +9,10 @@ describe("the contact links", () => {
     );
   });
 
+  it("open a chat with a visitor by their number, with nothing written", () => {
+    expect(whatsappHref("+97455512345")).toBe("https://wa.me/97455512345");
+  });
+
   it("call and email", () => {
     expect(telHref("+97431306555")).toBe("tel:+97431306555");
     expect(mailtoHref("info@alhidaya.qa")).toBe("mailto:info@alhidaya.qa");

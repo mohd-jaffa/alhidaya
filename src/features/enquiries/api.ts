@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, like, or, type SQL } from "drizzle-orm";
 
-import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE } from "@/constants/limits";
+import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, INBOX_SUMMARY_LENGTH } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import {
   CARE_FOR_LABELS,
@@ -174,7 +174,7 @@ export async function retryEnquiryAlert(id: string, actor: Actor): Promise<Email
   return status;
 }
 
-/** An enquiry as the inbox lists it (plan §10.5). */
+/** An enquiry as the inbox lists it (plan §10.5): `summary` is its line under the name. */
 export interface EnquirySummary {
   id: string;
   form: FormKind;
@@ -183,6 +183,7 @@ export interface EnquirySummary {
   name: string;
   email: string;
   phone: string;
+  summary: string;
   createdAt: Date;
 }
 
@@ -195,7 +196,7 @@ export interface EnquiryNote {
 }
 
 /** An enquiry opened in the inbox: every answer as sent, and its notes, oldest first. */
-export interface EnquiryDetail extends EnquirySummary {
+export interface EnquiryDetail extends Omit<EnquirySummary, "summary"> {
   fields: SubmittedField[];
   updatedAt: Date;
   notes: EnquiryNote[];
@@ -211,6 +212,19 @@ const summary = {
   phone: enquiries.phone,
   createdAt: enquiries.createdAt,
 };
+
+/**
+ * A row's line under the name (R6.1): a quote's service and organisation, or
+ * else the first line of the message, cut to fit. Found by the labels the
+ * visitor saw, as the enquiry keeps them.
+ */
+function summarise(form: FormKind, fields: SubmittedField[]): string {
+  const answer = (label: string) => fields.find((field) => field.label === label)?.value;
+  const named = form === "QUOTE" ? [answer(UI_TEXT.service), answer(UI_TEXT.organisation)].filter(Boolean) : [];
+  if (named.length > 0) return named.join(" · ");
+  const line = answer(UI_TEXT.message)?.split("\n")[0] ?? "";
+  return line.length > INBOX_SUMMARY_LENGTH ? `${line.slice(0, INBOX_SUMMARY_LENGTH - 1)}…` : line;
+}
 
 /** What a search finds anywhere in the text: its `%`, `_` and `\\` mean themselves. */
 const containing = (text: string) => `%${text.replace(/[\\%_]/g, (character) => `\\${character}`)}%`;
@@ -229,8 +243,9 @@ function searching(q: string): SQL | undefined {
 }
 
 /**
- * The inbox (plan §10.5): enquiries newest first, by form, by status and by
- * a search, a page at a time, with how many there are in all: two reads.
+ * The inbox (plan §10.5): enquiries newest first, by form, by status, by
+ * whether they need the admin (new, or the alert not sent) and by a search,
+ * a page at a time, with how many there are in all: two reads.
  */
 export async function listEnquiries(
   query: EnquiryListQueryPayload,
@@ -238,12 +253,13 @@ export async function listEnquiries(
   const where = and(
     query.form ? eq(enquiries.form, query.form) : undefined,
     query.status ? eq(enquiries.status, query.status) : undefined,
+    query.needsYou ? or(eq(enquiries.status, "NEW"), eq(enquiries.emailStatus, "NOT_SENT")) : undefined,
     query.q ? searching(query.q) : undefined,
   );
   const db = getDb();
-  const [items, [{ total }]] = await Promise.all([
+  const [rows, [{ total }]] = await Promise.all([
     db
-      .select(summary)
+      .select({ ...summary, fields: enquiries.fields })
       .from(enquiries)
       .where(where)
       .orderBy(desc(enquiries.createdAt), desc(enquiries.id))
@@ -251,7 +267,11 @@ export async function listEnquiries(
       .offset((query.page - 1) * INBOX_PAGE_SIZE),
     db.select({ total: count() }).from(enquiries).where(where),
   ]);
-  return { items: items as EnquirySummary[], total, page: query.page, pageSize: INBOX_PAGE_SIZE };
+  const items = rows.map(({ fields, ...row }) => ({
+    ...(row as Omit<EnquirySummary, "summary">),
+    summary: summarise(row.form as FormKind, fields),
+  }));
+  return { items, total, page: query.page, pageSize: INBOX_PAGE_SIZE };
 }
 
 /** One enquiry with its notes (plan §10.5): two reads. */

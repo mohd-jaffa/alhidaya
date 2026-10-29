@@ -109,19 +109,16 @@ describe("what the enquiries route accepts", () => {
 });
 
 describe("the enquiries inbox (plan §10.5)", () => {
-  it("lists by form, status, a tidied search and a page, the first page when none is named", () => {
+  it("lists by form, status, what needs the admin, a tidied search and a page, the first page when none is named", () => {
     expect(
       enquiryListQuerySchema.parse({ form: "QUOTE", status: "IN_PROGRESS", q: "  Mariam  Ali ", page: "3" }),
-    ).toEqual({
-      form: "QUOTE",
-      status: "IN_PROGRESS",
-      q: "Mariam Ali",
-      page: 3,
-    });
-    expect(enquiryListQuerySchema.parse({})).toEqual({ q: null, page: 1 });
+    ).toEqual({ form: "QUOTE", status: "IN_PROGRESS", needsYou: false, q: "Mariam Ali", page: 3 });
+    expect(enquiryListQuerySchema.parse({})).toEqual({ needsYou: false, q: null, page: 1 });
+    expect(enquiryListQuerySchema.parse({ needsYou: "true" }).needsYou).toBe(true);
     for (const wrong of [
       { form: "APPLICATION" },
       { status: "CLOSED" },
+      { needsYou: "yes" },
       { page: "0" },
       { page: "1.5" },
       { page: "x" },
