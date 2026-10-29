@@ -47,15 +47,18 @@ function createAuth() {
 
 export type Auth = ReturnType<typeof createAuth>;
 
-const cache = globalThis as unknown as { alhidayaAuth?: Auth };
+const cache = globalThis as unknown as { alhidayaAuth?: { auth: Auth; db: ReturnType<typeof getDb> } };
 
 /**
  * The admin's authentication (plan D43, §26.4): Better Auth on the site's
  * own database, made on first use. Its HTTP routes are never mounted: the
  * admin's own routes call it on the server, so there is no sign-up endpoint,
- * nothing to discover, and every attempt passes the lockout first.
+ * nothing to discover, and every attempt passes the lockout first. It is
+ * made again when the database it was made on has since been closed (a
+ * script or a test that closed the pool and carries on).
  */
 export function getAuth(): Auth {
-  cache.alhidayaAuth ??= createAuth();
-  return cache.alhidayaAuth;
+  const db = getDb();
+  if (cache.alhidayaAuth?.db !== db) cache.alhidayaAuth = { auth: createAuth(), db };
+  return cache.alhidayaAuth.auth;
 }

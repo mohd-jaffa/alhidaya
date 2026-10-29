@@ -14,8 +14,11 @@ const MYSQL_ERRORS: Record<string, { kind: ErrorKind; code: ErrorMessageCode }> 
   // Two writes to the same rows at once; the loser can simply try again.
   ER_LOCK_DEADLOCK: { kind: "CONFLICT", code: "CONFLICT" },
   ER_LOCK_WAIT_TIMEOUT: { kind: "CONFLICT", code: "CONFLICT" },
-  // A reference to something gone, or something still referenced.
+  // A reference to something gone, or something still referenced. MySQL names
+  // the constraint (the _2 codes) only to a user who may read the other table.
+  ER_NO_REFERENCED_ROW: { kind: "CONFLICT", code: "CONFLICT" },
   ER_NO_REFERENCED_ROW_2: { kind: "CONFLICT", code: "CONFLICT" },
+  ER_ROW_IS_REFERENCED: { kind: "CONFLICT", code: "CONFLICT" },
   ER_ROW_IS_REFERENCED_2: { kind: "CONFLICT", code: "CONFLICT" },
   // A CHECK the database enforces.
   ER_CHECK_CONSTRAINT_VIOLATED: { kind: "BUSINESS_RULE", code: "VALIDATION_ERROR" },
@@ -57,4 +60,10 @@ export function fromDatabaseError(error: unknown): AppError {
   const code = databaseErrorCode(error);
   const mapped = code === undefined ? undefined : MYSQL_ERRORS[code];
   return new AppError({ ...(mapped ?? { kind: "INTERNAL", code: "INTERNAL_ERROR" }), cause: error });
+}
+
+/** A write that pointed at a row that is not there (a note on a deleted enquiry). */
+export function referencesMissingRow(error: unknown): boolean {
+  const code = databaseErrorCode(error);
+  return code === "ER_NO_REFERENCED_ROW" || code === "ER_NO_REFERENCED_ROW_2";
 }

@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { contactFormSchema, enquirySchema, quoteFormSchema } from "@/lib/validation";
+import {
+  contactFormSchema,
+  enquiryListQuerySchema,
+  enquiryNoteSchema,
+  enquirySchema,
+  enquiryStatusSchema,
+  quoteFormSchema,
+} from "@/lib/validation";
 
 const contact = {
   name: "  Mariam   Ali ",
@@ -98,5 +105,43 @@ describe("what the enquiries route accepts", () => {
     expect(enquirySchema.safeParse({ ...quote, form: "CONTACT" }).success).toBe(true);
     expect(enquirySchema.safeParse({ ...contact, form: "QUOTE" }).success).toBe(false);
     expect(enquirySchema.safeParse({ ...contact, form: "APPLICATION" }).success).toBe(false);
+  });
+});
+
+describe("the enquiries inbox (plan §10.5)", () => {
+  it("lists by form, status, a tidied search and a page, the first page when none is named", () => {
+    expect(
+      enquiryListQuerySchema.parse({ form: "QUOTE", status: "IN_PROGRESS", q: "  Mariam  Ali ", page: "3" }),
+    ).toEqual({
+      form: "QUOTE",
+      status: "IN_PROGRESS",
+      q: "Mariam Ali",
+      page: 3,
+    });
+    expect(enquiryListQuerySchema.parse({})).toEqual({ q: null, page: 1 });
+    for (const wrong of [
+      { form: "APPLICATION" },
+      { status: "CLOSED" },
+      { page: "0" },
+      { page: "1.5" },
+      { page: "x" },
+    ]) {
+      expect(enquiryListQuerySchema.safeParse(wrong).success).toBe(false);
+    }
+  });
+
+  it("moves an enquiry only to a status the inbox knows", () => {
+    expect(enquiryStatusSchema.parse({ status: "RESOLVED" })).toEqual({ status: "RESOLVED" });
+    expect(enquiryStatusSchema.safeParse({ status: "ARCHIVED" }).success).toBe(false);
+  });
+
+  it("takes a note of up to 2000 characters, tidied, never an empty one", () => {
+    expect(enquiryNoteSchema.parse({ body: " Called back.\r\nVisit Sunday. " })).toEqual({
+      body: "Called back.\nVisit Sunday.",
+    });
+    expect(enquiryNoteSchema.safeParse({ body: "  " }).error?.issues[0].message).toBe(
+      VALIDATION_MESSAGES.required("Note"),
+    );
+    expect(enquiryNoteSchema.safeParse({ body: "x".repeat(2001) }).success).toBe(false);
   });
 });

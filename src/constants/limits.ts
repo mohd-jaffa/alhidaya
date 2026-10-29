@@ -45,6 +45,9 @@ export const LIST_LIMITS = {
   ordering: 200,
 } as const;
 
+/** How many rows an admin inbox shows a page (plan §9.5, §10.5). */
+export const INBOX_PAGE_SIZE = 25;
+
 /** Upload limits (plan §9.2, §12, §15, D52): firm, checked before the file is read. */
 export const UPLOAD_LIMITS = {
   cvBytes: 5 * MB,

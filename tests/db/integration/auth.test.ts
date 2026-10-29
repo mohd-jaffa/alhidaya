@@ -7,6 +7,7 @@ import { auditLog, authUser, authVerification, rateLimits, signInAttempts } from
 import { requestPasswordReset, resetPassword, signIn, signOut } from "@/features/auth/api";
 import { createAdmin } from "@/features/auth/createAdmin";
 import { clearFailures, isLocked, lockoutKeys, recordFailure } from "@/features/auth/lockout";
+import { getAuth } from "@/lib/auth/auth";
 import { keyedHash } from "@/lib/auth/hash";
 import { getAdminSession } from "@/lib/auth/session";
 import { deleteMail, mailText, searchMail, waitForMail } from "@tests/support/mailpit";
@@ -170,4 +171,17 @@ describe("resetting the password", () => {
       code: "RATE_LIMITED",
     });
   }, 20_000);
+});
+
+describe("the admin's authentication itself", () => {
+  it("is made once per database pool, and again on a pool opened after the last was closed", async () => {
+    const first = getAuth();
+    expect(getAuth()).toBe(first);
+    await closeDb();
+    const second = getAuth();
+    expect(second).not.toBe(first);
+    expect(await (await second.$context).internalAdapter.findUserByEmail(EMAIL)).toMatchObject({
+      user: { email: EMAIL },
+    });
+  });
 });

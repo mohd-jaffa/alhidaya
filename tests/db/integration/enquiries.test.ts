@@ -1,15 +1,19 @@
 import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { FORM_RATE_LIMIT } from "@/constants/limits";
+import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { closeDb, getDb } from "@/db/client";
-import { auditLog, enquiries, enquiryNotes, errorLog, rateLimits, records } from "@/db/schema";
+import { auditLog, authUser, enquiries, enquiryNotes, errorLog, rateLimits, records } from "@/db/schema";
 import {
+  addEnquiryNote,
   type EnquirySubmission,
+  getEnquiry,
+  listEnquiries,
   receiveEnquiry,
   retryEnquiryAlert,
   sendEnquiryAlert,
+  setEnquiryStatus,
   submitEnquiry,
 } from "@/features/enquiries/api";
 import { getOperations } from "@/lib/content/operations";
@@ -269,5 +273,134 @@ describe("the enquiry's alert, through Mailpit (plan §10.4, §17)", () => {
     const gone = crypto.randomUUID();
     await expect(sendEnquiryAlert(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
     await expect(retryEnquiryAlert(gone, actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+  });
+});
+
+describe("the enquiries inbox, against the local MySQL (plan §10.5)", () => {
+  /** An inbox of its own: the table emptied, then these enquiries, a minute apart, oldest first. */
+  async function inbox(...entries: Partial<EnquirySubmission>[]) {
+    await getDb().delete(enquiries);
+    const ids: string[] = [];
+    for (const [index, entry] of entries.entries()) {
+      ids.push(await submitEnquiry(contact(entry), ip(), new Date(at.getTime() + index * 60_000)));
+    }
+    return ids;
+  }
+
+  it("lists newest first, by form and by status, with how many there are in all", async () => {
+    const [first, second, third] = await inbox({ form: "QUOTE" }, { form: "CONTACT" }, { form: "QUOTE" });
+    await setEnquiryStatus(first, "RESOLVED", actor);
+
+    const all = await listEnquiries({ q: null, page: 1 });
+    expect(all.items.map((item) => item.id)).toEqual([third, second, first]);
+    expect(all).toMatchObject({ total: 3, page: 1, pageSize: INBOX_PAGE_SIZE });
+    expect(all.items[0]).toEqual({
+      id: third,
+      form: "QUOTE",
+      status: "NEW",
+      emailStatus: "PENDING",
+      name: "Mariam Ali",
+      email: "mariam@example.com",
+      phone: "+97455512345",
+      createdAt: expect.any(Date),
+    });
+
+    expect((await listEnquiries({ form: "QUOTE", q: null, page: 1 })).items.map((item) => item.id)).toEqual([
+      third,
+      first,
+    ]);
+    const resolved = await listEnquiries({ status: "RESOLVED", q: null, page: 1 });
+    expect(resolved.items.map((item) => item.id)).toEqual([first]);
+    expect(resolved.total).toBe(1);
+  });
+
+  it("finds by name, email or phone however it was typed; a search's % and _ mean themselves", async () => {
+    const [omar, aisha, percent] = await inbox(
+      { name: "Omar Haddad", email: "omar@school.qa", phone: "+97433334444" },
+      { name: "Aisha Rahman", email: "aisha_r@example.com", phone: "+447700900123" },
+      { name: "100% Care Ltd", email: "care@example.com" },
+    );
+    const found = async (q: string) => (await listEnquiries({ q, page: 1 })).items.map((item) => item.id);
+    expect(await found("omar")).toEqual([omar]);
+    expect(await found("SCHOOL.QA")).toEqual([omar]);
+    expect(await found("3333 4444")).toEqual([omar]);
+    expect(await found("+44 7700")).toEqual([aisha]);
+    expect(await found("a_r")).toEqual([aisha]);
+    expect(await found("%")).toEqual([percent]);
+    expect(await found("_")).toEqual([aisha]);
+    expect(await found("12")).toEqual([]);
+  });
+
+  it("gives the inbox a page at a time", async () => {
+    await inbox(...Array.from({ length: INBOX_PAGE_SIZE + 2 }, () => ({})));
+    const second = await listEnquiries({ q: null, page: 2 });
+    expect(second.items).toHaveLength(2);
+    expect(second.total).toBe(INBOX_PAGE_SIZE + 2);
+    expect((await listEnquiries({ q: null, page: 3 })).items).toEqual([]);
+  });
+
+  it("opens an enquiry with every answer as sent and its notes oldest first, each by its admin", async () => {
+    const [id] = await inbox({});
+    const admin = crypto.randomUUID();
+    await getDb()
+      .insert(authUser)
+      .values({ id: admin, name: "Fatima (admin)", email: `inbox-${admin}@alhidaya.qa`, emailVerified: true });
+    try {
+      const first = await addEnquiryNote(id, "Called back; no answer.", { adminId: admin, requestId: REQUEST });
+      expect(first).toEqual({
+        id: expect.any(String),
+        body: "Called back; no answer.",
+        author: "Fatima (admin)",
+        createdAt: expect.any(Date),
+      });
+      await addEnquiryNote(id, "Visit booked for Sunday.", actor);
+
+      const enquiry = await getEnquiry(id);
+      expect(enquiry).toMatchObject({ id, form: "CONTACT", status: "NEW", fields: contact().fields });
+      expect(enquiry.notes.map((note) => [note.body, note.author])).toEqual([
+        ["Called back; no answer.", "Fatima (admin)"],
+        ["Visit booked for Sunday.", null],
+      ]);
+
+      // The audit trail says a note was added, never what it says (AGENTS.md §8).
+      const entries = await getDb()
+        .select({ action: auditLog.action, changes: auditLog.changes, summary: auditLog.summary })
+        .from(auditLog)
+        .where(eq(auditLog.entityId, id));
+      expect(entries).toEqual([
+        { action: "NOTE_ADD", changes: null, summary: null },
+        { action: "NOTE_ADD", changes: null, summary: null },
+      ]);
+    } finally {
+      await getDb().delete(authUser).where(eq(authUser.id, admin));
+    }
+  });
+
+  it("moves an enquiry along, recorded from and to, and records nothing when nothing changes", async () => {
+    const [id] = await inbox({});
+    await setEnquiryStatus(id, "IN_PROGRESS", actor);
+    await setEnquiryStatus(id, "IN_PROGRESS", actor);
+    expect((await getEnquiry(id)).status).toBe("IN_PROGRESS");
+    const entries = await getDb()
+      .select({ action: auditLog.action, changes: auditLog.changes })
+      .from(auditLog)
+      .where(eq(auditLog.entityId, id));
+    expect(entries).toEqual([{ action: "STATUS_CHANGE", changes: { status: { from: "NEW", to: "IN_PROGRESS" } } }]);
+  });
+
+  it("keeps the database's last word on a note: one longer than its column is refused as invalid", async () => {
+    const [id] = await inbox({});
+    await expect(addEnquiryNote(id, "x".repeat(2001), actor)).rejects.toMatchObject({
+      code: "VALIDATION_ERROR",
+      httpStatus: 400,
+    });
+    expect((await getEnquiry(id)).notes).toEqual([]);
+  });
+
+  it("answers not found for an enquiry that is gone, whatever is asked of it", async () => {
+    const gone = crypto.randomUUID();
+    await expect(getEnquiry(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND", httpStatus: 404 });
+    await expect(setEnquiryStatus(gone, "RESOLVED", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    await expect(addEnquiryNote(gone, "Note", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
   });
 });

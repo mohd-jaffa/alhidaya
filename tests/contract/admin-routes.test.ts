@@ -32,20 +32,22 @@ function handlers(): { name: string; source: string }[] {
 
 describe("the admin API", () => {
   it("is found", () => {
-    expect(handlers().map((handler) => handler.name)).toEqual(expect.arrayContaining([...OPEN]));
+    expect(handlers().map((handler) => handler.name)).toEqual(
+      expect.arrayContaining([...OPEN, "enquiries GET", "enquiries/[id] PATCH", "enquiries/[id]/notes POST"]),
+    );
   });
 
   it("checks the admin's session on every route but signing in and the password reset (plan §26.1)", () => {
     const unguarded = handlers()
       .filter((handler) => !OPEN.has(handler.name))
-      .filter((handler) => !handler.source.includes("withAdminRoute(request"));
+      .filter((handler) => !/withAdminRoute\(\s*request\b/.test(handler.source));
     expect(unguarded.map((handler) => handler.name)).toEqual([]);
   });
 
   it("refuses another site's request on the routes anyone may call", () => {
     for (const handler of handlers().filter((entry) => OPEN.has(entry.name))) {
       expect(handler.source, handler.name).toContain("assertSameOrigin(request)");
-      expect(handler.source, handler.name).toContain("withApiHandler(request");
+      expect(handler.source, handler.name).toMatch(/withApiHandler\(\s*request\b/);
     }
   });
 });

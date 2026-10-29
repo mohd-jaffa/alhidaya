@@ -161,6 +161,7 @@ question (§41) the user may overturn.
 | D77 | **The public forms load their checks after first paint**: React Hook Form with Zod in the Quote and Contact pages' first load measured ≈ 40 KB gzip more (≈ 194 KB against the 170 KB budget, §31). The forms are plain fields of the browser's own, checked by the same Zod schema the route parses (`src/lib/validation/schemas/enquiries.ts`) through one small hook (`src/hooks/useSchemaForm.ts`), which fetches the schema when the visitor first reaches into the form; React Hook Form stays for the admin (Phase 6), which has no such budget. Each mistake shows beside its field in the catalogue's words, on the visitor's side and the server's alike. **(agent default; Q43)** | 2026-10-29 |
 | D78 | **Turnstile is seen only when Cloudflare needs the visitor to act** (`appearance: interaction-only`, Cloudflare's managed check) and is loaded when the visitor first reaches into a form, never in a page's first load (as D77). Its site key is read on the server at request time, so the site's own keys need no new build. When Cloudflare cannot be reached, the form is refused with the outside service's message: nothing is stored unchecked (§10.3: verified before anything is stored). Locally and in the tests, Cloudflare's published test keys. **(agent default; Q44)** | 2026-10-29 |
 | D79 | **An enquiry's alert is sent once the visitor has their answer** (Next's `after`, in the same request; no queue, AGENTS.md §17): the visitor never waits on the mail server. The enquiry is marked sent or not sent; one not yet sent (also if the app restarted in that moment) shows with Retry. In production a mail server is reached only over TLS, unless it is on the same machine. **(agent default; Q45)** | 2026-10-29 |
+| D80 | **The admin is brought forward into Phase 4**: R6.1 (shape the admin) and R6.2 (its shell, sign-in, overview and data layer) are done before R4.4's inbox screens, so Phase 4 ends with an inbox the team can use. R4.4's server side is done first. | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -1369,7 +1370,7 @@ one commit (D27).
 | R4.1 | Quote and Contact forms: schemas, UI, success and error states | §10 | Q5, Q6 | DONE (2026-10-29; Q5 and Q6 as their defaults; checks after first paint, D77; Turbopack's grouping of shared code is for R7.1) |
 | R4.2 | Turnstile verification, honeypot, rate limit | §10.3 | — | DONE (2026-10-29; Cloudflare's test keys until R8.4; seen only when needed, D78; the rate limit came at R1.5) |
 | R4.3 | Alert emails, failure logging, retry | §10.4, §17 | Q17 | DONE (2026-10-29; sent after the answer, D79; Retry is the inbox's, R4.4) |
-| R4.4 | Enquiries inbox: list, filters, detail, status, notes | §10.5 | — | TODO |
+| R4.4 | Enquiries inbox: list, filters, detail, status, notes | §10.5 | — | IN PROGRESS (2026-10-29; the API done and tested; its screens after R6.1 and R6.2, brought forward, D80) |
 | R4.5 | Integration + E2E | §34 | — | TODO |
 
 ### Phase 5 — Careers
@@ -1387,8 +1388,8 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R6.1 | `/impeccable shape` the admin (Operate) | §30.5 | — | TODO |
-| R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | TODO |
+| R6.1 | `/impeccable shape` the admin (Operate) | §30.5 | — | TODO (brought forward into Phase 4, before R4.4's screens, D80) |
+| R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | TODO (brought forward into Phase 4, before R4.4's screens, D80) |
 | R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | TODO |
 | R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO (the sizing step and `storeImage` came forward with D75, 2026-10-29) |

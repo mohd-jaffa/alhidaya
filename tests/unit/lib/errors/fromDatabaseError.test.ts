@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { conflictError, databaseErrorCode, fromDatabaseError } from "@/lib/errors";
+import { conflictError, databaseErrorCode, fromDatabaseError, referencesMissingRow } from "@/lib/errors";
 
 /** What mysql2 throws: its own text names tables, keys and values. */
 const driver = (code: string) =>
@@ -14,6 +14,22 @@ describe("fromDatabaseError", () => {
     expect(fromDatabaseError(driver("ER_CHECK_CONSTRAINT_VIOLATED"))).toMatchObject({ kind: "BUSINESS_RULE" });
     expect(fromDatabaseError(driver("ER_DATA_TOO_LONG"))).toMatchObject({ kind: "VALIDATION" });
     expect(fromDatabaseError(driver("ECONNREFUSED"))).toMatchObject({ kind: "NETWORK", httpStatus: 503 });
+    for (const code of [
+      "ER_NO_REFERENCED_ROW",
+      "ER_NO_REFERENCED_ROW_2",
+      "ER_ROW_IS_REFERENCED",
+      "ER_ROW_IS_REFERENCED_2",
+    ]) {
+      expect(fromDatabaseError(driver(code))).toMatchObject({ kind: "CONFLICT" });
+    }
+  });
+
+  it("knows a write that points at a row that is not there, however MySQL words it", () => {
+    const wrapped = (code: string) => Object.assign(new Error("Failed query"), { cause: driver(code) });
+    expect(referencesMissingRow(wrapped("ER_NO_REFERENCED_ROW"))).toBe(true);
+    expect(referencesMissingRow(driver("ER_NO_REFERENCED_ROW_2"))).toBe(true);
+    expect(referencesMissingRow(driver("ER_ROW_IS_REFERENCED_2"))).toBe(false);
+    expect(referencesMissingRow(new Error("no code"))).toBe(false);
   });
 
   it("finds the driver's error inside Drizzle's wrapper", () => {

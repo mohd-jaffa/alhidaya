@@ -1,10 +1,16 @@
-import { eq } from "drizzle-orm";
+import { and, asc, count, desc, eq, like, or, type SQL } from "drizzle-orm";
 
-import { FORM_RATE_LIMIT } from "@/constants/limits";
+import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { CARE_FOR_LABELS, CONTACT_METHOD_LABELS, type EmailStatus, type FormKind } from "@/constants/statuses";
+import {
+  CARE_FOR_LABELS,
+  CONTACT_METHOD_LABELS,
+  type EmailStatus,
+  type EnquiryStatus,
+  type FormKind,
+} from "@/constants/statuses";
 import { getDb } from "@/db/client";
-import { enquiries, type SubmittedField } from "@/db/schema";
+import { authUser, enquiries, enquiryNotes, type SubmittedField } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
 import { listPublishedServices } from "@/features/services/api";
 import { logActionSafe } from "@/lib/audit/auditLog";
@@ -12,10 +18,17 @@ import { captureError } from "@/lib/audit/errorLog";
 import { displayPhone } from "@/lib/contact";
 import type { Actor } from "@/lib/content/actor";
 import { getOperations } from "@/lib/content/operations";
-import { businessRuleError, notFoundError, rateLimitError, validationError } from "@/lib/errors";
+import {
+  businessRuleError,
+  fromDatabaseError,
+  notFoundError,
+  rateLimitError,
+  referencesMissingRow,
+  validationError,
+} from "@/lib/errors";
 import { createConfiguredMailService } from "@/lib/mail/nodemailer.provider";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
-import type { EnquiryPayload } from "@/lib/validation";
+import type { EnquiryListQueryPayload, EnquiryPayload } from "@/lib/validation";
 
 /** A Quote or Contact submission, parsed by its form's schema and labelled as the visitor saw it. */
 export interface EnquirySubmission {
@@ -159,4 +172,155 @@ export async function retryEnquiryAlert(id: string, actor: Actor): Promise<Email
     requestId: actor.requestId,
   });
   return status;
+}
+
+/** An enquiry as the inbox lists it (plan §10.5). */
+export interface EnquirySummary {
+  id: string;
+  form: FormKind;
+  status: EnquiryStatus;
+  emailStatus: EmailStatus;
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: Date;
+}
+
+/** A note on an enquiry, by the admin who wrote it (the name is gone if the admin is). */
+export interface EnquiryNote {
+  id: string;
+  body: string;
+  author: string | null;
+  createdAt: Date;
+}
+
+/** An enquiry opened in the inbox: every answer as sent, and its notes, oldest first. */
+export interface EnquiryDetail extends EnquirySummary {
+  fields: SubmittedField[];
+  updatedAt: Date;
+  notes: EnquiryNote[];
+}
+
+const summary = {
+  id: enquiries.id,
+  form: enquiries.form,
+  status: enquiries.status,
+  emailStatus: enquiries.emailStatus,
+  name: enquiries.name,
+  email: enquiries.email,
+  phone: enquiries.phone,
+  createdAt: enquiries.createdAt,
+};
+
+/** What a search finds anywhere in the text: its `%`, `_` and `\\` mean themselves. */
+const containing = (text: string) => `%${text.replace(/[\\%_]/g, (character) => `\\${character}`)}%`;
+
+/**
+ * What the admin types, matched against the name, the email and the phone:
+ * a number is matched by its digits, however it was typed ("5551 2345").
+ */
+function searching(q: string): SQL | undefined {
+  const digits = q.replace(/\D/g, "");
+  return or(
+    like(enquiries.name, containing(q)),
+    like(enquiries.email, containing(q)),
+    digits.length >= 3 ? like(enquiries.phone, containing(digits)) : undefined,
+  );
+}
+
+/**
+ * The inbox (plan §10.5): enquiries newest first, by form, by status and by
+ * a search, a page at a time, with how many there are in all: two reads.
+ */
+export async function listEnquiries(
+  query: EnquiryListQueryPayload,
+): Promise<{ items: EnquirySummary[]; total: number; page: number; pageSize: number }> {
+  const where = and(
+    query.form ? eq(enquiries.form, query.form) : undefined,
+    query.status ? eq(enquiries.status, query.status) : undefined,
+    query.q ? searching(query.q) : undefined,
+  );
+  const db = getDb();
+  const [items, [{ total }]] = await Promise.all([
+    db
+      .select(summary)
+      .from(enquiries)
+      .where(where)
+      .orderBy(desc(enquiries.createdAt), desc(enquiries.id))
+      .limit(INBOX_PAGE_SIZE)
+      .offset((query.page - 1) * INBOX_PAGE_SIZE),
+    db.select({ total: count() }).from(enquiries).where(where),
+  ]);
+  return { items: items as EnquirySummary[], total, page: query.page, pageSize: INBOX_PAGE_SIZE };
+}
+
+/** One enquiry with its notes (plan §10.5): two reads. */
+export async function getEnquiry(id: string): Promise<EnquiryDetail> {
+  const db = getDb();
+  const [[enquiry], notes] = await Promise.all([
+    db
+      .select({ ...summary, fields: enquiries.fields, updatedAt: enquiries.updatedAt })
+      .from(enquiries)
+      .where(eq(enquiries.id, id)),
+    db
+      .select({
+        id: enquiryNotes.id,
+        body: enquiryNotes.body,
+        author: authUser.name,
+        createdAt: enquiryNotes.createdAt,
+      })
+      .from(enquiryNotes)
+      .leftJoin(authUser, eq(authUser.id, enquiryNotes.createdBy))
+      .where(eq(enquiryNotes.enquiryId, id))
+      .orderBy(asc(enquiryNotes.createdAt), asc(enquiryNotes.id)),
+  ]);
+  if (!enquiry) throw notFoundError("RECORD_NOT_FOUND");
+  return { ...(enquiry as Omit<EnquiryDetail, "notes">), notes };
+}
+
+/** Moves an enquiry along (plan §10.5); recorded with where it was and where it went. */
+export async function setEnquiryStatus(id: string, status: EnquiryStatus, actor: Actor): Promise<void> {
+  const db = getDb();
+  const [enquiry] = await db.select({ status: enquiries.status }).from(enquiries).where(eq(enquiries.id, id));
+  if (!enquiry) throw notFoundError("RECORD_NOT_FOUND");
+  if (enquiry.status === status) return;
+  await db.update(enquiries).set({ status, updatedAt: new Date() }).where(eq(enquiries.id, id));
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "STATUS_CHANGE",
+    entityType: "enquiry",
+    entityId: id,
+    changes: { status: { from: enquiry.status, to: status } },
+    requestId: actor.requestId,
+  });
+}
+
+/**
+ * The team's note on an enquiry (plan §10.5). It may hold personal data, so
+ * the audit trail records that a note was added, never what it says
+ * (AGENTS.md §8); it goes with the enquiry when retention deletes it.
+ */
+export async function addEnquiryNote(id: string, body: string, actor: Actor): Promise<EnquiryNote> {
+  const noteId = newId();
+  const at = new Date();
+  try {
+    await getDb()
+      .insert(enquiryNotes)
+      .values({ id: noteId, enquiryId: id, body, createdBy: actor.adminId, createdAt: at, updatedAt: at });
+  } catch (error) {
+    // A note points at its enquiry and its admin: one of them is gone (the admin's session would be too).
+    if (referencesMissingRow(error)) throw notFoundError("RECORD_NOT_FOUND");
+    throw fromDatabaseError(error);
+  }
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "NOTE_ADD",
+    entityType: "enquiry",
+    entityId: id,
+    requestId: actor.requestId,
+  });
+  const [author] = actor.adminId
+    ? await getDb().select({ name: authUser.name }).from(authUser).where(eq(authUser.id, actor.adminId))
+    : [];
+  return { id: noteId, body, author: author?.name ?? null, createdAt: at };
 }

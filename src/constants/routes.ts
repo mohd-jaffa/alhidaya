@@ -59,6 +59,11 @@ export const API_ROUTES = {
   passwordReset: "/api/admin/password/reset",
   /** The Quote and Contact forms send here (plan §10). */
   enquiries: "/api/enquiries",
+  /** The enquiries inbox (plan §10.5). */
+  adminEnquiries: "/api/admin/enquiries",
+  adminEnquiry: (id: string) => `/api/admin/enquiries/${id}`,
+  adminEnquiryNotes: (id: string) => `/api/admin/enquiries/${id}/notes`,
+  adminEnquiryRetryMail: (id: string) => `/api/admin/enquiries/${id}/retry-mail`,
   /** Opens a public page in the admin's preview of unpublished changes (plan §14). */
   preview: "/api/preview",
   /** Leaves the admin's preview of unpublished changes (R3.6). */

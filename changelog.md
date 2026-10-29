@@ -1912,3 +1912,55 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R4.4 (server side): the enquiries inbox's API
+
+### Added
+- **The inbox's data** (`features/enquiries/api.ts`, plan §10.5):
+  `listEnquiries` (newest first; by form, by status, by a search over the
+  name, the email and the phone, a number matched by its digits however it
+  was typed; a search's `%`, `_` and `\` mean themselves; 25 a page with the
+  total, two reads); `getEnquiry` (every answer as sent, its notes oldest
+  first with their admin's name, two reads); `setEnquiryStatus` (recorded
+  from and to; nothing recorded when nothing changes); `addEnquiryNote`
+  (recorded as added, never what it says, AGENTS.md §8).
+- **The admin routes** (§29), each behind `withAdminRoute` and uncached:
+  `GET /api/admin/enquiries`, `GET` and `PATCH /api/admin/enquiries/[id]`,
+  `POST …/[id]/notes`, `POST …/[id]/retry-mail` (R4.3's Retry). Their
+  schemas: `enquiryListQuerySchema`, `enquiryStatusSchema`,
+  `enquiryNoteSchema`. `INBOX_PAGE_SIZE`; the endpoints in `API_ROUTES`.
+
+### Changed
+- MySQL reports a reference to a missing row without the constraint's name
+  (`ER_NO_REFERENCED_ROW`, no `_2`) to a user who cannot read the other
+  table, as the app's user cannot: both forms (and both of a row still
+  referenced) are now mapped, and `referencesMissingRow` reads either. A
+  note on a deleted enquiry answers not found, not an internal error.
+- The admin-route contract matches `withAdminRoute(request` across line
+  breaks, and names the inbox's routes.
+- `getAuth` makes Better Auth again when the database pool it was made on
+  has since been closed: a journey that closed the pool left the next one
+  (the preview's) signing in through a closed pool.
+- A note longer than its column (past the schema) is refused as invalid by
+  the database's last word, not as an internal error.
+
+### Decisions
+- D80 (the user's): the admin is brought forward into Phase 4; R6.1 and
+  R6.2 come before R4.4's screens.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: the four routes
+  (session, origin, schemas, the admin and request named on each change);
+  the schemas; against the local MySQL, listing by form, status and search
+  (name, email, digits of a phone, wildcards meaning themselves), pages and
+  totals, an enquiry opened with its notes and authors, status changes
+  recorded once, notes recorded without their words, not found for an
+  enquiry that is gone.
+- E2E passed (94): through the built app, the inbox refuses without the
+  session (uncached), then the admin finds an enquiry by its phone as
+  typed, moves it along, notes it and opens it; another site's write is
+  refused.
+
+### Blockers
+- None.

@@ -2,7 +2,7 @@ import * as z from "zod";
 
 import { TEXT_LIMITS } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { CARE_FOR, CONTACT_METHODS } from "@/constants/statuses";
+import { CARE_FOR, CONTACT_METHODS, ENQUIRY_STATUSES, FORM_KINDS } from "@/constants/statuses";
 import { TURNSTILE_FIELD } from "@/lib/turnstile/endpoints";
 
 import { optionalLine, requiredEmail, requiredLine, requiredLines, requiredPhone } from "../primitives";
@@ -52,3 +52,27 @@ export const enquirySchema = z.discriminatedUnion("form", [
 ]);
 export type EnquiryInput = z.input<typeof enquirySchema>;
 export type EnquiryPayload = z.output<typeof enquirySchema>;
+
+/**
+ * The enquiries inbox (plan §10.5): which enquiries to list, newest first,
+ * by form, by status and by what the admin types (a name, an email, a phone
+ * number), a page at a time.
+ */
+export const enquiryListQuerySchema = z.object({
+  form: z.enum(FORM_KINDS).optional(),
+  status: z.enum(ENQUIRY_STATUSES).optional(),
+  q: optionalLine("Search", TEXT_LIMITS.line),
+  page: z.coerce.number().int().min(1).max(10_000).default(1),
+});
+export type EnquiryListQueryInput = z.input<typeof enquiryListQuerySchema>;
+export type EnquiryListQueryPayload = z.output<typeof enquiryListQuerySchema>;
+
+/** Where an enquiry stands (plan §10.5). */
+export const enquiryStatusSchema = z.object({ status: z.enum(ENQUIRY_STATUSES) });
+export type EnquiryStatusInput = z.input<typeof enquiryStatusSchema>;
+export type EnquiryStatusPayload = z.output<typeof enquiryStatusSchema>;
+
+/** The team's internal note on an enquiry (plan §10.5). */
+export const enquiryNoteSchema = z.object({ body: requiredLines("Note", { max: TEXT_LIMITS.note }) });
+export type EnquiryNoteInput = z.input<typeof enquiryNoteSchema>;
+export type EnquiryNotePayload = z.output<typeof enquiryNoteSchema>;

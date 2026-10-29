@@ -9,6 +9,7 @@ describe("the routes", () => {
     expect(ROUTES.job("registered-nurse")).toBe("/careers/registered-nurse");
     expect(ROUTES.applyForJob("registered-nurse")).toBe("/careers/registered-nurse/apply");
     expect(ADMIN_ROUTES.page("HOME")).toBe("/admin/pages/HOME");
+    expect(ADMIN_ROUTES.enquiry("e1")).toBe("/admin/enquiries/e1");
   });
 
   it("keep every admin page under /admin", () => {
@@ -19,6 +20,9 @@ describe("the routes", () => {
   });
 
   it("keep every endpoint under /api", () => {
-    for (const route of Object.values(API_ROUTES)) expect(route.startsWith("/api/")).toBe(true);
+    for (const route of Object.values(API_ROUTES)) {
+      expect((typeof route === "function" ? route("id") : route).startsWith("/api/")).toBe(true);
+    }
+    expect(API_ROUTES.adminEnquiryRetryMail("e1")).toBe("/api/admin/enquiries/e1/retry-mail");
   });
 });
