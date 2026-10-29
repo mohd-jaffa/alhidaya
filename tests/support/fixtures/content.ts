@@ -12,7 +12,7 @@ import type {
 const en = <T>(value: T) => ({ en: value });
 
 const CONTENT: Record<SectionType, Section["content"]> = {
-  SIGN: { eyebrow: en("You are here"), headline: en("Nursing care, at your doorstep"), lede: en(null), image: null },
+  SIGN: { headline: en("Nursing care, at your doorstep"), lede: en(null), image: null },
   INTRO: {
     heading: en("Who we are"),
     body: [{ type: "paragraph", text: en("A nursing company in Doha.") }],

@@ -149,6 +149,7 @@ question (§41) the user may overturn.
 | D65 | **Motion is counted outside the first-load JavaScript budget** (answers Q34, option a): GSAP, ScrollTrigger and Lenis load after the first paint, so the 170 KB budget is the first paint's, for modern browsers; motion is measured and reported beside it. The real checks still hold: LCP, INP, CLS, long tasks, dropped frames and Lighthouse (§31). | 2026-10-29 |
 | D66 | **WhatsApp actions use the site's chat pictogram and the word *WhatsApp*** (answers Q32), not WhatsApp's own logo. | 2026-10-29 |
 | D67 | **The floating WhatsApp button stays on every public page**, as on today's site (answers Q23); **the admin can turn it off** in the site content (§13), published like any other edit. | 2026-10-29 |
+| D68 | **"You are here" is said where the visitor stands, not above the headline** (answers Q35, option b): on Home the three lines start from a navy "You are here" station, and the line's travelling marker keeps the words; every page's headline stands alone, so the sign has no eyebrow (§7.2). | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -272,8 +273,9 @@ content from the record.
 
 ### 6.1 Home — `/`
 
-1. **The sign** (fixed, first): "You are here", the headline, the
-   supporting line, and **the three lines**: *Care at home* (WhatsApp, Call),
+1. **The sign** (fixed, first): the headline, standing alone, the
+   supporting line, and **the three lines**, starting from a "You are here"
+   station (D68): *Care at home* (WhatsApp, Call),
    *Staffing for hospitals, clinics and schools* (Request a Quote), and
    *Nurses: join us* (Careers). These are the working actions, not links to
    them (§30.1).
@@ -361,7 +363,7 @@ says where the visitor is and the way back.
 
 | Type | Content | Used on |
 |---|---|---|
-| `SIGN` | eyebrow, headline, supporting line, photo, and for Home the three lines | every page (fixed, first) |
+| `SIGN` | headline, supporting line, photo, and for Home the three lines from their "You are here" station (D68) | every page (fixed, first) |
 | `INTRO` | heading, rich text, optional photo | Home, About |
 | `SERVICES_INDEX` | heading, intro; shows every published service, in order | Home, Services |
 | `VALUES` | heading, up to six items (title, line) | Home, About |
@@ -1021,10 +1023,11 @@ strip, a testimonial carousel).
 - **Photography:** licensed stock framed as panels within the sign system
   (D8), never full-bleed decoration.
 
-**First viewport (Home).** A large deep-blue sign panel: a "You are here"
-marker, the headline (e.g. *Nursing care, at your doorstep*, final copy per
-D6), the supporting line, and a care photograph in a panel beside it on
-desktop. Beneath, **the three lines** run across the width, each a coloured
+**First viewport (Home).** A large deep-blue sign panel: the headline
+standing alone (e.g. *Nursing care, at your doorstep*, final copy per D6),
+the supporting line, and a care photograph in a panel beside it on desktop.
+Beneath, **the three lines** start from a navy **"You are here"** station, the
+point the visitor stands at (D68), and run across the width, each a coloured
 line with a station dot, its destination and its working actions: *Care at
 home* → WhatsApp · Call; *Staffing for hospitals, clinics and schools* →
 Request a Quote; *Nurses: join us* → Careers. On a phone the sign fills the
@@ -1305,7 +1308,7 @@ one commit (D27).
 | R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | DONE (2026-10-29; shown on `/kit`) |
 | R2.6 | Site shell: header sign bar, mobile menu, footer, skip link, "You are here", preview bar | §30.1 | — | DONE (2026-10-29; with the floating WhatsApp button, D67) |
 | R2.7 | System pages: not found, error, global error, loading | §6.10 | — | DONE (2026-10-29; the public site has no route-level loading state: it would hide content without JavaScript and turn a 404 into a 200; the admin's come with it, R6) |
-| R2.8 | `/impeccable audit` of the kit; screenshots checked by the user | §30 | Q35 | IN PROGRESS (2026-10-29: audit 19/20, one finding, Q35; waits on the user's check of the screenshots) |
+| R2.8 | `/impeccable audit` of the kit; screenshots checked by the user | §30 | — | DONE (2026-10-29; audit 19/20, its one finding answered by D68) |
 
 ### Phase 3 — Public pages
 
@@ -1459,7 +1462,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q32 | ~~Show WhatsApp's own logo on WhatsApp actions?~~ | **Answered by D66:** the site's chat pictogram and the word *WhatsApp*. |
 | Q33 | ~~Keep the kit preview page (`/kit`, D64), local and test only?~~ | **Answered:** yes, local and test only (D64). |
 | Q34 | ~~Motion's weight against the JavaScript budget (§31: ≤ 170 KB, motion included). Measured at R2.4: 133.5 KB at first paint (Next.js and React) + 51.7 KB of motion after paint (GSAP 26.7, ScrollTrigger 17.1, Lenis 5.3) = 185 KB before any page content.~~ | **Answered by D65:** motion is counted outside the first-load budget. |
-| Q35 | The sign's "You are here" marker sits above the headline, which Impeccable's audit flags as a kicker (a small uppercase label above a heading, banned in its craft floor). Keep it there, or move it? | Open. (a) Keep it, as the direction contract draws the sign (§30.1). (b) Move it to where the three lines start on Home, the point the visitor stands at, and let each page's headline stand alone (the sign's eyebrow field goes); the line's travelling marker still says "You are here". |
+| Q35 | ~~The sign's "You are here" marker sits above the headline, which Impeccable's audit flags as a kicker. Keep it there, or move it?~~ | **Answered by D68:** (b), moved to where the three lines start; each headline stands alone. |
 
 ## 42. Later (unscheduled)
 

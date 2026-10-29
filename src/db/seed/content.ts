@@ -42,7 +42,6 @@ export function seedPages(): Record<PageKey, PageDocument> {
       seo: noSeo,
       sections: [
         section("SIGN", {
-          eyebrow: en("You are here"),
           headline: en("Quality nursing care at your doorstep"),
           lede: en(
             "Nursing care at home and in clinics across Doha, and nurse staffing for hospitals, clinics and schools.",
@@ -100,7 +99,6 @@ export function seedPages(): Record<PageKey, PageDocument> {
       seo: noSeo,
       sections: [
         section("SIGN", {
-          eyebrow: en("About us"),
           headline: en("Nursing care with compassion and dignity"),
           lede: en("A nursing care company in Doha, caring for patients at home and supplying nurses to institutions."),
           image: null,
@@ -150,7 +148,6 @@ export function seedPages(): Record<PageKey, PageDocument> {
       seo: noSeo,
       sections: [
         section("SIGN", {
-          eyebrow: en("Services"),
           headline: en("Care at home, and nurses for institutions"),
           lede: en("Nursing care for families across Doha, and nurse staffing for hospitals, clinics and schools."),
           image: null,
@@ -164,7 +161,6 @@ export function seedPages(): Record<PageKey, PageDocument> {
       seo: noSeo,
       sections: [
         section("SIGN", {
-          eyebrow: en("Careers"),
           headline: en("Nursing careers in Doha"),
           lede: en("Join a team that cares for patients at home across Doha."),
           image: null,
@@ -179,7 +175,6 @@ export function seedPages(): Record<PageKey, PageDocument> {
       seo: noSeo,
       sections: [
         section("SIGN", {
-          eyebrow: en("Contact"),
           headline: en("We are here day and night"),
           lede: en("Message us on WhatsApp, call, email, or visit our office in Al Sadd."),
           image: null,
@@ -192,7 +187,6 @@ export function seedPages(): Record<PageKey, PageDocument> {
       seo: noSeo,
       sections: [
         section("SIGN", {
-          eyebrow: en("Request a quote"),
           headline: en("Tell us the care you need"),
           lede: en("For families, hospitals, clinics and schools. We will reply with a quote."),
           image: null,
@@ -203,7 +197,7 @@ export function seedPages(): Record<PageKey, PageDocument> {
     PRIVACY: {
       seo: noSeo,
       sections: [
-        section("SIGN", { eyebrow: en("Privacy"), headline: en("Privacy notice"), lede: en(null), image: null }),
+        section("SIGN", { headline: en("Privacy notice"), lede: en(null), image: null }),
         section("RICH_TEXT", {
           heading: en(null),
           body: [
@@ -240,7 +234,7 @@ export function seedPages(): Record<PageKey, PageDocument> {
     TERMS: {
       seo: noSeo,
       sections: [
-        section("SIGN", { eyebrow: en("Terms"), headline: en("Terms of use"), lede: en(null), image: null }),
+        section("SIGN", { headline: en("Terms of use"), lede: en(null), image: null }),
         section("RICH_TEXT", {
           heading: en(null),
           body: [

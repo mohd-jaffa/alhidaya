@@ -21,7 +21,7 @@ OWN-WORLD: clinical white ground; deep-blue sign panels with white type; three l
 
 STORY: the visitor understands Al Hidaya brings qualified nurses home and to institutions across Doha, day and night; believes it is organised and professional; takes their line's action.
 
-FIRST VIEWPORT: a large deep-blue sign: "You are here", the headline, the supporting line, a care photo panel beside it on desktop; beneath, three full-width coloured lines with stations and working actions (WhatsApp · Call; Request a Quote; Careers). Phone: the sign fills the width, the lines stack as tall tappable rows. Signature: the lines draw onward with the scroll through each section as a station while a marker travels.
+FIRST VIEWPORT: a large deep-blue sign: the headline standing alone, the supporting line, a care photo panel beside it on desktop; beneath, three full-width coloured lines starting from a navy "You are here" station (plan D68, never a label above the headline), with stations and working actions (WhatsApp · Call; Request a Quote; Careers). Phone: the sign fills the width, the lines stack as tall tappable rows. Signature: the lines draw onward with the scroll through each section as a station while a marker travels.
 
 FORM: hospital and metro bilingual wayfinding signage; first on the re-rolled ordered list (Impeccable's pick); seed key 04485a26 (re-roll 1).
 

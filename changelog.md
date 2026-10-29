@@ -1165,3 +1165,33 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None; R2.8 closes with the user's check and Q35.
+
+## 2026-10-29 — R2.8 closed: "You are here" where the visitor stands (D68)
+
+### Changed
+- **The sign's headline stands alone** (answers Q35, option b; plan D68).
+  The "You are here" label above every sign's headline is gone, and with it
+  the sign's eyebrow field (`SIGN` in `schemas/pages.ts`, the seed, the
+  fixtures). Stored pages need no migration: the schema drops the old field
+  when it reads one.
+- **The three lines start from a "You are here" station** (`LineStart`,
+  `components/ui/line-start.tsx`): the travelling marker's navy station,
+  standing still, with a stem down to the first line. On `/kit` now; on
+  Home at R3.3. The line's travelling marker and the phone's progress line
+  keep the words.
+- **The system pages** (not-found, error, global error) lose their labels
+  too; the not-found page's title is now `UI_TEXT.notFoundTitle`, and the
+  unused `errorMarker` is removed.
+- Plan: D68; Q35 answered; §6.1, §7.2 and §30.1 (first viewport) redrawn;
+  R2.8 DONE. The surface brief's first viewport says the same.
+
+### Validation
+- Impeccable's detector on `/kit` and Home: no findings (the
+  `kicker-above-heading` finding is gone). Screenshots at 1440 and 390 px.
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (420), coverage 100%.
+- Build passed; the shipped audit passed (91 packages); E2E passed (44,
+  phone and desktop), axe clean.
+
+### Blockers
+- None.

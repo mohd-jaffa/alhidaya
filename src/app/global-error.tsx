@@ -14,7 +14,6 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
     <html lang="en" dir="ltr">
       <body className="grid min-h-dvh place-items-center bg-ground p-gutter text-navy">
         <main className="grid w-full max-w-xl gap-5 rounded-panel bg-deep p-sign text-on-deep">
-          <p className="text-label font-semibold uppercase">{UI_TEXT.errorMarker}</p>
           <h1 className="text-page font-bold">{UI_TEXT.errorHeadline}</h1>
           <p className="text-on-deep-2">{UI_TEXT.errorLede}</p>
           <div className="flex flex-wrap items-center gap-6">

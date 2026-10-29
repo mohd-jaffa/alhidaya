@@ -15,7 +15,6 @@ const shortText = (label: string) => localized(optionalLines(label, TEXT_LIMITS.
 /** What each section type holds (plan §7.2). */
 const SECTION_CONTENT = {
   SIGN: z.object({
-    eyebrow: localized(optionalLine("Eyebrow", TEXT_LIMITS.label)),
     headline: localized(requiredLine("Headline", { max: TEXT_LIMITS.heading })),
     lede: shortText("Supporting line"),
     image: imageRefSchema.nullable(),

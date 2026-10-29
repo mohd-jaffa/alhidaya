@@ -13,7 +13,7 @@ import { UI_TEXT } from "@/constants/messages";
 export default function SiteError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <div className="mx-auto max-w-site px-gutter py-section">
-      <SignPanel marker={UI_TEXT.errorMarker} headline={UI_TEXT.errorHeadline} lede={UI_TEXT.errorLede}>
+      <SignPanel headline={UI_TEXT.errorHeadline} lede={UI_TEXT.errorLede}>
         <div className="grid gap-6">
           <div>
             <Button variant="onDeep" onClick={reset}>

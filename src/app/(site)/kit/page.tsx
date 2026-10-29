@@ -12,6 +12,7 @@ import { Field } from "@/components/ui/field";
 import { FileInput } from "@/components/ui/file-input";
 import { ImageFrame, LogoTile, Skeleton } from "@/components/ui/frames";
 import { LineRow } from "@/components/ui/line-row";
+import { LineStart } from "@/components/ui/line-start";
 import { Notice } from "@/components/ui/notice";
 import { Pictogram } from "@/components/ui/pictogram";
 import { Select } from "@/components/ui/select";
@@ -50,7 +51,6 @@ export default function KitPage() {
       <TheLine stations={stations} tone="deep" />
       {sign.type === "SIGN" ? (
         <SignPanel
-          marker={sign.content.eyebrow.en ?? UI_TEXT.youAreHere}
           headline={sign.content.headline.en}
           lede={sign.content.lede.en}
           media={
@@ -64,19 +64,21 @@ export default function KitPage() {
         </SignPanel>
       ) : null}
 
-      <section id="kit-lines" className="grid">
-        <LineRow tone="sky" pictogram="careAtHome" title="Care at home">
-          <ContactAction kind="whatsapp" to={phone} variant="sky" />
-          <ContactAction kind="call" to={phone} variant="sky" />
-        </LineRow>
-        <LineRow tone="deep" pictogram="staffing" title="Staffing for hospitals, clinics and schools">
-          <ButtonLink href={ROUTES.quote}>Request a quote</ButtonLink>
-        </LineRow>
-        <LineRow tone="leaf" pictogram="careers" title="Nurses: join us">
-          <ButtonLink href={ROUTES.careers} variant="leaf">
-            Careers
-          </ButtonLink>
-        </LineRow>
+      <section id="kit-lines">
+        <LineStart>
+          <LineRow tone="sky" pictogram="careAtHome" title="Care at home">
+            <ContactAction kind="whatsapp" to={phone} variant="sky" />
+            <ContactAction kind="call" to={phone} variant="sky" />
+          </LineRow>
+          <LineRow tone="deep" pictogram="staffing" title="Staffing for hospitals, clinics and schools">
+            <ButtonLink href={ROUTES.quote}>Request a quote</ButtonLink>
+          </LineRow>
+          <LineRow tone="leaf" pictogram="careers" title="Nurses: join us">
+            <ButtonLink href={ROUTES.careers} variant="leaf">
+              Careers
+            </ButtonLink>
+          </LineRow>
+        </LineStart>
       </section>
 
       <section id="kit-actions" className="grid gap-6">
