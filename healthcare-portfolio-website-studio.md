@@ -145,7 +145,9 @@ question (§41) the user may overturn.
 | D61 | **Typeface: Atkinson Hyperlegible Next**, with **Noto Sans Arabic** as its Arabic companion, chosen by the user from the specimen of three (R2.1; answers Q10). Self-hosted: one variable file (weights 200 – 800), Latin subset, 34 KB, with a metric-matched fallback; the Arabic file is added when Arabic arrives (§33). | 2026-10-29 |
 | D62 | **The client has no vector logo** (answers Q2): the mark and the wordmark are redrawn as SVG from the JPG, faithfully, for the client to approve (R2.2, R7.5). | 2026-10-29 |
 | D63 | **Errors may use red** (answers Q31), the one colour outside the logo's (D35): `#B42318`, 6.6:1 on white, for errors only, always with an icon and words (§30.3). | 2026-10-29 |
-| D64 | **A kit preview page at `/kit`**, served only where `KIT_PREVIEW=true` (locally and in the browser tests), never in production: the motion system and the UI kit are tested and screenshotted there (R2.4, R2.8). **(agent default, Q33)** | 2026-10-29 |
+| D64 | **A kit preview page at `/kit`**, served only where `KIT_PREVIEW=true` (locally and in the browser tests), never in production: the motion system and the UI kit are tested and screenshotted there (R2.4, R2.8). Confirmed by the user (Q33). | 2026-10-29 |
+| D65 | **Motion is counted outside the first-load JavaScript budget** (answers Q34, option a): GSAP, ScrollTrigger and Lenis load after the first paint, so the 170 KB budget is the first paint's, for modern browsers; motion is measured and reported beside it. The real checks still hold: LCP, INP, CLS, long tasks, dropped frames and Lighthouse (§31). | 2026-10-29 |
+| D66 | **WhatsApp actions use the site's chat pictogram and the word *WhatsApp*** (answers Q32), not WhatsApp's own logo. | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -1124,7 +1126,7 @@ and enforced in CI from Phase 7:
 | Cumulative Layout Shift | ≤ 0.05 |
 | Long tasks during a full-page scroll | none over 50 ms |
 | Dropped frames during scroll (desktop) | < 5 % |
-| JavaScript per public route (gzip, first load) | ≤ 170 KB, motion included |
+| JavaScript per public route (gzip, first paint, modern browsers) | ≤ 170 KB; motion, loaded after the first paint, measured beside it (D65) |
 | Lighthouse (performance, accessibility, best practices, SEO) | ≥ 95 each |
 | Server response for a cached page (from the server's region) | ≤ 200 ms |
 
@@ -1298,7 +1300,7 @@ one commit (D27).
 | R2.2 | The logo as SVG (traced faithfully, or the client's vector); favicon and app icons | §30 | Q2 | DONE (2026-10-29; redrawn from the JPG, D62, for the client's approval at R7.5) |
 | R2.3 | Pictogram set | §30.1 | Q12 | DONE (2026-10-29; 18 pictograms on a 24-unit grid, `src/assets/brand/pictograms.ts`; WhatsApp's own glyph is Q32) |
 | R2.4 | Motion system: Lenis + GSAP ticker, ScrollTrigger lifecycle, `TheLine` (scrubbed draw, stations, the travelling marker), reveals, reduced-motion path | §30.4 | — | DONE (2026-10-29; tested on `/kit`, D64; its weight is Q34) |
-| R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | TODO |
+| R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | DONE (2026-10-29; shown on `/kit`) |
 | R2.6 | Site shell: header sign bar, mobile menu, footer, skip link, "You are here", preview bar | §30.1 | — | TODO |
 | R2.7 | System pages: not found, error, global error, loading | §6.10 | — | TODO |
 | R2.8 | `/impeccable audit` of the kit; screenshots checked by the user | §30 | — | TODO |
@@ -1452,9 +1454,9 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q29 | Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)? | Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
 | Q30 | How does the approved copy reach the production database? | The seed (`npm run db:seed`, local only today) runs once against the empty production database at R8.1, with the user's go-ahead, after the client approves the copy (R3.1, R7.5); it writes drafts, and the admin publishes them. |
 | Q31 | ~~May form errors use a red, the one colour outside the logo's (D35)?~~ | **Answered by D63:** yes, for errors only. |
-| Q32 | Show WhatsApp's own logo on WhatsApp actions? | No: the site's chat pictogram with the word *WhatsApp*, in the site's colours. WhatsApp's logo must be used unaltered in its own green, which is outside the logo's colours (D35). |
-| Q33 | Keep the kit preview page (`/kit`, D64), local and test only? | Yes: it is how the motion system and the kit are tested in a browser and reviewed (R2.8); production answers 404. |
-| Q34 | **Motion's weight against the JavaScript budget** (§31: ≤ 170 KB, motion included). Measured at R2.4: 133.5 KB at first paint (Next.js and React) + 51.7 KB of motion after paint (GSAP 26.7, ScrollTrigger 17.1, Lenis 5.3) = 185 KB before any page content. | Open (blocker for R7.1). Options: (a) count motion outside the first-load budget, since it loads after paint; (b) keep GSAP and Lenis but drive the line with a small scroll observer instead of ScrollTrigger (about 168 KB); (c) replace GSAP and ScrollTrigger with CSS scroll-driven animations, which run off the main thread, plus Lenis (about 141 KB; Firefox shows the line drawn in full). |
+| Q32 | ~~Show WhatsApp's own logo on WhatsApp actions?~~ | **Answered by D66:** the site's chat pictogram and the word *WhatsApp*. |
+| Q33 | ~~Keep the kit preview page (`/kit`, D64), local and test only?~~ | **Answered:** yes, local and test only (D64). |
+| Q34 | ~~Motion's weight against the JavaScript budget (§31: ≤ 170 KB, motion included). Measured at R2.4: 133.5 KB at first paint (Next.js and React) + 51.7 KB of motion after paint (GSAP 26.7, ScrollTrigger 17.1, Lenis 5.3) = 185 KB before any page content.~~ | **Answered by D65:** motion is counted outside the first-load budget. |
 
 ## 42. Later (unscheduled)
 

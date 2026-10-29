@@ -982,3 +982,61 @@ appended and never rewritten (AGENTS.md §26).
   first-load budget, (b) drop ScrollTrigger for a small scroll observer,
   (c) CSS scroll-driven animations with Lenis instead of GSAP.
 - Temporary workaround: none needed before R7.1; the system works as built.
+
+## 2026-10-29 — R2.5, the UI kit
+
+### Added
+- **The kit** (`src/components/ui/`, plan §30.3), each part on tokens only:
+  - `SignPanel`: the deep-blue sign with the "You are here" marker, the
+    headline (h1 or h2), the supporting line, its actions, and a photograph
+    beside it on a wide screen.
+  - `LineRow` and `StationMarker`: a line in its colour with its station,
+    pictogram, name and actions; the station looks are shared with the line
+    in the margin (`stationClasses`).
+  - `Button` and `ButtonLink`: primary, secondary, the sky and leaf line
+    actions (navy words), and white and outlined actions for a deep-blue
+    sign; two sizes from 44 px; pressing in by transform alone; a pending
+    state that says so and refuses a second press. Links to this site go
+    through Next's link; other sites open in a new tab.
+  - `ContactAction`: WhatsApp (the chat pictogram and the word, D66) with
+    its first line written, a call, an email (`src/lib/contact.ts`).
+  - `ArrowLink`: words and an arrow that steps forward on hover, mirrored
+    right to left.
+  - Fields: `Field` (label, hint, the error beside the control in red with
+    its icon, D63, all tied to the control for screen readers), `TextInput`,
+    `TextArea`, `Select` (the browser's own, in the site's look),
+    `RadioGroup` (a fieldset of tall rows), `Checkbox`, `FileInput` (the
+    browser's picker behind a large target that names the chosen file and
+    its size, `src/lib/files/size.ts`). Required fields are announced by the
+    browser; optional ones say "(optional)" for everyone to see.
+  - `Notice` (info, success, error: words and an icon; an error interrupts
+    a screen reader), `Dialog` (the browser's modal dialog: focus held,
+    Escape closes, focus returns), `ImageFrame` (a photograph's fixed shape,
+    a stock credit under it), `LogoTile` (4:3, never cropped), `Skeleton`
+    (a slow fade, still with reduced motion).
+- `/kit` shows every part on real copy, with the line through it.
+- Tests: every part by role and accessible name; E2E on `/kit` at both
+  widths: the dialog's focus and Escape, the file picker naming its file,
+  required and optional fields; axe clean with every part on the page.
+- Tokens: the sign's padding, the skeleton's fade.
+
+### Changed
+- Plan: **D65** (motion is counted outside the first-load budget, answers
+  Q34; §31's row now reads "first paint, modern browsers, motion measured
+  beside it"); **D66** (the WhatsApp action keeps the site's pictogram,
+  answers Q32); **D64 confirmed** (Q33); R2.5 DONE.
+- `TheLine` takes its station looks from the kit.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (391), coverage 100% (1,200
+  statements, 597 branches, 383 functions).
+- `/kit` was checked by eye at 1440 and 390 px, with no sideways scroll;
+  the sign's second action was given its own outlined look on deep blue.
+- Build passed; the shipped audit passed (91 packages); E2E passed (30,
+  phone and desktop), axe clean.
+
+### Blocker resolution
+- The R2.4 blocker (motion's weight against the budget) is resolved by D65:
+  133.5 KB at first paint is within 170 KB; motion's 51.7 KB is measured
+  beside it.

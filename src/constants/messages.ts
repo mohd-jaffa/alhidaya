@@ -15,6 +15,17 @@ export const UI_TEXT = {
   youAreHere: "You are here",
   /** The kit preview page, local and test only (plan D64). */
   kitPreview: "Kit preview",
+  /** The ways to reach the company (plan §6.7, D9); WhatsApp keeps the site's chat pictogram (D66). */
+  whatsapp: "WhatsApp",
+  call: "Call",
+  email: "Email",
+  /** The kit's own words (plan §30.3). */
+  close: "Close",
+  optional: "optional",
+  chooseFile: "Choose a file",
+  replaceFile: "Choose another file",
+  noFileChosen: "No file chosen",
+  loading: "Loading",
 } as const;
 
 /**

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { UI_TEXT } from "@/constants/messages";
+import { stationClasses } from "@/components/ui/station-marker";
 import { MOTION } from "@/lib/motion/tokens";
 
 import { useMotion } from "./MotionProvider";
@@ -16,11 +17,7 @@ export interface Station {
 /** Which of the three lines the page follows (plan §30.1). */
 export type LineTone = "sky" | "deep" | "leaf";
 
-const TONES = {
-  sky: { fill: "bg-sky", passed: "border-sky", current: "border-sky bg-sky" },
-  deep: { fill: "bg-deep", passed: "border-deep", current: "border-deep bg-deep" },
-  leaf: { fill: "bg-leaf", passed: "border-leaf", current: "border-leaf bg-leaf" },
-} as const;
+const FILLS = { sky: "bg-sky", deep: "bg-deep", leaf: "bg-leaf" } as const;
 
 /** A section becomes the current station when its top reaches this share of the viewport. */
 const ARRIVAL = 0.45;
@@ -55,7 +52,7 @@ export function TheLine({ stations, tone }: { stations: readonly Station[]; tone
   const fill = useRef<HTMLDivElement>(null);
   const marker = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
-  const colours = TONES[tone];
+  const fillColour = FILLS[tone];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -124,22 +121,17 @@ export function TheLine({ stations, tone }: { stations: readonly Station[]; tone
           <div
             ref={fill}
             data-line-fill=""
-            className={`absolute inset-y-0 start-(--line-rail-centre) w-(--line-width) origin-top rounded-full ${colours.fill}`}
+            className={`absolute inset-y-0 start-(--line-rail-centre) w-(--line-width) origin-top rounded-full ${fillColour}`}
           />
           <ol>
             {stations.map(({ id, label }) => {
-              const state =
-                id === current
-                  ? colours.current
-                  : position(id) < position(current)
-                    ? colours.passed
-                    : "border-rule bg-ground";
+              const state = id === current ? "current" : position(id) < position(current) ? "passed" : "stop";
               return (
                 <li key={id}>
                   <a
                     href={`#${id}`}
                     aria-current={id === current ? "location" : undefined}
-                    className={`absolute start-0 size-(--line-station) -translate-y-1/2 rounded-full border-(length:--line-width) ${state}`}
+                    className={`absolute start-0 size-(--line-station) -translate-y-1/2 ${stationClasses(tone, state)}`}
                     style={{ top: `${position(id) * 100}%` }}
                   >
                     <span className="sr-only">{label}</span>
@@ -162,11 +154,11 @@ export function TheLine({ stations, tone }: { stations: readonly Station[]; tone
         className="fixed inset-x-0 top-(--header-height) z-(--z-header) border-b border-rule bg-ground xl:hidden"
       >
         <p className="flex items-center gap-2 px-gutter py-2 text-small font-semibold">
-          <span className={`size-2.5 rounded-full ${colours.fill}`} />
+          <span className={`size-2.5 rounded-full ${fillColour}`} />
           <span className="text-ink-2">{UI_TEXT.youAreHere}</span>
           <span>{currentLabel}</span>
         </p>
-        <div ref={progress} data-line-progress="" className={`h-1 ltr:origin-left rtl:origin-right ${colours.fill}`} />
+        <div ref={progress} data-line-progress="" className={`h-1 ltr:origin-left rtl:origin-right ${fillColour}`} />
       </div>
     </>
   );

@@ -73,6 +73,7 @@
   --spacing-gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
   --spacing-section: clamp(3.5rem, 2rem + 6vw, 7rem);
   --spacing-touch: 2.75rem;
+  --spacing-sign: clamp(1.5rem, 1rem + 3vw, 3.25rem);
   --container-site: 78rem;
   --container-measure: 65ch;
 
@@ -88,6 +89,14 @@
   /* Motion (plan §30.4): an exponential ease-out for arrivals, a symmetric one for moves. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* A skeleton waiting for its content: a slow fade, the only looping motion (none with reduced motion). */
+  --animate-wait: wait 1.6s var(--ease-in-out) infinite;
+  @keyframes wait {
+    50% {
+      opacity: 0.55;
+    }
+  }
 }
 
 @theme inline {
