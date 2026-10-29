@@ -1268,7 +1268,7 @@ one commit (D27).
 | R1.5 | `0004_enquiries`, `0005_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | DONE (2026-10-29; the forms' schemas, Turnstile and the honeypot come with the forms, R4.1, R4.2, R5.2) |
 | R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | DONE (2026-10-28; the media folder is served by Apache, Q26, as checked on the server at R8.2) |
 | R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | DONE (2026-10-28; the password-reset email; the enquiry and application alerts come with their forms, R4.3 and R5.4) |
-| R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | TODO |
+| R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | DONE (2026-10-29; `npm run db:seed`, local only; the copy goes to the client at R3.1; how it reaches production is Q30) |
 | R1.9 | Integration: public reads return only published rows; drafts, inboxes and CVs unreachable without the admin; admin-only writes; rate limit | §34 | — | TODO |
 
 ### Phase 2 — Design system ("Follow the Line")
@@ -1431,6 +1431,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q27 | ~~What happens to the old site's 83 CVs and its database?~~ | **Answered by D50:** they go with the user's backup to the client and are cleared from the server; nothing is imported. |
 | Q28 | Reuse the old site's service photos (`upload/Services`)? | Only where they are good enough for the new design; otherwise licensed stock (D8). |
 | Q29 | Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)? | Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
+| Q30 | How does the approved copy reach the production database? | The seed (`npm run db:seed`, local only today) runs once against the empty production database at R8.1, with the user's go-ahead, after the client approves the copy (R3.1, R7.5); it writes drafts, and the admin publishes them. |
 
 ## 42. Later (unscheduled)
 

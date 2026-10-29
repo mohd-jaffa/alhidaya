@@ -663,3 +663,59 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R1.8, the seed
+
+### Added
+- **The seed content** (`src/db/seed/content.ts`, plan R1.8, D6): the current
+  site's content, rewritten in plain professional English from the company's
+  own facts, as drafts for the client to approve:
+  - every page, its sections in plan §6's order (Privacy and Terms as a first
+    draft from what the site actually does, §6.9, §18, for the client's
+    review, Q18);
+  - the site's content: name, description, phone and WhatsApp
+    (+974 3130 6555), info@, the Al Sadd address in four lines, a Google Maps
+    search link, "Available 24/7", Instagram, the navigation and footer
+    links, SEO defaults; no brochure until one is uploaded;
+  - **the eight services in the current order** with their audiences (§8),
+    renamed only where the old name was unclear (Q9): *Nurse staffing for
+    hospitals and clinics* (`hospital-and-clinic-staffing`), *Home nursing
+    care* (`home-nursing-care`), *Chronic condition care*
+    (`chronic-condition-care`); the other five keep their names and slugs.
+    "What's included" is empty for every service until the client confirms
+    it (Q9);
+  - **the current job**, *Registered General Nurse – Home Care*, with its
+    qualifications as posted.
+- **`seedContent`** (`src/db/seed/seed.ts`): fills only what is missing (a
+  page or the site's content with no draft, the services or jobs when their
+  collection is empty), checks every document with its schema first, and
+  publishes nothing. **`npm run db:seed`** (`scripts/seed.mts`) refuses
+  unless the site's address is `localhost` (AGENTS.md §13).
+
+### Changed
+- Plan: R1.8 DONE; Q30 asks how the approved copy reaches the production
+  database (default: the seed runs once on the empty production database at
+  R8.1, with the user's go-ahead, and the admin publishes).
+
+### For the client to confirm (R3.1)
+- The job's employment type (seeded *full time*; the old site does not say)
+  and its posting date (the old site shows "04 J 2025"; seeded as the day the
+  seed runs).
+- What *Child care* covers, and the three new service names.
+- The map link (a search for the building until the exact pin is confirmed).
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (299), coverage 100% (927 statements,
+  450 branches, 292 functions): every seeded page passes its page's rules,
+  the services keep the plan's order and audiences, nothing claims a
+  statistic, licence or award; against the local MySQL, the seed writes
+  drafts only, leaves an existing page alone, orders the services, and
+  writes nothing on a second run.
+- `npm run db:seed` filled the local database, then wrote nothing on a second
+  run; with a non-local site address it refused.
+- Build passed; the shipped audit passed (89 packages); E2E passed, phone
+  and desktop, axe clean.
+
+### Blockers
+- None.

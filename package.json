@@ -21,6 +21,7 @@
     "services:stop": "docker compose stop",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx --tsconfig tsconfig.json scripts/seed.mts",
     "audit:shipped": "node scripts/audit-shipped.mjs",
     "admin:create": "tsx --tsconfig tsconfig.json scripts/create-admin.mts"
   },
