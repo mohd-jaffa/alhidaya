@@ -1,13 +1,14 @@
 import type { ReactNode } from "react";
 
 /**
- * A sign in its line's colour (plan §6.4, §30.2): deep blue with white type,
- * or sky blue with navy type (white on sky fails AA), where focus rings turn
- * navy to stay visible.
+ * A sign in its line's colour (plan §6.4, §6.6, §30.2): deep blue with white
+ * type, or sky blue or leaf green with navy type (white on either fails AA),
+ * where focus rings turn navy to stay visible.
  */
 const TONES = {
   deep: { panel: "bg-deep text-on-deep", lede: "text-on-deep-2" },
   sky: { panel: "bg-sky text-navy [&_:focus-visible]:outline-navy", lede: "text-navy" },
+  leaf: { panel: "bg-leaf text-navy [&_:focus-visible]:outline-navy", lede: "text-navy" },
 } as const;
 
 /**

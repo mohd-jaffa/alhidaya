@@ -22,6 +22,7 @@ const COLOURS = {
 const SIGNS = {
   deep: { background: COLOURS.deep, title: COLOURS.onDeep, name: COLOURS.onDeep2, station: COLOURS.onDeep },
   sky: { background: COLOURS.sky, title: COLOURS.navy, name: COLOURS.navy, station: COLOURS.navy },
+  leaf: { background: COLOURS.leaf, title: COLOURS.navy, name: COLOURS.navy, station: COLOURS.navy },
 } as const;
 
 const FONTS = "src/assets/fonts/atkinson-hyperlegible-next/share";

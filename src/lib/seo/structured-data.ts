@@ -1,5 +1,8 @@
+import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
-import type { ServiceDocument, SiteDocument } from "@/lib/validation";
+import type { EmploymentType } from "@/constants/statuses";
+import { SITE_TIME_ZONE_OFFSET } from "@/lib/dates";
+import type { JobDocument, RichText, ServiceDocument, SiteDocument } from "@/lib/validation";
 
 /** Structured data for search engines (plan §19): plain schema.org objects, written into the page as JSON-LD. */
 export type StructuredData = Record<string, unknown>;
@@ -42,6 +45,76 @@ export function serviceData(service: ServiceDocument, siteUrl: string): Structur
     url: `${siteUrl}${ROUTES.service(service.slug)}`,
     areaServed: { "@type": "City", name: "Doha" },
     provider: { "@id": `${siteUrl}/#business` },
+  };
+}
+
+/** Google's words for a job's terms (plan §9.1). */
+const EMPLOYMENT: Record<EmploymentType, string> = {
+  FULL_TIME: "FULL_TIME",
+  PART_TIME: "PART_TIME",
+  CONTRACT: "CONTRACTOR",
+};
+
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const htmlList = (items: readonly { en: string }[]) =>
+  `<ul>${items.map((item) => `<li>${escapeHtml(item.en)}</li>`).join("")}</ul>`;
+
+function htmlBlocks(blocks: RichText): string {
+  return blocks
+    .map((block) => {
+      switch (block.type) {
+        case "heading":
+          return `<h3>${escapeHtml(block.text.en)}</h3>`;
+        case "paragraph":
+          return `<p>${escapeHtml(block.text.en)}</p>`;
+        case "list":
+          return htmlList(block.items);
+        case "link":
+          return `<p>${escapeHtml(block.label.en)}</p>`;
+      }
+    })
+    .join("");
+}
+
+/**
+ * The job as Google reads a posting (plan §19): its description in plain
+ * HTML, every word escaped, from the job's own parts under the page's own
+ * headings; open until the end of its closing day in Doha. Only for an open
+ * job.
+ */
+export function jobPosting(job: JobDocument, siteUrl: string): StructuredData {
+  const parts: [string, readonly { en: string }[]][] = [
+    [UI_TEXT.responsibilities, job.responsibilities],
+    [UI_TEXT.qualifications, job.qualifications],
+    [UI_TEXT.benefits, job.benefits],
+  ];
+  const description = [
+    `<p>${escapeHtml(job.summary.en)}</p>`,
+    htmlBlocks(job.description),
+    ...parts.filter(([, items]) => items.length > 0).map(([title, items]) => `<h3>${title}</h3>${htmlList(items)}`),
+  ].join("");
+  return {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title.en,
+    description,
+    datePosted: job.postedOn,
+    ...(job.closesOn ? { validThrough: `${job.closesOn}T23:59:59${SITE_TIME_ZONE_OFFSET}` } : {}),
+    employmentType: EMPLOYMENT[job.employmentType],
+    hiringOrganization: {
+      "@type": "Organization",
+      name: UI_TEXT.siteName,
+      sameAs: siteUrl,
+      logo: `${siteUrl}/apple-icon.png`,
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: { "@type": "PostalAddress", addressLocality: job.location.en, addressCountry: "QA" },
+    },
+    directApply: true,
+    url: `${siteUrl}${ROUTES.job(job.slug)}`,
   };
 }
 

@@ -75,6 +75,22 @@ export const UI_TEXT = {
   aboutService: "About this service",
   whoItIsFor: "Who it is for",
   whatItIncludes: "What it includes",
+  /** A job's page (plan §6.6). */
+  aboutJob: "About this job",
+  responsibilities: "What you will do",
+  qualifications: "What we ask for",
+  benefits: "What we offer",
+  jobFacts: "The job at a glance",
+  location: "Location",
+  employment: "Employment",
+  department: "Department",
+  experience: "Experience",
+  posted: "Posted",
+  closedOn: "Closed",
+  applyForJob: "Apply for this job",
+  jobClosed: "This job has closed",
+  jobClosedBody: "It no longer takes applications. You can apply for an open job, or send a general application.",
+  otherOpenJobs: "Open jobs",
   /**
    * The enquiry forms (plan §10). An enquiry keeps each label as the visitor
    * saw it (§10.4), so a later change here never rewrites one already sent.
@@ -177,6 +193,7 @@ export const VALIDATION_MESSAGES = {
   passwordLength: (min: number, max: number) => `Use a password of ${min} to ${max} characters.`,
   link: "Use a page of this site (starting with /) or a full https:// address.",
   slug: "Use lowercase letters, numbers and single hyphens, like home-nursing-care.",
+  slugReserved: "This web address is the site's own. Please choose a different one.",
   date: (label: string) => `${label} must be a date.`,
   closesBeforePosted: "The closing date can't be before the posting date.",
   between: (label: string, min: number, max: number) => `${label} must be from ${min} to ${max}.`,

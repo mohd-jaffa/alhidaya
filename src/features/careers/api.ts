@@ -1,15 +1,19 @@
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
+import type { Metadata } from "next";
 
 import { FORM_RATE_LIMIT } from "@/constants/limits";
+import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
+import { ROUTES } from "@/constants/routes";
 import type { FileType } from "@/constants/uploads";
 import { getDb } from "@/db/client";
 import { applications, records, type SubmittedField } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
-import { findPublishedRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
+import { findPublishedRecord, findRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
 import type { ContentView } from "@/lib/content/view";
 import { dohaDay } from "@/lib/dates";
 import { businessRuleError, rateLimitError } from "@/lib/errors";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
+import { renderShareImage } from "@/lib/seo/share-image";
 import type { JobDocument } from "@/lib/validation";
 
 export interface PublishedJob extends PublishedRecord<JobDocument> {
@@ -40,6 +44,52 @@ export async function listPublishedJobs(
 export async function findPublishedJob(slug: string, at: Date = new Date()) {
   const found = await findPublishedRecord<JobDocument>("JOBS", slug);
   return found && "record" in found ? { record: withOpen(found.record, dohaDay(at)) } : found;
+}
+
+/**
+ * A job's page (plan §6.6) in one round trip: the job at its address (or
+ * where it moved to), with the other open jobs a closed one offers instead.
+ * In the admin's preview, the drafts.
+ */
+export async function getPublishedJobPage(
+  slug: string,
+  view: ContentView = "published",
+  at: Date = new Date(),
+): Promise<{ job: PublishedJob; others: PublishedJob[] } | { movedTo: string } | null> {
+  const [found, jobs] = await Promise.all([findRecord<JobDocument>("JOBS", slug, view), listPublishedJobs(at, view)]);
+  if (!found || "movedTo" in found) return found;
+  const job = withOpen(found.record, dohaDay(at));
+  return { job, others: jobs.filter((other) => other.open && other.id !== job.id) };
+}
+
+/**
+ * A job page's title and description (plan §19): the admin's SEO words, or
+ * the job's own. A closed job stays for anyone who has its address, but is
+ * kept out of search.
+ */
+export async function getJobMetadata(slug: string, at: Date = new Date()): Promise<Metadata> {
+  const found = await findPublishedJob(slug, at);
+  if (!found || "movedTo" in found) return {};
+  const { open, published } = found.record;
+  const title = published.seo.title.en ?? published.title.en;
+  const description = published.seo.description.en ?? published.summary.en;
+  const url = ROUTES.job(published.slug);
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: "website", siteName: UI_TEXT.siteName },
+    ...(open ? {} : { robots: { index: false } }),
+  };
+}
+
+/** A job's share picture (plan §19): its title on the nurses' leaf-green sign; Careers' own for an address it does not have. */
+export async function getJobShareImage(slug: string) {
+  const found = await findPublishedJob(slug);
+  return renderShareImage({
+    title: found && "record" in found ? found.record.published.title.en : PAGE_NAMES.CAREERS,
+    tone: "leaf",
+  });
 }
 
 /**

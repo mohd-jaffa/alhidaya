@@ -2043,3 +2043,56 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. Applications (Phase 5) and the content screens (Phase 6) join the
   rail and Today with their rows.
+
+## 2026-10-29 — R5.1: Careers and a job's page
+
+### Added
+- **Careers** (`/careers`, plan §6.5): the page's sign, the open jobs under
+  the admin's introduction (or, with none open, the admin's words saying so),
+  the general application, and *Before you apply*, a new seeded text section
+  saying what the application form asks for (the CV's types and size, the
+  MOPH licence, Dataflow and Prometric, years of experience): the site's own
+  facts, never a claim about nursing in Qatar. Its line is the nurses'
+  leaf green. Its share picture is drawn from its sign.
+- **A job's page** (`/careers/[slug]`, plan §6.6, `JobPage`): its title and
+  summary on the nurses' leaf-green sign with **Apply for this job**; *About
+  this job*: the description, *What you will do*, *What we ask for*, *What
+  we offer* (each left out when empty), beside *The job at a glance*
+  (location, employment, department, experience, posted, closes); then the
+  nurses' line with Apply, all open jobs, and the other open jobs. A
+  renamed job's old address moves on for good; the admin's preview shows
+  drafts. A **closed** job stays at its address and says so, takes no
+  application, and offers the general application and the open jobs.
+- `JobPosting` structured data for an open job (plan §19): its description
+  as escaped HTML from the job's own parts, open until 23:59:59 on its
+  closing day in Doha (`+03:00`), Google's employment words, `directApply`.
+  A closed job has none, and `noindex` (R3.7 left both to this row).
+- `getPublishedJobPage`, `getJobMetadata`, `getJobShareImage`
+  (`src/features/careers/api.ts`); the leaf-green sign in `SignPanel` and in
+  share pictures (navy type, as on sky); `SITE_TIME_ZONE_OFFSET`.
+
+### Changed
+- A job's web address can't be `apply`, which the general application uses
+  (`RESERVED_JOB_SLUGS`, plan §9.1, §5.1).
+
+### Decisions
+- D82 (the user's): the admin can delete an application or an enquiry from
+  its inbox, asked first, audited; the CV file goes with its application.
+  Built with the applications inbox (R5.5), the enquiries' Delete with it.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: the job page open,
+  closed and sparse; `JobPosting` (escaping, end of day in Doha, contract,
+  no closing date); the reserved address; the leaf sign and share picture;
+  the job page's reads against the local MySQL (open with the others,
+  closed with the open ones, moved, missing, preview, SEO words, `noindex`
+  when closed).
+- E2E with axe at both widths: Careers' open jobs, general application and
+  *Before you apply*; an open job from Careers with Apply and its
+  `JobPosting`; a closed job, its notice and `noindex`; an unknown job 404.
+- First paint: Careers and a job's page 158.9 KB of JavaScript (gzip,
+  within 170 KB); LCP 272 ms and 256 ms on a throttled phone, CLS 0.
+
+### Blockers
+- None.

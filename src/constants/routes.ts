@@ -22,6 +22,9 @@ export const ROUTES = {
   brochure: "/brochure",
 } as const;
 
+/** Addresses under /careers the site keeps for itself, so no job can take one (plan §5.1). */
+export const RESERVED_JOB_SLUGS: readonly string[] = ["apply"];
+
 /** Where each of the fixed pages lives (plan §7.1). */
 export const PAGE_ROUTES: Record<PageKey, string> = {
   HOME: ROUTES.home,

@@ -171,6 +171,18 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           intro: en("Each opening lists what it asks for. If none fits, you can send us a general application."),
           emptyText: en("There are no openings right now. You can still send us a general application."),
         }),
+        // What the application form asks (plan §6.5, §9.2): the site's own facts, never a claim about nursing in Qatar.
+        section("RICH_TEXT", {
+          heading: en("Before you apply"),
+          body: [
+            paragraph("Each opening lists the qualifications and experience it asks for. When you apply, we ask for:"),
+            list(
+              "Your CV, as a PDF or Word file of up to 5 MB.",
+              "Where you are with your MOPH licence, Dataflow and Prometric.",
+              "Your years of nursing experience.",
+            ),
+          ],
+        }),
       ],
     },
     CONTACT: {

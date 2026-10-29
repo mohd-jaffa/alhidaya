@@ -6,9 +6,9 @@ import { renderShareImage, SHARE_IMAGE_SIZE } from "@/lib/seo/share-image";
 const PNG = [0x89, 0x50, 0x4e, 0x47];
 
 describe("renderShareImage", () => {
-  it("draws a 1200 × 630 PNG of the page's sign, deep blue or sky", async () => {
+  it("draws a 1200 × 630 PNG of the page's sign, deep blue, sky or leaf green", async () => {
     expect(SHARE_IMAGE_SIZE).toEqual({ width: 1200, height: 630 });
-    for (const tone of ["deep", "sky"] as const) {
+    for (const tone of ["deep", "sky", "leaf"] as const) {
       const response = await renderShareImage({ title: "Home nursing care", tone });
       expect(response.headers.get("content-type")).toBe("image/png");
       const bytes = new Uint8Array(await response.arrayBuffer());

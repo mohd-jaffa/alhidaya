@@ -163,6 +163,7 @@ question (§41) the user may overturn.
 | D79 | **An enquiry's alert is sent once the visitor has their answer** (Next's `after`, in the same request; no queue, AGENTS.md §17): the visitor never waits on the mail server. The enquiry is marked sent or not sent; one not yet sent (also if the app restarted in that moment) shows with Retry. In production a mail server is reached only over TLS, unless it is on the same machine. **(agent default; Q45)** | 2026-10-29 |
 | D80 | **The admin is brought forward into Phase 4**: R6.1 (shape the admin) and R6.2 (its shell, sign-in, overview and data layer) are done before R4.4's inbox screens, so Phase 4 ends with an inbox the team can use. R4.4's server side is done first. | 2026-10-29 |
 | D81 | **The admin is "the day's log"** (R6.1, the user's choice of three dealt layouts, and the brief they confirmed): the admin opens on **Today**, one stream of what needs them, newest first and ruled by day, each arrival handled in its own row (every answer, Call, WhatsApp, Email, Move to, notes); the rail is the line with each section a station. Today is the plan's Overview (§16) and carries what it listed. Built for a non-technical admin at a desktop, read on a phone; never like the public site, never cramped, never several clicks for daily work. | 2026-10-29 |
+| D82 | **The admin can delete an application or an enquiry from its inbox** (answers the plan's own disagreement between §16 and §9.5, §10.5): a Delete in the opened row, asked first in a dialog; the row, its notes and (for an application) its CV file go at once, and the deletion is audited without what it held. Retention (§18) still deletes the rest on its own. The enquiries' Delete arrives with the applications' (R5.5). | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -325,15 +326,18 @@ with the service preselected).
 
 Page sign; the introduction; the open jobs (title, location, type, closing
 date); what Al Hidaya asks of nurses in Qatar (from job requirements, never
-generalised into a claim); a general application (Q7). **Empty state:** no
-open jobs says so and offers the general application.
+generalised into a claim: the seed's *Before you apply* says what the form
+asks for); a general application (Q7). **Empty state:** no open jobs says so
+and offers the general application.
 
 ### 6.6 A job — `/careers/[slug]`
 
 Title, location, employment type, experience, description,
 responsibilities, qualifications, optional benefits, posted and closing dates,
-**Apply**. A closed job stays reachable and says it is closed, offering the
-open jobs and the general application. Structured data `JobPosting` (§19).
+**Apply**, on the nurses' leaf-green sign. A closed job stays reachable and
+says it is closed, offering the open jobs and the general application; it
+carries `noindex` and no `JobPosting`. Structured data `JobPosting` for an
+open job (§19).
 
 ### 6.7 Contact — `/contact`
 
@@ -428,7 +432,8 @@ A **job** has: title; slug; department (optional); location; employment type
 description; responsibilities; qualifications; benefits (optional); posted
 date; closing date (optional); status (`DRAFT`, `PUBLISHED`, `CLOSED`,
 `ARCHIVED`); SEO title and description. A published job past its closing
-date shows as closed on its own, with no admin step.
+date shows as closed on its own, with no admin step. A job's web address can
+never be `apply`, which the general application uses (§5.1).
 
 Seeded with the current posting: *Registered General Nurse – Home Care*
 (Bachelor's or Diploma in Nursing; at least 2 years' adult nursing
@@ -489,7 +494,8 @@ limit as §10.3.
 List (newest first; filter by job and status; search by name, email, phone),
 detail (every field as submitted, the job, **Download CV**, the CV and email
 status with Retry), status (`NEW`, `IN_REVIEW`, `SHORTLISTED`, `CLOSED`),
-internal notes. Deleting an application deletes its CV file.
+internal notes, **Delete** (D82: asked first; the row, its notes and its CV
+file go at once, audited). Deleting an application deletes its CV file.
 
 ## 10. Enquiry forms
 
@@ -535,8 +541,9 @@ never loses the enquiry (logged, shown in the inbox with Retry).
 ### 10.5 The enquiries inbox
 
 List (newest first; filter by form and status; search), detail, status (`NEW`,
-`IN_PROGRESS`, `RESOLVED`), internal notes. CSV export is Later unless the user
-asks (Q15).
+`IN_PROGRESS`, `RESOLVED`), internal notes, **Delete** (D82: asked first;
+the row and its notes go at once, audited). CSV export is Later unless the
+user asks (Q15).
 
 ## 11. Client logos
 
@@ -1385,7 +1392,7 @@ one commit (D27).
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R5.1 | Careers page, job page, closed and empty states, `JobPosting` | §6.5, §6.6 | — | TODO |
+| R5.1 | Careers page, job page, closed and empty states, `JobPosting` | §6.5, §6.6 | — | DONE (2026-10-29; a closed job is `noindex`; `apply` is no job's address) |
 | R5.2 | Application form with CV (type by bytes, size); general application | §9.2 | Q4, Q7 | TODO |
 | R5.3 | The CV folder in use: save under a random id, admin-only download, delete with the application | §9.4 | — | TODO |
 | R5.4 | Submit: row, CV saved, HR email with the CV attached, failure paths and retry | §9.3 | — | TODO |

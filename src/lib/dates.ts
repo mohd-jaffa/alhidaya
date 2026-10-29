@@ -1,5 +1,7 @@
 /** The company's own time zone (plan §1): Doha, UTC+3 all year. */
 export const SITE_TIME_ZONE = "Asia/Qatar";
+/** Doha's offset from UTC, which never changes (no daylight saving). */
+export const SITE_TIME_ZONE_OFFSET = "+03:00";
 
 /**
  * A calendar day in Doha, "2026-10-29": when a job closes, a day is Doha's,

@@ -25,6 +25,14 @@ describe("a job", () => {
     });
   });
 
+  it("can't take an address the site keeps for itself under /careers", () => {
+    expect(jobDocumentSchema.safeParse(jobFixture({ slug: "apply" })).error?.issues[0]).toMatchObject({
+      message: VALIDATION_MESSAGES.slugReserved,
+      path: ["slug"],
+    });
+    expect(jobDocumentSchema.safeParse(jobFixture({ slug: "apply-now" })).success).toBe(true);
+  });
+
   it("bounds its lists", () => {
     const many = Array.from({ length: 21 }, () => ({ en: "x" }));
     expect(jobDocumentSchema.safeParse(jobFixture({ qualifications: many })).error?.issues[0].message).toBe(

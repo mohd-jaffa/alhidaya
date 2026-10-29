@@ -2,6 +2,7 @@ import * as z from "zod";
 
 import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
+import { RESERVED_JOB_SLUGS } from "@/constants/routes";
 import { AUDIENCES, EMPLOYMENT_TYPES } from "@/constants/statuses";
 
 import { optionalLine, optionalLines, requiredLine, requiredLines } from "../primitives";
@@ -37,7 +38,7 @@ export type ServiceDocument = z.output<typeof serviceDocumentSchema>;
 export const jobDocumentSchema = z
   .object({
     title: localized(requiredLine("Title", { max: TEXT_LIMITS.heading })),
-    slug: slugSchema,
+    slug: slugSchema.refine((slug) => !RESERVED_JOB_SLUGS.includes(slug), VALIDATION_MESSAGES.slugReserved),
     department: localized(optionalLine("Department", 80)),
     location: localized(requiredLine("Location", { max: TEXT_LIMITS.heading })),
     employmentType: z.enum(EMPLOYMENT_TYPES),

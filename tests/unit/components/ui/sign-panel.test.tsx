@@ -29,9 +29,14 @@ describe("SignPanel", () => {
     expect(container.querySelector("p")).toBeNull();
   });
 
-  it("takes its line's colour: sky blue with navy type, its focus rings navy", () => {
-    const { container } = render(<SignPanel tone="sky" headline="Home nursing care" lede="Nurses at home." />);
+  it("takes its line's colour: sky blue or leaf green with navy type, its focus rings navy", () => {
+    const { container, rerender } = render(
+      <SignPanel tone="sky" headline="Home nursing care" lede="Nurses at home." />,
+    );
     expect(container.querySelector("section")).toHaveClass("bg-sky", "text-navy");
     expect(screen.getByText("Nurses at home.")).toHaveClass("text-navy");
+    rerender(<SignPanel tone="leaf" headline="Registered nurse" lede="Care at home." />);
+    expect(container.querySelector("section")).toHaveClass("bg-leaf", "text-navy", "[&_:focus-visible]:outline-navy");
+    expect(screen.getByText("Care at home.")).toHaveClass("text-navy");
   });
 });
