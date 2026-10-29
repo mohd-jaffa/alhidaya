@@ -447,4 +447,6 @@ export const SEED_SITE: SiteDocument = {
     ),
   },
   brochure: null,
+  // On every page, as on today's site; the admin can turn it off (D67).
+  whatsappButton: true,
 };

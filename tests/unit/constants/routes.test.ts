@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ADMIN_ROUTES, ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, API_ROUTES, ROUTES } from "@/constants/routes";
 
 describe("the routes", () => {
   it("build record pages from their slugs", () => {
@@ -15,5 +15,9 @@ describe("the routes", () => {
       const path = typeof route === "function" ? route("x") : route;
       expect(path.startsWith("/admin")).toBe(true);
     }
+  });
+
+  it("keep every endpoint under /api", () => {
+    for (const route of Object.values(API_ROUTES)) expect(route.startsWith("/api/")).toBe(true);
   });
 });

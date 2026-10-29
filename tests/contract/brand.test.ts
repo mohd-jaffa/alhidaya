@@ -2,7 +2,13 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
 
-const FILES = ["src/assets/brand/logo.svg", "src/assets/brand/logo-mark.svg", "src/app/icon.svg"];
+const FILES = [
+  "src/assets/brand/logo.svg",
+  "src/assets/brand/logo-mark.svg",
+  "src/assets/brand/logo-white.svg",
+  "src/app/icon.svg",
+];
+const COLOUR_FILES = FILES.filter((file) => !file.endsWith("logo-white.svg"));
 
 /** The colours sampled from the logo (src/assets/brand/README.md). */
 const LOGO_COLOURS = [
@@ -27,17 +33,22 @@ describe("the logo files (plan R2.2)", () => {
     expect(svg).toMatch(/<title>[^<]+<\/title>/);
     expect(svg).not.toMatch(/<script|<foreignObject|<image|<style|href=|on[a-z]+=|javascript:/i);
     const elements = new Set([...svg.matchAll(/<([a-zA-Z]+)/g)].map(([, name]) => name));
-    expect([...elements].sort()).toEqual(
-      expect.arrayContaining(["circle", "defs", "linearGradient", "path", "stop", "svg", "title"]),
-    );
+    expect([...elements].sort()).toEqual(expect.arrayContaining(["circle", "path", "svg", "title"]));
     for (const element of elements) {
       expect(["circle", "defs", "linearGradient", "path", "stop", "svg", "title"]).toContain(element);
     }
   });
 
-  it.each(FILES)("%s uses only the logo's own colours", (file) => {
+  it.each(COLOUR_FILES)("%s uses only the logo's own colours", (file) => {
     const used = new Set(readFileSync(file, "utf8").match(/#[0-9A-Fa-f]{6}/g));
     for (const colour of used) expect(LOGO_COLOURS).toContain(colour.toUpperCase());
+  });
+
+  it("has a white version, the same drawing in white alone, for dark ground", () => {
+    const white = readFileSync("src/assets/brand/logo-white.svg", "utf8");
+    expect(new Set(white.match(/fill="[^"]+"/g))).toEqual(new Set(['fill="#FFFFFF"']));
+    const shapes = (svg: string) => svg.match(/ d="[^"]+"/g);
+    expect(shapes(white)).toEqual(shapes(readFileSync("src/assets/brand/logo.svg", "utf8")));
   });
 
   it("draws the icon in a square", () => {

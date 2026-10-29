@@ -148,6 +148,7 @@ question (§41) the user may overturn.
 | D64 | **A kit preview page at `/kit`**, served only where `KIT_PREVIEW=true` (locally and in the browser tests), never in production: the motion system and the UI kit are tested and screenshotted there (R2.4, R2.8). Confirmed by the user (Q33). | 2026-10-29 |
 | D65 | **Motion is counted outside the first-load JavaScript budget** (answers Q34, option a): GSAP, ScrollTrigger and Lenis load after the first paint, so the 170 KB budget is the first paint's, for modern browsers; motion is measured and reported beside it. The real checks still hold: LCP, INP, CLS, long tasks, dropped frames and Lighthouse (§31). | 2026-10-29 |
 | D66 | **WhatsApp actions use the site's chat pictogram and the word *WhatsApp*** (answers Q32), not WhatsApp's own logo. | 2026-10-29 |
+| D67 | **The floating WhatsApp button stays on every public page**, as on today's site (answers Q23); **the admin can turn it off** in the site content (§13), published like any other edit. | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -532,7 +533,8 @@ Two kinds, kept apart:
 
 **Site content** (draft and published, D32): company name and short
 description; contact details (phone, WhatsApp, email, address lines, map
-link, "available 24/7" line); social links (Instagram today); header navigation
+link, "available 24/7" line); social links (Instagram today); the floating
+WhatsApp button, on or off (D67); header navigation
 (labels, order, visibility, from a fixed set of destinations: pages, services,
 approved external URLs); footer columns; SEO defaults; the brochure.
 
@@ -1301,7 +1303,7 @@ one commit (D27).
 | R2.3 | Pictogram set | §30.1 | Q12 | DONE (2026-10-29; 18 pictograms on a 24-unit grid, `src/assets/brand/pictograms.ts`; WhatsApp's own glyph is Q32) |
 | R2.4 | Motion system: Lenis + GSAP ticker, ScrollTrigger lifecycle, `TheLine` (scrubbed draw, stations, the travelling marker), reveals, reduced-motion path | §30.4 | — | DONE (2026-10-29; tested on `/kit`, D64; its weight is Q34) |
 | R2.5 | UI kit: sign panel, line row, station marker, buttons (primary, WhatsApp, call), arrow link, fields (text, select, radio, checkbox, file), notices, dialog, logo tile, image frame, skeletons | §30.3 | — | DONE (2026-10-29; shown on `/kit`) |
-| R2.6 | Site shell: header sign bar, mobile menu, footer, skip link, "You are here", preview bar | §30.1 | — | TODO |
+| R2.6 | Site shell: header sign bar, mobile menu, footer, skip link, "You are here", preview bar | §30.1 | — | DONE (2026-10-29; with the floating WhatsApp button, D67) |
 | R2.7 | System pages: not found, error, global error, loading | §6.10 | — | TODO |
 | R2.8 | `/impeccable audit` of the kit; screenshots checked by the user | §30 | — | TODO |
 
@@ -1445,7 +1447,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q20 | ~~Where the daily purge job runs~~ | **Answered by D39:** a cPanel cron job. |
 | Q21 | Store content per locale now (`{ "en": … }`)? | Yes (§33). |
 | Q22 | Pre-switch check under a hidden temporary subdomain on the server (not a public staging site)? | Yes. |
-| Q23 | A floating WhatsApp button on every page, as today? | Decided in R2.6 with the user, from the built shell. |
+| Q23 | ~~A floating WhatsApp button on every page, as today?~~ | **Answered by D67:** yes, and the admin can turn it off. |
 | Q24 | ~~Send from the existing `noreply@alhidaya.qa`?~~ | **Answered by D53:** yes. |
 | Q25 | ~~Upgrade the HostCarts plan?~~ | **Answered by D51:** no; build within §21.2's budget. |
 | Q26 | How uploaded images are served | From a media folder inside `public_html` that no release touches, served by Apache (§21.3); verified on the server at R8.2. |

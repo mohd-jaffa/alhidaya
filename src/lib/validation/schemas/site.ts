@@ -10,7 +10,10 @@ import { hrefSchema, httpsUrlSchema, localized, withoutRepeats } from "./content
 
 const link = z.object({ label: localized(requiredLine("Link text", { max: TEXT_LIMITS.label })), href: hrefSchema });
 
-/** The site's own content (plan §13): contact details, links, SEO defaults, the brochure. */
+/**
+ * The site's own content (plan §13): contact details, links, SEO defaults,
+ * the brochure, and whether the floating WhatsApp button shows (D67).
+ */
 export const siteDocumentSchema = z.object({
   name: localized(requiredLine("Company name", { max: TEXT_LIMITS.name })),
   description: localized(requiredLines("Description", { max: TEXT_LIMITS.lede })),
@@ -47,6 +50,7 @@ export const siteDocumentSchema = z.object({
     description: localized(requiredLines("SEO description", { max: TEXT_LIMITS.seoDescription })),
   }),
   brochure: z.object({ mediaId: z.uuid() }).nullable(),
+  whatsappButton: z.boolean(),
 });
 export type SiteDocument = z.output<typeof siteDocumentSchema>;
 

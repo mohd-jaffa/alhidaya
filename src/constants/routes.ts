@@ -35,6 +35,15 @@ export const ADMIN_ROUTES = {
   activity: "/admin/activity",
 } as const;
 
+/** Every endpoint the browser calls, named once (AGENTS.md §14). */
+export const API_ROUTES = {
+  adminSession: "/api/admin/session",
+  passwordForgot: "/api/admin/password/forgot",
+  passwordReset: "/api/admin/password/reset",
+  /** Leaves the admin's preview of unpublished changes (R3.6). */
+  previewExit: "/api/preview/exit",
+} as const;
+
 /** The admin pages anyone may open: everything else under /admin needs a session (src/proxy.ts). */
 export const ADMIN_PUBLIC_ROUTES: readonly string[] = [
   ADMIN_ROUTES.login,

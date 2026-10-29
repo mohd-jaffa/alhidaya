@@ -10,6 +10,8 @@ import {
   FORM_KINDS,
   MEDIA_KINDS,
   RECORD_COLLECTIONS,
+  SOCIAL_NETWORK_LABELS,
+  SOCIAL_NETWORKS,
 } from "@/constants/statuses";
 
 describe("the vocabularies", () => {
@@ -37,5 +39,9 @@ describe("the vocabularies", () => {
   it("start every submission new, with its email and CV still to come (plan §9.3, §10.4)", () => {
     expect([ENQUIRY_STATUSES[0], APPLICATION_STATUSES[0]]).toEqual(["NEW", "NEW"]);
     expect([EMAIL_STATUSES[0], CV_STATUSES[0]]).toEqual(["PENDING", "PENDING"]);
+  });
+
+  it("name every social network the footer may link", () => {
+    expect(Object.keys(SOCIAL_NETWORK_LABELS)).toEqual([...SOCIAL_NETWORKS]);
   });
 });

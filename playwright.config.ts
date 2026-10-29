@@ -11,20 +11,24 @@ import { LOCAL_DATABASE } from "./tests/support/local-database";
  *
  *   npm run build && npm run test:e2e
  *
- * The app runs on its own port, and only ever against the local MySQL: the
- * journeys write rows of their own.
+ * The app runs on its own port, and only ever against the local test
+ * database, which the global setup migrates, seeds and publishes as the site
+ * would be at launch: the journeys write rows of their own.
  */
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
-const databaseUrl = process.env.DATABASE_URL;
-if (databaseUrl !== undefined && !LOCAL_DATABASE.test(databaseUrl)) {
-  throw new Error("The journeys run only against the local MySQL, never a server.");
+const databaseUrl = process.env.TEST_DATABASE_URL;
+if (databaseUrl === undefined || !LOCAL_DATABASE.test(databaseUrl)) {
+  throw new Error("The journeys run only against the local MySQL (TEST_DATABASE_URL), never a server.");
 }
+// The app, the global setup and the journeys all read DATABASE_URL.
+process.env.DATABASE_URL = databaseUrl;
 
 const PORT = 3100;
 
 export default defineConfig({
   testDir: "tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts",
   fullyParallel: false,
   workers: 1,
   forbidOnly: Boolean(process.env.CI),

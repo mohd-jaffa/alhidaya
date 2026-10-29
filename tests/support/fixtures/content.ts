@@ -105,5 +105,6 @@ export const siteFixture = (overrides: Partial<SiteDocument> = {}): SiteDocument
   footer: [{ heading: en("Company"), links: [{ label: en("About"), href: "/about" }] }],
   seo: { title: en("Al Hidaya Health Care Services"), description: en("Nursing care in Doha.") },
   brochure: null,
+  whatsappButton: true,
   ...overrides,
 });

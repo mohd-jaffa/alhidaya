@@ -1040,3 +1040,63 @@ appended and never rewritten (AGENTS.md §26).
 - The R2.4 blocker (motion's weight against the budget) is resolved by D65:
   133.5 KB at first paint is within 170 KB; motion's 51.7 KB is measured
   beside it.
+
+## 2026-10-29 — R2.6, the site shell
+
+### Added
+- **The site's frame** (`src/components/site/`, `src/app/(site)/layout.tsx`),
+  from the published site content:
+  - `SkipLink`: the first Tab, straight to the page's content.
+  - `SiteHeader`, the sign bar: the logo home; the admin's visible pages,
+    the current one underlined in the line's weight as where the visitor is
+    (`aria-current="page"`); on a wide screen the phone in Qatar's grouping
+    and Request a quote; on a phone the menu. It stays in view; its height is
+    a token (`--header-height`, 64 px, 80 px from 1024 px), which the line's
+    phone bar sits under.
+  - `MobileMenu`: the whole screen, each page a tall row with its station
+    and arrow, the current one marked; WhatsApp, Call and the quote at
+    hand; the browser's modal dialog (focus held, Escape closes, focus back
+    to the button); it closes as a page is chosen.
+  - `SiteFooter`, the base of the sign: navy, the three lines running into
+    it, the logo in white (`src/assets/brand/logo-white.svg`, the same
+    drawing), the admin's columns, the address, phone, email, hours, social
+    links, the brochure once there is one, and the year in Doha.
+  - `FloatingWhatsApp` (D67): on every page, clear of the phone's edges,
+    unless the admin turns it off (`whatsappButton` in the site content,
+    on in the seed).
+  - `PreviewBar`: tells the admin they are seeing unpublished changes, with
+    the way out (`API_ROUTES.previewExit`, built in R3.6).
+  - `Logo`: the logo file in colour or white, served once for the site.
+- `API_ROUTES` (`src/constants/routes.ts`) names every endpoint;
+  `SOCIAL_NETWORK_LABELS` names the social networks.
+- **The browser journeys run against the published seed**: the server uses
+  the local test database, which `tests/e2e/global-setup.ts` migrates,
+  seeds and publishes (`tests/support/published-seed.ts`) as the site would
+  be at launch. CI needs nothing more: its MySQL already holds the test
+  database.
+- Tests: every part by role and name, with and without published content;
+  E2E at both widths: the skip link, the header's pages (the menu on a
+  phone, Escape, focus back), the floating WhatsApp chat, the footer's
+  contact details and columns; axe clean on every page with the shell.
+
+### Changed
+- The site content gains `whatsappButton` (plan §13, D67).
+- Pages no longer render `<main>`: the layout holds it (`#main`).
+- The site's pages read the published content at request time
+  (`connection()`) until caching arrives (R3.6).
+- Plan: D67 (answers Q23), §13, R2.6 DONE; AGENTS.md §24 on the journeys'
+  database.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (413), coverage 100% (1,242
+  statements, 637 branches, 405 functions).
+- Checked by eye at 1440 and 390 px (the header, the open menu, the
+  footer), with no sideways scroll.
+- Build passed; the shipped audit passed (91 packages); E2E passed (38,
+  phone and desktop), axe clean.
+- **Home's first paint: 146.9 KB** of JavaScript (gzip, modern browsers),
+  within 170 KB; motion after paint as before (D65).
+
+### Blockers
+- None.

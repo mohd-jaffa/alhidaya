@@ -545,7 +545,9 @@ tests/
 - Integration tests run against the **local** MySQL in Docker only (a guard
   refuses any other database).
 - E2E: the built app on port 3100, phone (390×844) and desktop (1440×900),
-  **axe on every page**; mail caught by Mailpit, Turnstile in test mode.
+  **axe on every page**; mail caught by Mailpit, Turnstile in test mode. The
+  app runs against the local test database, which the global setup
+  (`tests/e2e/global-setup.ts`) migrates, seeds and publishes as at launch.
 
 ---
 

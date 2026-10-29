@@ -51,6 +51,13 @@ export type FormKind = (typeof FORM_KINDS)[number];
 /** Social networks the footer may link (plan §13). */
 export const SOCIAL_NETWORKS = ["INSTAGRAM", "FACEBOOK", "LINKEDIN", "X", "YOUTUBE"] as const;
 export type SocialNetwork = (typeof SOCIAL_NETWORKS)[number];
+export const SOCIAL_NETWORK_LABELS: Record<SocialNetwork, string> = {
+  INSTAGRAM: "Instagram",
+  FACEBOOK: "Facebook",
+  LINKEDIN: "LinkedIn",
+  X: "X",
+  YOUTUBE: "YouTube",
+};
 
 /** Where an enquiry stands in the inbox (plan §10.5). */
 export const ENQUIRY_STATUSES = ["NEW", "IN_PROGRESS", "RESOLVED"] as const;

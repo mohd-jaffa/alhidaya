@@ -115,13 +115,19 @@
   --line-rail-centre: calc(var(--line-station) / 2 - var(--line-width) / 2);
   --line-rail-top: calc(var(--header-height) + 3rem);
   --line-rail-bottom: 3rem;
-  /* The site header's height, set with the header (R2.6). */
-  --header-height: 0px;
+  /* The site header's height (R2.6): the sign bar, taller on a wide screen. */
+  --header-height: 4rem;
   --duration-press: 120ms;
   --duration-state: 200ms;
   --duration-reveal: 640ms;
   --z-header: 40;
   --z-overlay: 50;
+}
+
+@media (width >= 64rem) {
+  :root {
+    --header-height: 5rem;
+  }
 }
 
 @layer base {

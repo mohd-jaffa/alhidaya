@@ -46,7 +46,7 @@ export default function KitPage() {
   ];
 
   return (
-    <main className="mx-auto grid max-w-site gap-section px-gutter pt-16 pb-section">
+    <div className="mx-auto grid max-w-site gap-section px-gutter pt-16 pb-section">
       <TheLine stations={stations} tone="deep" />
       {sign.type === "SIGN" ? (
         <SignPanel
@@ -190,6 +190,6 @@ export default function KitPage() {
           </Reveal>
         </section>
       ))}
-    </main>
+    </div>
   );
 }
