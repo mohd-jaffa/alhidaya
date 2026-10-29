@@ -542,3 +542,68 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-29 — R1.4, content with drafts and publishing
+
+### Added
+- **`0003_content`** (`src/db/schema/content.ts`, plan §27, D58 – D60):
+  - `documents`, keyed: each page (`PAGE:<key>`, its SEO and its sections in
+    order), the site's content (`SITE`) and each ordering (`ORDER:SERVICES`,
+    `ORDER:CLIENTS`), each a `draft` and a `published` copy;
+  - `records`: services, jobs and client logos, each a draft and a published
+    copy, the published `slug` (unique within its collection), the slugs it
+    had before, and `archived_at`;
+  - `media` (the made sizes of an image, or the PDF; alt text, source) and
+    `site_operations` (one row: recipients, retention and CV expiry days);
+  - a `CHECK` for every key, collection and kind, written from the constants
+    that own them (`oneOf`, now shared in `columns.ts`); retention and CV
+    expiry bounded 1 – 365 days; a change's admin set to null if the account
+    goes, the content kept.
+- **The section catalogue** (`src/constants/sections.ts`, plan §7.2): the
+  fixed pages, the section types, each page's rules (the sign first, which
+  types it allows, how many, which it needs).
+- **The content schemas** (`src/lib/validation/schemas/`): `content.ts`
+  (per-language text, safe links only — a site path or https with no
+  credentials, slugs, real calendar days, rich text as blocks and never HTML,
+  SEO), `pages.ts` (every section type's content; a page checked against its
+  rules), `records.ts` (service, job, client logo), `site.ts` (site content,
+  orderings without repeats, operations).
+- **Drafts and publishing** (`src/lib/content/`, plan §14): save writes the
+  draft only; Publish copies it to the published copy in one statement (a
+  document) or one transaction (a record, moving its address when its slug
+  changes so the old one redirects); discard goes back to what is published;
+  archive takes a record off the site and keeps it; a slug another record has
+  is refused (`SLUG_TAKEN`). Every change is audited. Operations default to
+  Q8 and Q17 until the admin sets them, and record what changed.
+- **Published-only reads** (`src/features/{content,services,careers,clients,settings}/api.ts`):
+  a page without its hidden sections, services and client logos in the
+  published order (D59: a new order waits for Publish; records it does not
+  name yet follow it), jobs open first and newest first, closing at the end
+  of their day in Doha (`src/lib/dates.ts`), the site's content. None of them
+  can return a draft.
+- `databaseErrorCode` (`src/lib/errors`): the driver's code inside Drizzle's
+  wrapper, so a duplicate slug is told apart from other failures.
+
+### Changed
+- Plan: D58 – D60 recorded; §27's tables and §28's migrations follow them
+  (`0003_content`, then `0004_enquiries`, `0005_applications`); Q29 records
+  D60 as the agent's default; R1.4 DONE.
+
+### Validation
+- Lint, format check and typecheck passed.
+- Unit and integration tests passed (260), coverage 100% (844 statements,
+  429 branches, 266 functions). Against the local MySQL: a draft never
+  reaches a public read; publish, discard and archive; an old slug answering
+  with the new one; a taken slug and an over-long one refused; records of
+  another collection refused; the database refusing an unknown key, a second
+  operations row and a retention of 0; jobs closing at Doha's midnight. The
+  migration's `CHECK`s equal the constants.
+- Build passed; the shipped audit passed (89 packages); E2E passed, phone
+  and desktop, axe clean.
+
+### Migration
+- `0003_content` adds four tables; nothing existing changes. Applied to the
+  local database.
+
+### Blockers
+- None.

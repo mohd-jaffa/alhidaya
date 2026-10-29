@@ -139,6 +139,9 @@ question (§41) the user may overturn.
 | D55 | **Security is a must**: every row carries its security tests; uploads, file access, sign-in and headers are reviewed against OWASP ASVS level 2 in Phase 7; CI checks dependencies for known vulnerabilities. | 2026-10-28 |
 | D56 | **Versions on the server may be updated when needed** (the user), still only after full payment (D48). On shared hosting the MySQL version belongs to HostCarts; the app is chosen to run on what the server offers (Node 22, MySQL 8.0). | 2026-10-28 |
 | D57 | **Local and CI images come from registries outside Docker Hub**: AWS's mirror of the official MySQL image and Mailpit's own GitHub registry (Docker Desktop here cannot reach Docker Hub, and CI avoids its pull limits). **(agent default)** | 2026-10-28 |
+| D58 | **Each page is stored as one document**, a draft copy and a published copy, with its sections inside in order (not a row per section, as §27 first had it): publishing a page is one atomic write, and every save is checked against the section rules (§7.2). | 2026-10-28 |
+| D59 | **A new order of services or client logos waits for Publish** like any other edit (D32): the draft order and the published order are kept apart. | 2026-10-28 |
+| D60 | **Content lives in two tables**, following D58: `documents` (keyed: each page, the site's content, each ordering) and `records` (collections: services, jobs, client logos), each row a draft and a published copy, with every kind's rules in its own schema; plus `media` and `site_operations`. Publishing is the same atomic step everywhere. **(agent default)** | 2026-10-29 |
 
 ## 3. Audiences and the admin
 
@@ -916,14 +919,10 @@ MySQL 8.0 (D49): `utf8mb4` throughout (Arabic later), InnoDB, enforced `CHECK`s.
 | Table | Purpose |
 |---|---|
 | `user`, `session`, `account`, `verification` | Better Auth's tables: the one admin and their sessions (D14, D43) |
-| `pages` | the fixed pages: key, slug, SEO draft/published, `published_at` |
-| `page_sections` | page, type, sort order, visible, fixed, `draft` and `published` content |
-| `services` | §8: slug, audience, status, sort order, draft/published, `previous_slugs` |
-| `jobs` | §9.1: slug, status, closing date, draft/published |
-| `clients` | §11: status, sort order, draft/published (name, media, alt, url) |
 | `media` | §15: path, type, bytes, size, alt, the made sizes |
-| `site_content` | §13 site content: one row, draft/published |
-| `site_operations` | §13 operations: one row: recipients, retention days |
+| `documents` | keyed documents (D58, D60): `PAGE:<key>` for each page (its SEO and sections in order), `SITE` (§13 site content), `ORDER:SERVICES` and `ORDER:CLIENTS` (D59); each a `draft` and a `published` copy |
+| `records` | collections (D60): `SERVICES` (§8), `JOBS` (§9.1) and `CLIENTS` (§11), each a `draft` and a `published` copy, its published `slug` and `previous_slugs`, `archived_at` |
+| `site_operations` | §13 operations: one row: recipients, retention days, CV expiry days |
 | `enquiries` | §10: form, status, fields as submitted (labels and values), name/email/phone for search |
 | `enquiry_notes` | internal notes |
 | `applications` | §9: job (or none), job title as applied, fields, the CV's stored id, original name, size and type, CV and email status |
@@ -949,14 +948,9 @@ engine. Each migration has a DB contract test.
 | 0000 | `auth`: Better Auth's tables; the lockout table |
 | 0001 | `logs`: `audit_log`, `error_log` |
 | 0002 | `rate_limits`: the fixed-window counters (sign-in resets now, the forms in R1.5) |
-| 0003 | `media` |
-| 0004 | `site`: `site_content`, `site_operations` |
-| 0005 | `pages`: `pages`, `page_sections`, the section-type `CHECK` |
-| 0006 | `services` |
-| 0007 | `jobs` |
-| 0008 | `clients` |
-| 0009 | `enquiries`: tables, notes |
-| 0010 | `applications`: tables, notes |
+| 0003 | `content`: `media`, `documents`, `records`, `site_operations` (D58 – D60) |
+| 0004 | `enquiries`: tables, notes |
+| 0005 | `applications`: tables, notes |
 
 ## 29. API
 
@@ -1270,8 +1264,8 @@ one commit (D27).
 | R1.1 | The Drizzle client and schema conventions (MySQL 8, `utf8mb4`, timestamps, ids); `0000_auth`: Better Auth's tables and the lockout table | §27, §28 | — | DONE (2026-10-28) |
 | R1.2 | Admin sign-in with Better Auth: email and password, sign-up disabled, lockout, sign-out, password reset by email; the create-admin script; `proxy.ts`; `withAdminRoute` | §26.4 | — | DONE (2026-10-28) |
 | R1.3 | `0001_logs`: `logActionSafe`, `captureError`, retention | §36 | — | DONE (2026-10-28) |
-| R1.4 | `0003_media` – `0008_clients`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | — | TODO |
-| R1.5 | `0009_enquiries`, `0010_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
+| R1.4 | `0003_content`: content tables with draft/published; published-only read functions; publish in one transaction | §27, §14 | Q29 | DONE (2026-10-29; the admin's routes over them arrive with its screens, R6) |
+| R1.5 | `0004_enquiries`, `0005_applications`: submit in one transaction with the rate limit | §10, §9 | Q16 | TODO |
 | R1.6 | File storage (`src/lib/storage`): the media folder (its `.htaccess`, generated names, `644`/`755`) and the private CV folder (readable sanitised names, `600`/`700`), paths from env, the budgets, the disk-use reading for the admin | §9.4, §15, §21.2, D54 | Q26 | DONE (2026-10-28; the media folder is served by Apache, Q26, as checked on the server at R8.2) |
 | R1.7 | Mail interface (nodemailer, Mailpit locally), layout, templates | §17 | Q24 | DONE (2026-10-28; the password-reset email; the enquiry and application alerts come with their forms, R4.3 and R5.4) |
 | R1.8 | Seed: the current site's content, rewritten as drafts for approval; 8 services; the current job | §8, §9.1, D6 | Q9 | TODO |
@@ -1436,6 +1430,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q26 | How uploaded images are served | From a media folder inside `public_html` that no release touches, served by Apache (§21.3); verified on the server at R8.2. |
 | Q27 | ~~What happens to the old site's 83 CVs and its database?~~ | **Answered by D50:** they go with the user's backup to the client and are cleared from the server; nothing is imported. |
 | Q28 | Reuse the old site's service photos (`upload/Services`)? | Only where they are good enough for the new design; otherwise licensed stock (D8). |
+| Q29 | Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)? | Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
 
 ## 42. Later (unscheduled)
 

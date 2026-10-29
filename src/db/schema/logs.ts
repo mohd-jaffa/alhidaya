@@ -1,15 +1,10 @@
-import { sql } from "drizzle-orm";
 import { check, index, json, mysqlTable, smallint, text, varchar } from "drizzle-orm/mysql-core";
 
 import { ERROR_LOG_LIMITS } from "@/constants/limits";
 import { AUDIT_ACTIONS, ERROR_SOURCES } from "@/constants/statuses";
 
 import { authUser } from "./auth";
-import { id, idRef, instant, now } from "./columns";
-
-/** A column's allowed values, written into its CHECK from the constant that owns them. */
-const oneOf = (column: string, values: readonly string[]) =>
-  sql.raw(`\`${column}\` in (${values.map((value) => `'${value}'`).join(", ")})`);
+import { id, idRef, instant, now, oneOf } from "./columns";
 
 /**
  * The admin's changes (plan §36, AGENTS.md §11), kept a year. `changes` holds

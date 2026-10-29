@@ -12,6 +12,31 @@ export const TEXT_LIMITS = {
   phone: 24,
   line: 200,
   message: 2000,
+  label: 60,
+  heading: 120,
+  lede: 300,
+  paragraph: 2000,
+  item: 200,
+  slug: 80,
+  seoTitle: 70,
+  seoDescription: 160,
+  url: 500,
+} as const;
+
+/** How many of a repeated thing a document may hold (plan §7.2, §8, §9.1, §13). */
+export const LIST_LIMITS = {
+  sections: 20,
+  richBlocks: 60,
+  values: 6,
+  included: 12,
+  jobPoints: 20,
+  navigation: 10,
+  footerColumns: 4,
+  footerLinks: 10,
+  social: 6,
+  addressLines: 6,
+  recipients: 5,
+  ordering: 200,
 } as const;
 
 /** Upload limits (plan §9.2, §12, §15, D52): firm, checked before the file is read. */

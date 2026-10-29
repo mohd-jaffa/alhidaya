@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { datetime, varchar } from "drizzle-orm/mysql-core";
 
 /**
@@ -28,3 +29,12 @@ export const timestamps = {
   createdAt: instant("created_at").notNull().$defaultFn(now),
   updatedAt: instant("updated_at").notNull().$defaultFn(now).$onUpdate(now),
 };
+
+/** A column's allowed values, written into its CHECK from the constant that owns them. */
+export const oneOf = (column: string, values: readonly string[]) =>
+  sql.raw(`\`${column}\` in (${values.map((value) => `'${value}'`).join(", ")})`);
+
+/** A new row's empty list. */
+export function emptyList(): string[] {
+  return [];
+}

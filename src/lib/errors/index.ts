@@ -1,6 +1,6 @@
 export { AppError, KIND_STATUS, type AppErrorShape, type ErrorKind } from "./AppError";
 export { errorMessage } from "./errorMessage";
-export { fromDatabaseError } from "./fromDatabaseError";
+export { databaseErrorCode, fromDatabaseError } from "./fromDatabaseError";
 export {
   authenticationError,
   authorizationError,

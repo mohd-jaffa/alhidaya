@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { conflictError, fromDatabaseError } from "@/lib/errors";
+import { conflictError, databaseErrorCode, fromDatabaseError } from "@/lib/errors";
 
 /** What mysql2 throws: its own text names tables, keys and values. */
 const driver = (code: string) =>
@@ -37,5 +37,16 @@ describe("fromDatabaseError", () => {
   it("passes the app's own errors through unchanged", () => {
     const own = conflictError();
     expect(fromDatabaseError(own)).toBe(own);
+  });
+});
+
+describe("databaseErrorCode", () => {
+  it("reads the driver's code, wrapped or not", () => {
+    expect(databaseErrorCode(driver("ER_DUP_ENTRY"))).toBe("ER_DUP_ENTRY");
+    expect(databaseErrorCode(new Error("Failed query", { cause: driver("ER_DATA_TOO_LONG") }))).toBe(
+      "ER_DATA_TOO_LONG",
+    );
+    expect(databaseErrorCode(new Error("no code"))).toBeUndefined();
+    expect(databaseErrorCode(null)).toBeUndefined();
   });
 });

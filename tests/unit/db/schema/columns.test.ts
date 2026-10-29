@@ -1,6 +1,7 @@
+import { MySqlDialect } from "drizzle-orm/mysql-core";
 import { describe, expect, it } from "vitest";
 
-import { newId, now } from "@/db/schema/columns";
+import { emptyList, newId, now, oneOf } from "@/db/schema/columns";
 
 describe("the shared columns", () => {
   it("make a fresh random UUID for each row", () => {
@@ -14,5 +15,15 @@ describe("the shared columns", () => {
     const stamp = now();
     expect(stamp).toBeInstanceOf(Date);
     expect(stamp.getTime()).toBeGreaterThanOrEqual(before);
+  });
+
+  it("write a vocabulary's CHECK from its constant", () => {
+    expect(new MySqlDialect().sqlToQuery(oneOf("kind", ["IMAGE", "PDF"])).sql).toBe("`kind` in ('IMAGE', 'PDF')");
+  });
+
+  it("give each new row a list of its own", () => {
+    const first = emptyList();
+    expect(first).toEqual([]);
+    expect(emptyList()).not.toBe(first);
   });
 });

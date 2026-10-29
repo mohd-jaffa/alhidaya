@@ -35,10 +35,10 @@ const MYSQL_ERRORS: Record<string, { kind: ErrorKind; code: ErrorMessageCode }> 
 };
 
 /**
- * The driver's error inside whatever wrapped it: Drizzle wraps a failed
- * query, keeping the driver's error as its cause.
+ * The driver's own error code inside whatever wrapped it ("ER_DUP_ENTRY"):
+ * Drizzle wraps a failed query, keeping the driver's error as its cause.
  */
-function driverCode(error: unknown): string | undefined {
+export function databaseErrorCode(error: unknown): string | undefined {
   let current: unknown = error;
   for (let depth = 0; depth < 4 && current !== null && typeof current === "object"; depth++) {
     const code = (current as { code?: unknown }).code;
@@ -54,7 +54,7 @@ function driverCode(error: unknown): string | undefined {
  */
 export function fromDatabaseError(error: unknown): AppError {
   if (error instanceof AppError) return error;
-  const code = driverCode(error);
+  const code = databaseErrorCode(error);
   const mapped = code === undefined ? undefined : MYSQL_ERRORS[code];
   return new AppError({ ...(mapped ?? { kind: "INTERNAL", code: "INTERNAL_ERROR" }), cause: error });
 }

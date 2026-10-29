@@ -36,6 +36,8 @@ export const ERROR_MESSAGES = {
   NOT_FOUND: "We couldn't find what you were looking for.",
   RECORD_NOT_FOUND: "This item no longer exists. It may have been deleted.",
   CONFLICT: "This changed while you were working on it. Please reload and try again.",
+  SLUG_TAKEN: "Another one already uses this web address. Please choose a different one.",
+  NOTHING_PUBLISHED: "There is no published version to go back to yet.",
   RATE_LIMITED: "Too many attempts. Please wait a few minutes and try again.",
 
   NETWORK_OFFLINE: "You're offline. Check your connection and try again.",
@@ -61,6 +63,19 @@ export const VALIDATION_MESSAGES = {
   email: (label: string) => `${label} must look like name@example.com.`,
   phone: (label: string) => `${label} must be a Qatar number (8 digits) or start with a country code, like +44.`,
   passwordLength: (min: number, max: number) => `Use a password of ${min} to ${max} characters.`,
+  link: "Use a page of this site (starting with /) or a full https:// address.",
+  slug: "Use lowercase letters, numbers and single hyphens, like home-nursing-care.",
+  date: (label: string) => `${label} must be a date.`,
+  closesBeforePosted: "The closing date can't be before the posting date.",
+  between: (label: string, min: number, max: number) => `${label} must be from ${min} to ${max}.`,
+  atMost: (label: string, max: number) => `${label} can hold at most ${max}.`,
+  atLeastOne: (label: string) => `${label} needs at least one.`,
+  noRepeats: (label: string) => `${label} can't list the same one twice.`,
+  signFirst: "The page's sign must come first and stay visible.",
+  sectionNotAllowed: (type: string) => `This page can't hold a ${type} section.`,
+  sectionLimit: (type: string, max: number) =>
+    `This page can hold at most ${max} ${type} section${max === 1 ? "" : "s"}.`,
+  sectionRequired: (type: string) => `This page needs a visible ${type} section.`,
 } as const;
 
 export function isErrorMessageCode(code: string | null | undefined): code is ErrorMessageCode {
