@@ -8,6 +8,7 @@ describe("the admin's routes", () => {
     expect(ADMIN_ROUTES.enquiry("e1")).toBe("/admin/enquiries/e1");
     expect(ADMIN_ROUTES.service("s1")).toBe("/admin/services/s1");
     expect(ADMIN_ROUTES.job("j1")).toBe("/admin/jobs/j1");
+    expect(ADMIN_ROUTES.client("c1")).toBe("/admin/clients/c1");
   });
 
   it("keep every admin page under /admin, and let only signing in and the password's way back open without a session", () => {
@@ -26,5 +27,6 @@ describe("the admin's routes", () => {
     expect(ADMIN_API_ROUTES.adminPagePublish("PRIVACY")).toBe("/api/admin/pages/privacy/publish");
     expect(ADMIN_API_ROUTES.adminServiceArchive("s1")).toBe("/api/admin/services/s1/archive");
     expect(ADMIN_API_ROUTES.adminJobClose("j1")).toBe("/api/admin/jobs/j1/close");
+    expect(ADMIN_API_ROUTES.adminMediaItem("m1")).toBe("/api/admin/media/m1");
   });
 });

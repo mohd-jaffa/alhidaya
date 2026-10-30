@@ -2579,3 +2579,64 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R6.5: the client logos and the media library
+
+### Added
+- `/admin/media`: the library's images, newest first, each saying what it
+  shows and where it is used, found by a search (what it shows, its source);
+  Upload an image (the file, its alt text or Decorative, and where a stock
+  photo came from, D93); an image opened in a dialog, seen large with its
+  size, its words changed and saved, each place that uses it a link to its
+  editor, and Delete, asked first, only once nothing uses it.
+- The photo picker uploads too (D93): Upload a new image, and it is chosen.
+  A logo's picker says "logo", is required, and is never removed.
+- `/admin/clients`, `/new`, `/[id]`: the logos in their order (drag, Move up
+  and Move down, the order's own Publish and Discard, as the services'),
+  each with its logo in its 4:3 frame; the editor (organisation, logo,
+  website; Archive or Restore). Preview opens the home page, where the
+  clients' row shows once a logo is published (D7).
+- Routes: `/api/admin/media` (POST, multipart within the image's limit and
+  its words'), `/api/admin/media/[id]` (PATCH, DELETE); `/api/admin/clients`
+  as the services'. `MEDIA_IN_USE` refuses deleting an image in use, naming
+  each place.
+- Where a file is used (`mediaUsage`): every page, record and the site's
+  content naming it in a draft or a published copy, archived records too.
+- The rail's Clients (counting what waits) and Media; Today lists logos and
+  their order waiting to be published.
+- `imageDetailsSchema` and `imageFileSchema`; `TEXT_LIMITS.alt`;
+  `MEDIA_FIELDS_BYTES`.
+
+### Changed
+- `RecordOrder` (the ordered list, its order bar and its archived fold) and
+  the order's server functions (`listInDraftOrder`, `saveOrderDraft`,
+  `publishOrder`, `discardOrderDraft` in `lib/content/ordering.ts`) are
+  shared by the services and the logos.
+- `storeImage` keeps an image marked decorative with no alt text; a source's
+  parts may each be empty.
+- A client logo's missing logo is said in the catalogue's words
+  ("The logo is required."), and an empty website is kept as none.
+- The order's words say "them", for the services and the logos alike.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: against the local MySQL
+  and the media folder, an upload in its sizes, a decorative one, each place
+  an image is used, a delete refused while it is used (its files kept), its
+  words changed (the media cache dropped), a delete with its files, a file
+  that will not go put in the error log; a logo added, refused without its
+  image, published, reordered, archived, and one whose image left the
+  library listed without it.
+- E2E (phone and desktop, axe): the library, an image in use, the upload
+  dialog; an image uploaded, described anew and deleted; the empty Clients
+  list and a new logo's editor; a logo published to the home page's row of
+  clients, then archived off it.
+- Screens looked at, at 1440 and 390 px: the library, an image's dialog, the
+  upload refused without its file and words, the logo picker.
+- First paint, JavaScript (gzip, within 170 KB): Home 159.3 KB, Contact and
+  Request a Quote 168.8 KB, the apply page 169.2 KB (803 bytes left: the
+  catalogue `messages.ts` reaches every public page whole, its error words
+  included).
+
+### Blockers
+- None.

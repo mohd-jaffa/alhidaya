@@ -64,7 +64,10 @@ describe("a client logo", () => {
   it("needs its logo, and links only to an https site", () => {
     expect(clientDocumentSchema.safeParse(clientFixture({ url: "https://client.example" })).success).toBe(true);
     expect(clientDocumentSchema.safeParse(clientFixture({ url: "http://client.example" })).success).toBe(false);
-    expect(clientDocumentSchema.safeParse({ ...clientFixture(), logo: null }).success).toBe(false);
+    expect(clientDocumentSchema.safeParse({ ...clientFixture(), logo: null }).error?.issues[0].message).toBe(
+      VALIDATION_MESSAGES.required("The logo"),
+    );
+    expect(clientDocumentSchema.parse({ ...clientFixture(), url: "" }).url).toBeNull();
   });
 });
 

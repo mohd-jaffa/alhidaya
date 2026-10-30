@@ -11,13 +11,15 @@ import { Notice } from "@/components/ui/notice";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { UI_TEXT } from "@/constants/messages";
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
-import type { LibraryImage } from "@/features/media/types";
+import type { LibraryImageItem } from "@/features/media/types";
 import { errorMessage } from "@/lib/errors/errorMessage";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 
-/** The library's images to choose from (D89), newest first; Upload joins at R6.5. */
+import { ImageUpload } from "./ImageUpload";
+
+/** The library's images to choose from (D89), newest first. */
 function Library({ chosen, onChoose }: { chosen: string | null; onChoose: (id: string) => void }) {
-  const { data, error, isLoading, mutate } = useApiQuery<LibraryImage[]>(ADMIN_API_ROUTES.adminMedia);
+  const { data, error, isLoading, mutate } = useApiQuery<LibraryImageItem[]>(ADMIN_API_ROUTES.adminMedia);
   if (error) {
     return (
       <Notice tone="error" title={ADMIN_TEXT.loadFailed}>
@@ -55,25 +57,51 @@ function Library({ chosen, onChoose }: { chosen: string | null; onChoose: (id: s
 }
 
 /**
- * A section's photo (D89): the one chosen, with what it shows, or none;
- * Choose opens the library in a dialog, and Remove leaves the section without
- * one. A photo that has left the library says so, to be chosen again.
+ * A photo or a logo (D89, D93): the one chosen, with what it shows, or none;
+ * Choose opens the library in a dialog, where a new one can be uploaded and
+ * is then chosen; Remove leaves it without one, unless one is `required`.
+ * A photo that has left the library says so, to be chosen again.
  */
-export function PhotoField({ name, label }: { name: string; label: string }) {
+export function PhotoField({
+  name,
+  label,
+  required = false,
+  logo = false,
+}: {
+  name: string;
+  label: string;
+  required?: boolean;
+  /** A client's logo, said as one (plan §11). */
+  logo?: boolean;
+}) {
+  const words = logo
+    ? { none: ADMIN_TEXT.noLogo, choose: ADMIN_TEXT.chooseLogo, change: ADMIN_TEXT.changeLogo }
+    : { none: ADMIN_TEXT.noPhoto, choose: ADMIN_TEXT.choosePhoto, change: ADMIN_TEXT.changePhoto };
   const { field, fieldState } = useController({ name });
   const value = field.value as { mediaId: string } | null;
-  const { data } = useApiQuery<LibraryImage[]>(value ? ADMIN_API_ROUTES.adminMedia : null);
+  const { data } = useApiQuery<LibraryImageItem[]>(value ? ADMIN_API_ROUTES.adminMedia : null);
   const [choosing, setChoosing] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const labelId = useId();
   const chosen = value ? data?.find((image) => image.id === value.mediaId) : undefined;
+  const choose = (id: string) => {
+    field.onChange({ mediaId: id });
+    setChoosing(false);
+  };
   return (
     <div role="group" aria-labelledby={labelId} className="grid gap-3">
       <p id={labelId} className="font-semibold">
-        {label} <span className="font-normal text-ink-2">({UI_TEXT.optional})</span>
+        {label}
+        {required ? null : (
+          <>
+            {" "}
+            <span className="font-normal text-ink-2">({UI_TEXT.optional})</span>
+          </>
+        )}
       </p>
       <div className="flex flex-wrap items-center gap-4">
         {!value ? (
-          <p className="text-ink-2">{ADMIN_TEXT.noPhoto}</p>
+          <p className="text-ink-2">{words.none}</p>
         ) : chosen ? (
           <figure className="grid w-48 gap-1">
             <MediaImage image={chosen} sizes="12rem" className="aspect-[3/2] w-full rounded-control object-cover" />
@@ -87,10 +115,16 @@ export function PhotoField({ name, label }: { name: string; label: string }) {
           <span aria-busy="true" className="aspect-[3/2] w-48 animate-pulse rounded-control bg-mist" />
         )}
         <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" onClick={() => setChoosing(true)}>
-            {value ? ADMIN_TEXT.changePhoto : ADMIN_TEXT.choosePhoto}
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setUploading(false);
+              setChoosing(true);
+            }}
+          >
+            {value ? words.change : words.choose}
           </Button>
-          {value ? (
+          {value && !required ? (
             <Button variant="quiet" onClick={() => field.onChange(null)}>
               {ADMIN_TEXT.removePhoto}
             </Button>
@@ -98,16 +132,31 @@ export function PhotoField({ name, label }: { name: string; label: string }) {
         </div>
       </div>
       {fieldState.error?.message ? <FieldError>{fieldState.error.message}</FieldError> : null}
-      <Dialog open={choosing} onClose={() => setChoosing(false)} title={ADMIN_TEXT.choosePhoto}>
-        {choosing ? (
-          <Library
-            chosen={value?.mediaId ?? null}
-            onChoose={(id) => {
-              field.onChange({ mediaId: id });
-              setChoosing(false);
-            }}
-          />
-        ) : null}
+      <Dialog
+        open={choosing}
+        onClose={() => setChoosing(false)}
+        title={uploading ? ADMIN_TEXT.uploadNew : words.choose}
+      >
+        {!choosing ? null : uploading ? (
+          <div className="grid gap-4">
+            <Button variant="quiet" onClick={() => setUploading(false)} className="justify-self-start">
+              {ADMIN_TEXT.backToLibrary}
+            </Button>
+            <ImageUpload onUploaded={(image) => choose(image.id)} />
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            <Button
+              variant="secondary"
+              pictogram="upload"
+              onClick={() => setUploading(true)}
+              className="justify-self-start"
+            >
+              {ADMIN_TEXT.uploadNew}
+            </Button>
+            <Library chosen={value?.mediaId ?? null} onChoose={choose} />
+          </div>
+        )}
       </Dialog>
     </div>
   );

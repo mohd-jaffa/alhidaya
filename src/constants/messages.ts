@@ -175,6 +175,7 @@ export const ERROR_MESSAGES = {
   UPLOAD_TYPE_NOT_ALLOWED: "That type of file can't be uploaded here.",
   STORAGE_FULL: "There is no room left for this file. Please remove older files first.",
   IMAGE_NOT_FOUND: "A photo chosen here is no longer in the media library. Please choose another.",
+  MEDIA_IN_USE: "This image is in use. Take it out of each place it is used first.",
 
   AUTH_SESSION_REQUIRED: "Please sign in to continue.",
   AUTH_SESSION_INVALID: "Your session has expired. Please sign in again.",

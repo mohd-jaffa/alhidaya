@@ -60,6 +60,11 @@ describe("the admin API", () => {
         "jobs POST",
         "jobs/[id] PUT",
         "jobs/[id]/close POST",
+        "clients GET",
+        "clients/order PUT",
+        "media POST",
+        "media/[id] PATCH",
+        "media/[id] DELETE",
       ]),
     );
   });

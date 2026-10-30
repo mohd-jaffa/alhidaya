@@ -9,14 +9,15 @@ import type { SiteImage } from "@/features/media/types";
 import { getPublishedSite } from "@/features/settings/api";
 import type { Actor } from "@/lib/content/actor";
 import { publishedTags, revalidateContent } from "@/lib/content/cache";
+import { readDocument } from "@/lib/content/documents";
 import {
-  discardDocumentDraft,
-  publishDocument,
-  readDocument,
-  readDocumentDraft,
-  saveDocumentDraft,
-} from "@/lib/content/documents";
-import { inOrder } from "@/lib/content/ordering";
+  discardOrderDraft,
+  inOrder,
+  listInDraftOrder,
+  type OrderState,
+  publishOrder,
+  saveOrderDraft,
+} from "@/lib/content/ordering";
 import {
   type AdminRecord,
   createRecord,
@@ -25,7 +26,6 @@ import {
   findRecord,
   getRecordForAdmin,
   listRecords,
-  listRecordsForAdmin,
   publishRecord,
   type PublishedRecord,
   saveRecordDraft,
@@ -35,7 +35,6 @@ import type { ContentView } from "@/lib/content/view";
 import { renderShareImage } from "@/lib/seo/share-image";
 import {
   type OrderingDocument,
-  orderingDocumentSchema,
   type ServiceDocument,
   serviceDocumentSchema,
   type SiteDocument,
@@ -129,7 +128,7 @@ export interface ServiceSummary {
 /** The services in the order their draft order gives (archived last), and where that order stands (D92). */
 export interface ServiceList {
   items: ServiceSummary[];
-  order: { publishedAt: Date | null; unpublishedChanges: boolean };
+  order: OrderState;
 }
 
 /** A service opened in the editor (D92), as its draft reads. */
@@ -141,8 +140,6 @@ export interface ServiceDraft {
   unpublishedChanges: boolean;
 }
 
-const ORDER_KEY = orderingDocumentKey("SERVICES");
-
 const asDraft = (record: AdminRecord<ServiceDocument>): ServiceDraft => ({
   id: record.id,
   draft: record.draft,
@@ -151,28 +148,20 @@ const asDraft = (record: AdminRecord<ServiceDocument>): ServiceDraft => ({
   unpublishedChanges: record.unpublishedChanges,
 });
 
-/** Every service for the admin (D92), in two round trips' worth of reads made together. */
+/** Every service for the admin (D92), in its draft order. */
 export async function listServicesForAdmin(): Promise<ServiceList> {
-  const [records, order] = await Promise.all([
-    listRecordsForAdmin<ServiceDocument>("SERVICES"),
-    readDocumentDraft<OrderingDocument>(ORDER_KEY),
-  ]);
-  // A service not in the order yet goes after those it names, as on the site (D59).
-  const items = inOrder(
-    records.map((record) => ({ record, id: record.id, publishedAt: record.publishedAt ?? record.updatedAt })),
-    order?.draft ?? null,
-  ).map(({ record }) => ({
-    id: record.id,
-    name: record.draft.name.en,
-    slug: record.draft.slug,
-    audience: record.draft.audience,
-    publishedAt: record.publishedAt,
-    archivedAt: record.archivedAt,
-    unpublishedChanges: record.unpublishedChanges,
-  }));
+  const { records, order } = await listInDraftOrder<ServiceDocument>("SERVICES");
   return {
-    items: [...items.filter((item) => !item.archivedAt), ...items.filter((item) => item.archivedAt)],
-    order: { publishedAt: order?.publishedAt ?? null, unpublishedChanges: order?.unpublishedChanges ?? false },
+    items: records.map((record) => ({
+      id: record.id,
+      name: record.draft.name.en,
+      slug: record.draft.slug,
+      audience: record.draft.audience,
+      publishedAt: record.publishedAt,
+      archivedAt: record.archivedAt,
+      unpublishedChanges: record.unpublishedChanges,
+    })),
+    order,
   };
 }
 
@@ -220,26 +209,20 @@ export async function setServiceArchived(id: string, archived: boolean, actor: A
   return getServiceForAdmin(id);
 }
 
-/** Saves the services' order as a draft (D92): the ids of the services, those not archived, as the admin set them. */
+/** Saves the services' order as a draft (D92). */
 export async function saveServiceOrder(ids: OrderingDocument, actor: Actor): Promise<ServiceList> {
-  const known = new Set((await listRecordsForAdmin("SERVICES")).map((record) => record.id));
-  await saveDocumentDraft(
-    ORDER_KEY,
-    ids.filter((id) => known.has(id)),
-    actor,
-  );
+  await saveOrderDraft("SERVICES", ids, actor);
   return listServicesForAdmin();
 }
 
 /** Publishes the services' order (D92): every list of services on the site follows it. */
 export async function publishServiceOrder(actor: Actor): Promise<ServiceList> {
-  await publishDocument(ORDER_KEY, actor, (draft) => orderingDocumentSchema.parse(draft));
-  revalidateContent(publishedTags({ document: ORDER_KEY }));
+  await publishOrder("SERVICES", actor);
   return listServicesForAdmin();
 }
 
 /** Throws the order's draft away, back to the published order. */
 export async function discardServiceOrder(actor: Actor): Promise<ServiceList> {
-  await discardDocumentDraft(ORDER_KEY, actor);
+  await discardOrderDraft("SERVICES", actor);
   return listServicesForAdmin();
 }

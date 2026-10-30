@@ -1,17 +1,26 @@
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 
+import { ADMIN_TEXT } from "@/constants/admin-messages";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { UPLOAD_LIMITS } from "@/constants/limits";
+import { PAGE_NAMES } from "@/constants/messages";
+import { PAGE_KEYS, type PageKey } from "@/constants/sections";
+import type { RecordCollection } from "@/constants/statuses";
 import { FILE_TYPES, IMAGE_TYPES } from "@/constants/uploads";
 import { getDb } from "@/db/client";
-import { media, type MediaVariant } from "@/db/schema";
+import { documents, media, type MediaVariant, records } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
-import { CACHE_TAGS, cachedRead } from "@/lib/content/cache";
-import { validationError } from "@/lib/errors";
+import { logActionSafe } from "@/lib/audit/auditLog";
+import { captureError } from "@/lib/audit/errorLog";
+import type { Actor } from "@/lib/content/actor";
+import { CACHE_TAGS, cachedRead, revalidateContent } from "@/lib/content/cache";
+import { businessRuleError, notFoundError, validationError } from "@/lib/errors";
 import { detectFileType } from "@/lib/storage/file-type";
 import { makeImageSizes } from "@/lib/storage/images";
 import { deleteMediaFile, mediaKey, mediaUrl, saveMediaFile } from "@/lib/storage/media";
+import type { ImageDetailsPayload } from "@/lib/validation";
 
-import type { LibraryImage, SiteImage } from "./types";
+import type { LibraryImage, MediaUsage, SiteImage } from "./types";
 
 const IMAGE_COLUMNS = {
   id: media.id,
@@ -67,21 +76,181 @@ export async function getImages(ids: readonly string[]): Promise<Map<string, Sit
   return images;
 }
 
+/** Every file id a stored copy names, at any depth: a section's photo, a service's, a logo, the brochure. */
+function mediaIds(node: unknown, found: Set<string> = new Set()): Set<string> {
+  if (Array.isArray(node)) for (const item of node) mediaIds(item, found);
+  else if (node && typeof node === "object") {
+    for (const [key, value] of Object.entries(node)) {
+      if (key === "mediaId" && typeof value === "string") found.add(value);
+      else mediaIds(value, found);
+    }
+  }
+  return found;
+}
+
+const RECORD_PLACES: Record<RecordCollection, { label: string; href: (id: string) => string }> = {
+  SERVICES: { label: ADMIN_TEXT.services, href: ADMIN_ROUTES.service },
+  JOBS: { label: ADMIN_TEXT.jobs, href: ADMIN_ROUTES.job },
+  CLIENTS: { label: ADMIN_TEXT.clients, href: ADMIN_ROUTES.client },
+};
+
+/** Where a document is edited: a page, or Settings for the site's content; an order holds no file. */
+function documentPlace(key: string): MediaUsage | null {
+  const page = key.slice(5) as PageKey;
+  if (key.startsWith("PAGE:") && PAGE_KEYS.includes(page))
+    return { label: `${ADMIN_TEXT.pages} · ${PAGE_NAMES[page]}`, href: ADMIN_ROUTES.page(page) };
+  return key === "SITE" ? { label: ADMIN_TEXT.settings, href: ADMIN_ROUTES.settings } : null;
+}
+
 /**
- * The library's images for a section's photo (D89), newest first: each as a
- * page would show it, with whether it is marked decorative. Never cached: the
- * admin sees an upload at once.
+ * Where each file is used (plan §15): every page, record and the site's
+ * content that names it in its draft or its published copy, archived records
+ * included (Restore would bring them back). Read whole, in two queries: the
+ * site holds a few dozen of each.
+ */
+async function mediaUsage(): Promise<Map<string, MediaUsage[]>> {
+  const db = getDb();
+  const [docs, recs] = await Promise.all([
+    db.select({ key: documents.key, draft: documents.draft, published: documents.published }).from(documents),
+    db
+      .select({ id: records.id, collection: records.collection, draft: records.draft, published: records.published })
+      .from(records),
+  ]);
+  const usage = new Map<string, MediaUsage[]>();
+  const add = (copies: unknown[], place: MediaUsage | null) => {
+    if (!place) return;
+    for (const id of mediaIds(copies)) usage.set(id, [...(usage.get(id) ?? []), place]);
+  };
+  for (const doc of docs) add([doc.draft, doc.published], documentPlace(doc.key));
+  for (const rec of recs) {
+    const place = RECORD_PLACES[rec.collection as RecordCollection];
+    const draft = rec.draft as { name?: { en?: string }; title?: { en?: string } };
+    const name = draft.name?.en ?? draft.title?.en ?? ADMIN_TEXT.unnamed;
+    add([rec.draft, rec.published], {
+      label: `${place.label} · ${name || ADMIN_TEXT.unnamed}`,
+      href: place.href(rec.id),
+    });
+  }
+  return usage;
+}
+
+const LIBRARY_COLUMNS = { ...IMAGE_COLUMNS, bytes: media.bytes, source: media.source, createdAt: media.createdAt };
+type LibraryRow = Pick<typeof media.$inferSelect, keyof typeof LIBRARY_COLUMNS>;
+
+const toLibraryImage = (row: LibraryRow, usage: Map<string, MediaUsage[]>): LibraryImage[] => {
+  const image = toSiteImage(row);
+  if (!image) return [];
+  return [
+    {
+      ...image,
+      decorative: row.decorative,
+      source: row.source,
+      bytes: row.bytes,
+      createdAt: row.createdAt,
+      usedIn: usage.get(row.id) ?? [],
+    },
+  ];
+};
+
+/**
+ * The media library's images (plan §15, D89, D93), newest first: each as a
+ * page would show it, with its words, its source, its size and where it is
+ * used. Never cached: the admin sees an upload at once.
  */
 export async function listImagesForAdmin(): Promise<LibraryImage[]> {
-  const rows = await getDb()
-    .select(IMAGE_COLUMNS)
-    .from(media)
-    .where(eq(media.kind, "IMAGE"))
-    .orderBy(desc(media.createdAt), media.id);
-  return rows.flatMap((row) => {
-    const image = toSiteImage(row);
-    return image ? [{ ...image, decorative: row.decorative }] : [];
+  const [rows, usage] = await Promise.all([
+    getDb().select(LIBRARY_COLUMNS).from(media).where(eq(media.kind, "IMAGE")).orderBy(desc(media.createdAt), media.id),
+    mediaUsage(),
+  ]);
+  return rows.flatMap((row) => toLibraryImage(row, usage));
+}
+
+/** One image of the library, as its list shows it, or a 404. */
+export async function getImageForAdmin(id: string): Promise<LibraryImage> {
+  const [[row], usage] = await Promise.all([
+    getDb()
+      .select(LIBRARY_COLUMNS)
+      .from(media)
+      .where(and(eq(media.id, id), eq(media.kind, "IMAGE"))),
+    mediaUsage(),
+  ]);
+  const [image] = row ? toLibraryImage(row, usage) : [];
+  if (!image) throw notFoundError("RECORD_NOT_FOUND");
+  return image;
+}
+
+/** Uploads an image to the library (plan §15, D93): stored in its sizes, with its words; audited. */
+export async function uploadImage(
+  bytes: Uint8Array,
+  details: ImageDetailsPayload,
+  actor: Actor,
+): Promise<LibraryImage> {
+  const id = await storeImage({ bytes, ...details, createdBy: actor.adminId });
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "CREATE",
+    entityType: "media",
+    entityId: id,
+    requestId: actor.requestId,
   });
+  return getImageForAdmin(id);
+}
+
+/** Changes an image's words (D93): every page showing it says them from the next visit. */
+export async function updateImageDetails(
+  id: string,
+  details: ImageDetailsPayload,
+  actor: Actor,
+): Promise<LibraryImage> {
+  const [result] = await getDb()
+    .update(media)
+    .set({
+      alt: details.alt === null ? null : { en: details.alt },
+      decorative: details.decorative,
+      source: details.source,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(media.id, id), eq(media.kind, "IMAGE")));
+  if (result.affectedRows === 0) throw notFoundError("RECORD_NOT_FOUND");
+  revalidateContent([CACHE_TAGS.media]);
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "UPDATE",
+    entityType: "media",
+    entityId: id,
+    requestId: actor.requestId,
+  });
+  return getImageForAdmin(id);
+}
+
+/**
+ * Deletes an image and its files (plan §15), asked first in the library;
+ * refused, naming each place, while anything names it. A file that will not
+ * go is put in the error log; the image is gone either way.
+ */
+export async function deleteImage(id: string, actor: Actor): Promise<{ deleted: true }> {
+  const usedIn = (await mediaUsage()).get(id) ?? [];
+  if (usedIn.length > 0) throw businessRuleError("MEDIA_IN_USE", usedIn);
+  const db = getDb();
+  const [row] = await db
+    .select({ variants: media.variants })
+    .from(media)
+    .where(and(eq(media.id, id), eq(media.kind, "IMAGE")));
+  if (!row) throw notFoundError("RECORD_NOT_FOUND");
+  await db.delete(media).where(eq(media.id, id));
+  revalidateContent([CACHE_TAGS.media]);
+  for (const result of await Promise.allSettled(row.variants.map((variant) => deleteMediaFile(variant.key)))) {
+    if (result.status === "rejected")
+      await captureError({ message: "Media file not deleted", error: result.reason, reference: id });
+  }
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "DELETE",
+    entityType: "media",
+    entityId: id,
+    requestId: actor.requestId,
+  });
+  return { deleted: true };
 }
 
 /** Refuses a content save that names an image the library does not hold as one (plan §15). */
@@ -95,11 +264,11 @@ export async function assertImagesKept(ids: readonly string[]): Promise<void> {
   if (kept.length !== wanted.length) throw validationError("IMAGE_NOT_FOUND");
 }
 
-/** Where a stock photo came from (plan Q11, D8): kept with it, never shown as Al Hidaya's own. */
+/** Where a stock photo came from (plan Q11, D8, D93): kept with it, never shown as Al Hidaya's own. */
 export interface ImageSource {
-  provider: string;
-  url: string;
-  licence: string;
+  provider: string | null;
+  url: string | null;
+  licence: string | null;
 }
 
 /**
@@ -110,7 +279,9 @@ export interface ImageSource {
  */
 export async function storeImage(input: {
   bytes: Uint8Array;
-  alt: string;
+  /** What it shows; none for an image marked decorative. */
+  alt: string | null;
+  decorative?: boolean;
   source: ImageSource | null;
   createdBy: string | null;
   at?: Date;
@@ -142,8 +313,8 @@ export async function storeImage(input: {
         width: largest.width,
         height: largest.height,
         bytes: variants.reduce((sum, variant) => sum + variant.bytes, 0),
-        alt: { en: input.alt },
-        decorative: false,
+        alt: input.alt === null ? null : { en: input.alt },
+        decorative: input.decorative ?? false,
         source: input.source,
         createdBy: input.createdBy,
         createdAt: at,

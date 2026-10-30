@@ -7,7 +7,7 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { UI_TEXT } from "@/constants/messages";
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { PhotoField } from "@/components/admin/editor/PhotoField";
-import type { LibraryImage } from "@/features/media/types";
+import type { LibraryImageItem } from "@/features/media/types";
 import { type Answer, stubApi, stubDialogs, WithSWR } from "@tests/support/api";
 import { EditorForm } from "@tests/support/editor-form";
 
@@ -16,13 +16,17 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-const image = (id: string, alt: string, decorative = false): LibraryImage => ({
+const image = (id: string, alt: string, decorative = false): LibraryImageItem => ({
   id,
   width: 1600,
   height: 1067,
   alt,
   decorative,
   sources: [{ url: `/media/2026-10/${id}-w640.webp`, width: 640, mime: "image/webp" }],
+  source: null,
+  bytes: 120_000,
+  createdAt: "2026-10-30T08:00:00.000Z",
+  usedIn: [],
 });
 
 const LIBRARY = [
@@ -30,13 +34,17 @@ const LIBRARY = [
   image("22222222-2222-4222-8222-222222222222", "", true),
 ];
 
-function photo(value: unknown, answer: (method: string, url: string) => Answer = () => ({ data: LIBRARY })) {
+function photo(
+  value: unknown,
+  answer: (method: string, url: string) => Answer = () => ({ data: LIBRARY }),
+  required = false,
+) {
   const fetch = stubApi(answer);
   let form!: UseFormReturn<FieldValues>;
   render(
     <WithSWR>
       <EditorForm values={{ image: value }} onForm={(methods) => (form = methods)}>
-        <PhotoField name="image" label={ADMIN_TEXT.photo} />
+        <PhotoField name="image" label={ADMIN_TEXT.photo} required={required} logo={required} />
       </EditorForm>
     </WithSWR>,
   );
@@ -98,5 +106,32 @@ describe("PhotoField", () => {
     const { form } = photo(null);
     act(() => form().setError("image", { message: "Choose a photo from the library." }));
     await waitFor(() => expect(screen.getByText("Choose a photo from the library.")).toBeVisible());
+  });
+
+  it("uploads a new image from the picker, which is then chosen (D93)", async () => {
+    const uploaded = image("33333333-3333-4333-8333-333333333333", "A nurse at the door");
+    const { fetch, value } = photo(null, (method) => (method === "POST" ? { data: uploaded } : { data: LIBRARY }));
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.choosePhoto }));
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.uploadNew }));
+    const dialog = screen.getByRole("dialog", { name: ADMIN_TEXT.uploadNew });
+    await userEvent.click(within(dialog).getByRole("button", { name: ADMIN_TEXT.backToLibrary }));
+    expect(screen.getByRole("dialog", { name: ADMIN_TEXT.choosePhoto })).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.uploadNew }));
+    await userEvent.upload(
+      screen.getByLabelText(ADMIN_TEXT.imageFile),
+      new File([new Uint8Array([0xff, 0xd8, 0xff])], "nurse.jpg", { type: "image/jpeg" }),
+    );
+    await userEvent.type(screen.getByRole("textbox", { name: ADMIN_TEXT.altText }), "A nurse at the door");
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.upload }));
+    await waitFor(() => expect(value()).toEqual({ mediaId: uploaded.id }));
+    expect(fetch).toHaveBeenCalledWith(ADMIN_API_ROUTES.adminMedia, expect.objectContaining({ method: "POST" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("holds a required logo: not marked optional, and never removed, only changed", async () => {
+    photo({ mediaId: LIBRARY[0].id }, () => ({ data: LIBRARY }), true);
+    expect(screen.getByRole("group", { name: ADMIN_TEXT.photo })).toBeVisible();
+    expect(await screen.findByRole("button", { name: ADMIN_TEXT.changeLogo })).toBeVisible();
+    expect(screen.queryByRole("button", { name: ADMIN_TEXT.removePhoto })).toBeNull();
   });
 });

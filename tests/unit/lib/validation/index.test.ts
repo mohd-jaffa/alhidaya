@@ -22,6 +22,8 @@ describe("the validation module", () => {
       "forgotPasswordSchema",
       "hrefSchema",
       "httpsUrlSchema",
+      "imageDetailsSchema",
+      "imageFileSchema",
       "imageRefSchema",
       "isSafeHref",
       "isoDateSchema",

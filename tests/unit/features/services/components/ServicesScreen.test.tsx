@@ -160,12 +160,19 @@ describe("ServicesScreen (D92)", () => {
     expect(screen.queryByText(ADMIN_TEXT.archivedCount(0))).toBeNull();
   });
 
-  it("names a service with no name yet, in the order and in the archived", async () => {
-    api({ items: [service("s8", ""), service("s9", "", { archivedAt: PUBLISHED })], order: LIST.order });
+  it("names a service with no name yet, in the order, as it moves, and in the archived", async () => {
+    api({
+      items: [service("s8", ""), service("s1", "Elderly care"), service("s9", "", { archivedAt: PUBLISHED })],
+      order: LIST.order,
+    });
     render(<ServicesScreen />, { wrapper: WithSWR });
     expect(
       await screen.findByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.moveUp, ADMIN_TEXT.unnamed) }),
     ).toHaveAttribute("aria-disabled", "true");
+    await userEvent.click(
+      screen.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.moveDown, ADMIN_TEXT.unnamed) }),
+    );
+    expect(await screen.findByText(ADMIN_TEXT.movedTo(ADMIN_TEXT.unnamed, 2, 2))).toBeInTheDocument();
   });
 
   it("says when there are no services yet, and names one with no name", async () => {

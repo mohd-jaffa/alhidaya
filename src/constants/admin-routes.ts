@@ -21,7 +21,10 @@ export const ADMIN_ROUTES = {
   jobs: "/admin/jobs",
   newJob: "/admin/jobs/new",
   job: (id: string) => `/admin/jobs/${id}`,
+  /** The client logos as the services, and the media library (D93). */
   clients: "/admin/clients",
+  newClient: "/admin/clients/new",
+  client: (id: string) => `/admin/clients/${id}`,
   media: "/admin/media",
   enquiries: "/admin/enquiries",
   enquiry: (id: string) => `/admin/enquiries/${id}`,
@@ -74,8 +77,18 @@ export const ADMIN_API_ROUTES = {
   adminJobDiscard: (id: string) => `/api/admin/jobs/${id}/discard`,
   adminJobArchive: (id: string) => `/api/admin/jobs/${id}/archive`,
   adminJobClose: (id: string) => `/api/admin/jobs/${id}/close`,
-  /** The media library's images, for a section's photo (D89). */
+  /** The client logos, as the services (D92). */
+  adminClients: "/api/admin/clients",
+  adminClient: (id: string) => `/api/admin/clients/${id}`,
+  adminClientPublish: (id: string) => `/api/admin/clients/${id}/publish`,
+  adminClientDiscard: (id: string) => `/api/admin/clients/${id}/discard`,
+  adminClientArchive: (id: string) => `/api/admin/clients/${id}/archive`,
+  adminClientOrder: "/api/admin/clients/order",
+  adminClientOrderPublish: "/api/admin/clients/order/publish",
+  adminClientOrderDiscard: "/api/admin/clients/order/discard",
+  /** The media library's images (D89, D93): listed and uploaded; one's words changed, or it deleted. */
   adminMedia: "/api/admin/media",
+  adminMediaItem: (id: string) => `/api/admin/media/${id}`,
 } as const;
 
 /** The admin pages anyone may open: everything else under /admin needs a session (src/proxy.ts). */

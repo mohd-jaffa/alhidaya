@@ -7,6 +7,7 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_API_ROUTES, ADMIN_ROUTES } from "@/constants/admin-routes";
 import { PAGE_NAMES } from "@/constants/messages";
 import type { JobSummaryItem } from "@/features/careers/types";
+import type { ClientListItems } from "@/features/clients/types";
 import type { PageStateItem } from "@/features/content/types";
 import type { ServiceListItems } from "@/features/services/types";
 import { useApiQuery } from "@/lib/query/useApiQuery";
@@ -16,6 +17,7 @@ export function useWaiting(): { label: string; href: string }[] {
   const pages = useApiQuery<PageStateItem[]>(ADMIN_API_ROUTES.adminPages);
   const services = useApiQuery<ServiceListItems>(ADMIN_API_ROUTES.adminServices);
   const jobs = useApiQuery<JobSummaryItem[]>(ADMIN_API_ROUTES.adminJobs);
+  const clients = useApiQuery<ClientListItems>(ADMIN_API_ROUTES.adminClients);
   const waits = (item: { unpublishedChanges: boolean; archivedAt?: string | null }) =>
     item.unpublishedChanges && !item.archivedAt;
   return [
@@ -34,14 +36,19 @@ export function useWaiting(): { label: string; href: string }[] {
       label: job.title || ADMIN_TEXT.unnamed,
       href: ADMIN_ROUTES.job(job.id),
     })),
+    ...(clients.data?.order.unpublishedChanges ? [{ label: ADMIN_TEXT.clientsOrder, href: ADMIN_ROUTES.clients }] : []),
+    ...(clients.data?.items ?? []).filter(waits).map((client) => ({
+      label: client.name || ADMIN_TEXT.unnamed,
+      href: ADMIN_ROUTES.client(client.id),
+    })),
   ];
 }
 
 /**
- * What waits to be published, on Today (plan §14, D86): each page, service
- * or job with saved changes not on the website yet, and the services' order,
- * a link to its editor. Nothing waiting, or the lists not read, and it is
- * not shown: each screen says why.
+ * What waits to be published, on Today (plan §14, D86): each page, service,
+ * job or client logo with saved changes not on the website yet, and a new
+ * order of the services or the logos, each a link to its editor. Nothing
+ * waiting, or the lists not read, and it is not shown: each screen says why.
  */
 export function WaitingToPublish() {
   const waiting = useWaiting();

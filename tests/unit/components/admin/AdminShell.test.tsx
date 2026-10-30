@@ -42,11 +42,18 @@ const JOBS = [
   { id: "j2", unpublishedChanges: false, archivedAt: null },
 ];
 
+/** The client logos: one waits, the order as published. */
+const CLIENTS = {
+  items: [{ id: "c1", unpublishedChanges: true, archivedAt: null }],
+  order: { publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false },
+};
+
 /** Nothing waits anywhere. */
 const NOTHING: Record<string, unknown> = {
   [ADMIN_API_ROUTES.adminPages]: [],
   [ADMIN_API_ROUTES.adminServices]: { items: [], order: { publishedAt: null, unpublishedChanges: false } },
   [ADMIN_API_ROUTES.adminJobs]: [],
+  [ADMIN_API_ROUTES.adminClients]: { items: [], order: { publishedAt: null, unpublishedChanges: false } },
 };
 
 /** The rail's counts: three need the admin, two enquiries and one application are new, one page, two of the services and one job wait. */
@@ -59,14 +66,16 @@ const counts = (method: string, url: string): Answer =>
         ? { data: SERVICES }
         : url === ADMIN_API_ROUTES.adminJobs
           ? { data: JOBS }
-          : {
-              data: {
-                items: [],
-                total: url.includes("needsYou") ? 3 : url.startsWith(ADMIN_API_ROUTES.adminApplications) ? 1 : 2,
-                page: 1,
-                pageSize: 25,
-              },
-            };
+          : url === ADMIN_API_ROUTES.adminClients
+            ? { data: CLIENTS }
+            : {
+                data: {
+                  items: [],
+                  total: url.includes("needsYou") ? 3 : url.startsWith(ADMIN_API_ROUTES.adminApplications) ? 1 : 2,
+                  page: 1,
+                  pageSize: 25,
+                },
+              };
 
 const shell = () =>
   render(
@@ -100,6 +109,9 @@ describe("AdminShell", () => {
     const jobs = within(rail).getByRole("link", { name: /Jobs/ });
     expect(jobs).toHaveAttribute("href", ADMIN_ROUTES.jobs);
     await waitFor(() => expect(jobs).toHaveAccessibleName(`${ADMIN_TEXT.jobs}${ADMIN_TEXT.waitingCount(1)}`));
+    const clients = within(rail).getByRole("link", { name: /Clients/ });
+    await waitFor(() => expect(clients).toHaveAccessibleName(`${ADMIN_TEXT.clients}${ADMIN_TEXT.waitingCount(1)}`));
+    expect(within(rail).getByRole("link", { name: ADMIN_TEXT.media })).toHaveAttribute("href", ADMIN_ROUTES.media);
     expect(screen.getByText(ADMIN_TEXT.signedInAs("Fatima"), { selector: "aside p" })).toBeVisible();
     expect(screen.getByRole("main")).toHaveTextContent("Page");
   });

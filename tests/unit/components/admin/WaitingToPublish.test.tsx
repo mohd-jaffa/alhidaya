@@ -10,34 +10,50 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-const ARCHIVED = "2026-10-30T08:00:00Z";
+const PUBLISHED = "2026-10-29T08:00:00Z";
+const NO_ORDER = { publishedAt: null, unpublishedChanges: false };
+
+/** What each list answers: pages, services, jobs and logos, some waiting, some not, some archived. */
+const WAITING: Record<string, unknown> = {
+  [ADMIN_API_ROUTES.adminPages]: [
+    { page: "HOME", publishedAt: PUBLISHED, unpublishedChanges: true },
+    { page: "ABOUT", publishedAt: PUBLISHED, unpublishedChanges: false },
+  ],
+  [ADMIN_API_ROUTES.adminServices]: {
+    items: [
+      { id: "s1", name: "Elderly care", unpublishedChanges: true, archivedAt: null },
+      { id: "s2", name: "", unpublishedChanges: true, archivedAt: null },
+      { id: "s3", name: "Old care", unpublishedChanges: true, archivedAt: PUBLISHED },
+    ],
+    order: { publishedAt: null, unpublishedChanges: true },
+  },
+  [ADMIN_API_ROUTES.adminJobs]: [
+    { id: "j1", title: "Registered nurse", unpublishedChanges: true, archivedAt: null },
+    { id: "j2", title: "", unpublishedChanges: true, archivedAt: null },
+    { id: "j3", title: "School nurse", unpublishedChanges: false, archivedAt: null },
+  ],
+  [ADMIN_API_ROUTES.adminClients]: {
+    items: [
+      { id: "c1", name: "Doha Hospital", unpublishedChanges: true, archivedAt: null },
+      { id: "c2", name: "", unpublishedChanges: true, archivedAt: null },
+    ],
+    order: { publishedAt: PUBLISHED, unpublishedChanges: true },
+  },
+};
+
+const NOTHING: Record<string, unknown> = {
+  [ADMIN_API_ROUTES.adminPages]: [],
+  [ADMIN_API_ROUTES.adminServices]: { items: [], order: NO_ORDER },
+  [ADMIN_API_ROUTES.adminJobs]: [],
+  [ADMIN_API_ROUTES.adminClients]: { items: [], order: NO_ORDER },
+};
 
 describe("WaitingToPublish", () => {
-  it("lists on Today each page, service and job with saved changes not on the website yet, and the order (D86, D92)", async () => {
-    stubApi((_, url) => ({
-      data:
-        url === ADMIN_API_ROUTES.adminPages
-          ? [
-              { page: "HOME", publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: true },
-              { page: "ABOUT", publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false },
-            ]
-          : url === ADMIN_API_ROUTES.adminServices
-            ? {
-                items: [
-                  { id: "s1", name: "Elderly care", unpublishedChanges: true, archivedAt: null },
-                  { id: "s2", name: "", unpublishedChanges: true, archivedAt: null },
-                  { id: "s3", name: "Old care", unpublishedChanges: true, archivedAt: ARCHIVED },
-                ],
-                order: { publishedAt: null, unpublishedChanges: true },
-              }
-            : [
-                { id: "j1", title: "Registered nurse", unpublishedChanges: true, archivedAt: null },
-                { id: "j2", title: "", unpublishedChanges: true, archivedAt: null },
-                { id: "j3", title: "School nurse", unpublishedChanges: false, archivedAt: null },
-              ],
-    }));
+  it("lists on Today each page, service, job and logo with saved changes not on the website yet, and the orders (D86, D92)", async () => {
+    stubApi((_, url) => ({ data: WAITING[url] }));
     render(<WaitingToPublish />, { wrapper: WithSWR });
     const section = await screen.findByRole("region", { name: ADMIN_TEXT.notPublishedYet });
+    await within(section).findByRole("link", { name: "Doha Hospital" });
     await within(section).findByRole("link", { name: "Registered nurse" });
     expect(
       within(section)
@@ -50,18 +66,16 @@ describe("WaitingToPublish", () => {
       [ADMIN_TEXT.unnamed, ADMIN_ROUTES.service("s2")],
       ["Registered nurse", ADMIN_ROUTES.job("j1")],
       [ADMIN_TEXT.unnamed, ADMIN_ROUTES.job("j2")],
+      [ADMIN_TEXT.clientsOrder, ADMIN_ROUTES.clients],
+      ["Doha Hospital", ADMIN_ROUTES.client("c1")],
+      [ADMIN_TEXT.unnamed, ADMIN_ROUTES.client("c2")],
     ]);
   });
 
   it("shows nothing while nothing waits", async () => {
-    const fetch = stubApi((_, url) => ({
-      data:
-        url === ADMIN_API_ROUTES.adminServices
-          ? { items: [], order: { publishedAt: null, unpublishedChanges: false } }
-          : [],
-    }));
+    const fetch = stubApi((_, url) => ({ data: NOTHING[url] }));
     const { container } = render(<WaitingToPublish />, { wrapper: WithSWR });
-    await vi.waitFor(() => expect(fetch).toHaveBeenCalledTimes(3));
+    await vi.waitFor(() => expect(fetch).toHaveBeenCalledTimes(4));
     expect(container).toBeEmptyDOMElement();
   });
 });

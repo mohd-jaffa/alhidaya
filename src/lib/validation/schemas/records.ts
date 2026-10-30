@@ -65,9 +65,11 @@ export type JobDocumentInput = z.input<typeof jobDocumentSchema>;
 /** A client's logo (plan §11): shown only with the client's permission (D7). */
 export const clientDocumentSchema = z.object({
   name: localized(requiredLine("Organisation", { max: TEXT_LIMITS.heading })),
-  logo: imageRefSchema,
-  url: httpsUrlSchema.nullable(),
+  // Chosen from the library; none chosen yet is said as the editor's other missing fields are.
+  logo: z.object(imageRefSchema.shape, { error: VALIDATION_MESSAGES.required("The logo") }),
+  url: z.union([z.literal("").transform(() => null), httpsUrlSchema, z.null()]),
 });
+export type ClientDocumentInput = z.input<typeof clientDocumentSchema>;
 export type ClientDocument = z.output<typeof clientDocumentSchema>;
 
 /** Taking a service or a job off the site, or putting it back (D92). */

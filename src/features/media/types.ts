@@ -15,7 +15,21 @@ export interface SiteImage {
   sources: ImageSource[];
 }
 
-/** An image in the media library, as the admin picks it for a section (D89). */
+/** A place that uses a file, as the library names it, opening its editor (plan §15). */
+export interface MediaUsage {
+  label: string;
+  href: string;
+}
+
+/** An image in the media library (D89, D93): its words, where it came from, its size and where it is used. */
 export interface LibraryImage extends SiteImage {
   decorative: boolean;
+  source: { provider: string | null; url: string | null; licence: string | null } | null;
+  /** All its made sizes together. */
+  bytes: number;
+  createdAt: Date;
+  usedIn: MediaUsage[];
 }
+
+/** An image as the library's endpoint answers it. */
+export type LibraryImageItem = Omit<LibraryImage, "createdAt"> & { createdAt: string };

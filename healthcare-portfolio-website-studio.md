@@ -264,7 +264,7 @@ Arabic arrives later under `/ar` with the same paths (D4, §33).
 
 `/admin/login`, `/admin` (overview), `/admin/pages` (the eight pages, D88),
 `/admin/pages/[page]`, `/admin/services` (+ `/new`, `/[id]`, D92),
-`/admin/jobs` (+ `/new`, `/[id]`), `/admin/clients`, `/admin/media`, `/admin/enquiries`,
+`/admin/jobs` (+ `/new`, `/[id]`), `/admin/clients` (+ `/new`, `/[id]`), `/admin/media`, `/admin/enquiries`,
 `/admin/applications`, `/admin/settings` (content, contact, navigation, footer,
 SEO, brochure), `/admin/settings/operations` (recipients, retention),
 `/admin/activity`. Never indexed (`noindex`, disallowed in robots).
@@ -1078,8 +1078,8 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `GET /api/admin/pages`, `/api/admin/pages/[key]` (+ `/publish`, `/discard`) | the pages and their state; a page's draft, saved whole (D88) |
 | `/api/admin/services` (+ `[id]`, `/publish`, `/discard`, `/archive`; `/order` + `/publish`, `/discard`) | services: made, saved, published, discarded, archived and restored one at a time; their order a draft of its own (D92) |
 | `/api/admin/jobs` (+ `[id]`, `/publish`, `/discard`, `/archive`, `/close`) | jobs, as the services; `/close` closes one at once or opens it again (D92) |
-| `/api/admin/clients` (+ `[id]`, `/publish`, `/order`) | client logos |
-| `/api/admin/media` (+ `[id]`) | upload, list, alt text, delete (the list came forward with R6.3, D89) |
+| `/api/admin/clients` (+ `[id]`, `/publish`, `/discard`, `/archive`; `/order` + `/publish`, `/discard`) | client logos, as the services (D92) |
+| `/api/admin/media` (GET, POST; + `[id]` PATCH, DELETE) | the library with where each image is used; upload (multipart, the words as one JSON part); an image's words; delete, refused while it is used (D89, D93) |
 | `/api/admin/enquiries` (+ `[id]`, `/notes`, `/retry-mail`) | the inbox |
 | `/api/admin/applications` (+ `[id]`, `/notes`, `/cv`, `/retry`) | the inbox; `/cv` downloads the CV (§9.4) |
 | `/api/admin/site` (+ `/publish`), `/api/admin/operations` | settings |
@@ -1458,7 +1458,7 @@ one commit (D27).
 | R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | DONE (2026-10-29; brought forward, D80; Today is the Overview, D81; Applications and the content screens join the rail with their rows) |
 | R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | DONE (2026-10-30; shaped with the user, D86 – D90) |
 | R6.4 | Services and jobs editors | §8, §9.1 | — | DONE (2026-10-30; shaped with the user, D92) |
-| R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO (the sizing step and `storeImage` came forward with D75, 2026-10-29) |
+| R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | DONE (2026-10-30; D92, D93; the sizing step and `storeImage` came forward with D75) |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | TODO |
 | R6.8 | Activity (audit trail) | §36 | — | TODO |

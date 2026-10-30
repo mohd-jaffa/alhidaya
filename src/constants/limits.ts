@@ -24,6 +24,8 @@ export const TEXT_LIMITS = {
   sectionText: 600,
   valueTitle: 80,
   department: 80,
+  /** What an image shows, for those who cannot see it (plan §15). */
+  alt: 250,
   url: 500,
   fileName: 255,
   /** A stored file's key: its month folder and generated name. */
@@ -69,6 +71,9 @@ export const UPLOAD_LIMITS = {
 
 /** Room in an application's body for its fields beside the CV (plan §9.2): read whole, never more. */
 export const APPLICATION_FIELDS_BYTES = 64 * 1024;
+
+/** Room in an image upload's body for its words beside the file (D93). */
+export const MEDIA_FIELDS_BYTES = 16 * 1024;
 
 /** The 1 GB disk, shared out (plan §21.2, D51): an upload past its budget is refused. */
 export const DISK_BUDGETS = {

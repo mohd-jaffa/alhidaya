@@ -80,7 +80,7 @@ export const media = mysqlTable(
     bytes: int("bytes", { unsigned: true }).notNull(),
     alt: json("alt").$type<{ en: string } | null>(),
     decorative: boolean("decorative").notNull().default(false),
-    source: json("source").$type<{ provider: string; url: string; licence: string } | null>(),
+    source: json("source").$type<{ provider: string | null; url: string | null; licence: string | null } | null>(),
     createdBy: admin("created_by"),
     ...timestamps,
   },

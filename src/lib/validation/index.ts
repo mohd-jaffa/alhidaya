@@ -89,6 +89,8 @@ export {
   type SectionInput,
 } from "./schemas/pages";
 
+export { imageDetailsSchema, imageFileSchema, type ImageDetailsInput, type ImageDetailsPayload } from "./schemas/media";
+
 export { previewQuerySchema, type PreviewQueryPayload } from "./schemas/preview";
 
 export {
@@ -100,6 +102,7 @@ export {
   type ArchivePayload,
   type ClosePayload,
   type ClientDocument,
+  type ClientDocumentInput,
   type JobDocument,
   type JobDocumentInput,
   type ServiceDocument,
