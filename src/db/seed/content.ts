@@ -87,9 +87,10 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           ],
         }),
         section("HIGHLIGHTS", {
+          // The current site's slides (2026-10-31): their sentences carried into Home's headings.
           note: {
-            pictogram: "location",
-            title: en("Across Doha"),
+            pictogram: "shield",
+            title: en("Affordable nursing care, without compromising quality"),
             text: en("Nursing care at home and in clinics, for families and for institutions across Doha."),
           },
           first: { image: photos.laughingCare, label: en("Care at home") },
@@ -103,9 +104,9 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
         }),
         section("FOR_INSTITUTIONS", {
           label: en("For hospitals, clinics & schools"),
-          headingStart: en("Nurse staffing for"),
+          headingStart: en("Trained nurses who deliver"),
           pictogram: "staffing",
-          headingEnd: en("hospitals, clinics and schools"),
+          headingEnd: en("excellence every time"),
           team: {
             title: en("Nurses for your team"),
             text: en("Tell us the roles you need to fill, and we will prepare a quote."),
@@ -130,9 +131,9 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
         }),
         section("FOR_FAMILIES", {
           label: en("For families"),
-          headingStart: en("Care for the people you love,"),
+          headingStart: en("Compassionate nursing care"),
           pictogram: "heart",
-          headingEnd: en("at home"),
+          headingEnd: en("for your loved ones"),
           photo: { image: photos.elderlyCare, text: en("A nurse comes to your home, so care fits your family's day.") },
           features: [
             { pictogram: "clock", title: en("Day and night") },
@@ -169,7 +170,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           ],
         }),
         section("FORM", {
-          heading: en("Talk to us about the care you need"),
+          heading: en("Experience the difference with Al Hidaya"),
           text: en("Write to us and we will reply. For anything urgent, call or message us on WhatsApp."),
           form: "CONTACT",
         }),

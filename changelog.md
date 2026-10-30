@@ -3228,3 +3228,77 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None.
+
+## 2026-10-31 — R6B.6: the user's review of the public site
+
+### Fixed
+- **The page no longer stops short of its end** when scrolled with a wheel
+  or trackpad. Lenis knows how far it may scroll by watching the page's
+  size, but `html` carries `h-full`, and Lenis's own rule
+  (`html.lenis { height: auto }`) sat in the base layer, which Tailwind's
+  utilities outrank: `html` stayed the window's height, so once the page
+  grew after loading (a section held in place, the fonts) Lenis never knew
+  and stopped at the old end, while scrolling up still worked. Lenis's rules
+  now sit outside every layer, as Lenis ships them, and Lenis measures the
+  page again whenever ScrollTrigger does.
+- **Scrolling no longer drags**: Lenis's smoothing follows the hand more
+  closely (lerp 0.12 → 0.16), so the page no longer seems to push back.
+
+### Changed
+- **The footer's running words loop** endlessly and slowly on their own
+  (D113, the user's request; supersedes D106's scroll-driven movement), by
+  CSS alone: four copies moved by two, so no seam shows. A round pause
+  button beside them (a checkbox drawn as pause and play, no script) stops
+  them, as WCAG 2.2.2 asks; asked, the user chose to keep it. With motion
+  reduced they stand still and the button is hidden.
+- **The footer** (D114): the column headings are larger and bolder (title
+  size, semibold, white), their links quieter; the contact column keeps to
+  the phone, the email and the hours, then each social network as its line
+  mark in a ringed circle beside its name (the address stays on Contact);
+  no quote button.
+- **The current site's slide sentences** (alhidaya.qa) become Home's
+  headings, as editable content, with no new element (D114): "Compassionate
+  nursing care for your loved ones" (for families), "Trained nurses who
+  deliver excellence every time" (for hospitals, clinics and schools),
+  "Affordable nursing care, without compromising quality" (the first
+  highlight), "Experience the difference with Al Hidaya" (the form). The
+  first slide was already Home's headline.
+- **The header offers the brochure** (D116): "Download brochure", with its
+  download mark, in the header and the phone menu, in place of Request a
+  quote; it saves the PDF published in Settings (the old site's
+  `profile.pdf` at launch, D91) as
+  `Al-Hidaya-Health-Care-Services-Brochure.pdf`. Until a brochure is
+  published, the header keeps Request a quote. The footer no longer links
+  the brochure.
+- **The phone menu opens smoothly** (D117, the user's request): the sheet
+  fades in over the page, its logo and close button where the header's
+  were, and its rows rise into place one after another; closing, it fades
+  away. CSS only (`@starting-style`, a `rise` keyframe), so no script is
+  added; with motion reduced it simply appears. The navy backdrop is gone:
+  the sheet covers the screen, so it only showed as a grey flash.
+- New pictograms, drawn in the set's line: pause and play, and a plain mark
+  for each social network the site links to (Instagram, Facebook, LinkedIn,
+  X, YouTube).
+- The plan, AGENTS.md and DESIGN.md record the loop as the one exception to
+  "nothing moves on its own", the Lenis rules' place, and the header's
+  brochure (D116).
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed (1,187, in one run with R6B.7 and
+  R6B.8), coverage 100%.
+- E2E passed (phone, desktop, axe on every page): 177 in the full run; the
+  4 that still used words this batch changed (the page header, the
+  Dashboard, the profile's password label, the brochure now in the header)
+  passed once updated, re-run with their files. New: the wheel reaches
+  Home's very end with the page grown past the window; the footer's words
+  run and their button pauses them; the phone menu fades in with its rows
+  rising in order, and appears in place with motion reduced.
+- First paint, JavaScript (gzip, within 174,080 bytes): Home, Contact and
+  the quote page 173,857 (+1,815: the brochure pill in the header and the
+  menu, the new marks); the application 172,474; About, Services, Careers,
+  Privacy and Terms 165,051; a service and a job 163,478. The footer's loop
+  and the menu's motion are CSS, adding no script.
+
+### Blockers
+- None.

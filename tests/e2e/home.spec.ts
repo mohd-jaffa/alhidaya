@@ -40,9 +40,10 @@ test("Home follows the reference's sections, the family services in their card a
   page,
 }) => {
   await page.goto("/");
-  for (const name of [/Nurse staffing for/, /Care for the people you love/, /Care arranged/])
+  // The current site's slides carried into Home's headings (2026-10-31).
+  for (const name of [/Trained nurses who deliver/, /Compassionate nursing care/, /Care arranged/])
     await expect(page.getByRole("region", { name })).toBeVisible();
-  const families = page.getByRole("region", { name: /Care for the people you love/ });
+  const families = page.getByRole("region", { name: /Compassionate nursing care/ });
   for (const service of SEED_SERVICES)
     if (service.audience === "FAMILIES")
       await expect(families.getByRole("link", { name: service.name.en })).toHaveAttribute(
@@ -52,7 +53,7 @@ test("Home follows the reference's sections, the family services in their card a
     else await expect(families.getByRole("link", { name: service.name.en })).toHaveCount(0);
   const steps = page.getByRole("region", { name: /Care arranged/ }).getByRole("listitem");
   await expect(steps).toHaveCount(4);
-  const form = page.getByRole("region", { name: "Talk to us about the care you need" });
+  const form = page.getByRole("region", { name: "Experience the difference with Al Hidaya" });
   await expect(form.getByRole("button", { name: UI_TEXT.sendMessage })).toBeVisible();
   await expect(form.getByRole("link", { name: SEED_SITE.contact.email })).toHaveAttribute(
     "href",
@@ -70,6 +71,36 @@ test("the statement darkens with the scroll, and every word stays readable befor
   await page.locator("#statement").scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 400);
   await expect.poll(() => ink.evaluate((element) => Number(getComputedStyle(element).opacity))).toBeGreaterThan(0);
+});
+
+test("the wheel scrolls Home to its very end: the page grows with its content while Lenis runs", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveClass(/\blenis\b/);
+  // Lenis watches the page's size to know how far it may scroll: html must not stay the window's height.
+  expect(await page.evaluate(() => document.documentElement.getBoundingClientRect().height)).toBeGreaterThan(
+    await page.evaluate(() => window.innerHeight * 2),
+  );
+  await page.mouse.move(200, 300);
+  for (let stroke = 0; stroke < 40; stroke++) await page.mouse.wheel(0, 800);
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight - window.scrollY))
+    .toBeLessThanOrEqual(2);
+});
+
+test("the footer's words run on their own, and their button pauses them (D113)", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const words = page.locator(".running-words");
+  const offset = () => words.evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41);
+  const before = await offset();
+  await expect.poll(offset).not.toBe(before);
+
+  await page.locator("footer label").click();
+  await expect(page.getByRole("checkbox", { name: UI_TEXT.pauseRunningWords })).toBeChecked();
+  await expect.poll(() => words.evaluate((element) => getComputedStyle(element).animationPlayState)).toBe("paused");
+  const paused = await offset();
+  await page.waitForTimeout(500);
+  expect(await offset()).toBe(paused);
 });
 
 test.describe("with reduced motion", () => {

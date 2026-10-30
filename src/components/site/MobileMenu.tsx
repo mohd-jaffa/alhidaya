@@ -2,23 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { ContactAction } from "@/components/ui/contact-action";
 import { Pictogram } from "@/components/ui/pictogram";
-import { PillLink } from "@/components/ui/pill";
 import { UI_TEXT } from "@/constants/messages";
-import { ROUTES } from "@/constants/routes";
 import type { SiteDocument } from "@/lib/validation";
 
+import { HeaderAction } from "./HeaderAction";
 import { Logo } from "./Logo";
 import { isHere, type NavigationLink } from "./navigation";
 
 /**
  * The menu on a phone (plan §30.1, D97, D101): the whole screen, each page in
  * large light words on its own round row, the current one on the pale green,
- * and the ways to reach the company at hand as pills. The browser's own modal
- * dialog holds focus inside, closes on Escape and returns focus to the button.
+ * and the ways to reach the company at hand as pills. It fades in over the
+ * page and its rows rise into place one after another (D117). The browser's
+ * own modal dialog holds focus inside, closes on Escape and returns focus to
+ * the button.
  */
 export function MobileMenu({ site, links }: { site: SiteDocument | null; links: NavigationLink[] }) {
   const [open, setOpen] = useState(false);
@@ -47,7 +48,7 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
         ref={dialog}
         aria-label={UI_TEXT.menu}
         onClose={() => setOpen(false)}
-        className="m-0 h-dvh max-h-none w-full max-w-none bg-ground p-0 text-navy backdrop:bg-navy/60"
+        className="menu-sheet m-0 h-dvh max-h-none w-full max-w-none bg-ground p-0 text-navy backdrop:bg-transparent"
       >
         <div className="flex h-(--header-height) items-center justify-between border-b border-rule px-gutter">
           <Logo className="h-8 w-auto min-[22.5rem]:h-10" />
@@ -61,10 +62,10 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
         </div>
         <nav aria-label={UI_TEXT.mainNavigation} className="px-gutter pt-4">
           <ul className="grid gap-1">
-            {links.map((link) => {
+            {links.map((link, index) => {
               const here = isHere(pathname, link.href);
               return (
-                <li key={link.href}>
+                <li key={link.href} className="menu-row" style={{ "--i": index } as CSSProperties}>
                   <Link
                     href={link.href}
                     aria-current={here ? "page" : undefined}
@@ -79,16 +80,14 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
             })}
           </ul>
         </nav>
-        <div className="grid gap-3 px-gutter py-8">
+        <div className="menu-row grid gap-3 px-gutter py-8" style={{ "--i": links.length } as CSSProperties}>
           {site ? (
             <div className="grid grid-cols-2 gap-3">
               <ContactAction kind="whatsapp" to={site.contact.whatsapp} variant="pale" />
               <ContactAction kind="call" to={site.contact.phone} variant="pale" />
             </div>
           ) : null}
-          <PillLink href={ROUTES.quote} onClick={() => setOpen(false)} arrow>
-            {UI_TEXT.requestQuote}
-          </PillLink>
+          <HeaderAction site={site} onNavigate={() => setOpen(false)} />
         </div>
       </dialog>
     </>

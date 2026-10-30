@@ -141,6 +141,14 @@ export const SOCIAL_NETWORK_LABELS: Record<SocialNetwork, string> = {
   X: "X",
   YOUTUBE: "YouTube",
 };
+/** Each network's pictogram, beside its name in the footer. */
+export const SOCIAL_NETWORK_PICTOGRAMS = {
+  INSTAGRAM: "instagram",
+  FACEBOOK: "facebook",
+  LINKEDIN: "linkedin",
+  X: "x",
+  YOUTUBE: "youtube",
+} as const satisfies Record<SocialNetwork, string>;
 
 /** Where an enquiry stands in the inbox (plan §10.5). */
 export const ENQUIRY_STATUSES = ["NEW", "IN_PROGRESS", "RESOLVED"] as const;

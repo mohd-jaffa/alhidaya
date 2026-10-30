@@ -6,6 +6,7 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_API_ROUTES, ADMIN_ROUTES } from "@/constants/admin-routes";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
+import { SITE } from "@/constants/site";
 import { closeDb, getDb } from "@/db/client";
 import { authUser } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";
@@ -91,7 +92,11 @@ test("a brochure published opens at /brochure and /profile.pdf; a hidden menu li
     await visitor.goto(ROUTES.home);
     const header = visitor.getByRole("banner");
     await expect(header.getByRole("link", { name: original.navigation[0].label.en, exact: true })).toHaveCount(0);
-    await expect(visitor.getByRole("contentinfo").getByRole("link", { name: UI_TEXT.brochure })).toBeVisible();
+    // The header offers it in place of the quote, saved under the company's name (D116).
+    await expect(header.getByRole("link", { name: UI_TEXT.brochureButton })).toHaveAttribute(
+      "download",
+      SITE.brochureFilename,
+    );
   } finally {
     // Back as it was, through the app, so its cache drops the change and the brochure's file goes.
     const headers = { origin: E2E_ORIGIN };

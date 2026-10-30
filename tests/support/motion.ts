@@ -29,19 +29,27 @@ export function fakeEngine({ inViewport = false, wide = true } = {}) {
     registerPlugin: vi.fn(),
     ticker: { add: vi.fn(), remove: vi.fn(), lagSmoothing: vi.fn() },
   };
-  const ScrollTrigger = { update: vi.fn(), refresh: vi.fn(), isInViewport: vi.fn(() => inViewport) };
+  const ScrollTrigger = {
+    update: vi.fn(),
+    refresh: vi.fn(),
+    isInViewport: vi.fn(() => inViewport),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  };
   const stopListening = vi.fn();
   const lenises: {
     options: unknown;
     on: ReturnType<typeof vi.fn>;
     raf: ReturnType<typeof vi.fn>;
     scrollTo: ReturnType<typeof vi.fn>;
+    resize: ReturnType<typeof vi.fn>;
     destroy: ReturnType<typeof vi.fn>;
   }[] = [];
   class Lenis {
     on = vi.fn(() => stopListening);
     raf = vi.fn();
     scrollTo = vi.fn();
+    resize = vi.fn();
     destroy = vi.fn();
     constructor(public options: unknown) {
       lenises.push(this);

@@ -14,6 +14,6 @@ export const MOTION = {
   scrub: 0.4,
   /** How far apart the cards of a group arrive, in seconds (D97). */
   stagger: 0.08,
-  /** Lenis's smoothing per frame: a short, firm glide. */
-  lerp: 0.12,
+  /** Lenis's smoothing per frame: a short glide that follows the hand closely, never dragging behind it. */
+  lerp: 0.16,
 } as const;

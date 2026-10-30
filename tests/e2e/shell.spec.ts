@@ -41,11 +41,18 @@ test("the WhatsApp button floats on the page, opening the company's chat", async
   await expect(whatsapp).toHaveAttribute("href", /^https:\/\/wa\.me\/97431306555\?text=/);
 });
 
-test("the footer carries the contact details and the admin's columns", async ({ page }) => {
+test("the footer carries the contact details, the social links and the admin's columns (D114)", async ({ page }) => {
   await page.goto("/");
   const footer = page.getByRole("contentinfo");
-  for (const line of SEED_SITE.contact.address) await expect(footer.getByText(line.en)).toBeVisible();
   await expect(footer.getByRole("link", { name: SEED_SITE.contact.email })).toBeVisible();
+  await expect(footer.getByText(SEED_SITE.contact.hours.en!)).toBeVisible();
+  for (const social of SEED_SITE.social)
+    await expect(footer.getByRole("list", { name: UI_TEXT.followUs }).getByRole("link")).toHaveAttribute(
+      "href",
+      social.url,
+    );
+  // The address is on the Contact page, not the footer.
+  await expect(footer.getByText(SEED_SITE.contact.address[0].en)).toHaveCount(0);
   for (const column of SEED_SITE.footer) {
     await expect(footer.getByRole("navigation", { name: column.heading.en })).toBeVisible();
   }

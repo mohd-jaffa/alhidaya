@@ -451,7 +451,8 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
   across navigations.
 - **Reduced motion:** Lenis off, everything shown in place, no scrub, no reveals.
 - **Nothing moves on its own** (WCAG 2.2.2): motion follows the scroll or
-  arrives once.
+  arrives once. The one exception is the footer's running words (D113): an
+  endless CSS loop with its own pause button, still with motion reduced.
 - Durations and eases are tokens. One motion grammar (plan §30.1: letters
   settling, a statement darkening with the scroll, steps held sideways, the
   footer's words running), restrained reveals, nothing scattered.

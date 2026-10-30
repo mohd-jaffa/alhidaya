@@ -93,9 +93,30 @@ export const PICTOGRAMS = {
     "M9 3.5h6v3H9Z",
     "M8.5 13.5l2 2 4.5-4.5",
   ],
+
+  // Stopping and starting the footer's running words.
+  pause: ["M9 5.5v13", "M15 5.5v13"],
+  play: ["M8 5.5v13l10.5-6.5Z"],
+
+  // The social networks the site links to (plan §13): plain line marks beside each name.
+  instagram: [
+    "M7.5 3.5h9a4 4 0 0 1 4 4v9a4 4 0 0 1-4 4h-9a4 4 0 0 1-4-4v-9a4 4 0 0 1 4-4Z",
+    "M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z",
+    "M17 7v0",
+  ],
+  facebook: ["M15.5 3.5H14a4 4 0 0 0-4 4v13", "M7 11.5h8"],
+  linkedin: [
+    "M4.5 3.5h15a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1Z",
+    "M8 10.5v6",
+    "M8 7.5v0",
+    "M12 16.5v-6",
+    "M12 13a2.5 2.5 0 0 1 5 0v3.5",
+  ],
+  x: ["M4.5 4.5l15 15", "M19.5 4.5l-15 15"],
+  youtube: ["M6 5.5h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3Z", "M10 9.5v5l4.5-2.5Z"],
 } as const satisfies Record<string, readonly string[]>;
 
 export type PictogramName = keyof typeof PICTOGRAMS;
 
 /** The pictograms that point somewhere, mirrored when the page reads right to left (plan §33). */
-export const DIRECTIONAL_PICTOGRAMS: readonly PictogramName[] = ["arrow", "external"];
+export const DIRECTIONAL_PICTOGRAMS: readonly PictogramName[] = ["arrow", "external", "play"];

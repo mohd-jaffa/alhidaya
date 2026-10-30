@@ -194,6 +194,10 @@ question (§41) the user may overturn.
 | D110 | **About, Services, Careers and Contact open with a photo from the licensed stock already in the project** (the user, recommended): seeded, each replaceable in the admin; never captioned as Al Hidaya's staff (D8). | 2026-10-30 |
 | D111 | **Services sets out its services as photo cards by audience** (the user, recommended): "For families" and "For hospitals, clinics & schools", each under its pill with its actions (WhatsApp and a call; a quote), each service a mist card with its photo, name and summary, opening its page; a service's page ends on the others for its audience, the same way. | 2026-10-30 |
 | D112 | **Each page keeps its own sections** (the user, recommended): Home's new sections (statement, highlights, how it works, the audiences) stay Home's; the other pages' sections (who we are, mission, values, clients, the services, the jobs, the contact details and band, the admin's text) are redrawn in the new look and motion, with nothing new to edit. | 2026-10-30 |
+| D113 | **The footer's running words loop on their own** (the user, 2026-10-31: "the name is not moving like I guessed it will be moving in an infinite loop"): an endless slow loop (48 s) by CSS alone, the one exception to "nothing moves on its own"; a round pause button beside them (a checkbox, no script) stops them (WCAG 2.2.2; asked, the user chose to keep it over removing it or going back to scroll-driven movement), and with motion reduced they stand still. Supersedes D106's scroll-driven movement. | 2026-10-31 |
+| D114 | **The current site's slide sentences carry into Home, and the footer is simpler** (the user, 2026-10-31): "Compassionate nursing care for your loved ones" (families), "Trained nurses who deliver excellence every time" (institutions), "Affordable nursing care, without compromising quality" (the first highlight) and "Experience the difference with Al Hidaya" (the form) become those sections' headings, as editable content, with no new element; the footer's column headings are larger and bolder, its contact column keeps to the phone, the email, the hours and each social network with its mark (the address stays on Contact), and it has no quote button. | 2026-10-31 |
+| D116 | **The header offers the brochure** (the user, 2026-10-31): "Download brochure", in the header and the phone menu, in place of Request a quote, downloading the PDF published in Settings (the old site's `profile.pdf` at launch, D91) under the company's name, `Al-Hidaya-Health-Care-Services-Brochure.pdf`; until a brochure is published the header keeps Request a quote. The footer no longer links the brochure. | 2026-10-31 |
+| D117 | **The phone menu opens smoothly** (the user, 2026-10-31: "in small screens the menu opening there is no animation, add something smooth"; the motion itself is the agent default): the sheet fades in over the page (200 ms, its logo and close button where the header's logo and menu button were), its rows rise into place one after another (640 ms, ease-out, 45 ms apart), and closing it fades away; CSS only, so no script is added, and with motion reduced it simply appears. The navy backdrop is dropped: the sheet covers the screen, so it only showed as a grey flash while fading. | 2026-10-31 |
 
 ## 3. Audiences and the admin
 
@@ -1155,9 +1159,11 @@ four steps with round photos, moving sideways while held. The Contact form
 **Motion.** A headline's letters settle from wide spacing into the word; a
 statement's words turn from grey to ink with the scroll; cards rise in;
 counters count; the process steps travel sideways while the section is held;
-the footer's words run with the scroll. Nothing moves on its own (WCAG
-2.2.2): every movement follows the scroll or arrives once. Reduced motion
-shows everything in place.
+the footer's words run in an endless slow loop (D113); the phone menu fades
+in with its rows rising one after another (D117). Nothing else moves on
+its own (WCAG 2.2.2): every other movement follows the scroll or arrives
+once, and the footer's loop has its pause button. Reduced motion shows
+everything in place.
 
 **The other pages (D109 – D112).** Each opens like Home's hero, smaller: the
 page's name on a pale pill, the headline settling into its words with a phrase
@@ -1521,6 +1527,7 @@ one commit (D27).
 | R6B.3 | The forest footer with its running words, editable in Settings (D106), and its columns | D106 | R6B.1 | DONE (2026-10-30) |
 | R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | DONE (2026-10-31; D109 – D112) |
 | R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | DONE (2026-10-31) |
+| R6B.6 | The user's review of the redesign, the public site: the scroll that stopped short of the page's end fixed and Lenis made snappier; the footer's words in an endless loop with a pause button (D113); the current site's slide sentences as Home's headings, and a simpler footer (D114); the brochure in the header (D116); the phone menu opening smoothly (D117) | D113, D114, D116, D117 | R6B.5 | DONE (2026-10-31) |
 
 ### Phase 7 — Performance, accessibility and the finish
 

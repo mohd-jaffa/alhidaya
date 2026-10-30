@@ -347,12 +347,12 @@ A thin-line pictogram (24-unit grid, 2 px stroke, round caps) in a circle.
 Info and success on mist with a deep-blue icon; error on white with a red border and red icon, announced as an alert. A title in semibold, words in ink-2. Always icon plus words.
 
 ### Navigation
-- **Header:** ground, not pinned. Logo, then the pages as 44 px round links in ink-2 (navy on hover; the current one navy on mist), then the forest quote pill with an arrow. Below 1024 px a 44 px menu button replaces links and pill.
-- **Phone menu:** the browser's modal dialog, full screen, white over a navy/60 backdrop. A bar with the logo and close; each page a 64 px round row in display type with a forest arrow, the current one on leaf-pale with forest words; below, WhatsApp and Call as pale pills side by side and the forest quote pill.
+- **Header:** ground, not pinned. Logo, then the pages as 44 px round links in ink-2 (navy on hover; the current one navy on mist), then the forest "Download brochure" pill with its download mark (D116), saving the published PDF under the company's name; until a brochure is published, the forest quote pill with an arrow. Below 1024 px a 44 px menu button replaces links and pill.
+- **Phone menu:** the browser's modal dialog, full screen, white, with no backdrop tint; it fades in and its rows rise in order (D117). A bar with the logo and close; each page a 64 px round row in display type with a forest arrow, the current one on leaf-pale with forest words; below, WhatsApp and Call as pale pills side by side and the forest quote pill.
 - **Floating WhatsApp:** a 56 px deep-blue circle with the chat pictogram, Raised shadow, inside the safe area at the bottom end.
 
 ### Footer
-Forest with white words. Across its top the running words, the marquee role in uppercase, three copies in a row, moving with the scroll by CSS alone. Below, the white logo and the company's line in on-forest-2, the admin's link columns (headings small medium on-forest-2), the contact block, social links, the brochure, and the white "on forest" quote pill. Links show their underline on hover; focus rings turn white. A 20% white hairline above the copyright.
+Forest with white words. Across its top the running words, the marquee role in uppercase, four copies in a row, in an endless slow loop by CSS alone (D113), with a 44 px round pause button (a checkbox drawn as a pause, then a play) at the top end. Below, the white logo and the company's line in on-forest-2, the admin's link columns under title-size semibold white headings with their links in on-forest-2, and a plain contact column: the phone, the email and the hours, then each social network as its line mark in a 40 px ringed circle beside its name, (D114). No quote pill, and no brochure link: the header offers it (D116). Links show their underline on hover; focus rings turn white. A 20% white hairline above the copyright.
 
 ### Signature: the opening
 Home's hero: faces between thin round brackets, the hero headline settling with one highlighted phrase, the supporting line, the forest WhatsApp pill with an arrow and the pale quote pill, a mist fact card with an avatar stack and a real fact; beside it a tall photo frame (480–640 px) with word chips and two floating cards. Every other page opens with PageHero, the same thing smaller: a pill label (unless the headline names the page), the headline, the lead, the page's own pills, and a photo frame 544 px tall on a desktop.
@@ -362,21 +362,22 @@ The admin shares the tokens, type and pictograms but keeps its own look (plan §
 
 ### Motion (the site's grammar)
 
-One grammar on the public site, from `globals.css` and `src/lib/motion/tokens.ts` (kept equal by a test): GSAP and ScrollTrigger with Lenis on the GSAP ticker, loaded after first paint when the browser is idle; Lenis smooths a wheel only, never touch.
+One grammar on the public site, from `globals.css` and `src/lib/motion/tokens.ts` (kept equal by a test): GSAP and ScrollTrigger with Lenis on the GSAP ticker, loaded after first paint when the browser is idle; Lenis smooths a wheel only, never touch. Lenis's own CSS sits outside every layer (so `html` grows with the page despite its `h-full`), and Lenis re-measures on every ScrollTrigger refresh: without both, it stops short of the page's end.
 
 - **Letters settling** (CSS only, 1100 ms, ease-out, each letter 12 ms after the one before, from 80 ms): a headline's letters slide in from wide spacing and fade up, once, as the page opens.
 - **The statement darkening** (scrubbed to the scroll from 85% to 50% of the viewport): each strong word's navy copy fades in over its quiet-grey self, so every word meets its contrast at every moment.
 - **Cards rising in order** (640 ms, ease-out, 24 px rise, 80 ms stagger): a block below the fold when motion loads rises once into place; anything already on screen is left alone.
 - **Counters** (1400 ms, ease-out): a whole-number figure counts up once on first view; "24/7" stands as written. Screen readers hear the figure once.
 - **Sideways tracks** (scrub 0.4 s, from 1024 px): the process steps travel while their section is held; the families' service row drifts as the section passes.
-- **Running words** (CSS scroll-driven animation, linear, -40% across entry to exit): the footer's words; they stand still where the browser lacks `animation-timeline`.
+- **The phone menu opening** (CSS only, D117): the sheet fades in over 200 ms with no backdrop tint, its bar where the header was; its rows, then the actions, rise 1.25 rem into place (640 ms, ease-out, 45 ms apart, from 60 ms); closing fades it out over 200 ms where the browser can keep a closing dialog on top (`overlay`), and it simply closes elsewhere.
+- **Running words** (CSS animation, linear, an endless loop of 48 s, `--duration-run`, moving by half a row of four copies; D113): the footer's words; their pause button stops them, and with motion reduced they stand still.
 - **State:** press 120 ms, colour and arrow 200 ms, photo hover zoom 640 ms. Eases: out `cubic-bezier(0.16, 1, 0.3, 1)` (expo.out), in-out `cubic-bezier(0.65, 0, 0.35, 1)`.
 
 **The Transform-And-Opacity Rule.** Only transform and opacity move. Never layout properties, filter, box-shadow or large clip-path.
 
-**The Still-Page Rule.** Nothing moves on its own (WCAG 2.2.2): motion follows the scroll or arrives once. Content is visible by default; a reveal only hides what is still below the fold, and only with opacity. The one loop is a loading skeleton's slow fade (1.6 s).
+**The Still-Page Rule.** Nothing moves on its own (WCAG 2.2.2): motion follows the scroll or arrives once. The one exception is the footer's running words (D113), an endless slow loop with its own pause button, still with motion reduced. Content is visible by default; a reveal only hides what is still below the fold, and only with opacity. The one loop is a loading skeleton's slow fade (1.6 s).
 
-**The Reduced-Motion Path.** With reduced motion the engine never loads: no Lenis, no reveals, no scrub, no counting; settling letters and running words are off in CSS; every animation and transition is cut to 0.01 ms. Tracks become plain sideways-scrolling rows.
+**The Reduced-Motion Path.** With reduced motion the engine never loads: no Lenis, no reveals, no scrub, no counting; settling letters, running words and the phone menu's motion are off in CSS (the running words' pause button is hidden then); every animation and transition is cut to 0.01 ms. Tracks become plain sideways-scrolling rows.
 
 ## Do's and Don'ts
 
@@ -388,7 +389,7 @@ One grammar on the public site, from `globals.css` and `src/lib/motion/tokens.ts
 - **Do** give every interactive thing a 44 px target, every input 16 px text and a 48 px height, and keep the 3 px focus ring (deep blue, 3 px offset; white on deep, navy or forest).
 - **Do** use licensed stock with its provenance recorded in `src/db/seed/photos/README.md`, and show only real facts in counters and fact cards (D7, D99).
 - **Do** run axe at phone and desktop on every page, and test every new colour pairing in `tests/contract/tokens.test.ts`.
-- **Do** keep each public route within 174,080 bytes of gzip JavaScript at first paint (Home and Contact: 172,042 at Phase 6B's end). Client JavaScript is the scarcest resource: prefer CSS (as the settling letters and running words do) and server components; keep looks that a server page needs out of client components (as `pill-classes.ts` does).
+- **Do** keep each public route within 174,080 bytes of gzip JavaScript at first paint (Home and Contact: 172,042 at Phase 6B's end). Client JavaScript is the scarcest resource: prefer CSS (as the settling letters, running words and phone menu do) and server components; keep looks that a server page needs out of client components (as `pill-classes.ts` does).
 
 ### Don't:
 - **Don't** use a colour outside the logo's, a dark theme, or the error red for anything that is not an error.

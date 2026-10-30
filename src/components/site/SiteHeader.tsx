@@ -3,20 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { PillLink } from "@/components/ui/pill";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import type { SiteDocument } from "@/lib/validation";
 
+import { HeaderAction } from "./HeaderAction";
 import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
 import { isHere, visibleLinks } from "./navigation";
 
 /**
- * The header (D107): the logo home, the site's pages in a light row with the
- * current one marked, and the forest quote pill on a wide screen; the menu on
- * a phone. It is not pinned: it scrolls away with the page, so nothing
- * stands over what the visitor reads.
+ * The header (D107, D116): the logo home, the site's pages in a light row
+ * with the current one marked, and the forest brochure pill (the quote's,
+ * until a brochure is published) on a wide screen; the menu on a phone. It
+ * is not pinned: it scrolls away with the page, so nothing stands over what
+ * the visitor reads.
  */
 export function SiteHeader({ site }: { site: SiteDocument | null }) {
   const pathname = usePathname();
@@ -44,9 +45,7 @@ export function SiteHeader({ site }: { site: SiteDocument | null }) {
           </ul>
         </nav>
         <div className="hidden lg:block">
-          <PillLink href={ROUTES.quote} arrow>
-            {UI_TEXT.requestQuote}
-          </PillLink>
+          <HeaderAction site={site} />
         </div>
         <MobileMenu site={site} links={links} />
       </div>

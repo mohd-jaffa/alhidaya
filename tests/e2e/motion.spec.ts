@@ -1,11 +1,19 @@
 import AxeBuilder from "@axe-core/playwright";
-import { devices, expect, test } from "@playwright/test";
+import { devices, expect, type Page, test } from "@playwright/test";
 
+import { UI_TEXT } from "@/constants/messages";
 import { SEED_SERVICES } from "@/db/seed/content";
 
 /** The motion system on the kit page (plan §30.4, D64). */
 const KIT = "/kit";
 const LAST = SEED_SERVICES.at(-1)!;
+
+/** The rows of the phone menu (D117), opened on Home. */
+async function openMenu(page: Page) {
+  await page.goto("/");
+  await page.getByRole("button", { name: UI_TEXT.menu }).click();
+  return page.getByRole("dialog", { name: UI_TEXT.menu }).getByRole("listitem");
+}
 
 test.describe("with a mouse or trackpad", () => {
   test("Lenis smooths the wheel once the page has painted", async ({ page }) => {
@@ -45,6 +53,17 @@ test.describe("on a touch screen", () => {
     await page.waitForTimeout(1500);
     await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
   });
+
+  test("the menu fades in, its rows rising into place one after another (D117)", async ({ page }) => {
+    const rows = await openMenu(page);
+    await expect(rows.first()).toHaveCSS("animation-name", "rise");
+    const delays = await rows.evaluateAll((items) =>
+      items.map((item) => parseFloat(getComputedStyle(item).animationDelay)),
+    );
+    expect(delays).toEqual([...delays].sort((a, b) => a - b));
+    expect(new Set(delays).size).toBe(delays.length);
+    await expect(rows.last()).toHaveCSS("opacity", "1");
+  });
 });
 
 test.describe("with reduced motion", () => {
@@ -56,6 +75,13 @@ test.describe("with reduced motion", () => {
     await page.waitForTimeout(1500);
     await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
     await expect(page.getByText(LAST.summary.en)).toBeVisible();
+  });
+
+  test("the phone menu appears with its rows in place", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const rows = await openMenu(page);
+    await expect(rows.first()).toHaveCSS("animation-name", "none");
+    await expect(rows.first()).toHaveCSS("opacity", "1");
   });
 });
 
