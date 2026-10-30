@@ -50,6 +50,7 @@ export const ADMIN_ROUTES = {
   enquiries: "/admin/enquiries",
   enquiry: (id: string) => `/admin/enquiries/${id}`,
   applications: "/admin/applications",
+  application: (id: string) => `/admin/applications/${id}`,
   settings: "/admin/settings",
   operations: "/admin/settings/operations",
   activity: "/admin/activity",
@@ -69,6 +70,8 @@ export const API_ROUTES = {
   adminEnquiry: (id: string) => `/api/admin/enquiries/${id}`,
   adminEnquiryNotes: (id: string) => `/api/admin/enquiries/${id}/notes`,
   adminEnquiryRetryMail: (id: string) => `/api/admin/enquiries/${id}/retry-mail`,
+  /** The applications inbox (plan §9.5). */
+  adminApplicationRetryMail: (id: string) => `/api/admin/applications/${id}/retry-mail`,
   /** Opens a public page in the admin's preview of unpublished changes (plan §14). */
   preview: "/api/preview",
   /** Leaves the admin's preview of unpublished changes (R3.6). */

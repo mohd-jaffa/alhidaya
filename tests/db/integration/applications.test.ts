@@ -6,13 +6,21 @@ import { eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { FORM_RATE_LIMIT, UPLOAD_LIMITS } from "@/constants/limits";
-import { UI_TEXT } from "@/constants/messages";
+import { MAIL_TEXT, UI_TEXT } from "@/constants/messages";
 import { closeDb, getDb } from "@/db/client";
 import { applicationNotes, applications, auditLog, errorLog, rateLimits, records } from "@/db/schema";
-import { type ApplicationSubmission, receiveApplication, submitApplication } from "@/features/careers/api";
+import {
+  type ApplicationSubmission,
+  receiveApplication,
+  retryApplicationAlert,
+  sendApplicationAlert,
+  submitApplication,
+} from "@/features/careers/api";
+import { getOperations } from "@/lib/content/operations";
 import { createRecord, publishRecord, saveRecordDraft, setRecordArchived } from "@/lib/content/records";
 import { applicationFormSchema } from "@/lib/validation";
 import { jobFixture, serviceFixture } from "@tests/support/fixtures/content";
+import { deleteMail, mailAttachments, mailText, searchMail, waitForMail } from "@tests/support/mailpit";
 
 const REQUEST = `req_applications_${crypto.randomUUID()}`;
 const actor = { adminId: null, requestId: REQUEST };
@@ -58,6 +66,9 @@ afterAll(async () => {
   await getDb().delete(records);
   await getDb().delete(auditLog).where(eq(auditLog.requestId, REQUEST));
   await getDb().delete(errorLog).where(eq(errorLog.message, "Application CV not stored"));
+  await getDb().delete(errorLog).where(eq(errorLog.message, "Application alert email not sent"));
+  await getDb().delete(errorLog).where(eq(errorLog.message, "Application CV not read"));
+  await deleteMail((await searchMail(`subject:"${ALERT_NAME}"`)).map((message) => message.ID));
   await closeDb();
 });
 
@@ -152,6 +163,8 @@ const received = (cv: { bytes: Uint8Array | string; name: string }, overrides: R
   });
 
 const PDF = "%PDF-1.7 Mariam's CV";
+/** A name of its own, so this file's emails are found in Mailpit and nobody else's. */
+const ALERT_NAME = `Applicant ${crypto.randomUUID().slice(0, 8)}`;
 const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
 
 describe("receiveApplication, against the local MySQL", () => {
@@ -240,5 +253,120 @@ describe("receiveApplication, against the local MySQL", () => {
       .where(eq(errorLog.message, "Application CV not stored"));
     expect(logged.map((entry) => entry.context)).toContainEqual({ applicationId: id });
     expect(JSON.stringify(logged)).not.toContain("mariam");
+  });
+});
+
+describe("the HR email, through Mailpit (plan §9.3, §17)", () => {
+  let root = "";
+  beforeEach(async () => {
+    root = await fs.mkdtemp(path.join(os.tmpdir(), "alhidaya-alerts-"));
+    vi.stubEnv("CV_DIR", path.join(root, "cvs"));
+  });
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await fs.rm(root, { recursive: true, force: true });
+  });
+
+  /** An application from this file's applicant, its CV kept in this test's folder. */
+  const apply = (overrides: Record<string, unknown> = {}) =>
+    receiveApplication(received({ bytes: PDF, name: "Mariam CV.pdf" }, { name: ALERT_NAME, ...overrides }), ip(), at);
+
+  const row = async (id: string) =>
+    (
+      await getDb()
+        .select({ emailStatus: applications.emailStatus, cvKey: applications.cvKey })
+        .from(applications)
+        .where(eq(applications.id, id))
+    )[0];
+
+  /** The one email about this application, found by its link to the inbox. */
+  async function alertFor(id: string) {
+    const found = await waitForMail(`subject:"${ALERT_NAME}"`, 1);
+    for (const message of found) {
+      const text = (await mailText(message.ID)).replaceAll("\r\n", "\n");
+      if (text.includes(`/admin/applications/${id}`)) return { message, text };
+    }
+    throw new Error("no email for this application");
+  }
+
+  it("goes to the applications recipients, answered straight to the applicant, with every answer and the CV attached", async () => {
+    const { id, cv } = await apply({ jobId: jobs.open });
+    expect((await row(id)).emailStatus).toBe("PENDING");
+    expect(await sendApplicationAlert(id, cv)).toBe("SENT");
+    const { emailStatus, cvKey } = await row(id);
+    expect(emailStatus).toBe("SENT");
+
+    const { message, text } = await alertFor(id);
+    expect(message.Subject).toBe(`Application for ${jobFixture().title.en} from ${ALERT_NAME}`);
+    const { applicationsTo } = await getOperations();
+    expect(message.To.map((to) => to.Address)).toEqual(applicationsTo);
+    expect(message.ReplyTo).toEqual([expect.objectContaining({ Address: "mariam@example.com" })]);
+    expect(text).toContain(`${UI_TEXT.mophLicence}:\nIn progress`);
+    const [attachment] = await mailAttachments(message.ID);
+    expect(attachment).toMatchObject({ FileName: cvKey!.split("/")[1], ContentType: "application/pdf" });
+    expect(new TextDecoder().decode(attachment.bytes)).toBe(PDF);
+  });
+
+  it("is sent again by the admin's Retry with the kept CV, recorded, and never twice once it went", async () => {
+    const { id } = await apply();
+    await getDb().update(applications).set({ emailStatus: "NOT_SENT" }).where(eq(applications.id, id));
+    expect(await retryApplicationAlert(id, actor)).toBe("SENT");
+    expect((await row(id)).emailStatus).toBe("SENT");
+    const [entry] = await getDb()
+      .select({ action: auditLog.action, changes: auditLog.changes })
+      .from(auditLog)
+      .where(eq(auditLog.entityId, id));
+    expect(entry).toEqual({ action: "UPDATE", changes: { emailStatus: { from: "NOT_SENT", to: "SENT" } } });
+    const { message, text } = await alertFor(id);
+    expect(message.Subject).toBe(`General application from ${ALERT_NAME}`);
+    expect(text).toContain(MAIL_TEXT.applicationAlert.cvAttached((await row(id)).cvKey!.split("/")[1]));
+    expect(await mailAttachments(message.ID)).toHaveLength(1);
+
+    await expect(retryApplicationAlert(id, actor)).rejects.toMatchObject({
+      code: "EMAIL_ALREADY_SENT",
+      httpStatus: 422,
+    });
+  });
+
+  it("says the CV is not attached when it was never kept, or when the kept file cannot be read (logged)", async () => {
+    const unkept = await apply();
+    await getDb()
+      .update(applications)
+      .set({ cvKey: null, cvStatus: "NOT_STORED" })
+      .where(eq(applications.id, unkept.id));
+    expect(await sendApplicationAlert(unkept.id)).toBe("SENT");
+    const first = await alertFor(unkept.id);
+    expect(first.text).toContain(MAIL_TEXT.applicationAlert.cvNotAttached);
+    expect(await mailAttachments(first.message.ID)).toEqual([]);
+
+    const lost = await apply();
+    await fs.rm(path.join(root, "cvs", (await row(lost.id)).cvKey!));
+    expect(await sendApplicationAlert(lost.id)).toBe("SENT");
+    expect((await alertFor(lost.id)).text).toContain(MAIL_TEXT.applicationAlert.cvNotAttached);
+    const logged = await getDb()
+      .select({ context: errorLog.context })
+      .from(errorLog)
+      .where(eq(errorLog.message, "Application CV not read"));
+    expect(logged.map((entry) => entry.context)).toContainEqual({ applicationId: lost.id });
+  });
+
+  it("keeps the application when the mail server cannot be reached: marked not sent, logged without anything personal", async () => {
+    const { id, cv } = await apply();
+    vi.stubEnv("SMTP_PORT", "9");
+    expect(await sendApplicationAlert(id, cv)).toBe("NOT_SENT");
+    expect((await row(id)).emailStatus).toBe("NOT_SENT");
+    const logged = await getDb()
+      .select({ context: errorLog.context, detail: errorLog.detail, stack: errorLog.stack })
+      .from(errorLog)
+      .where(eq(errorLog.message, "Application alert email not sent"));
+    expect(logged.map((entry) => entry.context)).toContainEqual({ applicationId: id });
+    expect(JSON.stringify(logged)).not.toContain("mariam@example.com");
+    expect(JSON.stringify(logged)).not.toContain(ALERT_NAME);
+  });
+
+  it("answers not found for an application that is gone", async () => {
+    const gone = crypto.randomUUID();
+    await expect(sendApplicationAlert(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    await expect(retryApplicationAlert(gone, actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
   });
 });

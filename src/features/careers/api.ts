@@ -7,23 +7,28 @@ import { ROUTES } from "@/constants/routes";
 import {
   type CvStatus,
   DATAFLOW_LABELS,
+  type EmailStatus,
   MOPH_LICENCE_LABELS,
   PROMETRIC_LABELS,
   WHERE_NOW_LABELS,
 } from "@/constants/statuses";
-import { CV_TYPES, type FileType } from "@/constants/uploads";
+import { CV_TYPES, FILE_TYPES, type FileType } from "@/constants/uploads";
 import { getDb } from "@/db/client";
 import { applications, records, type SubmittedField } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
+import { logActionSafe } from "@/lib/audit/auditLog";
 import { captureError } from "@/lib/audit/errorLog";
 import { displayPhone } from "@/lib/contact";
+import type { Actor } from "@/lib/content/actor";
+import { getOperations } from "@/lib/content/operations";
 import { findPublishedRecord, findRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
 import type { ContentView } from "@/lib/content/view";
 import { dohaDay } from "@/lib/dates";
-import { businessRuleError, rateLimitError, validationError } from "@/lib/errors";
+import { businessRuleError, notFoundError, rateLimitError, validationError } from "@/lib/errors";
+import { createConfiguredMailService } from "@/lib/mail/nodemailer.provider";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
 import { renderShareImage } from "@/lib/seo/share-image";
-import { saveCv } from "@/lib/storage/cvs";
+import { cvKey as newCvKey, readCv, saveCv } from "@/lib/storage/cvs";
 import { detectFileType } from "@/lib/storage/file-type";
 import { normaliseLine } from "@/lib/text/normalise";
 import type { ApplicationFormPayload, JobDocument } from "@/lib/validation";
@@ -244,13 +249,14 @@ const uploadedName = (name: string) =>
  * or Word file by its first bytes; then the row is stored (steps 1 – 2) and
  * the CV saved in the private CV folder (step 3). A CV that cannot be saved
  * leaves the application stored with its CV marked not stored, the failure
- * logged by the application's id alone; the applicant is never told.
+ * logged by the application's id alone; the applicant is never told. The
+ * CV's bytes are answered too, for the HR email to carry (step 4).
  */
 export async function receiveApplication(
   payload: ApplicationFormPayload,
   visitorIp: string,
   at: Date = new Date(),
-): Promise<{ id: string; cvStatus: CvStatus }> {
+): Promise<{ id: string; cvStatus: CvStatus; cv: Uint8Array }> {
   const bytes = new Uint8Array(await payload.cv.arrayBuffer());
   const type = detectFileType(bytes);
   if (type === null || !CV_TYPES.includes(type)) {
@@ -279,5 +285,98 @@ export async function receiveApplication(
     await captureError({ message: "Application CV not stored", error, context: { applicationId: id } });
   }
   await getDb().update(applications).set({ cvKey, cvStatus, updatedAt: new Date() }).where(eq(applications.id, id));
-  return { id, cvStatus };
+  return { id, cvStatus, cv: bytes };
+}
+
+/** The kept CV, for a Retry: none when it was never kept or has expired, or when it cannot be read (logged). */
+async function keptCv(id: string, application: { cvKey: string | null; cvStatus: string }): Promise<Uint8Array | null> {
+  if (application.cvStatus !== "STORED" || !application.cvKey) return null;
+  try {
+    return await readCv(application.cvKey);
+  } catch (error) {
+    await captureError({ message: "Application CV not read", error, context: { applicationId: id } });
+    return null;
+  }
+}
+
+/**
+ * The HR email for an application (plan §9.3 step 4, §17): to the
+ * applications recipients set in Operations, Reply-To the applicant, with
+ * every answer and the CV attached: as received (`cv`), or the kept one on a
+ * Retry. Without either it says the CV is not attached. The application is
+ * marked sent or not sent; a failure is logged by its id alone, nothing
+ * personal, and the application stays, with Retry in the inbox.
+ */
+export async function sendApplicationAlert(id: string, cv: Uint8Array | null = null): Promise<EmailStatus> {
+  const db = getDb();
+  const [application] = await db
+    .select({
+      name: applications.name,
+      email: applications.email,
+      jobTitle: applications.jobTitle,
+      fields: applications.fields,
+      cvKey: applications.cvKey,
+      cvName: applications.cvName,
+      cvType: applications.cvType,
+      cvBytes: applications.cvBytes,
+      cvStatus: applications.cvStatus,
+      createdAt: applications.createdAt,
+    })
+    .from(applications)
+    .where(eq(applications.id, id));
+  if (!application) throw notFoundError("RECORD_NOT_FOUND");
+
+  let status: EmailStatus = "SENT";
+  try {
+    const type = application.cvType as FileType;
+    const content = cv ?? (await keptCv(id, application));
+    // The CV goes under the name it is kept by: readable, and nothing the applicant typed unsanitised.
+    const key =
+      application.cvKey ??
+      newCvKey({
+        type,
+        jobTitle: application.jobTitle,
+        applicantName: application.name,
+        receivedAt: application.createdAt,
+      });
+    const { applicationsTo } = await getOperations();
+    await createConfiguredMailService().sendApplicationAlert({
+      id,
+      to: applicationsTo,
+      replyTo: application.email,
+      name: application.name,
+      jobTitle: application.jobTitle,
+      receivedAt: application.createdAt,
+      fields: application.fields,
+      cv: { name: application.cvName, bytes: application.cvBytes },
+      attachment: content
+        ? { filename: key.slice(key.indexOf("/") + 1), content, contentType: FILE_TYPES[type].mime }
+        : null,
+    });
+  } catch (error) {
+    status = "NOT_SENT";
+    await captureError({ message: "Application alert email not sent", error, context: { applicationId: id } });
+  }
+  await db.update(applications).set({ emailStatus: status, updatedAt: new Date() }).where(eq(applications.id, id));
+  return status;
+}
+
+/** The admin's Retry (plan §9.3): an HR email not sent is sent again, with the kept CV, and the try is recorded. */
+export async function retryApplicationAlert(id: string, actor: Actor): Promise<EmailStatus> {
+  const [application] = await getDb()
+    .select({ emailStatus: applications.emailStatus })
+    .from(applications)
+    .where(eq(applications.id, id));
+  if (!application) throw notFoundError("RECORD_NOT_FOUND");
+  if (application.emailStatus === "SENT") throw businessRuleError("EMAIL_ALREADY_SENT");
+  const status = await sendApplicationAlert(id);
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "UPDATE",
+    entityType: "application",
+    entityId: id,
+    changes: { emailStatus: { from: application.emailStatus, to: status } },
+    requestId: actor.requestId,
+  });
+  return status;
 }

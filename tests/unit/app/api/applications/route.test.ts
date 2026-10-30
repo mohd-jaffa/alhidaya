@@ -5,16 +5,28 @@ import { UPLOAD_LIMITS } from "@/constants/limits";
 import { authorizationError } from "@/lib/errors";
 import { stubServerEnv } from "@tests/support/env";
 
-const receiveApplication = vi.fn(async () => ({ id: "application-id", cvStatus: "STORED" }));
-vi.mock("@/features/careers/api", () => ({ receiveApplication }));
+const CV = new Uint8Array([37, 80, 68, 70]);
+const receiveApplication = vi.fn(async () => ({ id: "application-id", cvStatus: "STORED", cv: CV }));
+const sendApplicationAlert = vi.fn<(id: string, cv: Uint8Array) => Promise<string>>(async () => "SENT");
+vi.mock("@/features/careers/api", () => ({ receiveApplication, sendApplicationAlert }));
 const verifyTurnstile = vi.fn<(token: string) => Promise<void>>(async () => {});
 vi.mock("@/lib/turnstile/verify", () => ({ verifyTurnstile }));
+const captureError = vi.fn();
+vi.mock("@/lib/audit/errorLog", () => ({ captureError }));
+
+/** Next's `after`, as a test runs it: the task kept, to run once the answer is out. */
+const later: (() => Promise<void>)[] = [];
+vi.mock("next/server", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/server")>()),
+  after: (task: () => Promise<void>) => void later.push(task),
+}));
 
 const { POST } = await import("@/app/api/applications/route");
 
 afterEach(() => {
   vi.unstubAllEnvs();
   vi.clearAllMocks();
+  later.length = 0;
 });
 
 const fields = {
@@ -70,6 +82,21 @@ describe("POST /api/applications", () => {
     );
   });
 
+  it("sends the HR email with the CV as received once the applicant has their answer, and logs a failure to record it", async () => {
+    stubServerEnv();
+    await POST(call(body(fields)));
+    expect(sendApplicationAlert).not.toHaveBeenCalled();
+    expect(later).toHaveLength(1);
+    await later[0]();
+    expect(sendApplicationAlert).toHaveBeenCalledWith("application-id", CV);
+
+    sendApplicationAlert.mockRejectedValueOnce(new Error("database gone"));
+    await later[0]();
+    expect(captureError).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "Application alert not recorded", reference: expect.stringMatching(/^req_/) }),
+    );
+  });
+
   it("answers a filled trap as taken and keeps nothing, asking Cloudflare nothing (plan §10.3)", async () => {
     stubServerEnv();
     const response = await POST(call(body({ your_reference: "https://spam.example" }, null)));
@@ -77,6 +104,7 @@ describe("POST /api/applications", () => {
     expect(await response.json()).toEqual({ success: true, data: { received: true } });
     expect(verifyTurnstile).not.toHaveBeenCalled();
     expect(receiveApplication).not.toHaveBeenCalled();
+    expect(later).toHaveLength(0);
   });
 
   it("keeps nothing Cloudflare does not confirm was sent by a person", async () => {

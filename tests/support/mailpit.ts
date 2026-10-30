@@ -34,3 +34,22 @@ export async function deleteMail(ids: string[]): Promise<void> {
   if (ids.length > 0)
     await fetch(`${MAILPIT()}/api/v1/messages`, { method: "DELETE", body: JSON.stringify({ IDs: ids }) });
 }
+
+export interface MailpitAttachment {
+  PartID: string;
+  FileName: string;
+  ContentType: string;
+  Size: number;
+}
+
+/** What an email carries attached, each with its bytes. */
+export async function mailAttachments(id: string): Promise<(MailpitAttachment & { bytes: Uint8Array })[]> {
+  const response = await fetch(`${MAILPIT()}/api/v1/message/${id}`);
+  const { Attachments } = (await response.json()) as { Attachments: MailpitAttachment[] };
+  return Promise.all(
+    Attachments.map(async (attachment) => {
+      const part = await fetch(`${MAILPIT()}/api/v1/message/${id}/part/${attachment.PartID}`);
+      return { ...attachment, bytes: new Uint8Array(await part.arrayBuffer()) };
+    }),
+  );
+}

@@ -12,10 +12,12 @@ import { applications, records } from "@/db/schema";
 import { seedJob } from "@/db/seed/content";
 import { createRecord, publishRecord } from "@/lib/content/records";
 import { TURNSTILE_FIELD } from "@/lib/turnstile/endpoints";
+import { deleteMail, mailAttachments, waitForMail } from "@tests/support/mailpit";
 
 /**
- * The application form (plan §9.2, §9.3, R5.2): from a job's Apply to the
- * thanks, with the CV kept in the private CV folder; the general application
+ * The application form (plan §9.2, §9.3, R5.2, R5.4): from a job's Apply to
+ * the thanks, with the CV kept in the private CV folder and attached to the
+ * HR email; the general application
  * refusing a file that is not a PDF or Word file by its bytes, nothing typed
  * lost; a closed job's form sending the visitor to the job. Turnstile runs on
  * Cloudflare's test keys. Each journey is a visitor of its own (§10.3).
@@ -64,6 +66,11 @@ async function fill(page: Page, email: string) {
 
 const cv = (page: Page, name: string, buffer: Buffer, mimeType = "application/pdf") =>
   page.getByLabel(UI_TEXT.cv).setInputFiles({ name, mimeType, buffer });
+
+const emailStatus = async (email: string) =>
+  (
+    await getDb().select({ status: applications.emailStatus }).from(applications).where(eq(applications.email, email))
+  )[0]?.status;
 
 /** What was kept of an application, found by its email, and its CV removed from the folder once read. */
 async function kept(email: string) {
@@ -123,6 +130,16 @@ test("a job's Apply leads to its form, which shows each mistake, then takes the 
   await expect(thanks.getByRole("link", { name: UI_TEXT.whatsapp })).toHaveCount(0);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
+  // The HR email goes once the applicant has their answer (plan §9.3): Reply-To them, the CV attached.
+  const [alert] = await waitForMail(`"${email}"`);
+  expect(alert.Subject).toBe(`Application for ${JOB.title.en} from Mariam Ali`);
+  expect(alert.ReplyTo.map((to) => to.Address)).toEqual([email]);
+  const [attached] = await mailAttachments(alert.ID);
+  expect(attached.FileName).toMatch(/_registered-general-nurse-home-care_mariam-ali_[0-9a-f]{10}\.pdf$/);
+  expect(Buffer.from(attached.bytes).equals(PDF)).toBe(true);
+  await expect.poll(() => emailStatus(email)).toBe("SENT");
+  await deleteMail([alert.ID]);
+
   expect(await kept(email)).toEqual([
     {
       jobId: expect.any(String),
@@ -161,6 +178,15 @@ test("the general application refuses a file that is not a PDF or Word file by i
   await checked(page);
   await page.getByRole("button", { name: UI_TEXT.sendApplication }).click();
   await expect(page.getByRole("group", { name: UI_TEXT.applicationSent })).toBeFocused();
+  const [alert] = await waitForMail(`"${email}"`);
+  expect(alert.Subject).toBe("General application from Mariam Ali");
+  const [attached] = await mailAttachments(alert.ID);
+  expect(attached).toMatchObject({
+    FileName: expect.stringMatching(/_general_mariam-ali_[0-9a-f]{10}\.docx$/),
+    ContentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  });
+  await expect.poll(() => emailStatus(email)).toBe("SENT");
+  await deleteMail([alert.ID]);
   expect(await kept(email)).toEqual([
     expect.objectContaining({ jobId: null, jobTitle: null, cvType: "docx", cvStatus: "STORED" }),
   ]);

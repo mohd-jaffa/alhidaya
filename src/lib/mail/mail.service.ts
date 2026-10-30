@@ -1,6 +1,7 @@
 import { ADMIN_ROUTES } from "@/constants/routes";
 
-import type { MailProvider } from "./mail.provider";
+import type { MailAttachment, MailProvider } from "./mail.provider";
+import { type ApplicationAlertInput, applicationAlertTemplate } from "./templates/application-alert";
 import { type EnquiryAlertInput, enquiryAlertTemplate } from "./templates/enquiry-alert";
 import { passwordResetTemplate } from "./templates/password-reset";
 
@@ -31,6 +32,36 @@ export class MailService {
     const inboxUrl = new URL(ADMIN_ROUTES.enquiry(id), this.siteUrl).toString();
     const content = enquiryAlertTemplate({ ...alert, siteUrl: this.siteUrl, inboxUrl });
     await this.provider.send({ from: this.from, to: [...to], replyTo, ...content });
+  }
+
+  /**
+   * A new application to the applications recipients, answered straight to
+   * the applicant, with the CV attached when there is one (plan §9.3, §17).
+   */
+  async sendApplicationAlert(
+    input: Omit<ApplicationAlertInput, "siteUrl" | "inboxUrl" | "cv"> & {
+      id: string;
+      to: readonly string[];
+      replyTo: string;
+      cv: { name: string; bytes: number };
+      attachment: MailAttachment | null;
+    },
+  ) {
+    const { id, to, replyTo, cv, attachment, ...alert } = input;
+    const inboxUrl = new URL(ADMIN_ROUTES.application(id), this.siteUrl).toString();
+    const content = applicationAlertTemplate({
+      ...alert,
+      cv: { ...cv, attachedAs: attachment?.filename ?? null },
+      siteUrl: this.siteUrl,
+      inboxUrl,
+    });
+    await this.provider.send({
+      from: this.from,
+      to: [...to],
+      replyTo,
+      ...content,
+      ...(attachment ? { attachments: [attachment] } : {}),
+    });
   }
 
   async sendPasswordReset(input: { to: string; name: string; resetUrl: string }) {

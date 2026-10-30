@@ -469,6 +469,14 @@ page, which says it is closed (§6.6); a renamed job's moves on for good.
    saved, the failure is logged, and the admin inbox shows the CV as **not
    stored** or the email as **not sent**, with a Retry.
 
+The HR email goes once the applicant has their answer (as D79 for
+enquiries), carrying the CV as received, so a CV that could not be saved
+still reaches HR. Its attachment is named as the CV is kept (§9.4), never by
+the name it was uploaded under. Retry sends the email again with the kept
+CV; without one (never kept, expired, or unreadable) the email says the CV
+is not attached. A CV that was not stored has no Retry of its own: its bytes
+lived only in the request, and the first HR email carried them.
+
 ### 9.4 Keeping CVs (D41, D52, D54)
 
 - **Where:** `~/alhidaya-data/cvs/<YYYY-MM>/` on the cPanel server, **outside
@@ -1401,7 +1409,7 @@ one commit (D27).
 | R5.1 | Careers page, job page, closed and empty states, `JobPosting` | §6.5, §6.6 | — | DONE (2026-10-29; a closed job is `noindex`; `apply` is no job's address) |
 | R5.2 | Application form with CV (type by bytes, size); general application | §9.2 | Q4, Q7 | DONE (2026-10-30; the CV is saved in the private folder now, the rest of R5.3 to come; a closed job's form sends the visitor to the job) |
 | R5.3 | The CV folder in use: save under a random id, admin-only download, delete with the application | §9.4 | — | TODO |
-| R5.4 | Submit: row, CV saved, HR email with the CV attached, failure paths and retry | §9.3 | — | TODO |
+| R5.4 | Submit: row, CV saved, HR email with the CV attached, failure paths and retry | §9.3 | — | DONE (2026-10-30; the email after the answer, as D79; Retry attaches the kept CV; a CV not stored has no Retry of its own) |
 | R5.5 | Applications inbox | §9.5 | — | TODO |
 | R5.6 | Integration + E2E (mail caught by Mailpit) | §34 | — | TODO |
 

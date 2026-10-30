@@ -256,10 +256,7 @@ export function getErrorMessage(code: string): string {
   return isErrorMessageCode(code) ? ERROR_MESSAGES[code] : ERROR_MESSAGES.INTERNAL_ERROR;
 }
 
-/**
- * Every word of every email the site sends (AGENTS.md §16). The application
- * alert joins with its form (R5.4).
- */
+/** Every word of every email the site sends (AGENTS.md §16). */
 export const MAIL_TEXT = {
   greeting: (name: string) => `Hello ${name},`,
   /** Under a button, for a mail app that will not show one. */
@@ -284,6 +281,28 @@ export const MAIL_TEXT = {
     action: "Open it in the inbox",
     footnote: (name: string) =>
       `Reply to this email to answer ${name} directly. The website sends these alerts to the addresses set in its admin, under Operations.`,
+  },
+  /**
+   * A new application, to the applications recipients (plan §9.3), with the
+   * CV attached; Reply-To is the applicant.
+   */
+  applicationAlert: {
+    subject: (name: string, job: string | null) =>
+      job ? `Application for ${job} from ${name}` : `General application from ${name}`,
+    preheader: "Sent through the website's application form.",
+    heading: (job: string | null) => (job ? "New application" : "New general application"),
+    received: (name: string, job: string | null, when: string) =>
+      job
+        ? `${name} applied for ${job} on ${when}, Doha time.`
+        : `${name} sent a general application on ${when}, Doha time.`,
+    cvAttached: (file: string) => `Their CV is attached, as ${file}.`,
+    cvNotAttached: "Their CV is not attached: the website no longer has it. Ask them for it when you reply.",
+    job: "Job",
+    general: "General application",
+    cv: "CV as uploaded",
+    action: "Open it in the inbox",
+    footnote: (name: string) =>
+      `Reply to this email to answer ${name} directly. The website sends these emails to the addresses set in its admin, under Operations.`,
   },
   passwordReset: {
     subject: `Reset your ${UI_TEXT.siteName} admin password`,

@@ -33,7 +33,13 @@ function handlers(): { name: string; source: string }[] {
 describe("the admin API", () => {
   it("is found", () => {
     expect(handlers().map((handler) => handler.name)).toEqual(
-      expect.arrayContaining([...OPEN, "enquiries GET", "enquiries/[id] PATCH", "enquiries/[id]/notes POST"]),
+      expect.arrayContaining([
+        ...OPEN,
+        "enquiries GET",
+        "enquiries/[id] PATCH",
+        "enquiries/[id]/notes POST",
+        "applications/[id]/retry-mail POST",
+      ]),
     );
   });
 

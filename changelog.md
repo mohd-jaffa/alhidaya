@@ -2161,3 +2161,52 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R5.4: the HR email with the CV attached, and Retry
+
+### Added
+- **The HR email** (plan §9.3 step 4, §17): to the applications recipients
+  set in Operations (`hr@alhidaya.qa` until the admin changes it), Reply-To
+  the applicant, naming the job (or a general application) and when it came
+  in Doha time, every answer as the applicant saw it, the CV as uploaded,
+  and the way to the application in the inbox. **The CV is attached** under
+  the name it is kept by, never the name it was uploaded under.
+- It goes once the applicant has their answer, as the enquiry alerts do
+  (D79), carrying the CV as received: a CV that could not be saved still
+  reaches HR. The application is marked sent or not sent; a failure is
+  logged by the application's id alone, and the applicant never knows.
+- **Retry** (`POST /api/admin/applications/[id]/retry-mail`, admin only,
+  audited with where the email stood and where it went): the email again,
+  with the kept CV read from the folder. Without one (never kept, expired,
+  or a file that cannot be read, which is logged) the email says the CV is
+  not attached, and to ask the applicant for it. Never twice once sent.
+- `sendApplicationAlert`, `retryApplicationAlert`
+  (`src/features/careers/api.ts`); `MailService.sendApplicationAlert` and
+  its template; `MAIL_TEXT.applicationAlert`; `ADMIN_ROUTES.application`.
+
+### Changed
+- `receiveApplication` answers the CV's bytes too, for the email to carry.
+
+### Notes
+- Plan §9.3 gives "not stored" a Retry. A CV that was not stored has none of
+  its own: its bytes lived only in the request, and keeping them anywhere
+  but the CV folder would break §9.4. The first HR email carries it. The
+  inbox (R5.5) says so beside a CV not stored.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: the template (job or
+  general, the CV attached or not, everything escaped); the service (the
+  attachment, or none); the route sending after the answer and logging a
+  failure to record it; Retry's admin route and the route contract; through
+  Mailpit, the email to the recipients with Reply-To, the answers and the CV
+  attached byte for byte under its kept name; Retry with the kept CV,
+  audited, refused once sent; no CV attached when never kept or unreadable
+  (logged); the mail server unreachable (not sent, logged without anything
+  personal); not found.
+- E2E at both widths: a job's application and a general one each reach
+  Mailpit with the CV attached (PDF and Word), and are marked sent. E2E
+  passed in full (116, 22 skipped).
+
+### Blockers
+- None.
