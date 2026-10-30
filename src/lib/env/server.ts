@@ -48,6 +48,10 @@ const serverEnvSchema = z.object({
   // Keys the hashes that stand in for emails and IPs in the lockout and the
   // rate limits, so neither is ever stored (plan §18, §26.4).
   HASH_SECRET: z.string().min(32),
+  // What the server's timed jobs send as their bearer token (plan §17): the
+  // cPanel cron entry calls the daily clean-up with it. At least 32
+  // characters; never in the repository.
+  CRON_SECRET: z.string().min(32),
 
   // Cloudflare Turnstile, the public forms' check that a person is sending
   // (plan §10.3): the site key the widget is drawn with, given to the page at

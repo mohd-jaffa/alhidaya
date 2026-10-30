@@ -9,6 +9,9 @@ const log = vi.hoisted(() => vi.fn());
 vi.mock("@/components/admin/WaitingToPublish", () => ({
   WaitingToPublish: () => <p>What waits to be published</p>,
 }));
+vi.mock("@/components/admin/DiskWarning", () => ({
+  DiskWarning: () => <p>The server is running out of room</p>,
+}));
 vi.mock("@/components/admin/TodayLog", () => ({
   TodayLog: (props: unknown) => {
     log(props);
@@ -21,6 +24,7 @@ describe("TodayScreen", () => {
     render(<TodayScreen searchParams={{}} />);
     expect(screen.getByRole("heading", { level: 1, name: ADMIN_TEXT.today })).toBeVisible();
     expect(screen.getByText("What waits to be published")).toBeVisible();
+    expect(screen.getByText("The server is running out of room")).toBeVisible();
     expect(screen.getByRole("link", { name: ADMIN_TEXT.needsYou })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: ADMIN_TEXT.everything })).toHaveAttribute(
       "href",

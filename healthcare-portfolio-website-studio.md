@@ -266,7 +266,7 @@ Arabic arrives later under `/ar` with the same paths (D4, §33).
 `/admin/pages/[page]`, `/admin/services` (+ `/new`, `/[id]`, D92),
 `/admin/jobs` (+ `/new`, `/[id]`), `/admin/clients` (+ `/new`, `/[id]`), `/admin/media`, `/admin/enquiries`,
 `/admin/applications`, `/admin/settings` (content, contact, navigation, footer,
-SEO, brochure), `/admin/settings/operations` (recipients, retention),
+SEO, brochure), `/admin/settings/operations` (recipients, retention, disk use, the last clean-up),
 `/admin/activity`. Never indexed (`noindex`, disallowed in robots).
 
 ### 5.3 Redirects from the current site (D21)
@@ -722,7 +722,10 @@ enquiry or application, change retention.
   their notes and their CV files, and the CV files past the CV expiry: a
   **cPanel cron job** calls
   `POST /api/cron/retention` with `CRON_SECRET` (D39). A file that cannot be
-  deleted is retried the next day and shown in the admin.
+  deleted is retried the next day and shown in the admin. The run is
+  audited with its counts only, and Operations shows the last one (R6.7).
+  The cron entry (R8.2) runs once a night:
+  `curl -fsS -X POST -H "Authorization: Bearer <CRON_SECRET>" https://alhidaya.qa/api/cron/retention`.
 - **Personal data never goes into logs**, error logs, URLs or analytics. The
   logger redacts by key; a test proves it.
 - IP addresses are stored only as a keyed hash (`IP_HASH_SECRET`) for rate
@@ -1071,7 +1074,7 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `POST /api/enquiries` | Quote or Contact (Turnstile, honeypot, rate limit) |
 | `POST /api/applications` | multipart application with the CV |
 | `GET /api/preview`, `GET /api/preview/exit` | enter and leave draft mode (admin only) |
-| `POST /api/cron/retention` | the daily purge (`CRON_SECRET`) |
+| `POST /api/cron/retention` | the daily purge (`CRON_SECRET` as a bearer token, compared in constant time; no session, no origin: the cron entry calls it with curl): enquiries and applications past retention with their CV files, CV files past their expiry, old rate-limit windows and logs; answers the counts (R6.7) |
 | `POST /api/cron/mail-retry` | every 10 minutes: emails not sent, tried again up to 3 times (`CRON_SECRET`, D85, R6.10) |
 | `POST`/`DELETE /api/admin/session` | sign in (lockout first) and sign out, through Better Auth on the server; its own HTTP routes are never mounted (R1.2) |
 | `POST /api/admin/password/forgot`, `/reset` | ask for a reset link (the same answer for any email; rate-limited), and set a new password from it |
@@ -1082,7 +1085,7 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `/api/admin/media` (GET, POST; + `[id]` PATCH, DELETE) | the library with where each image is used; upload (multipart, the words as one JSON part); an image's words; delete, refused while it is used (D89, D93) |
 | `/api/admin/enquiries` (+ `[id]`, `/notes`, `/retry-mail`) | the inbox |
 | `/api/admin/applications` (+ `[id]`, `/notes`, `/cv`, `/retry`) | the inbox; `/cv` downloads the CV (§9.4) |
-| `/api/admin/site` (GET, PUT; + `/publish`, `/discard`, `/brochure`), `/api/admin/operations` | settings: the site's content as one draft, a new brochure uploaded into it (D94); operations |
+| `/api/admin/site` (GET, PUT; + `/publish`, `/discard`, `/brochure`), `/api/admin/operations` (GET, PUT) | settings: the site's content as one draft, a new brochure uploaded into it (D94); operations: the recipients and keeping periods, saved at once, with each folder's use and the last clean-up (D95) |
 | `/api/admin/activity` | the audit trail |
 
 ## 30. Design system and motion
@@ -1460,7 +1463,7 @@ one commit (D27).
 | R6.4 | Services and jobs editors | §8, §9.1 | — | DONE (2026-10-30; shaped with the user, D92) |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | DONE (2026-10-30; D92, D93; the sizing step and `storeImage` came forward with D75) |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | DONE (2026-10-30; D94) |
-| R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | TODO |
+| R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | DONE (2026-10-30) |
 | R6.8 | Activity (audit trail) | §36 | — | TODO |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | TODO |
 | R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | TODO |

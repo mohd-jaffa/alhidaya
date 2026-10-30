@@ -5,6 +5,7 @@ import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { pageFrom } from "@/lib/pagination";
 import { todayKey } from "@/lib/inbox/keys";
 
+import { DiskWarning } from "./DiskWarning";
 import { TodayLog } from "./TodayLog";
 import { WaitingToPublish } from "./WaitingToPublish";
 
@@ -46,7 +47,12 @@ export function TodayScreen({
           ))}
         </nav>
       </div>
-      {view === "needs" ? <WaitingToPublish /> : null}
+      {view === "needs" ? (
+        <>
+          <DiskWarning />
+          <WaitingToPublish />
+        </>
+      ) : null}
       <TodayLog
         key={`${view}-${page}`}
         listKey={todayKey({ needsYou: view === "needs", page })}

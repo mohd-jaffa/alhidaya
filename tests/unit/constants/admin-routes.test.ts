@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ADMIN_API_ROUTES, ADMIN_PUBLIC_ROUTES, ADMIN_ROUTES } from "@/constants/admin-routes";
+import { ADMIN_API_ROUTES, ADMIN_PUBLIC_ROUTES, ADMIN_ROUTES, CRON_ROUTES } from "@/constants/admin-routes";
 
 describe("the admin's routes", () => {
   it("build an editor's or an arrival's page from what it names", () => {
@@ -29,5 +29,11 @@ describe("the admin's routes", () => {
     expect(ADMIN_API_ROUTES.adminJobClose("j1")).toBe("/api/admin/jobs/j1/close");
     expect(ADMIN_API_ROUTES.adminMediaItem("m1")).toBe("/api/admin/media/m1");
     expect(ADMIN_API_ROUTES.adminSiteBrochure).toBe("/api/admin/site/brochure");
+  });
+});
+
+describe("the timed jobs' routes", () => {
+  it("sit under /api/cron, apart from the admin's", () => {
+    for (const route of Object.values(CRON_ROUTES)) expect(route.startsWith("/api/cron/")).toBe(true);
   });
 });

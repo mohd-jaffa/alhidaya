@@ -33,6 +33,10 @@ interface Station {
 const isHere = (pathname: string, href: string) =>
   href === ADMIN_ROUTES.overview ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
 
+/** The station the admin is at: the closest one, so Operations, under Settings, is not Settings as well. */
+const currentStation = (pathname: string, stations: Station[]) =>
+  stations.filter((station) => isHere(pathname, station.href)).sort((a, b) => b.href.length - a.href.length)[0];
+
 /**
  * The admin's sections as stations on the line (R6.1): the line runs down
  * the rail, the current section is the white station, and what waits shows
@@ -45,7 +49,10 @@ function Stations({
   groups: { label?: string; stations: Station[] }[];
   onNavigate?: () => void;
 }) {
-  const pathname = usePathname();
+  const current = currentStation(
+    usePathname(),
+    groups.flatMap((group) => group.stations),
+  );
   return (
     <nav
       aria-label={ADMIN_TEXT.navigation}
@@ -60,7 +67,7 @@ function Stations({
           ) : null}
           <ul className="grid gap-1">
             {group.stations.map((station) => {
-              const here = isHere(pathname, station.href);
+              const here = station === current;
               return (
                 <li key={station.href}>
                   <Link
@@ -204,8 +211,15 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         },
       ],
     },
+    {
+      label: ADMIN_TEXT.runningTheSite,
+      stations: [{ label: ADMIN_TEXT.operations, href: ADMIN_ROUTES.operations }],
+    },
   ];
-  const current = groups.flatMap((group) => group.stations).find((station) => isHere(pathname, station.href));
+  const current = currentStation(
+    pathname,
+    groups.flatMap((group) => group.stations),
+  );
 
   return (
     <div className="min-h-dvh bg-ground lg:grid lg:grid-cols-[15.5rem_1fr]">

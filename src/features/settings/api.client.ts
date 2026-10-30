@@ -1,8 +1,8 @@
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { postForm, postJson, putJson } from "@/lib/api/client";
-import type { SiteDocument } from "@/lib/validation";
+import type { OperationsPayload, SiteDocument } from "@/lib/validation";
 
-import type { SiteDraftItem } from "./types";
+import type { OperationsViewItem, SiteDraftItem } from "./types";
 
 /** The endpoints Settings calls (plan §13, D94). */
 export const SiteClient = {
@@ -16,4 +16,9 @@ export const SiteClient = {
     form.set("file", file);
     return postForm<NonNullable<SiteDraftItem["brochure"]>>(ADMIN_API_ROUTES.adminSiteBrochure, form);
   },
+};
+
+/** The endpoint Operations calls (plan §13, D95): its settings saved, at once. */
+export const OperationsClient = {
+  save: (operations: OperationsPayload) => putJson<OperationsViewItem>(ADMIN_API_ROUTES.adminOperations, operations),
 };

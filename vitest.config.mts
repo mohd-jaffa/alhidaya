@@ -70,6 +70,7 @@ export default defineConfig({
             MAILPIT_URL: local.MAILPIT_URL ?? "",
             BETTER_AUTH_SECRET: local.BETTER_AUTH_SECRET ?? "",
             HASH_SECRET: local.HASH_SECRET ?? "",
+            CRON_SECRET: local.CRON_SECRET ?? "",
             TURNSTILE_SITE_KEY: local.TURNSTILE_SITE_KEY ?? "",
             TURNSTILE_SECRET_KEY: local.TURNSTILE_SECRET_KEY ?? "",
             MEDIA_DIR: ".data/integration-media",

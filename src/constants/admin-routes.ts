@@ -91,6 +91,8 @@ export const ADMIN_API_ROUTES = {
   adminSitePublish: "/api/admin/site/publish",
   adminSiteDiscard: "/api/admin/site/discard",
   adminSiteBrochure: "/api/admin/site/brochure",
+  /** How the site runs (D95): recipients, keeping periods, the folders' use. */
+  adminOperations: "/api/admin/operations",
   /** The media library's images (D89, D93): listed and uploaded; one's words changed, or it deleted. */
   adminMedia: "/api/admin/media",
   adminMediaItem: (id: string) => `/api/admin/media/${id}`,
@@ -102,3 +104,8 @@ export const ADMIN_PUBLIC_ROUTES: readonly string[] = [
   ADMIN_ROUTES.forgotPassword,
   ADMIN_ROUTES.resetPassword,
 ];
+
+/** The timed jobs' endpoints (plan §17): called by the cPanel cron entries with CRON_SECRET, never by a page. */
+export const CRON_ROUTES = {
+  retention: "/api/cron/retention",
+} as const;

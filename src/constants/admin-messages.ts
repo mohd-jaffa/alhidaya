@@ -370,6 +370,48 @@ export const ADMIN_TEXT = {
   removeBrochure: "Remove the brochure",
   brochureFile: "The PDF",
   brochureNotUploaded: "The PDF was not uploaded.",
+  /** How the site runs (plan §13, §18, §21.2, D95). */
+  operations: "Operations",
+  runningTheSite: "Running the site",
+  operationsIntro:
+    "Who receives the forms' emails, how long enquiries, applications and CVs are kept, and how full the server's folders are. Changes here take effect at once.",
+  recipients: "Who receives the emails",
+  enquiriesTo: "Quote and Contact forms",
+  applicationsTo: "Applications",
+  recipientsHint: "Each address gets every email. At least one, up to five.",
+  recipient: "Email address",
+  addRecipient: "Add an address",
+  keeping: "How long things are kept",
+  keepingHint:
+    "Enquiries and applications older than this are deleted every night, with their notes and CVs. A CV can be deleted sooner, its application kept.",
+  retentionDays: "Enquiries and applications, in days",
+  cvExpiryDays: "CVs, in days",
+  daysHint: (min: number, max: number) => `From ${min} to ${max} days.`,
+  saveOperations: "Save",
+  savingOperations: "Saving",
+  operationsSaved: "Saved. It takes effect at once.",
+  keepingTitle: "Change how long things are kept?",
+  keepingBody: (retention: number, cvs: number) =>
+    `From tonight, enquiries and applications older than ${retention} days, and CVs older than ${cvs} days, are deleted. What is deleted can't be brought back.`,
+  change: "Change",
+  diskUse: "Room on the server",
+  diskUseHint: "Each folder has its own room on the server's 1 GB disk.",
+  mediaFolder: "Photos, logos and the brochure",
+  cvFolder: "CVs",
+  diskUsed: (used: string, budget: string, percent: number) => `${used} of ${budget} (${percent}%)`,
+  diskNearlyFull: "Nearly full",
+  lastPurge: "The nightly clean-up",
+  noPurgeYet: "It has not run yet.",
+  purgeRan: (when: string) => `Last ran ${when}.`,
+  purgeDeleted: (enquiries: number, applications: number, cvs: number) =>
+    `Deleted ${enquiries} ${enquiries === 1 ? "enquiry" : "enquiries"}, ${applications} ${applications === 1 ? "application" : "applications"} and ${cvs} ${cvs === 1 ? "CV" : "CVs"}.`,
+  purgeFilesLeft: (count: number) =>
+    `${count} ${count === 1 ? "CV file" : "CV files"} could not be deleted; the next run tries again.`,
+  diskWarningTitle: "The server is running out of room",
+  diskWarningMedia: (percent: number) =>
+    `The folder of photos, logos and the brochure is ${percent}% full. Delete images nothing uses in Media to make room.`,
+  diskWarningCvs: (percent: number) =>
+    `The CV folder is ${percent}% full. Old CVs are deleted when their time runs out; a shorter time in Operations makes room sooner.`,
   /** The services (plan §8, D92). */
   services: "Services",
   servicesIntro:

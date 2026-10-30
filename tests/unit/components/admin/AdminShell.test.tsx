@@ -121,6 +121,18 @@ describe("AdminShell", () => {
     expect(screen.getByRole("main")).toHaveTextContent("Page");
   });
 
+  it("marks only the closest section current: Operations, under Settings, is not Settings too", async () => {
+    navigation.pathname = "/admin/settings/operations";
+    stubApi((_, url) => ({ data: NOTHING[url] ?? { items: [], total: 0, page: 1, pageSize: 25 } }));
+    shell();
+    const rail = screen.getAllByRole("navigation", { name: ADMIN_TEXT.navigation })[0];
+    expect(within(rail).getByRole("link", { name: ADMIN_TEXT.operations })).toHaveAttribute("aria-current", "page");
+    expect(within(rail).getByRole("link", { name: ADMIN_TEXT.settings })).not.toHaveAttribute("aria-current");
+    await waitFor(() =>
+      expect(within(rail).getByRole("link", { name: ADMIN_TEXT.settings })).toHaveTextContent(/^Settings$/),
+    );
+  });
+
   it("marks a section as current on the pages under it, and shows no count while nothing waits", async () => {
     navigation.pathname = "/admin/enquiries/e-1";
     stubApi((_, url) => ({ data: NOTHING[url] ?? { items: [], total: 0, page: 1, pageSize: 25 } }));

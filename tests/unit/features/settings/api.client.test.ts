@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { SEED_SITE } from "@/db/seed/content";
-import { SiteClient } from "@/features/settings/api.client";
+import { OperationsClient, SiteClient } from "@/features/settings/api.client";
+import { DEFAULT_OPERATIONS } from "@/lib/content/operations";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -24,5 +25,17 @@ describe("SiteClient", () => {
     ]);
     const form = fetch.mock.calls[3][1]?.body as FormData;
     expect([form.get("fields"), form.get("file")]).toEqual(["{}", expect.any(File)]);
+  });
+});
+
+describe("OperationsClient", () => {
+  it("saves how the site runs at its endpoint", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () => Response.json({ success: true, data: {} }));
+    vi.stubGlobal("fetch", fetch);
+    await OperationsClient.save(DEFAULT_OPERATIONS);
+    expect(fetch).toHaveBeenCalledWith(
+      ADMIN_API_ROUTES.adminOperations,
+      expect.objectContaining({ method: "PUT", body: JSON.stringify(DEFAULT_OPERATIONS) }),
+    );
   });
 });

@@ -18,5 +18,8 @@ describe("ADMIN_TEXT", () => {
     expect(ADMIN_TEXT.needsYouCount(1)).toBe("1 needs you");
     expect(ADMIN_TEXT.needsYouCount(4)).toBe("4 need you");
     expect(ADMIN_TEXT.quoteFrom("Omar")).toBe("Quote request from Omar");
+    expect(ADMIN_TEXT.purgeDeleted(1, 1, 1)).toBe("Deleted 1 enquiry, 1 application and 1 CV.");
+    expect(ADMIN_TEXT.purgeDeleted(0, 2, 3)).toBe("Deleted 0 enquiries, 2 applications and 3 CVs.");
+    expect(ADMIN_TEXT.purgeFilesLeft(1)).toMatch(/^1 CV file could not/);
   });
 });

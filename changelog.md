@@ -2688,3 +2688,61 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. At launch, the admin uploads `profile.pdf`, from the user's backup
   of the old site, as the brochure (Q3, D91); the plan's §40 says so.
+
+## 2026-10-30 — R6.7: Operations and the nightly clean-up
+
+### Added
+- `/admin/settings/operations` (D95), under a new "Running the site" group
+  on the rail: who receives the forms' emails (one to five addresses
+  each), how long enquiries and applications are kept and how long CVs
+  are kept (1 – 365 days each, D52), saved at once; changing a keeping
+  period asks first and says what will be deleted. Each folder's room
+  against its budget (§21.2) as a meter, and what the last nightly
+  clean-up did.
+- Today warns, above what waits to be published, once the media or CV
+  folder passes 80 % of its budget, naming each and where to make room.
+- The nightly clean-up (plan §18), `POST /api/cron/retention`: enquiries
+  and applications past the retention period with their notes and CV
+  files; CV files past their expiry, their applications marked expired;
+  rate-limit windows older than a day; the error and audit logs past
+  their own periods. A CV file that cannot be deleted keeps its row for
+  the next night's try and is counted. The run is audited
+  (`RETENTION_PURGE`) with its counts only.
+- `withCronRoute` (`src/lib/api/cron.ts`): a timed job runs only for
+  `CRON_SECRET` as a bearer token, compared in constant time; anything
+  else is refused as unsigned. `CRON_SECRET` (at least 32 characters) is
+  checked at start and documented in `.env.example`; `CRON_ROUTES` in
+  `admin-routes.ts`.
+- `/api/admin/operations` (GET, PUT); `purgeExpired`,
+  `getOperationsForAdmin` and `saveOperations`
+  (`features/settings/api.ts`); `DiskMeter`, `DiskWarning`,
+  `RecipientsField`, `OperationsScreen`.
+
+### Changed
+- The rail marks only the closest station current, so Operations, under
+  Settings, is not Settings as well.
+- The plan's §18 gives the cron entry's command for R8.2, and §29 the
+  routes as built.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,061), coverage 100%: against the
+  local MySQL and the CV folder, the clean-up deletes only what is past
+  its period, keeps a row whose CV file could not be deleted and counts
+  it once, marks an application whose CV expired, clears old rate-limit
+  windows, and audits the counts; the operations saved and read back with
+  each folder's use and the last run.
+- E2E (phone and desktop, axe): Operations in its groups, the rail on
+  Operations; a keeping period changed only after the admin says so; a
+  recipient added, saved and still there after a reload, then put back;
+  the clean-up refused without the secret, with a wrong one and with
+  another scheme (401, `no-store`), run with it, and its counts then
+  shown in Operations.
+- Screens looked at, at 1440 and 390 px, the question asked before a
+  keeping period changes included.
+- First paint, JavaScript (gzip, within 170 KB), unchanged: Home
+  159.3 KB, Contact 168.9 KB, the apply page 169.3 KB (724 bytes left).
+
+### Blockers
+- None. The cron entry is added on the server at R8.2, after full payment
+  (D48).
