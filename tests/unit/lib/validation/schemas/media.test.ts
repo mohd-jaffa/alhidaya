@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { TEXT_LIMITS } from "@/constants/limits";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
-import { imageDetailsSchema, imageFileSchema } from "@/lib/validation";
+import { brochureFileSchema, imageDetailsSchema, imageFileSchema } from "@/lib/validation";
 
 const blank = { provider: "", url: "", licence: "" };
 
@@ -53,5 +53,14 @@ describe("an uploaded image", () => {
   it("is a file, said in the catalogue's words when there is none", () => {
     expect(imageFileSchema.safeParse(new File(["x"], "a.jpg")).success).toBe(true);
     expect(imageFileSchema.safeParse(null).error?.issues[0].message).toBe(VALIDATION_MESSAGES.required("The image"));
+  });
+});
+
+describe("an uploaded brochure", () => {
+  it("is a file, said in the catalogue's words when there is none", () => {
+    expect(brochureFileSchema.safeParse(new File(["%PDF"], "a.pdf")).success).toBe(true);
+    expect(brochureFileSchema.safeParse("a.pdf").error?.issues[0].message).toBe(
+      VALIDATION_MESSAGES.required("The PDF"),
+    );
   });
 });

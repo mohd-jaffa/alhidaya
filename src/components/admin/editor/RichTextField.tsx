@@ -40,12 +40,15 @@ export function ListItems({
   item = ADMIN_TEXT.listItem,
   min = 1,
   max = LIST_LIMITS.jobPoints,
+  maxLength = TEXT_LIMITS.item,
 }: {
   name: string;
   /** What one line is called, numbered: "List item 2", "Responsibility 2". */
   item?: string;
   min?: number;
   max?: number;
+  /** Each line's bound, as its check has it. */
+  maxLength?: number;
 }) {
   const { fields, append, move, remove } = useFieldArray({ name, keyName: "key" });
   const error = useEditorError(name);
@@ -57,14 +60,7 @@ export function ListItems({
           return (
             <li key={field.key} className="flex items-end gap-2">
               <div className="min-w-0 flex-1">
-                <EditorText
-                  name={`${name}.${index}.en`}
-                  label={thing}
-                  max={TEXT_LIMITS.item}
-                  required
-                  multiline
-                  rows={2}
-                />
+                <EditorText name={`${name}.${index}.en`} label={thing} max={maxLength} required multiline rows={2} />
               </div>
               <ItemControls
                 thing={thing}

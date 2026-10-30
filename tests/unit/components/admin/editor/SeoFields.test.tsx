@@ -21,4 +21,14 @@ describe("SeoFields", () => {
     expect(title).toHaveAttribute("maxlength", String(TEXT_LIMITS.seoTitle));
     expect(screen.getByRole("textbox", { name: `${ADMIN_TEXT.seoDescription} (${UI_TEXT.optional})` })).toHaveValue("");
   });
+
+  it("asks for the site's own defaults, which every page falls back to", () => {
+    render(
+      <EditorForm values={{ seo: { title: { en: "" }, description: { en: "" } } }}>
+        <SeoFields hint={ADMIN_TEXT.siteSeoHint} required />
+      </EditorForm>,
+    );
+    expect(screen.getByRole("textbox", { name: ADMIN_TEXT.seoTitle })).toBeRequired();
+    expect(screen.getByRole("textbox", { name: ADMIN_TEXT.seoDescription })).toBeRequired();
+  });
 });

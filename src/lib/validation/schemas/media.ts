@@ -38,3 +38,8 @@ export type ImageDetailsPayload = z.output<typeof imageDetailsSchema>;
 export const imageFileSchema = z.custom<File>((value) => value instanceof File, {
   error: VALIDATION_MESSAGES.required("The image"),
 });
+
+/** The brochure an upload carries (plan §12): its type and size are read from its bytes as it is kept. */
+export const brochureFileSchema = z.custom<File>((value) => value instanceof File, {
+  error: VALIDATION_MESSAGES.required("The PDF"),
+});

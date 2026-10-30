@@ -54,6 +54,7 @@ const NOTHING: Record<string, unknown> = {
   [ADMIN_API_ROUTES.adminServices]: { items: [], order: { publishedAt: null, unpublishedChanges: false } },
   [ADMIN_API_ROUTES.adminJobs]: [],
   [ADMIN_API_ROUTES.adminClients]: { items: [], order: { publishedAt: null, unpublishedChanges: false } },
+  [ADMIN_API_ROUTES.adminSite]: { unpublishedChanges: false },
 };
 
 /** The rail's counts: three need the admin, two enquiries and one application are new, one page, two of the services and one job wait. */
@@ -68,14 +69,16 @@ const counts = (method: string, url: string): Answer =>
           ? { data: JOBS }
           : url === ADMIN_API_ROUTES.adminClients
             ? { data: CLIENTS }
-            : {
-                data: {
-                  items: [],
-                  total: url.includes("needsYou") ? 3 : url.startsWith(ADMIN_API_ROUTES.adminApplications) ? 1 : 2,
-                  page: 1,
-                  pageSize: 25,
-                },
-              };
+            : url === ADMIN_API_ROUTES.adminSite
+              ? { data: { unpublishedChanges: true } }
+              : {
+                  data: {
+                    items: [],
+                    total: url.includes("needsYou") ? 3 : url.startsWith(ADMIN_API_ROUTES.adminApplications) ? 1 : 2,
+                    page: 1,
+                    pageSize: 25,
+                  },
+                };
 
 const shell = () =>
   render(
@@ -112,6 +115,8 @@ describe("AdminShell", () => {
     const clients = within(rail).getByRole("link", { name: /Clients/ });
     await waitFor(() => expect(clients).toHaveAccessibleName(`${ADMIN_TEXT.clients}${ADMIN_TEXT.waitingCount(1)}`));
     expect(within(rail).getByRole("link", { name: ADMIN_TEXT.media })).toHaveAttribute("href", ADMIN_ROUTES.media);
+    const settings = within(rail).getByRole("link", { name: /Settings/ });
+    await waitFor(() => expect(settings).toHaveAccessibleName(`${ADMIN_TEXT.settings}${ADMIN_TEXT.waitingCount(1)}`));
     expect(screen.getByText(ADMIN_TEXT.signedInAs("Fatima"), { selector: "aside p" })).toBeVisible();
     expect(screen.getByRole("main")).toHaveTextContent("Page");
   });

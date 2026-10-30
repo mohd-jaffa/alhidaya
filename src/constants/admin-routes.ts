@@ -86,6 +86,11 @@ export const ADMIN_API_ROUTES = {
   adminClientOrder: "/api/admin/clients/order",
   adminClientOrderPublish: "/api/admin/clients/order/publish",
   adminClientOrderDiscard: "/api/admin/clients/order/discard",
+  /** The site's content (D94): its draft, published or discarded, and a new brochure uploaded. */
+  adminSite: "/api/admin/site",
+  adminSitePublish: "/api/admin/site/publish",
+  adminSiteDiscard: "/api/admin/site/discard",
+  adminSiteBrochure: "/api/admin/site/brochure",
   /** The media library's images (D89, D93): listed and uploaded; one's words changed, or it deleted. */
   adminMedia: "/api/admin/media",
   adminMediaItem: (id: string) => `/api/admin/media/${id}`,

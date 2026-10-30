@@ -39,6 +39,7 @@ const WAITING: Record<string, unknown> = {
     ],
     order: { publishedAt: PUBLISHED, unpublishedChanges: true },
   },
+  [ADMIN_API_ROUTES.adminSite]: { unpublishedChanges: true },
 };
 
 const NOTHING: Record<string, unknown> = {
@@ -46,14 +47,16 @@ const NOTHING: Record<string, unknown> = {
   [ADMIN_API_ROUTES.adminServices]: { items: [], order: NO_ORDER },
   [ADMIN_API_ROUTES.adminJobs]: [],
   [ADMIN_API_ROUTES.adminClients]: { items: [], order: NO_ORDER },
+  [ADMIN_API_ROUTES.adminSite]: { unpublishedChanges: false },
 };
 
 describe("WaitingToPublish", () => {
-  it("lists on Today each page, service, job and logo with saved changes not on the website yet, and the orders (D86, D92)", async () => {
+  it("lists on Today each page, service, job, logo and Settings with saved changes not on the website yet, and the orders (D86, D92)", async () => {
     stubApi((_, url) => ({ data: WAITING[url] }));
     render(<WaitingToPublish />, { wrapper: WithSWR });
     const section = await screen.findByRole("region", { name: ADMIN_TEXT.notPublishedYet });
     await within(section).findByRole("link", { name: "Doha Hospital" });
+    await within(section).findByRole("link", { name: ADMIN_TEXT.settings });
     await within(section).findByRole("link", { name: "Registered nurse" });
     expect(
       within(section)
@@ -69,13 +72,14 @@ describe("WaitingToPublish", () => {
       [ADMIN_TEXT.clientsOrder, ADMIN_ROUTES.clients],
       ["Doha Hospital", ADMIN_ROUTES.client("c1")],
       [ADMIN_TEXT.unnamed, ADMIN_ROUTES.client("c2")],
+      [ADMIN_TEXT.settings, ADMIN_ROUTES.settings],
     ]);
   });
 
   it("shows nothing while nothing waits", async () => {
     const fetch = stubApi((_, url) => ({ data: NOTHING[url] }));
     const { container } = render(<WaitingToPublish />, { wrapper: WithSWR });
-    await vi.waitFor(() => expect(fetch).toHaveBeenCalledTimes(4));
+    await vi.waitFor(() => expect(fetch).toHaveBeenCalledTimes(5));
     expect(container).toBeEmptyDOMElement();
   });
 });

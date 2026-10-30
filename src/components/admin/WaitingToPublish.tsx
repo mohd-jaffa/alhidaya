@@ -10,6 +10,7 @@ import type { JobSummaryItem } from "@/features/careers/types";
 import type { ClientListItems } from "@/features/clients/types";
 import type { PageStateItem } from "@/features/content/types";
 import type { ServiceListItems } from "@/features/services/types";
+import type { SiteDraftItem } from "@/features/settings/types";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 
 /** What waits, read from the lists the rail counts from, so the two always agree (D86, D92). */
@@ -18,6 +19,7 @@ export function useWaiting(): { label: string; href: string }[] {
   const services = useApiQuery<ServiceListItems>(ADMIN_API_ROUTES.adminServices);
   const jobs = useApiQuery<JobSummaryItem[]>(ADMIN_API_ROUTES.adminJobs);
   const clients = useApiQuery<ClientListItems>(ADMIN_API_ROUTES.adminClients);
+  const site = useApiQuery<SiteDraftItem>(ADMIN_API_ROUTES.adminSite);
   const waits = (item: { unpublishedChanges: boolean; archivedAt?: string | null }) =>
     item.unpublishedChanges && !item.archivedAt;
   return [
@@ -41,13 +43,14 @@ export function useWaiting(): { label: string; href: string }[] {
       label: client.name || ADMIN_TEXT.unnamed,
       href: ADMIN_ROUTES.client(client.id),
     })),
+    ...(site.data?.unpublishedChanges ? [{ label: ADMIN_TEXT.settings, href: ADMIN_ROUTES.settings }] : []),
   ];
 }
 
 /**
  * What waits to be published, on Today (plan §14, D86): each page, service,
- * job or client logo with saved changes not on the website yet, and a new
- * order of the services or the logos, each a link to its editor. Nothing
+ * job or client logo with saved changes not on the website yet, a new order
+ * of the services or the logos, and Settings, each a link to its editor. Nothing
  * waiting, or the lists not read, and it is not shown: each screen says why.
  */
 export function WaitingToPublish() {

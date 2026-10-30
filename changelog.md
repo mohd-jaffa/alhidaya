@@ -2640,3 +2640,51 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R6.6: Settings and the brochure
+
+### Added
+- `/admin/settings`: the site's content as one page in groups (D94), with
+  the editor's one bar: the company's name and description; the contact
+  details (phone, WhatsApp, email, the address line by line, hours, the
+  map link, and the office's spot on the map as a latitude and longitude,
+  both or neither, D74); social links, one per network; the floating
+  WhatsApp button; the header menu and the footer's columns, each link's
+  destination picked from the pages, the published services and the
+  brochure, or another address typed in; the SEO defaults; the brochure.
+- The brochure (plan §12): a PDF, typed by its first bytes, at most 10 MB,
+  uploaded into the draft and live with Settings' Publish; once published,
+  a PDF neither copy names is deleted with its file.
+- `/brochure`: a 307 to the published PDF, 404 without one; `/profile.pdf`
+  already redirects to it (D21).
+- Routes: `/api/admin/site` (GET, PUT), `/publish`, `/discard`,
+  `/brochure` (POST, multipart). The rail's Settings station counts a draft
+  waiting; Today lists it.
+- `storeBrochure`, `getPdfFile`, `publishedPdfUrl` and `deleteOtherPdfs`
+  (`features/media/api.ts`); `brochureFileSchema`.
+
+### Changed
+- The editor's bar takes no back link where there is no list (Settings);
+  the SEO fields can be required (the site's own defaults); a list's lines
+  take their own bound (an address line's).
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: against the local MySQL
+  and the media folder, the brochure kept, refused when not a PDF or too
+  large, its file removed when its row cannot be kept; the site's draft
+  saved, refused naming a PDF the library does not hold, published (the
+  site cache dropped, /brochure opening it), a replaced or unsaved PDF
+  deleted with its file, a draft its checks refuse kept back, discarded.
+- E2E (phone and desktop, axe): Settings in its groups; a brochure uploaded
+  and published, opened at /brochure and /profile.pdf, the footer's link
+  shown, a hidden menu link gone from the header; then put back through the
+  same routes, /brochure answering 404 again.
+- Screens looked at, at 1440 and 390 px; a link's words and destination sit
+  side by side on wider screens.
+- First paint, JavaScript (gzip, within 170 KB): Home 159.3 KB, Contact
+  168.9 KB, the apply page 169.3 KB (754 bytes left).
+
+### Blockers
+- None. At launch, the admin uploads `profile.pdf`, from the user's backup
+  of the old site, as the brochure (Q3, D91); the plan's §40 says so.

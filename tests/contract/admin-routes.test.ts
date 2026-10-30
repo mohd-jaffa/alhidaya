@@ -65,6 +65,10 @@ describe("the admin API", () => {
         "media POST",
         "media/[id] PATCH",
         "media/[id] DELETE",
+        "site GET",
+        "site PUT",
+        "site/publish POST",
+        "site/brochure POST",
       ]),
     );
   });

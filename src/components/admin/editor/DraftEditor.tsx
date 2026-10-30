@@ -31,7 +31,8 @@ export interface DraftEditorProps<TInput extends FieldValues, TOutput> {
   form: UseFormReturn<TInput, unknown, TOutput>;
   /** What it is called: the bar's heading and the questions asked. */
   name: string;
-  back: { href: string; label: string };
+  /** Where it was opened from, when it has a list to go back to. */
+  back?: { href: string; label: string };
   state: DraftState;
   /** Where it shows on the website, for Preview and once published; null while it has none. */
   path: string | null;
@@ -181,12 +182,14 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
         className="z-[5] -mx-gutter -mt-8 border-b border-rule bg-ground px-gutter py-4 lg:sticky lg:top-0 lg:-mx-12 lg:-mt-10 lg:px-12"
       >
         <div className="grid max-w-5xl gap-3">
-          <Link
-            href={back.href}
-            className="justify-self-start text-small font-semibold text-deep underline-offset-4 hover:underline"
-          >
-            {back.label}
-          </Link>
+          {back ? (
+            <Link
+              href={back.href}
+              className="justify-self-start text-small font-semibold text-deep underline-offset-4 hover:underline"
+            >
+              {back.label}
+            </Link>
+          ) : null}
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <h1 className="text-section font-bold">{name}</h1>

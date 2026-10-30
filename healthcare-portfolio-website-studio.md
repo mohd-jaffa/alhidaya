@@ -908,7 +908,7 @@ src/
 │   │   └── layout.tsx
 │   ├── admin/                # the admin panel (signed-in), login under (auth)/
 │   ├── api/                  # REST route handlers (§29)
-│   ├── brochure/route.ts     # the brochure redirect
+│   ├── brochure/route.ts     # the brochure redirect (307 to the published PDF, 404 without one)
 │   ├── sitemap.ts  robots.ts  opengraph-image.tsx
 │   ├── layout.tsx  globals.css  fonts.ts  not-found.tsx  error.tsx  global-error.tsx
 ├── assets/brand/             # the logo (SVG), pictograms, the map
@@ -1082,7 +1082,7 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `/api/admin/media` (GET, POST; + `[id]` PATCH, DELETE) | the library with where each image is used; upload (multipart, the words as one JSON part); an image's words; delete, refused while it is used (D89, D93) |
 | `/api/admin/enquiries` (+ `[id]`, `/notes`, `/retry-mail`) | the inbox |
 | `/api/admin/applications` (+ `[id]`, `/notes`, `/cv`, `/retry`) | the inbox; `/cv` downloads the CV (§9.4) |
-| `/api/admin/site` (+ `/publish`), `/api/admin/operations` | settings |
+| `/api/admin/site` (GET, PUT; + `/publish`, `/discard`, `/brochure`), `/api/admin/operations` | settings: the site's content as one draft, a new brochure uploaded into it (D94); operations |
 | `/api/admin/activity` | the audit trail |
 
 ## 30. Design system and motion
@@ -1459,7 +1459,7 @@ one commit (D27).
 | R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | DONE (2026-10-30; shaped with the user, D86 – D90) |
 | R6.4 | Services and jobs editors | §8, §9.1 | — | DONE (2026-10-30; shaped with the user, D92) |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | DONE (2026-10-30; D92, D93; the sizing step and `storeImage` came forward with D75) |
-| R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |
+| R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | DONE (2026-10-30; D94) |
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | TODO |
 | R6.8 | Activity (audit trail) | §36 | — | TODO |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | TODO |
@@ -1506,7 +1506,7 @@ URL answers with its 301; and no personal data appears in logs.
 | The GitHub repository (created by the user) | R0.5's first CI run |
 | Approval of the rewritten copy, at the user's demo (D70) | R7.5 |
 | Client names and permission for their logos, and the logo files | before the Clients section shows (D7) |
-| The brochure PDF (or approval to reuse `profile.pdf`) | R6.6 |
+| The brochure PDF: `profile.pdf` from the user's backup of the old site (Q3, D91), uploaded in Settings at launch | R8.1 |
 | The logo as a vector file, if they have one (Q2) | R2.2 |
 | The `noreply@alhidaya.qa` mailbox's password, changed first (§40.1); cPanel access for the DKIM and DMARC records | R8.3 |
 | A Cloudflare account (Turnstile, Web Analytics) | R4.2, R8.4 |

@@ -25,18 +25,20 @@ function Thing({
   path,
   save = async () => {},
   publish = async () => {},
+  back = { href: "/admin/services", label: "Services" },
 }: {
   state: DraftState;
   path: string | null;
   save?: (values: Values) => Promise<void>;
   publish?: () => Promise<void>;
+  back?: { href: string; label: string } | null;
 }) {
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { name: "Elderly care" } });
   return (
     <DraftEditor
       form={form}
       name="Elderly care"
-      back={{ href: "/admin/services", label: "Services" }}
+      back={back ?? undefined}
       state={state}
       path={path}
       save={save}
@@ -108,5 +110,10 @@ describe("DraftEditor (D88, D92)", () => {
     await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.publish }));
     expect(await screen.findByText("Name is required.")).toBeVisible();
     await waitFor(() => expect(name).toHaveFocus());
+  });
+
+  it("offers no way back for what has no list of its own: Settings", () => {
+    render(<Thing state={NEW} path={null} back={null} />);
+    expect(screen.queryByRole("link", { name: "Services" })).toBeNull();
   });
 });

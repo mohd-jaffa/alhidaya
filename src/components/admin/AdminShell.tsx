@@ -17,6 +17,7 @@ import type { ClientListItems } from "@/features/clients/types";
 import type { PageStateItem } from "@/features/content/types";
 import { enquiriesKey } from "@/features/enquiries/api.client";
 import type { ServiceListItems } from "@/features/services/types";
+import type { SiteDraftItem } from "@/features/settings/types";
 import { todayKey } from "@/lib/inbox/keys";
 import { useApiMutation } from "@/lib/query/useApiMutation";
 import { useApiQuery } from "@/lib/query/useApiQuery";
@@ -134,6 +135,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
   const services = useApiQuery<ServiceListItems>(ADMIN_API_ROUTES.adminServices);
   const jobs = useApiQuery<JobSummaryItem[]>(ADMIN_API_ROUTES.adminJobs);
   const clients = useApiQuery<ClientListItems>(ADMIN_API_ROUTES.adminClients);
+  const site = useApiQuery<SiteDraftItem>(ADMIN_API_ROUTES.adminSite);
   const waiting = (items: { unpublishedChanges: boolean; archivedAt?: string | null }[]) =>
     items.filter((item) => item.unpublishedChanges && !item.archivedAt).length;
   const count = (total: number | undefined, said: (count: number) => string) =>
@@ -195,6 +197,11 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
           ),
         },
         { label: ADMIN_TEXT.media, href: ADMIN_ROUTES.media },
+        {
+          label: ADMIN_TEXT.settings,
+          href: ADMIN_ROUTES.settings,
+          count: count(site.data && Number(site.data.unpublishedChanges), ADMIN_TEXT.waitingCount),
+        },
       ],
     },
   ];

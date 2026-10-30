@@ -62,6 +62,7 @@ export const siteDocumentSchema = z.object({
   whatsappButton: z.boolean(),
 });
 export type SiteDocument = z.output<typeof siteDocumentSchema>;
+export type SiteDocumentInput = z.input<typeof siteDocumentSchema>;
 
 /** An order of services or client logos, by id (plan D59). */
 export const orderingDocumentSchema = z

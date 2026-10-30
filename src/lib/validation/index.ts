@@ -89,7 +89,13 @@ export {
   type SectionInput,
 } from "./schemas/pages";
 
-export { imageDetailsSchema, imageFileSchema, type ImageDetailsInput, type ImageDetailsPayload } from "./schemas/media";
+export {
+  brochureFileSchema,
+  imageDetailsSchema,
+  imageFileSchema,
+  type ImageDetailsInput,
+  type ImageDetailsPayload,
+} from "./schemas/media";
 
 export { previewQuerySchema, type PreviewQueryPayload } from "./schemas/preview";
 
@@ -117,4 +123,5 @@ export {
   type OperationsPayload,
   type OrderingDocument,
   type SiteDocument,
+  type SiteDocumentInput,
 } from "./schemas/site";

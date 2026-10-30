@@ -6,7 +6,7 @@ import { UPLOAD_LIMITS } from "@/constants/limits";
 import { PAGE_NAMES } from "@/constants/messages";
 import { PAGE_KEYS, type PageKey } from "@/constants/sections";
 import type { RecordCollection } from "@/constants/statuses";
-import { FILE_TYPES, IMAGE_TYPES } from "@/constants/uploads";
+import { BROCHURE_TYPES, FILE_TYPES, IMAGE_TYPES } from "@/constants/uploads";
 import { getDb } from "@/db/client";
 import { documents, media, type MediaVariant, records } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
@@ -335,4 +335,92 @@ export async function findImageBySource(url: string): Promise<string | null> {
     .where(and(eq(media.kind, "IMAGE"), sql`json_unquote(json_extract(${media.source}, '$.url')) = ${url}`))
     .limit(1);
   return row?.id ?? null;
+}
+
+/** A PDF the site serves (plan §12): the brochure, as the admin sees it. */
+export interface PdfFile {
+  id: string;
+  url: string;
+  bytes: number;
+}
+
+const PDF_COLUMNS = { id: media.id, variants: media.variants, bytes: media.bytes };
+const toPdfFile = (row: { id: string; variants: MediaVariant[]; bytes: number }): PdfFile | null =>
+  row.variants[0] ? { id: row.id, url: mediaUrl(row.variants[0].key), bytes: row.bytes } : null;
+
+/**
+ * Keeps the brochure (plan §12, D94): a PDF by its first bytes, within its
+ * size, in the media folder with a name the app makes; answers it. It goes
+ * live only when Settings is published.
+ */
+export async function storeBrochure(bytes: Uint8Array, actor: Actor, at: Date = new Date()): Promise<PdfFile> {
+  const type = detectFileType(bytes);
+  if (!type || !BROCHURE_TYPES.includes(type)) throw validationError("UPLOAD_TYPE_NOT_ALLOWED");
+  if (bytes.byteLength > UPLOAD_LIMITS.brochureBytes) throw validationError("UPLOAD_TOO_LARGE");
+  const key = await saveMediaFile({ bytes, type, key: mediaKey(type, at) });
+  const id = newId();
+  try {
+    await getDb()
+      .insert(media)
+      .values({
+        id,
+        kind: "PDF",
+        variants: [{ key, width: null, mime: FILE_TYPES.pdf.mime, bytes: bytes.byteLength }],
+        bytes: bytes.byteLength,
+        createdBy: actor.adminId,
+        createdAt: at,
+        updatedAt: at,
+      });
+  } catch (error) {
+    await deleteMediaFile(key);
+    throw error;
+  }
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "CREATE",
+    entityType: "media",
+    entityId: id,
+    requestId: actor.requestId,
+  });
+  return { id, url: mediaUrl(key), bytes: bytes.byteLength };
+}
+
+/** A kept PDF by id, or null for one the library does not hold as a PDF. */
+export async function getPdfFile(id: string): Promise<PdfFile | null> {
+  const [row] = await getDb()
+    .select(PDF_COLUMNS)
+    .from(media)
+    .where(and(eq(media.id, id), eq(media.kind, "PDF")));
+  return row ? toPdfFile(row) : null;
+}
+
+/** A kept PDF's address for the public site, kept until the library changes (plan §22.1). */
+export const publishedPdfUrl = cachedRead(
+  "pdf",
+  async (id: string) => (await getPdfFile(id))?.url ?? null,
+  () => [CACHE_TAGS.media],
+);
+
+/**
+ * Deletes every PDF but those named (plan §21.2): a brochure replaced or
+ * never published takes no room once Settings no longer names it. A file
+ * that will not go is put in the error log.
+ */
+export async function deleteOtherPdfs(keep: readonly string[], actor: Actor): Promise<void> {
+  const db = getDb();
+  const rows = await db.select(PDF_COLUMNS).from(media).where(eq(media.kind, "PDF"));
+  for (const row of rows.filter((candidate) => !keep.includes(candidate.id))) {
+    await db.delete(media).where(eq(media.id, row.id));
+    for (const result of await Promise.allSettled(row.variants.map((variant) => deleteMediaFile(variant.key)))) {
+      if (result.status === "rejected")
+        await captureError({ message: "Media file not deleted", error: result.reason, reference: row.id });
+    }
+    await logActionSafe({
+      actorId: actor.adminId,
+      action: "DELETE",
+      entityType: "media",
+      entityId: row.id,
+      requestId: actor.requestId,
+    });
+  }
 }

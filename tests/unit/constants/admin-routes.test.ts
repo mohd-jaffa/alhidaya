@@ -28,5 +28,6 @@ describe("the admin's routes", () => {
     expect(ADMIN_API_ROUTES.adminServiceArchive("s1")).toBe("/api/admin/services/s1/archive");
     expect(ADMIN_API_ROUTES.adminJobClose("j1")).toBe("/api/admin/jobs/j1/close");
     expect(ADMIN_API_ROUTES.adminMediaItem("m1")).toBe("/api/admin/media/m1");
+    expect(ADMIN_API_ROUTES.adminSiteBrochure).toBe("/api/admin/site/brochure");
   });
 });

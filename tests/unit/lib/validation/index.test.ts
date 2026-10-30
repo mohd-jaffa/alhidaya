@@ -12,6 +12,7 @@ describe("the validation module", () => {
       "applicationNoteSchema",
       "applicationStatusSchema",
       "archiveSchema",
+      "brochureFileSchema",
       "clientDocumentSchema",
       "closeSchema",
       "contactFormSchema",
