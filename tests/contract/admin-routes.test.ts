@@ -39,6 +39,13 @@ describe("the admin API", () => {
         "enquiries/[id] PATCH",
         "enquiries/[id]/notes POST",
         "applications/[id]/retry-mail POST",
+        "applications GET",
+        "applications/[id] GET",
+        "applications/[id] PATCH",
+        "applications/[id] DELETE",
+        "applications/[id]/notes POST",
+        "applications/[id]/cv GET",
+        "enquiries/[id] DELETE",
       ]),
     );
   });

@@ -70,7 +70,11 @@ export const API_ROUTES = {
   adminEnquiry: (id: string) => `/api/admin/enquiries/${id}`,
   adminEnquiryNotes: (id: string) => `/api/admin/enquiries/${id}/notes`,
   adminEnquiryRetryMail: (id: string) => `/api/admin/enquiries/${id}/retry-mail`,
-  /** The applications inbox (plan §9.5). */
+  /** The applications inbox (plan §9.5), and an application's CV for the admin's download (§9.4). */
+  adminApplications: "/api/admin/applications",
+  adminApplication: (id: string) => `/api/admin/applications/${id}`,
+  adminApplicationNotes: (id: string) => `/api/admin/applications/${id}/notes`,
+  adminApplicationCv: (id: string) => `/api/admin/applications/${id}/cv`,
   adminApplicationRetryMail: (id: string) => `/api/admin/applications/${id}/retry-mail`,
   /** Opens a public page in the admin's preview of unpublished changes (plan §14). */
   preview: "/api/preview",

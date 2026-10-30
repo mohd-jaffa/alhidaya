@@ -10,9 +10,10 @@ vi.mock("@/lib/audit/errorLog", () => ({ captureError: vi.fn() }));
 
 const getEnquiry = vi.fn(async (id: string) => ({ id }));
 const setEnquiryStatus = vi.fn(async () => {});
-vi.mock("@/features/enquiries/api", () => ({ getEnquiry, setEnquiryStatus }));
+const deleteEnquiry = vi.fn(async () => {});
+vi.mock("@/features/enquiries/api", () => ({ deleteEnquiry, getEnquiry, setEnquiryStatus }));
 
-const { GET, PATCH } = await import("@/app/api/admin/enquiries/[id]/route");
+const { DELETE, GET, PATCH } = await import("@/app/api/admin/enquiries/[id]/route");
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -44,6 +45,15 @@ describe("/api/admin/enquiries/[id]", () => {
       "RESOLVED",
       expect.objectContaining({ adminId: "admin-1", requestId: expect.stringMatching(/^req_/) }),
     );
+  });
+
+  it("deletes it as the admin, and refuses another site's request to (D82)", async () => {
+    stubServerEnv();
+    const response = await DELETE(call("DELETE"), params);
+    expect(await response.json()).toEqual({ success: true, data: { deleted: true } });
+    expect(deleteEnquiry).toHaveBeenCalledWith("enquiry-1", expect.objectContaining({ adminId: "admin-1" }));
+    expect((await DELETE(call("DELETE", undefined, "https://evil.example"), params)).status).toBe(403);
+    expect(deleteEnquiry).toHaveBeenCalledOnce();
   });
 
   it("refuses a status it does not know, another site's request, and no session", async () => {

@@ -2,11 +2,20 @@ import * as z from "zod";
 
 import { EXPERIENCE_YEARS, TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { DATAFLOW, MOPH_LICENCE, PROMETRIC, WHERE_NOW } from "@/constants/statuses";
+import { APPLICATION_STATUSES, DATAFLOW, MOPH_LICENCE, PROMETRIC, WHERE_NOW } from "@/constants/statuses";
 import { formatBytes } from "@/lib/files/size";
 import { normaliseLine } from "@/lib/text/normalise";
 
-import { botCheck, consent, optionalLines, requiredEmail, requiredLine, requiredPhone } from "../primitives";
+import {
+  botCheck,
+  consent,
+  optionalLine,
+  optionalLines,
+  requiredEmail,
+  requiredLine,
+  requiredLines,
+  requiredPhone,
+} from "../primitives";
 
 /**
  * Years of nursing experience (plan §9.2): typed as a whole number, so a
@@ -69,3 +78,36 @@ export const applicationFormSchema = z.object({
 });
 export type ApplicationFormInput = z.input<typeof applicationFormSchema>;
 export type ApplicationFormPayload = z.output<typeof applicationFormSchema>;
+
+/** The general application, as the inbox's job filter names it. */
+export const GENERAL_APPLICATIONS = "general";
+
+/**
+ * The applications inbox (plan §9.5): which applications to list, newest
+ * first, by job (or the general ones), by status, by whether they need the
+ * admin, and by what the admin types (a name, an email, a phone number), a
+ * page at a time.
+ */
+export const applicationListQuerySchema = z.object({
+  job: z.union([z.uuid(), z.literal(GENERAL_APPLICATIONS)]).optional(),
+  status: z.enum(APPLICATION_STATUSES).optional(),
+  /** Only what needs the admin (Today, R6.1): new, or its HR email not sent. */
+  needsYou: z
+    .enum(["true"])
+    .optional()
+    .transform((value) => value === "true"),
+  q: optionalLine("Search", TEXT_LIMITS.line),
+  page: z.coerce.number().int().min(1).max(10_000).default(1),
+});
+export type ApplicationListQueryInput = z.input<typeof applicationListQuerySchema>;
+export type ApplicationListQueryPayload = z.output<typeof applicationListQuerySchema>;
+
+/** Where an application stands (plan §9.5). */
+export const applicationStatusSchema = z.object({ status: z.enum(APPLICATION_STATUSES) });
+export type ApplicationStatusInput = z.input<typeof applicationStatusSchema>;
+export type ApplicationStatusPayload = z.output<typeof applicationStatusSchema>;
+
+/** The team's internal note on an application (plan §9.5). */
+export const applicationNoteSchema = z.object({ body: requiredLines("Note", { max: TEXT_LIMITS.note }) });
+export type ApplicationNoteInput = z.input<typeof applicationNoteSchema>;
+export type ApplicationNotePayload = z.output<typeof applicationNoteSchema>;

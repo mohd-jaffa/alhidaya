@@ -1,10 +1,11 @@
-import { and, eq, isNotNull, isNull } from "drizzle-orm";
+import { and, asc, count, desc, eq, isNotNull, isNull, max, or } from "drizzle-orm";
 import type { Metadata } from "next";
 
-import { FORM_RATE_LIMIT, TEXT_LIMITS } from "@/constants/limits";
+import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, TEXT_LIMITS } from "@/constants/limits";
 import { PAGE_NAMES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import {
+  type ApplicationStatus,
   type CvStatus,
   DATAFLOW_LABELS,
   type EmailStatus,
@@ -14,7 +15,7 @@ import {
 } from "@/constants/statuses";
 import { CV_TYPES, FILE_TYPES, type FileType } from "@/constants/uploads";
 import { getDb } from "@/db/client";
-import { applications, records, type SubmittedField } from "@/db/schema";
+import { applicationNotes, applications, authUser, records, type SubmittedField } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
 import { logActionSafe } from "@/lib/audit/auditLog";
 import { captureError } from "@/lib/audit/errorLog";
@@ -24,14 +25,27 @@ import { getOperations } from "@/lib/content/operations";
 import { findPublishedRecord, findRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
 import type { ContentView } from "@/lib/content/view";
 import { dohaDay } from "@/lib/dates";
-import { businessRuleError, notFoundError, rateLimitError, validationError } from "@/lib/errors";
+import {
+  businessRuleError,
+  fromDatabaseError,
+  notFoundError,
+  rateLimitError,
+  referencesMissingRow,
+  validationError,
+} from "@/lib/errors";
 import { createConfiguredMailService } from "@/lib/mail/nodemailer.provider";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
 import { renderShareImage } from "@/lib/seo/share-image";
-import { cvKey as newCvKey, readCv, saveCv } from "@/lib/storage/cvs";
+import { cvKey as newCvKey, deleteCv, readCv, saveCv } from "@/lib/storage/cvs";
 import { detectFileType } from "@/lib/storage/file-type";
 import { normaliseLine } from "@/lib/text/normalise";
-import type { ApplicationFormPayload, JobDocument } from "@/lib/validation";
+import { matchingPerson } from "@/lib/text/search";
+import {
+  type ApplicationFormPayload,
+  type ApplicationListQueryPayload,
+  GENERAL_APPLICATIONS,
+  type JobDocument,
+} from "@/lib/validation";
 
 export interface PublishedJob extends PublishedRecord<JobDocument> {
   /** Open until the end of its closing day in Doha; with no closing date, open (plan §9.1). */
@@ -379,4 +393,243 @@ export async function retryApplicationAlert(id: string, actor: Actor): Promise<E
     requestId: actor.requestId,
   });
   return status;
+}
+
+/** An application as the inbox lists it (plan §9.5). */
+export interface ApplicationSummary {
+  id: string;
+  /** The job applied for, and its title as applied for; both null for a general application. */
+  jobId: string | null;
+  jobTitle: string | null;
+  status: ApplicationStatus;
+  emailStatus: EmailStatus;
+  cvStatus: CvStatus;
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: Date;
+}
+
+/** A note on an application, by the admin who wrote it (the name is gone if the admin is). */
+export interface ApplicationNote {
+  id: string;
+  body: string;
+  author: string | null;
+  createdAt: Date;
+}
+
+/** An application opened in the inbox: every answer as sent, its CV as uploaded, and its notes, oldest first. */
+export interface ApplicationDetail extends ApplicationSummary {
+  fields: SubmittedField[];
+  cvName: string;
+  cvType: FileType;
+  cvBytes: number;
+  updatedAt: Date;
+  notes: ApplicationNote[];
+}
+
+/** A job the inbox can be filtered by: one that has applications, by its title as last applied for. */
+export interface AppliedJob {
+  id: string;
+  title: string;
+}
+
+const applicationSummary = {
+  id: applications.id,
+  jobId: applications.jobId,
+  jobTitle: applications.jobTitle,
+  status: applications.status,
+  emailStatus: applications.emailStatus,
+  cvStatus: applications.cvStatus,
+  name: applications.name,
+  email: applications.email,
+  phone: applications.phone,
+  createdAt: applications.createdAt,
+};
+
+/**
+ * The inbox (plan §9.5): applications newest first, by job (or the general
+ * ones), by status, by whether they need the admin (new, or the HR email not
+ * sent) and by a search, a page at a time, with how many there are in all and
+ * the jobs that have applications, for the filter: read together.
+ */
+export async function listApplications(query: ApplicationListQueryPayload): Promise<{
+  items: ApplicationSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  jobs: AppliedJob[];
+}> {
+  const where = and(
+    query.job === GENERAL_APPLICATIONS
+      ? isNull(applications.jobId)
+      : query.job
+        ? eq(applications.jobId, query.job)
+        : undefined,
+    query.status ? eq(applications.status, query.status) : undefined,
+    query.needsYou ? or(eq(applications.status, "NEW"), eq(applications.emailStatus, "NOT_SENT")) : undefined,
+    query.q ? matchingPerson(query.q, applications) : undefined,
+  );
+  const db = getDb();
+  const latest = max(applications.createdAt);
+  const [rows, [{ total }], applied] = await Promise.all([
+    db
+      .select(applicationSummary)
+      .from(applications)
+      .where(where)
+      .orderBy(desc(applications.createdAt), desc(applications.id))
+      .limit(INBOX_PAGE_SIZE)
+      .offset((query.page - 1) * INBOX_PAGE_SIZE),
+    db.select({ total: count() }).from(applications).where(where),
+    db
+      .select({ id: applications.jobId, title: applications.jobTitle })
+      .from(applications)
+      .where(isNotNull(applications.jobId))
+      .groupBy(applications.jobId, applications.jobTitle)
+      .orderBy(desc(latest)),
+  ]);
+  // A job renamed between applications is listed once, by the title it was last applied for under.
+  const jobs = new Map<string, string>();
+  for (const job of applied) if (!jobs.has(job.id!)) jobs.set(job.id!, job.title!);
+  return {
+    items: rows as ApplicationSummary[],
+    total,
+    page: query.page,
+    pageSize: INBOX_PAGE_SIZE,
+    jobs: [...jobs].map(([id, title]) => ({ id, title })),
+  };
+}
+
+/** One application with its notes (plan §9.5): two reads. */
+export async function getApplication(id: string): Promise<ApplicationDetail> {
+  const db = getDb();
+  const [[application], notes] = await Promise.all([
+    db
+      .select({
+        ...applicationSummary,
+        fields: applications.fields,
+        cvName: applications.cvName,
+        cvType: applications.cvType,
+        cvBytes: applications.cvBytes,
+        updatedAt: applications.updatedAt,
+      })
+      .from(applications)
+      .where(eq(applications.id, id)),
+    db
+      .select({
+        id: applicationNotes.id,
+        body: applicationNotes.body,
+        author: authUser.name,
+        createdAt: applicationNotes.createdAt,
+      })
+      .from(applicationNotes)
+      .leftJoin(authUser, eq(authUser.id, applicationNotes.createdBy))
+      .where(eq(applicationNotes.applicationId, id))
+      .orderBy(asc(applicationNotes.createdAt), asc(applicationNotes.id)),
+  ]);
+  if (!application) throw notFoundError("RECORD_NOT_FOUND");
+  return { ...(application as Omit<ApplicationDetail, "notes">), notes };
+}
+
+/** Moves an application along (plan §9.5); recorded with where it was and where it went. */
+export async function setApplicationStatus(id: string, status: ApplicationStatus, actor: Actor): Promise<void> {
+  const db = getDb();
+  const [application] = await db
+    .select({ status: applications.status })
+    .from(applications)
+    .where(eq(applications.id, id));
+  if (!application) throw notFoundError("RECORD_NOT_FOUND");
+  if (application.status === status) return;
+  await db.update(applications).set({ status, updatedAt: new Date() }).where(eq(applications.id, id));
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "STATUS_CHANGE",
+    entityType: "application",
+    entityId: id,
+    changes: { status: { from: application.status, to: status } },
+    requestId: actor.requestId,
+  });
+}
+
+/**
+ * The team's note on an application (plan §9.5). It may hold personal data,
+ * so the audit trail records that a note was added, never what it says
+ * (AGENTS.md §8); it goes with the application.
+ */
+export async function addApplicationNote(id: string, body: string, actor: Actor): Promise<ApplicationNote> {
+  const noteId = newId();
+  const at = new Date();
+  try {
+    await getDb()
+      .insert(applicationNotes)
+      .values({ id: noteId, applicationId: id, body, createdBy: actor.adminId, createdAt: at, updatedAt: at });
+  } catch (error) {
+    // A note points at its application and its admin: one of them is gone (the admin's session would be too).
+    if (referencesMissingRow(error)) throw notFoundError("RECORD_NOT_FOUND");
+    throw fromDatabaseError(error);
+  }
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "NOTE_ADD",
+    entityType: "application",
+    entityId: id,
+    requestId: actor.requestId,
+  });
+  const [author] = actor.adminId
+    ? await getDb().select({ name: authUser.name }).from(authUser).where(eq(authUser.id, actor.adminId))
+    : [];
+  return { id: noteId, body, author: author?.name ?? null, createdAt: at };
+}
+
+/**
+ * An application's CV, for the signed-in admin's download (plan §9.4): only
+ * a kept one, under the name it is kept by, and every download recorded.
+ */
+export async function downloadApplicationCv(
+  id: string,
+  actor: Actor,
+): Promise<{ bytes: Uint8Array; filename: string; contentType: string }> {
+  const [application] = await getDb()
+    .select({ cvKey: applications.cvKey, cvStatus: applications.cvStatus, cvType: applications.cvType })
+    .from(applications)
+    .where(eq(applications.id, id));
+  if (!application) throw notFoundError("RECORD_NOT_FOUND");
+  const bytes = await keptCv(id, application);
+  if (!bytes) throw notFoundError("CV_NOT_KEPT");
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "CV_DOWNLOAD",
+    entityType: "application",
+    entityId: id,
+    requestId: actor.requestId,
+  });
+  const key = application.cvKey!;
+  return {
+    bytes,
+    filename: key.slice(key.indexOf("/") + 1),
+    contentType: FILE_TYPES[application.cvType as FileType].mime,
+  };
+}
+
+/**
+ * Deletes an application at once (D82): its CV file first, so a file that
+ * cannot be removed leaves the application to try again, then the row with
+ * its notes. Recorded without anything it held (AGENTS.md §8).
+ */
+export async function deleteApplication(id: string, actor: Actor): Promise<void> {
+  const db = getDb();
+  const [application] = await db
+    .select({ cvKey: applications.cvKey })
+    .from(applications)
+    .where(eq(applications.id, id));
+  if (!application) throw notFoundError("RECORD_NOT_FOUND");
+  if (application.cvKey) await deleteCv(application.cvKey);
+  await db.delete(applications).where(eq(applications.id, id));
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "DELETE",
+    entityType: "application",
+    entityId: id,
+    requestId: actor.requestId,
+  });
 }

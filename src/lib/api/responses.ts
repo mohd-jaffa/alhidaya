@@ -52,3 +52,24 @@ export function errorResponse(error: AppError, requestId: string): NextResponse<
     headers: headers(requestId),
   });
 }
+
+/**
+ * A private file for the signed-in admin (plan §9.4): always saved, never
+ * shown in the browser, never kept by a browser or a proxy, its type never
+ * guessed, and nothing in it allowed to run.
+ */
+export function fileResponse(
+  file: { bytes: Uint8Array; filename: string; contentType: string },
+  requestId: string,
+): Response {
+  return new Response(new Uint8Array(file.bytes), {
+    status: 200,
+    headers: {
+      ...headers(requestId),
+      "Content-Type": file.contentType,
+      "Content-Length": String(file.bytes.byteLength),
+      "Content-Disposition": `attachment; filename="${file.filename.replace(/[^A-Za-z0-9._-]/g, "_")}"`,
+      "Content-Security-Policy": "default-src 'none'; sandbox",
+    },
+  });
+}

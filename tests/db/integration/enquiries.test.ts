@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE } from "@/constants/limits";
@@ -7,6 +7,7 @@ import { closeDb, getDb } from "@/db/client";
 import { auditLog, authUser, enquiries, enquiryNotes, errorLog, rateLimits, records } from "@/db/schema";
 import {
   addEnquiryNote,
+  deleteEnquiry,
   type EnquirySubmission,
   getEnquiry,
   listEnquiries,
@@ -432,8 +433,23 @@ describe("the enquiries inbox, against the local MySQL (plan §10.5)", () => {
     expect((await getEnquiry(id)).notes).toEqual([]);
   });
 
+  it("deletes an enquiry with its notes at once, recorded without anything it held (D82)", async () => {
+    const [id, kept] = await inbox({}, {});
+    await addEnquiryNote(id, "Called back.", actor);
+    await deleteEnquiry(id, actor);
+    await expect(getEnquiry(id)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    expect(await getDb().select().from(enquiryNotes).where(eq(enquiryNotes.enquiryId, id))).toEqual([]);
+    expect((await getEnquiry(kept)).id).toBe(kept);
+    const [entry] = await getDb()
+      .select({ action: auditLog.action, changes: auditLog.changes, summary: auditLog.summary })
+      .from(auditLog)
+      .where(and(eq(auditLog.entityId, id), eq(auditLog.action, "DELETE")));
+    expect(entry).toEqual({ action: "DELETE", changes: null, summary: null });
+  });
+
   it("answers not found for an enquiry that is gone, whatever is asked of it", async () => {
     const gone = crypto.randomUUID();
+    await expect(deleteEnquiry(gone, actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
     await expect(getEnquiry(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND", httpStatus: 404 });
     await expect(setEnquiryStatus(gone, "RESOLVED", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
     await expect(addEnquiryNote(gone, "Note", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });

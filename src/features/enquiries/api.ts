@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, like, or, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, or } from "drizzle-orm";
 
 import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, INBOX_SUMMARY_LENGTH } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
@@ -28,6 +28,7 @@ import {
 } from "@/lib/errors";
 import { createConfiguredMailService } from "@/lib/mail/nodemailer.provider";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
+import { matchingPerson } from "@/lib/text/search";
 import type { EnquiryListQueryPayload, EnquiryPayload } from "@/lib/validation";
 
 /** A Quote or Contact submission, parsed by its form's schema and labelled as the visitor saw it. */
@@ -226,22 +227,6 @@ function summarise(form: FormKind, fields: SubmittedField[]): string {
   return line.length > INBOX_SUMMARY_LENGTH ? `${line.slice(0, INBOX_SUMMARY_LENGTH - 1)}…` : line;
 }
 
-/** What a search finds anywhere in the text: its `%`, `_` and `\\` mean themselves. */
-const containing = (text: string) => `%${text.replace(/[\\%_]/g, (character) => `\\${character}`)}%`;
-
-/**
- * What the admin types, matched against the name, the email and the phone:
- * a number is matched by its digits, however it was typed ("5551 2345").
- */
-function searching(q: string): SQL | undefined {
-  const digits = q.replace(/\D/g, "");
-  return or(
-    like(enquiries.name, containing(q)),
-    like(enquiries.email, containing(q)),
-    digits.length >= 3 ? like(enquiries.phone, containing(digits)) : undefined,
-  );
-}
-
 /**
  * The inbox (plan §10.5): enquiries newest first, by form, by status, by
  * whether they need the admin (new, or the alert not sent) and by a search,
@@ -254,7 +239,7 @@ export async function listEnquiries(
     query.form ? eq(enquiries.form, query.form) : undefined,
     query.status ? eq(enquiries.status, query.status) : undefined,
     query.needsYou ? or(eq(enquiries.status, "NEW"), eq(enquiries.emailStatus, "NOT_SENT")) : undefined,
-    query.q ? searching(query.q) : undefined,
+    query.q ? matchingPerson(query.q, enquiries) : undefined,
   );
   const db = getDb();
   const [rows, [{ total }]] = await Promise.all([
@@ -343,4 +328,17 @@ export async function addEnquiryNote(id: string, body: string, actor: Actor): Pr
     ? await getDb().select({ name: authUser.name }).from(authUser).where(eq(authUser.id, actor.adminId))
     : [];
   return { id: noteId, body, author: author?.name ?? null, createdAt: at };
+}
+
+/** Deletes an enquiry at once, with its notes (D82); recorded without anything it held (AGENTS.md §8). */
+export async function deleteEnquiry(id: string, actor: Actor): Promise<void> {
+  const [{ affectedRows }] = await getDb().delete(enquiries).where(eq(enquiries.id, id));
+  if (affectedRows === 0) throw notFoundError("RECORD_NOT_FOUND");
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "DELETE",
+    entityType: "enquiry",
+    entityId: id,
+    requestId: actor.requestId,
+  });
 }

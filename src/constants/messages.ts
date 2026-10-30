@@ -193,6 +193,7 @@ export const ERROR_MESSAGES = {
   BOT_CHECK_FAILED: "We could not confirm that a person sent this. Please send it again.",
   EMAIL_ALREADY_SENT: "This email was already sent.",
   JOB_CLOSED: "This job is no longer open. You can apply for an open job, or send a general application.",
+  CV_NOT_KEPT: "This CV is not kept on the website. Look for it attached to the application's HR email.",
 
   NETWORK_OFFLINE: "You're offline. Check your connection and try again.",
   NETWORK_UNREACHABLE: "We couldn't reach the server. Please try again in a moment.",

@@ -2210,3 +2210,57 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R5.3, R5.5 (server side), D82: the applications inbox's API, the CV download, Delete
+
+### Added
+- **The applications inbox's API** (plan §9.5), admin only, every answer
+  `no-store`: `GET /api/admin/applications` lists newest first, by job (or
+  the general applications), status, "needs you" (new, or the HR email not
+  sent) and a search by name, email or phone as typed, a page at a time,
+  with the jobs it can be filtered by (each once, by the title it was last
+  applied for under); `GET /api/admin/applications/[id]` opens one with
+  every answer, its CV as uploaded and its notes; `PATCH` moves it along
+  (audited from and to); `POST …/notes` adds a note (audited without what it
+  says).
+- **The CV download** (plan §9.4, R5.3): `GET /api/admin/applications/[id]/cv`,
+  only with the admin's session, gives a kept CV as a file to save under its
+  kept name (`Content-Disposition: attachment`, `no-store`, `nosniff`, and
+  sandboxed so nothing in it can run), and **every download is recorded**
+  (`CV_DOWNLOAD`). A CV not kept (never stored, expired, or a file that
+  cannot be read, which is logged) is refused with where to find it: the
+  application's HR email (`CV_NOT_KEPT`).
+- **Delete** (D82) for both inboxes: `DELETE /api/admin/applications/[id]`
+  removes the CV file, then the application and its notes;
+  `DELETE /api/admin/enquiries/[id]` removes the enquiry and its notes. Each
+  is recorded without anything it held. The confirming dialog comes with the
+  screens (R5.5).
+- `listApplications`, `getApplication`, `setApplicationStatus`,
+  `addApplicationNote`, `downloadApplicationCv`, `deleteApplication`
+  (`src/features/careers/api.ts`) and `deleteEnquiry`; `fileResponse`;
+  `ApplicationsClient` and `applicationsKey`, apart from the form's
+  `CareersClient` so the public page never carries them; the inbox's
+  schemas; `APPLICATION_STATUS_LABELS`, `CV_STATUS_LABELS`.
+
+### Changed
+- The inboxes' search (`containing`, `matchingPerson`) is shared, in
+  `src/lib/text/search.ts`.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: the routes (session,
+  another site, unknown queries and statuses, the file's headers, a CV not
+  kept); the schemas; the client's endpoints; the search's SQL; against the
+  local MySQL, the list (order, job and general, status, needs you, search
+  as typed, a renamed job named once), opening with notes by their admins,
+  moves recorded once, a note too long refused, the download (bytes, kept
+  name, recorded; expired and missing refused), Delete (the CV file, notes
+  and row gone, recorded without content; one never kept) and the
+  enquiries' Delete; not found for everything asked of a gone application.
+- E2E: the applications inbox through the built app (refused without the
+  session, listed, moved, noted, its CV downloaded and recorded, a Delete
+  from another site refused, then deleted with its file). E2E passed in
+  full (117, 23 skipped).
+
+### Blockers
+- None.

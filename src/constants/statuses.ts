@@ -135,6 +135,12 @@ export const ENQUIRY_STATUS_LABELS: Record<EnquiryStatus, string> = {
 /** Where an application stands in the inbox (plan §9.5). */
 export const APPLICATION_STATUSES = ["NEW", "IN_REVIEW", "SHORTLISTED", "CLOSED"] as const;
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
+export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {
+  NEW: "New",
+  IN_REVIEW: "In review",
+  SHORTLISTED: "Shortlisted",
+  CLOSED: "Closed",
+};
 
 /** Whether a submission's alert email went; one not sent shows in the inbox with Retry (plan §9.3, §10.4). */
 export const EMAIL_STATUSES = ["PENDING", "SENT", "NOT_SENT"] as const;
@@ -148,3 +154,9 @@ export const EMAIL_STATUS_LABELS: Record<EmailStatus, string> = {
 /** Where an application's CV is (plan §9.3, §9.4): saved after the row, kept until it expires. */
 export const CV_STATUSES = ["PENDING", "STORED", "NOT_STORED", "EXPIRED"] as const;
 export type CvStatus = (typeof CV_STATUSES)[number];
+export const CV_STATUS_LABELS: Record<CvStatus, string> = {
+  PENDING: "Saving",
+  STORED: "Kept",
+  NOT_STORED: "Not stored",
+  EXPIRED: "Expired",
+};

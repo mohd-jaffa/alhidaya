@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { UPLOAD_LIMITS } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { applicationFormSchema } from "@/lib/validation";
+import {
+  applicationFormSchema,
+  applicationListQuerySchema,
+  applicationNoteSchema,
+  applicationStatusSchema,
+} from "@/lib/validation";
 
 const cv = new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" });
 
@@ -88,5 +93,33 @@ describe("the application form (plan §9.2)", () => {
     expect(problems(applicationFormSchema.safeParse({ ...application, cv: "cv.pdf" })).cv).toBe(
       VALIDATION_MESSAGES.cvRequired,
     );
+  });
+});
+
+describe("the applications inbox (plan §9.5)", () => {
+  it("reads a list's job (or the general ones), status, needs-you, search and page", () => {
+    const job = "0f8c1c62-5d55-4b8e-9c3a-2f4e1d6b7a90";
+    expect(applicationListQuerySchema.parse({ job, status: "IN_REVIEW", q: "  Mariam ", page: "2" })).toEqual({
+      job,
+      status: "IN_REVIEW",
+      needsYou: false,
+      q: "Mariam",
+      page: 2,
+    });
+    expect(applicationListQuerySchema.parse({ job: "general", needsYou: "true" })).toMatchObject({
+      job: "general",
+      needsYou: true,
+      page: 1,
+    });
+    for (const query of [{ job: "nurse" }, { status: "RESOLVED" }, { page: "0" }, { needsYou: "yes" }]) {
+      expect(applicationListQuerySchema.safeParse(query).success, JSON.stringify(query)).toBe(false);
+    }
+  });
+
+  it("moves an application only to a status it knows, and takes a note tidied", () => {
+    expect(applicationStatusSchema.parse({ status: "SHORTLISTED" })).toEqual({ status: "SHORTLISTED" });
+    expect(applicationStatusSchema.safeParse({ status: "RESOLVED" }).success).toBe(false);
+    expect(applicationNoteSchema.parse({ body: " Call on Sunday.\r\n " })).toEqual({ body: "Call on Sunday." });
+    expect(applicationNoteSchema.safeParse({ body: "  " }).success).toBe(false);
   });
 });

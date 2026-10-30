@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { buildErrorPayload, errorResponse, successResponse } from "@/lib/api/responses";
+import { buildErrorPayload, errorResponse, fileResponse, successResponse } from "@/lib/api/responses";
 import { rateLimitError } from "@/lib/errors";
 
 describe("the response envelope", () => {
@@ -30,5 +30,20 @@ describe("the response envelope", () => {
         details: { retryAfterSeconds: 600 },
       },
     });
+  });
+});
+
+describe("a private file", () => {
+  it("is saved, never shown, kept by no one, its type never guessed, its name kept to safe characters", async () => {
+    const response = fileResponse(
+      { bytes: new Uint8Array([37, 80, 68, 70]), filename: 'cv "final".pdf', contentType: "application/pdf" },
+      "req_3",
+    );
+    expect(response.headers.get("content-disposition")).toBe('attachment; filename="cv__final_.pdf"');
+    expect(response.headers.get("content-type")).toBe("application/pdf");
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("x-content-type-options")).toBe("nosniff");
+    expect(response.headers.get("x-request-id")).toBe("req_3");
+    expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array([37, 80, 68, 70]));
   });
 });

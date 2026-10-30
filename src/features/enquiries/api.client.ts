@@ -1,6 +1,6 @@
 import { API_ROUTES } from "@/constants/routes";
 import type { EnquiryStatus, FormKind } from "@/constants/statuses";
-import { patchJson, postJson } from "@/lib/api/client";
+import { deleteJson, patchJson, postJson } from "@/lib/api/client";
 
 import type { EnquiryListQuery, EnquiryNoteItem } from "./types";
 
@@ -30,4 +30,5 @@ export const EnquiriesClient = {
   addNote: ({ id, body }: { id: string; body: string }) =>
     postJson<EnquiryNoteItem>(API_ROUTES.adminEnquiryNotes(id), { body }),
   retryAlert: (id: string) => postJson<{ emailStatus: string }>(API_ROUTES.adminEnquiryRetryMail(id)),
+  remove: (id: string) => deleteJson<{ deleted: true }>(API_ROUTES.adminEnquiry(id)),
 };

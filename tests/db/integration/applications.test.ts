@@ -2,18 +2,24 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { FORM_RATE_LIMIT, UPLOAD_LIMITS } from "@/constants/limits";
+import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, UPLOAD_LIMITS } from "@/constants/limits";
 import { MAIL_TEXT, UI_TEXT } from "@/constants/messages";
 import { closeDb, getDb } from "@/db/client";
-import { applicationNotes, applications, auditLog, errorLog, rateLimits, records } from "@/db/schema";
+import { applicationNotes, applications, auditLog, authUser, errorLog, rateLimits, records } from "@/db/schema";
 import {
+  addApplicationNote,
   type ApplicationSubmission,
+  deleteApplication,
+  downloadApplicationCv,
+  getApplication,
+  listApplications,
   receiveApplication,
   retryApplicationAlert,
   sendApplicationAlert,
+  setApplicationStatus,
   submitApplication,
 } from "@/features/careers/api";
 import { getOperations } from "@/lib/content/operations";
@@ -368,5 +374,198 @@ describe("the HR email, through Mailpit (plan §9.3, §17)", () => {
     const gone = crypto.randomUUID();
     await expect(sendApplicationAlert(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
     await expect(retryApplicationAlert(gone, actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+  });
+});
+
+describe("the applications inbox, against the local MySQL (plan §9.5)", () => {
+  let root = "";
+  beforeEach(async () => {
+    root = await fs.mkdtemp(path.join(os.tmpdir(), "alhidaya-inbox-"));
+    vi.stubEnv("CV_DIR", path.join(root, "cvs"));
+  });
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await fs.rm(root, { recursive: true, force: true });
+  });
+
+  /** An inbox of its own: the table emptied, then these applications, a minute apart, oldest first. */
+  async function inbox(...entries: Partial<ApplicationSubmission>[]) {
+    await getDb().delete(applications);
+    const ids: string[] = [];
+    for (const [index, entry] of entries.entries()) {
+      const { id } = await submitApplication(application(entry), ip(), new Date(at.getTime() + index * 60_000));
+      ids.push(id);
+    }
+    return ids;
+  }
+
+  const all = { needsYou: false, q: null, page: 1 } as const;
+  const ids = (list: { items: { id: string }[] }) => list.items.map((item) => item.id);
+
+  it("lists newest first, by job or the general ones, with how many in all and the jobs it can be filtered by", async () => {
+    const [general, forOpen, forLastDay] = await inbox({}, { jobId: jobs.open }, { jobId: jobs.lastDay });
+    const list = await listApplications(all);
+    expect(ids(list)).toEqual([forLastDay, forOpen, general]);
+    expect(list).toMatchObject({ total: 3, page: 1, pageSize: INBOX_PAGE_SIZE });
+    expect(list.items[2]).toEqual({
+      id: general,
+      jobId: null,
+      jobTitle: null,
+      status: "NEW",
+      emailStatus: "PENDING",
+      cvStatus: "PENDING",
+      name: "Mariam Ali",
+      email: "mariam@example.com",
+      phone: "+97455512345",
+      createdAt: at,
+    });
+    expect(list.jobs).toEqual([
+      { id: jobs.lastDay, title: jobFixture().title.en },
+      { id: jobs.open, title: jobFixture().title.en },
+    ]);
+    expect(ids(await listApplications({ ...all, job: jobs.open }))).toEqual([forOpen]);
+    expect(ids(await listApplications({ ...all, job: "general" }))).toEqual([general]);
+  });
+
+  it("filters by status, by what needs the admin, and by a name, an email or a phone as typed", async () => {
+    const [first, second, third] = await inbox(
+      { name: "Omar Haddad", email: "omar@example.com", phone: "+447946095800" },
+      {},
+      {},
+    );
+    await setApplicationStatus(first, "SHORTLISTED", actor);
+    await setApplicationStatus(second, "IN_REVIEW", actor);
+    await getDb().update(applications).set({ emailStatus: "SENT" }).where(eq(applications.id, third));
+    await getDb().update(applications).set({ emailStatus: "NOT_SENT" }).where(eq(applications.id, second));
+    expect(ids(await listApplications({ ...all, status: "SHORTLISTED" }))).toEqual([first]);
+    // New, or its HR email not sent.
+    expect(ids(await listApplications({ ...all, needsYou: true }))).toEqual([third, second]);
+    expect(ids(await listApplications({ ...all, q: "omar" }))).toEqual([first]);
+    expect(ids(await listApplications({ ...all, q: "7946 0958" }))).toEqual([first]);
+    expect(ids(await listApplications({ ...all, q: "nobody" }))).toEqual([]);
+  });
+
+  it("names a job renamed between applications once, by the title it was last applied for under", async () => {
+    await inbox({ jobId: jobs.open });
+    await getDb().update(applications).set({ jobTitle: "An old title" });
+    const later = new Date(at.getTime() + 60_000);
+    await submitApplication(application({ jobId: jobs.open }), ip(), later);
+    expect((await listApplications(all)).jobs).toEqual([{ id: jobs.open, title: jobFixture().title.en }]);
+  });
+
+  it("opens an application with every answer, its CV as uploaded, and its notes oldest first, each by its admin", async () => {
+    const [id] = await inbox({ jobId: jobs.open });
+    const admin = crypto.randomUUID();
+    await getDb()
+      .insert(authUser)
+      .values({ id: admin, name: "Fatima (admin)", email: `inbox-${admin}@alhidaya.qa`, emailVerified: true });
+    try {
+      const first = await addApplicationNote(id, "Strong ICU experience.", { adminId: admin, requestId: REQUEST });
+      expect(first).toEqual({
+        id: expect.any(String),
+        body: "Strong ICU experience.",
+        author: "Fatima (admin)",
+        createdAt: expect.any(Date),
+      });
+      await addApplicationNote(id, "Call on Sunday.", actor);
+      const opened = await getApplication(id);
+      expect(opened).toMatchObject({
+        id,
+        jobId: jobs.open,
+        jobTitle: jobFixture().title.en,
+        fields: application().fields,
+        cvName: "Mariam CV.pdf",
+        cvType: "pdf",
+        cvBytes: 120_000,
+      });
+      expect(opened.notes.map((note) => [note.body, note.author])).toEqual([
+        ["Strong ICU experience.", "Fatima (admin)"],
+        ["Call on Sunday.", null],
+      ]);
+      const entries = await getDb()
+        .select({ action: auditLog.action, changes: auditLog.changes })
+        .from(auditLog)
+        .where(eq(auditLog.entityId, id));
+      expect(entries).toEqual([
+        { action: "NOTE_ADD", changes: null },
+        { action: "NOTE_ADD", changes: null },
+      ]);
+    } finally {
+      await getDb().delete(authUser).where(eq(authUser.id, admin));
+    }
+  });
+
+  it("moves an application along, recorded from and to, and records nothing when nothing changes", async () => {
+    const [id] = await inbox({});
+    await setApplicationStatus(id, "IN_REVIEW", actor);
+    await setApplicationStatus(id, "IN_REVIEW", actor);
+    expect((await getApplication(id)).status).toBe("IN_REVIEW");
+    const entries = await getDb()
+      .select({ action: auditLog.action, changes: auditLog.changes })
+      .from(auditLog)
+      .where(eq(auditLog.entityId, id));
+    expect(entries).toEqual([{ action: "STATUS_CHANGE", changes: { status: { from: "NEW", to: "IN_REVIEW" } } }]);
+  });
+
+  it("gives the admin a kept CV under its kept name, recording each download, and refuses one not kept", async () => {
+    await getDb().delete(applications);
+    const { id } = await receiveApplication(received({ bytes: PDF, name: "Mariam CV.pdf" }), ip(), at);
+    const { cvKey } = (await getDb().select({ cvKey: applications.cvKey }).from(applications))[0];
+    const cv = await downloadApplicationCv(id, actor);
+    expect(new TextDecoder().decode(cv.bytes)).toBe(PDF);
+    expect(cv).toMatchObject({ filename: cvKey!.split("/")[1], contentType: "application/pdf" });
+    const downloads = await getDb()
+      .select({ action: auditLog.action, changes: auditLog.changes })
+      .from(auditLog)
+      .where(and(eq(auditLog.entityId, id), eq(auditLog.action, "CV_DOWNLOAD")));
+    expect(downloads).toEqual([{ action: "CV_DOWNLOAD", changes: null }]);
+
+    await getDb().update(applications).set({ cvStatus: "EXPIRED" }).where(eq(applications.id, id));
+    await expect(downloadApplicationCv(id, actor)).rejects.toMatchObject({ code: "CV_NOT_KEPT", httpStatus: 404 });
+    await getDb().update(applications).set({ cvStatus: "STORED" }).where(eq(applications.id, id));
+    await fs.rm(path.join(root, "cvs", cvKey!));
+    await expect(downloadApplicationCv(id, actor)).rejects.toMatchObject({ code: "CV_NOT_KEPT" });
+  });
+
+  it("deletes an application, its notes and its CV file at once, recorded without anything it held (D82)", async () => {
+    await getDb().delete(applications);
+    const { id } = await receiveApplication(received({ bytes: PDF, name: "Mariam CV.pdf" }), ip(), at);
+    const unkept = (await submitApplication(application(), ip(), at)).id;
+    const { cvKey } = (
+      await getDb().select({ cvKey: applications.cvKey }).from(applications).where(eq(applications.id, id))
+    )[0];
+    await addApplicationNote(id, "Shortlist.", actor);
+
+    await deleteApplication(id, actor);
+    await expect(getApplication(id)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    expect(await getDb().select().from(applicationNotes).where(eq(applicationNotes.applicationId, id))).toEqual([]);
+    await expect(fs.stat(path.join(root, "cvs", cvKey!))).rejects.toThrow();
+    const [entry] = await getDb()
+      .select({ action: auditLog.action, changes: auditLog.changes, summary: auditLog.summary })
+      .from(auditLog)
+      .where(and(eq(auditLog.entityId, id), eq(auditLog.action, "DELETE")));
+    expect(entry).toEqual({ action: "DELETE", changes: null, summary: null });
+
+    // One whose CV was never kept goes all the same.
+    await deleteApplication(unkept, actor);
+    await expect(getApplication(unkept)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+  });
+
+  it("keeps the database's last word on a note: one longer than its column is refused as invalid", async () => {
+    const [id] = await inbox({});
+    await expect(addApplicationNote(id, "x".repeat(2001), actor)).rejects.toMatchObject({
+      code: "VALIDATION_ERROR",
+      httpStatus: 400,
+    });
+    expect((await getApplication(id)).notes).toEqual([]);
+  });
+
+  it("answers not found for an application that is gone, whatever is asked of it", async () => {
+    const gone = crypto.randomUUID();
+    await expect(getApplication(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND", httpStatus: 404 });
+    await expect(setApplicationStatus(gone, "CLOSED", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    await expect(addApplicationNote(gone, "Note", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    await expect(downloadApplicationCv(gone, actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+    await expect(deleteApplication(gone, actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
   });
 });

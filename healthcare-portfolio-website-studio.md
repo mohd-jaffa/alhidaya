@@ -511,6 +511,12 @@ status with Retry), status (`NEW`, `IN_REVIEW`, `SHORTLISTED`, `CLOSED`),
 internal notes, **Delete** (D82: asked first; the row, its notes and its CV
 file go at once, audited). Deleting an application deletes its CV file.
 
+The job filter lists the jobs that have applications, each by the title it
+was last applied for under, and the general applications. "Needs you" is a
+new application, or one whose HR email was not sent. Delete removes the CV
+file first, so a file that cannot be removed leaves the application to try
+again.
+
 ## 10. Enquiry forms
 
 ### 10.1 Request a Quote (Q5 default fields)
@@ -1408,7 +1414,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R5.1 | Careers page, job page, closed and empty states, `JobPosting` | §6.5, §6.6 | — | DONE (2026-10-29; a closed job is `noindex`; `apply` is no job's address) |
 | R5.2 | Application form with CV (type by bytes, size); general application | §9.2 | Q4, Q7 | DONE (2026-10-30; the CV is saved in the private folder now, the rest of R5.3 to come; a closed job's form sends the visitor to the job) |
-| R5.3 | The CV folder in use: save under a random id, admin-only download, delete with the application | §9.4 | — | TODO |
+| R5.3 | The CV folder in use: save under a random id, admin-only download, delete with the application | §9.4 | — | DONE (2026-10-30; the download is a file to save under the CV's kept name, `no-store`, `nosniff`, sandboxed, and recorded; a CV not kept is refused with where to find it) |
 | R5.4 | Submit: row, CV saved, HR email with the CV attached, failure paths and retry | §9.3 | — | DONE (2026-10-30; the email after the answer, as D79; Retry attaches the kept CV; a CV not stored has no Retry of its own) |
 | R5.5 | Applications inbox | §9.5 | — | TODO |
 | R5.6 | Integration + E2E (mail caught by Mailpit) | §34 | — | TODO |

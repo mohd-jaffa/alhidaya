@@ -33,18 +33,20 @@ describe("enquiriesKey", () => {
 });
 
 describe("the inbox's writes", () => {
-  it("move an enquiry, note it and send its alert again, each at its endpoint", async () => {
+  it("move an enquiry, note it, send its alert again and delete it, each at its endpoint", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async () => Response.json({ success: true, data: {} }));
     vi.stubGlobal("fetch", fetch);
     await EnquiriesClient.setStatus({ id: "e1", status: "RESOLVED" });
     await EnquiriesClient.addNote({ id: "e1", body: "Called back." });
     await EnquiriesClient.retryAlert("e1");
+    await EnquiriesClient.remove("e1");
     expect(
       fetch.mock.calls.map(([url, init]) => [(init as RequestInit).method, url, (init as RequestInit).body]),
     ).toEqual([
       ["PATCH", API_ROUTES.adminEnquiry("e1"), JSON.stringify({ status: "RESOLVED" })],
       ["POST", API_ROUTES.adminEnquiryNotes("e1"), JSON.stringify({ body: "Called back." })],
       ["POST", API_ROUTES.adminEnquiryRetryMail("e1"), undefined],
+      ["DELETE", API_ROUTES.adminEnquiry("e1"), undefined],
     ]);
   });
 });

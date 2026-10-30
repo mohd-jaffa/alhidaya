@@ -1,4 +1,4 @@
-import { getEnquiry, setEnquiryStatus } from "@/features/enquiries/api";
+import { deleteEnquiry, getEnquiry, setEnquiryStatus } from "@/features/enquiries/api";
 import { withAdminRoute } from "@/lib/api/admin";
 import { readJson } from "@/lib/api/handler";
 import { enquiryStatusSchema } from "@/lib/validation";
@@ -16,5 +16,13 @@ export function PATCH(request: Request, { params }: Context) {
     const { status } = await readJson(request, enquiryStatusSchema);
     await setEnquiryStatus((await params).id, status, { adminId: admin.adminId, requestId });
     return { status };
+  });
+}
+
+/** Deletes an enquiry and its notes at once, asked first in the inbox (D82). */
+export function DELETE(request: Request, { params }: Context) {
+  return withAdminRoute(request, async ({ admin, requestId }) => {
+    await deleteEnquiry((await params).id, { adminId: admin.adminId, requestId });
+    return { deleted: true };
   });
 }
