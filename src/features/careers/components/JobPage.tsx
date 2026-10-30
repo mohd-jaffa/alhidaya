@@ -68,7 +68,7 @@ export function JobPage({ job, others }: { job: PublishedJob; others: readonly P
           siteUrl,
         )}
       />
-      <div className="grid gap-section pt-16 pb-section xl:pt-12">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-section pt-16 pb-section xl:pt-12">
         <div id="start" className="mx-auto grid w-full max-w-site gap-6 px-gutter">
           <SignPanel tone="leaf" headline={published.title.en} lede={published.summary.en}>
             {open ? (

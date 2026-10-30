@@ -55,8 +55,9 @@ test("Pages lists the eight pages with their state, and a page's editor passes a
   await page.getByRole("link", { name: /^Home/ }).click();
   await expect(page).toHaveURL(ADMIN_ROUTES.page("HOME"));
   await expect(page.getByRole("heading", { level: 1, name: "Home" })).toBeVisible();
-  await page.getByRole("button", { name: /Introduction/, expanded: false }).click();
-  await expect(page.getByRole("textbox", { name: ADMIN_TEXT.heading })).toBeVisible();
+  await page.getByRole("button", { name: /For families/, expanded: false }).click();
+  await expect(page.getByRole("textbox", { name: ADMIN_TEXT.heading, exact: true })).toBeVisible();
+  await expect(page.getByRole("combobox", { name: new RegExp(`^${ADMIN_TEXT.icon}`) }).first()).toBeVisible();
   await axe(page);
 
   await page.getByRole("button", { name: ADMIN_TEXT.changePhoto }).click();
@@ -127,7 +128,7 @@ test("leaving a page with unsaved changes asks first, and Leave without saving g
   test.skip(testInfo.project.name !== "desktop", "the rail is a desktop's");
   await signIn(page);
   await page.goto(ADMIN_ROUTES.page("HOME"));
-  await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.hide, "Introduction") }).click();
+  await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.hide, "Statement") }).click();
   await expect(page.getByText(ADMIN_TEXT.hidden)).toBeVisible();
 
   const rail = page.getByRole("complementary");

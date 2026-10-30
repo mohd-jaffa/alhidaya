@@ -48,7 +48,8 @@ describe("AskedAction (plan §16)", () => {
     expect(await screen.findByRole("button", { name: "Archiving" })).toHaveAttribute("aria-busy", "true");
     finish("done");
     await waitFor(() => expect(afterwards).toHaveBeenCalledWith("done"));
-    expect(screen.queryByRole("dialog")).toBeNull();
+    // The dialog closes once the answer is in; under load that can take a moment longer.
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 
   it("says in the dialog when it failed, and asks afresh the next time", async () => {

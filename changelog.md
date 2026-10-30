@@ -2931,3 +2931,81 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R6B.2: Home in the reference's sections
+
+### Added
+- Home rebuilt in the reference's sections and order (D97), each editable
+  in the Pages editor (D100), the design locked:
+  - **The hero** (Home's sign): faces between round brackets; the headline
+    settling from wide spacing into its words (CSS alone, so it costs no
+    script) with one phrase on a pale-green highlight; the supporting line;
+    WhatsApp (forest) and Request a quote (pale); a card of faces with a
+    real fact (D99); a tall care photo, fetched first, with word chips at
+    its top and two cards floating at its foot.
+  - **The statement** (`STATEMENT`): one large centred sentence, phrase by
+    phrase; its darker phrases turn from grey to navy word by word with the
+    scroll, an icon chip after a phrase that has one.
+  - **The highlights** (`HIGHLIGHTS`): a note, a photo, the green card with
+    faces and a figure that counts up, and a photo; they rise in one after
+    another.
+  - **For hospitals, clinics & schools** (`FOR_INSTITUTIONS`, D105): its
+    pill and a heading with an icon between its parts; a team of faces, a
+    photo, Doha's reach (faces on soft rings); real figures (D99).
+  - **For families** (`FOR_FAMILIES`, D102, D105): the services sliding
+    through a large card with the scroll, each with its photo and opening
+    its page; a photo card and small feature cards.
+  - **How it works** (`PROCESS`): numbered steps with round photos; on a
+    wide screen the section holds while the steps travel sideways.
+  - **The Contact form** (D104) in the reference's layout: the email as a
+    chip beside the heading, the form on a mist panel; Contact and the
+    quote page's forms take the same layout.
+- The editor's new field kinds: an icon picked by name, a yes or no, a
+  group of faces, a group of fields, and a list of items each with its own
+  fields; Home's sign shows its hero's fields, no other page's.
+- Motion (§30.1): `SettleText`, `StatementWords`, `CountUp`, `ScrollTrack`
+  and a staggered `Reveal`; all scroll-linked or once, nothing moving on
+  its own (WCAG 2.2.2); reduced motion shows everything in place.
+- Kit: `Avatars`, `IconChip`, `PillLabel`; `MediaImage` takes `decorative`;
+  pictograms for the chips (heart, shield, calendar, globe, team,
+  stethoscope, clipboard) and an inline size.
+- Seventeen licensed stock photographs (Unsplash, each source and
+  photographer recorded, kept at 1600 px with no metadata): the hero, four
+  faces, the cards, the steps, and one for each service (D102), which the
+  seed now gives each service.
+
+### Changed
+- A page's images are every one its sections name, at any depth, and the
+  services' when it shows the families' card (`mediaIds` moves to
+  `lib/content/media-ids.ts`).
+- The plan's section catalogue (§7.2) holds the new types.
+- A page's sections sit in a column that can never be wider than the
+  page (`minmax(0, 1fr)`), so no section can push the page sideways; the
+  team card's faces are smaller on a phone.
+- The page editor's journeys open Home's new sections.
+- A dialog test that closed a moment late under load now waits for it.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,162), coverage 100%: each new
+  section with and without its photos, faces, words and figures; the
+  statement's layered words; the counter, the sideways track (held,
+  drifting, swiped, focusable when nothing in it is); the editor's new
+  field kinds (an icon picked or none, a darker phrase, faces added,
+  moved and taken away, chips up to three, lists at their bounds); the
+  seed's Home and each service's photograph; a page's images at any depth
+  and the services' for families.
+- E2E (phone and desktop, axe): Home's hero with its photo first, its
+  sections and the services in the families' card, the Contact form
+  beside the email, the statement darkening with the scroll while every
+  word keeps its contrast, the header scrolling away; nothing scrolls
+  sideways down to 320 px; the whole suite passed.
+- Screens looked at, at 1440 and 390 px, against the reference's frames.
+- First paint, JavaScript (gzip, within 170 KB): Home and Contact
+  168.8 KB (1,233 bytes left; Home now carries the Contact form), the
+  apply page 167.4 KB.
+
+### Blockers
+- None. The client's own photographs replace the stock through the admin;
+  real figures (patients, nurses) join the counters when the client gives
+  them (D99).

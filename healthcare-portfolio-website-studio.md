@@ -408,7 +408,7 @@ says where the visitor is and the way back.
 
 | Type | Content | Used on |
 |---|---|---|
-| `SIGN` | headline, supporting line, photo; on Home the three lines follow, from their "You are here" station (D68), their names fixed (D71) | every page (fixed, first) |
+| `SIGN` | headline, supporting line, photo; on Home it is the hero (D97): the highlighted words, faces, up to three word chips over the photo, a card with a photo and its tag, a note with an icon, and a real fact (D99), with WhatsApp and the quote fixed | every page (fixed, first) |
 | `INTRO` | heading, rich text, optional photo | Home, About |
 | `SERVICES_INDEX` | heading, intro; shows every published service, in order | Home, Services |
 | `VALUES` | heading, up to six items (title, line) | Home, About |
@@ -419,8 +419,13 @@ says where the visitor is and the way back.
 | `JOBS_LIST` | intro, empty-state text | Careers |
 | `CONTACT_BAND` | heading, text; reads the contact details (§13) | most pages |
 | `CONTACT_DETAILS` | heading; contact details and the static map | Contact |
-| `FORM` | heading, text; which form (Quote or Contact) | Contact, Quote |
+| `FORM` | heading, text; which form (Quote or Contact); the site's email as a chip beside it (D97) | Home (Contact, D104), Contact, Quote |
 | `RICH_TEXT` | headings, paragraphs, lists, links (no raw HTML) | About, Privacy, Terms |
+| `STATEMENT` | the statement, phrase by phrase: its words, darker or not, an optional icon after it (D97) | Home |
+| `HIGHLIGHTS` | four cards: a note (icon, title, text); a photo with its words; the green card (title, text, faces, a figure); a photo with its words (D97) | Home |
+| `FOR_INSTITUTIONS` | its pill, its heading in two parts with an icon between; a team card (title, text, faces), a photo card, a reach card (title, faces); up to four real figures (D99, D105) | Home |
+| `FOR_FAMILIES` | its pill and heading; a photo card with its words; up to three features (icon, title); shows every published service, sliding through its card, each with its photo (D102, D105) | Home |
+| `PROCESS` | its pill and heading; two to six steps, each a round photo, a title and words, numbered in order (D97) | Home |
 
 Rich text is stored as structured blocks (heading, paragraph, list, link),
 never HTML; links must be internal routes or validated `https` URLs.
@@ -1487,7 +1492,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R6B.1 | The foundation: the new direction recorded (§30.1, the surface brief); the greens and the display type as tokens (D98); Inter Tight self-hosted (D108); the rail removed from every public page (D101); the header no longer pinned, with the four links and the forest quote pill (D107); the admin's left column a plain list, without its line and station dots (D101) | D97, D98, D101, D107, D108 | — | DONE (2026-10-30) |
-| R6B.2 | Home in the reference's sections (D97, D100): the split hero; the statement; the four highlight cards; "For Hospitals, Clinics & Schools" with its counters (D99, D105); "For Families" with the services sliding in a card (D102, D105); how it works, four steps; the Contact form (D104): each a section type in the Pages editor, seeded, with the new photographs (licensed stock, D8, D75) and their motion | D97, D99, D100, D102, D104, D105 | R6B.1 | TODO |
+| R6B.2 | Home in the reference's sections (D97, D100): the split hero; the statement; the four highlight cards; "For Hospitals, Clinics & Schools" with its counters (D99, D105); "For Families" with the services sliding in a card (D102, D105); how it works, four steps; the Contact form (D104): each a section type in the Pages editor, seeded, with the new photographs (licensed stock, D8, D75) and their motion | D97, D99, D100, D102, D104, D105 | R6B.1 | DONE (2026-10-30) |
 | R6B.3 | The forest footer with its running words, editable in Settings (D106), and its columns | D106 | R6B.1 | TODO |
 | R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | TODO |
 | R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | TODO |

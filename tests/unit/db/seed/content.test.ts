@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { PAGE_KEYS } from "@/constants/sections";
-import { SEED_SERVICES, SEED_SITE, seedJob, seedPages } from "@/db/seed/content";
+import { SEED_SERVICES, SEED_SITE, seedJob, seedPages, seedServices } from "@/db/seed/content";
+import { NO_PHOTOS, SEED_PHOTOS } from "@/db/seed/photos";
 import { jobDocumentSchema, pageDocumentSchema, serviceDocumentSchema, siteDocumentSchema } from "@/lib/validation";
 
 describe("the seed content", () => {
@@ -25,6 +26,36 @@ describe("the seed content", () => {
       ["maternity-and-newborn-care", "FAMILIES"],
       ["palliative-care", "FAMILIES"],
       ["elderly-care", "FAMILIES"],
+    ]);
+  });
+
+  it("gives each service its own photograph once imported, and none before (D102)", () => {
+    expect(seedServices().every((service) => service.image === null)).toBe(true);
+    const refs = Object.fromEntries(Object.keys(SEED_PHOTOS).map((name) => [name, { mediaId: name }]));
+    const services = seedServices(refs as never);
+    expect(services.map((service) => service.image?.mediaId)).toEqual([
+      "hospitalCorridor",
+      "schoolNurse",
+      "homeNursing",
+      "chronicCare",
+      "childCare",
+      "newbornCare",
+      "palliativeCare",
+      "elderlyCare",
+    ]);
+    expect(seedServices({ ...NO_PHOTOS }).map((service) => service.slug)).toEqual(SEED_SERVICES.map((s) => s.slug));
+  });
+
+  it("opens Home in the reference's sections, in its order (D97)", () => {
+    expect(seedPages().HOME.sections.map((section) => section.type)).toEqual([
+      "SIGN",
+      "STATEMENT",
+      "HIGHLIGHTS",
+      "FOR_INSTITUTIONS",
+      "FOR_FAMILIES",
+      "PROCESS",
+      "FORM",
+      "CLIENTS",
     ]);
   });
 

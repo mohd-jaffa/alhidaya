@@ -83,6 +83,7 @@ export {
 export { todayQuerySchema, type TodayQueryInput, type TodayQueryPayload } from "./schemas/inbox";
 
 export {
+  NO_HERO,
   pageDocumentSchema,
   sectionSchema,
   type PageDocument,

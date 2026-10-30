@@ -165,4 +165,24 @@ describe("a page with everything it shows, against the local MySQL", () => {
       expect(image.headers.get("content-type")).toBe("image/png");
     }
   });
+  it("reads the services' photos and every face Home's sections name, at any depth (D97, D102)", async () => {
+    await clearContent();
+    const servicePhoto = await image();
+    const face = await image();
+    await published("SERVICES", serviceFixture({ image: { mediaId: servicePhoto } }), "home-nursing-care");
+    const home = pageFixture("HOME");
+    const families = section("FOR_FAMILIES");
+    const institutions = section("FOR_INSTITUTIONS");
+    const withFace = {
+      ...institutions,
+      content: {
+        ...institutions.content,
+        team: { title: { en: "Team" }, text: { en: null }, avatars: [{ mediaId: face }] },
+      },
+    } as typeof institutions;
+    await publishedPage("HOME", { ...home, sections: [home.sections[0], withFace, families] });
+
+    const content = await getPublishedPageContent("HOME");
+    expect([...(content?.data.images.keys() ?? [])].toSorted()).toEqual([servicePhoto, face].toSorted());
+  });
 });

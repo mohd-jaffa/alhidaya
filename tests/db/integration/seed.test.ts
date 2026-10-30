@@ -63,7 +63,7 @@ describe("seedContent, against the local MySQL", () => {
         ],
         services: 8,
         jobs: 1,
-        photos: 3,
+        photos: Object.keys(SEED_PHOTOS).length,
       });
       expect(await readDocumentDraft("PAGE:TERMS")).toMatchObject({ draft: own });
 
@@ -85,8 +85,14 @@ describe("seedContent, against the local MySQL", () => {
       expect(photos.every((row) => row.source?.licence === "Unsplash License" && row.variants.length > 0)).toBe(true);
       const home = (await readDocumentDraft<PageDocument>("PAGE:HOME"))?.draft;
       const sign = home?.sections[0];
-      const careAtHome = photos.find((row) => row.source?.url === SEED_PHOTOS.careAtHome.source.url);
-      expect(sign?.type === "SIGN" ? sign.content.image : null).toEqual({ mediaId: careAtHome?.id });
+      const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.heroNurse.source.url);
+      expect(sign?.type === "SIGN" ? sign.content.image : null).toEqual({ mediaId: hero?.id });
+      // Each service shows its own photograph (D102).
+      const elderly = photos.find((row) => row.source?.url === SEED_PHOTOS.elderlyCare.source.url);
+      expect(services.find((service) => service.draft.slug === "elderly-care")?.draft.image).toEqual({
+        mediaId: elderly?.id,
+      });
+      expect(services.every((service) => service.draft.image !== null)).toBe(true);
 
       expect(await readPublishedDocument("PAGE:HOME")).toBeNull();
       expect(await readPublishedDocument("SITE")).toBeNull();
@@ -103,6 +109,6 @@ describe("seedContent, against the local MySQL", () => {
     const again = await importSeedPhotos();
     expect(again.stored).toBe(0);
     expect(Object.values(again.refs).every((ref) => ref !== null)).toBe(true);
-    expect(await seedPhotoRows()).toHaveLength(3);
+    expect(await seedPhotoRows()).toHaveLength(Object.keys(SEED_PHOTOS).length);
   });
 });

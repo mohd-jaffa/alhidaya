@@ -39,8 +39,8 @@ describe("a page", () => {
 
   it("holds only what it allows, as many as it allows", () => {
     const home = pageFixture("HOME");
-    expect(messages("HOME", { ...home, sections: [...home.sections, section("FORM")] })).toContain(
-      VALIDATION_MESSAGES.sectionNotAllowed(SECTION_NAMES.FORM),
+    expect(messages("HOME", { ...home, sections: [...home.sections, section("CONTACT_DETAILS")] })).toContain(
+      VALIDATION_MESSAGES.sectionNotAllowed(SECTION_NAMES.CONTACT_DETAILS),
     );
     expect(messages("HOME", { ...home, sections: [...home.sections, section("INTRO")] })).toContain(
       VALIDATION_MESSAGES.sectionLimit(SECTION_NAMES.INTRO, 1),

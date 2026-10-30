@@ -49,7 +49,7 @@ export function ServicePage({
           siteUrl,
         )}
       />
-      <div className="grid gap-section pt-16 pb-section xl:pt-12">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-section pt-16 pb-section xl:pt-12">
         <div id="start" className="mx-auto w-full max-w-site px-gutter">
           <SignPanel
             tone={line.tone}

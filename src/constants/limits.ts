@@ -23,6 +23,9 @@ export const TEXT_LIMITS = {
   /** A section's longer text: a mission, the institutions' words, the jobs list's introduction. */
   sectionText: 600,
   valueTitle: 80,
+  /** The redesign's short words (D97): a chip over the hero's photo, an audience's pill, a counter's figure. */
+  chip: 32,
+  figure: 12,
   department: 80,
   /** What an image shows, for those who cannot see it (plan §15). */
   alt: 250,
@@ -52,6 +55,13 @@ export const LIST_LIMITS = {
   addressLines: 6,
   recipients: 5,
   ordering: 200,
+  /** The redesign's sections (D97): a statement's phrases, faces in a group, word chips, counters, small features, steps. */
+  statementParts: 12,
+  avatars: 5,
+  chips: 3,
+  facts: 4,
+  features: 3,
+  steps: 6,
 } as const;
 
 /** How many rows an admin inbox shows a page (plan §9.5, §10.5), and how much of an answer a row shows. */

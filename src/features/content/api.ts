@@ -26,6 +26,7 @@ import {
   readDocumentDraft,
   saveDocumentDraft,
 } from "@/lib/content/documents";
+import { mediaIds } from "@/lib/content/media-ids";
 import type { ContentView } from "@/lib/content/view";
 import { notFoundError } from "@/lib/errors";
 import { renderShareImage } from "@/lib/seo/share-image";
@@ -46,17 +47,19 @@ export const getPublishedPage = cache(
 );
 
 /** The photos a page's sections hold. */
-const sectionImageIds = (document: PageDocument): string[] =>
-  document.sections.flatMap((section) =>
-    "image" in section.content && section.content.image ? [section.content.image.mediaId] : [],
-  );
+/** Every photo a page's sections name, at any depth: a photo, a card's, a group of faces, a step's (D97). */
+const sectionImageIds = (document: PageDocument): string[] => [...mediaIds(document.sections)];
 
-/** The images a page's sections show: its photos and its client logos. */
-function imageIds(document: PageDocument, clients: SectionData["clients"]): string[] {
-  const logos = document.sections.some((section) => section.type === "CLIENTS")
-    ? clients.map((client) => client.published.logo.mediaId)
-    : [];
-  return [...sectionImageIds(document), ...logos];
+/** The images a page's sections show: its photos, its client logos, and the services' photos for families (D102). */
+function imageIds(
+  document: PageDocument,
+  clients: SectionData["clients"],
+  services: SectionData["services"],
+): string[] {
+  const shows = (type: SectionType) => document.sections.some((section) => section.type === type);
+  const logos = shows("CLIENTS") ? clients.map((client) => client.published.logo.mediaId) : [];
+  const servicePhotos = shows("FOR_FAMILIES") ? [...mediaIds(services.map((service) => service.published.image))] : [];
+  return [...sectionImageIds(document), ...logos, ...servicePhotos];
 }
 
 /**
@@ -72,12 +75,12 @@ export async function getPublishedPageContent(
   const [document, site, services, jobs, clients] = await Promise.all([
     getPublishedPage(page, view),
     getPublishedSite(view),
-    may("SERVICES_INDEX", "FORM") ? listPublishedServices(view) : [],
+    may("SERVICES_INDEX", "FORM", "FOR_FAMILIES") ? listPublishedServices(view) : [],
     may("CAREERS_BAND", "JOBS_LIST") ? listPublishedJobs(new Date(), view) : [],
     may("CLIENTS") ? listPublishedClients(view) : [],
   ]);
   if (!document) return null;
-  const images = await getImages(imageIds(document, clients));
+  const images = await getImages(imageIds(document, clients, services));
   return { document, data: { site, services, jobs, clients, images } };
 }
 

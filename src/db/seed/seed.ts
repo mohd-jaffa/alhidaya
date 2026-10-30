@@ -21,7 +21,7 @@ import {
   siteDocumentSchema,
 } from "@/lib/validation";
 
-import { SEED_SERVICES, SEED_SITE, seedJob, seedPages } from "./content";
+import { SEED_SITE, seedJob, seedPages, seedServices } from "./content";
 import { NO_PHOTOS, SEED_PHOTOS, type SeedPhoto, type SeedPhotoRefs } from "./photos";
 
 export interface SeedResult {
@@ -72,10 +72,11 @@ export async function seedContent(actor: Actor = SEED_ACTOR, today: string = doh
     result.documents.push(key);
   };
 
-  // The photographs are needed only for pages still to be written.
+  // The photographs are needed only for pages still to be written, or services still to be made.
   const unwritten = await Promise.all(PAGE_KEYS.map(async (page) => !(await readDocumentDraft(pageDocumentKey(page)))));
+  const noServices = (await listRecordsForAdmin("SERVICES")).length === 0;
   let photos = NO_PHOTOS;
-  if (unwritten.some(Boolean)) {
+  if (unwritten.some(Boolean) || noServices) {
     const imported = await importSeedPhotos();
     photos = imported.refs;
     result.photos = imported.stored;
@@ -84,9 +85,9 @@ export async function seedContent(actor: Actor = SEED_ACTOR, today: string = doh
   for (const page of PAGE_KEYS) await saveIfMissing(pageDocumentKey(page), pageDocumentSchema(page).parse(pages[page]));
   await saveIfMissing(SITE_DOCUMENT_KEY, siteDocumentSchema.parse(SEED_SITE));
 
-  if ((await listRecordsForAdmin("SERVICES")).length === 0) {
+  if (noServices) {
     const ids: string[] = [];
-    for (const service of SEED_SERVICES)
+    for (const service of seedServices(photos))
       ids.push(await createRecord("SERVICES", serviceDocumentSchema.parse(service), actor));
     await saveDocumentDraft(orderingDocumentKey("SERVICES"), orderingDocumentSchema.parse(ids), actor);
     result.documents.push(orderingDocumentKey("SERVICES"));

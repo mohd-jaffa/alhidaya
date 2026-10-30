@@ -11,6 +11,7 @@ import { getDb } from "@/db/client";
 import { documents, media, type MediaVariant, records } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
 import { logActionSafe } from "@/lib/audit/auditLog";
+import { mediaIds } from "@/lib/content/media-ids";
 import { captureError } from "@/lib/audit/errorLog";
 import type { Actor } from "@/lib/content/actor";
 import { CACHE_TAGS, cachedRead, revalidateContent } from "@/lib/content/cache";
@@ -74,18 +75,6 @@ export async function getImages(ids: readonly string[]): Promise<Map<string, Sit
     if (image) images.set(image.id, image);
   }
   return images;
-}
-
-/** Every file id a stored copy names, at any depth: a section's photo, a service's, a logo, the brochure. */
-function mediaIds(node: unknown, found: Set<string> = new Set()): Set<string> {
-  if (Array.isArray(node)) for (const item of node) mediaIds(item, found);
-  else if (node && typeof node === "object") {
-    for (const [key, value] of Object.entries(node)) {
-      if (key === "mediaId" && typeof value === "string") found.add(value);
-      else mediaIds(value, found);
-    }
-  }
-  return found;
 }
 
 const RECORD_PLACES: Record<RecordCollection, { label: string; href: (id: string) => string }> = {

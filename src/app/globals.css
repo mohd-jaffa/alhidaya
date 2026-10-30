@@ -151,6 +151,10 @@
   --duration-press: 120ms;
   --duration-state: 200ms;
   --duration-reveal: 640ms;
+  /* A counter counting up once (D97). */
+  --duration-count: 1400ms;
+  /* A headline's letters settling into their words (D97). */
+  --duration-settle: 1100ms;
   --z-header: 40;
   --z-overlay: 50;
 }
@@ -158,6 +162,30 @@
 @media (width >= 64rem) {
   :root {
     --header-height: 5rem;
+  }
+}
+
+/*
+ * A headline's letters settle from wide spacing into their words as the page
+ * opens (plan §30.1, D97): transform and opacity only, once; reduced motion
+ * shows them in place.
+ */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--spread) * 3em));
+  }
+}
+
+.settle-letter {
+  display: inline-block;
+  animation: settle var(--duration-settle) var(--ease-out) both;
+  animation-delay: calc(var(--i) * 12ms + 80ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settle-letter {
+    animation: none;
   }
 }
 

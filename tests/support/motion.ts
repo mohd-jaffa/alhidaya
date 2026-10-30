@@ -3,8 +3,12 @@ import { vi } from "vitest";
 import type { MotionEngine } from "@/lib/motion/engine";
 
 /** A stand-in for GSAP, ScrollTrigger and Lenis that records what the code asks of them. */
-export function fakeEngine({ inViewport = false } = {}) {
+export function fakeEngine({ inViewport = false, wide = true } = {}) {
   const revert = vi.fn();
+  const media = { cleanups: [] as (() => void)[], revert: vi.fn() };
+  media.revert.mockImplementation(() => {
+    for (const cleanup of media.cleanups.splice(0)) cleanup();
+  });
   const gsap = {
     context: vi.fn((build: () => void) => {
       build();
@@ -12,6 +16,16 @@ export function fakeEngine({ inViewport = false } = {}) {
     }),
     from: vi.fn(),
     fromTo: vi.fn(),
+    to: vi.fn(),
+    // gsap.matchMedia(): runs what is added for a query while `wide` matches it, and undoes it on revert.
+    matchMedia: vi.fn(() => ({
+      add: (_query: string, build: () => void | (() => void)) => {
+        if (!wide) return;
+        const cleanup = build();
+        if (cleanup) media.cleanups.push(cleanup);
+      },
+      revert: media.revert,
+    })),
     registerPlugin: vi.fn(),
     ticker: { add: vi.fn(), remove: vi.fn(), lagSmoothing: vi.fn() },
   };
@@ -34,7 +48,7 @@ export function fakeEngine({ inViewport = false } = {}) {
     }
   }
   const engine = { gsap, ScrollTrigger, Lenis } as unknown as MotionEngine;
-  return { engine, gsap, ScrollTrigger, Lenis, lenises, revert, stopListening };
+  return { engine, gsap, ScrollTrigger, Lenis, lenises, revert, stopListening, media };
 }
 
 /** window.matchMedia answering from `matches`, which a test may change, telling listeners as a browser would. */

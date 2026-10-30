@@ -6,6 +6,8 @@ const SIZES = {
   md: "size-6",
   lg: "size-10",
   xl: "size-14",
+  /** Inside a chip set among words: in proportion to the words (D97). */
+  inline: "size-[0.62em]",
 } as const;
 
 interface PictogramProps {

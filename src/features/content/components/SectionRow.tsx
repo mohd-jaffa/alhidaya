@@ -114,7 +114,7 @@ export function SectionRow({
       </div>
       {open ? (
         <div id={panel} className="px-4 pt-2 pb-6 sm:ps-[6.25rem]">
-          <SectionFields index={index} type={section.type} />
+          <SectionFields page={page} index={index} type={section.type} />
         </div>
       ) : null}
       <Dialog open={asking} onClose={() => setAsking(false)} title={ADMIN_TEXT.removeSectionTitle(name)}>

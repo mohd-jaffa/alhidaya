@@ -51,6 +51,13 @@ describe("MediaImage", () => {
     expect(img).toHaveAttribute("fetchpriority", "high");
   });
 
+  it("says nothing when it is a face in a group or a photo its words describe (D97)", () => {
+    const { container } = render(
+      <MediaImage image={image(made("image/png", "png", 480), "A nurse")} sizes="40px" decorative />,
+    );
+    expect(container.querySelector("img")).toHaveAttribute("alt", "");
+  });
+
   it("is hidden from screen readers when decorative, and absent when it has no made sizes", () => {
     const { container, rerender } = render(<MediaImage image={image(made("image/png", "png", 480), "")} sizes="1px" />);
     expect(container.querySelector("img")).toHaveAttribute("alt", "");

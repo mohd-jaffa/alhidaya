@@ -3,12 +3,14 @@ import { expect, test } from "@playwright/test";
 
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
-import { SEED_SERVICES, SEED_SITE, seedJob, seedPages } from "@/db/seed/content";
+import { SEED_SERVICES, SEED_SITE, seedPages } from "@/db/seed/content";
 import { SEED_PHOTOS } from "@/db/seed/photos";
 
 const sign = seedPages().HOME.sections[0];
 
-test("Home opens on its sign and the three lines, each line's actions working (plan §6.1)", async ({ page }) => {
+test("Home opens on its hero: the headline, its words, WhatsApp and the quote, and its photo first (D97)", async ({
+  page,
+}) => {
   await page.goto("/");
 
   await expect(page).toHaveTitle(SEED_SITE.seo.title.en);
@@ -16,43 +18,56 @@ test("Home opens on its sign and the three lines, each line's actions working (p
   if (sign.type !== "SIGN") throw new Error("Home opens with its sign");
   await expect(page.getByRole("heading", { level: 1, name: sign.content.headline.en })).toBeVisible();
 
-  const lines = page.getByRole("main").locator("#start");
-  await expect(lines.getByText(UI_TEXT.youAreHere, { exact: true })).toBeVisible();
-  for (const name of [UI_TEXT.lineCareAtHome, UI_TEXT.lineStaffing, UI_TEXT.lineCareers])
-    await expect(lines.getByRole("heading", { level: 2, name })).toBeVisible();
-  await expect(lines.getByRole("link", { name: UI_TEXT.whatsapp })).toHaveAttribute(
+  const hero = page.getByRole("main").locator("#start");
+  await expect(hero.getByText(sign.content.lede.en!)).toBeVisible();
+  for (const chip of sign.content.chips) await expect(hero.getByText(chip.en, { exact: true })).toBeVisible();
+  await expect(hero.getByText(sign.content.fact.value.en!, { exact: true })).toBeVisible();
+  await expect(hero.getByRole("link", { name: UI_TEXT.whatsapp })).toHaveAttribute(
     "href",
     /^https:\/\/wa\.me\/97431306555\?text=/,
   );
-  await expect(lines.getByRole("link", { name: UI_TEXT.call })).toHaveAttribute("href", "tel:+97431306555");
-  // The sign's photograph (D75), served in its made sizes and loaded first.
-  const photo = lines.getByRole("img", { name: SEED_PHOTOS.careAtHome.alt });
+  // The hero's photograph (D75), served in its made sizes and loaded first.
+  const photo = hero.getByRole("img", { name: SEED_PHOTOS.heroNurse.alt });
   await expect(photo).toHaveAttribute("fetchpriority", "high");
   await expect
     .poll(() => photo.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth))
     .toBeGreaterThan(0);
-  await lines.getByRole("link", { name: UI_TEXT.requestQuote }).click();
+  await hero.getByRole("link", { name: UI_TEXT.requestQuote }).click();
   await expect(page).toHaveURL(ROUTES.quote);
 });
 
-test("Home shows every published service on its line, the open job and the way to reach us", async ({ page }) => {
+test("Home follows the reference's sections, its services in the families' card and the Contact form (D97)", async ({
+  page,
+}) => {
   await page.goto("/");
-  const services = page.getByRole("region", { name: "Our services" });
+  for (const name of [/Nurse staffing for/, /Care for the people you love/, /Care arranged/])
+    await expect(page.getByRole("region", { name })).toBeVisible();
+  const families = page.getByRole("region", { name: /Care for the people you love/ });
   for (const service of SEED_SERVICES)
-    await expect(services.getByRole("link", { name: service.name.en })).toHaveAttribute(
+    await expect(families.getByRole("link", { name: service.name.en })).toHaveAttribute(
       "href",
       ROUTES.service(service.slug),
     );
-
-  const job = seedJob("2026-10-29");
-  await expect(
-    page.getByRole("region", { name: "Nurses: join us" }).getByRole("link", { name: job.title.en }),
-  ).toHaveAttribute("href", ROUTES.job(job.slug));
-  await expect(
-    page.getByRole("region", { name: "Talk to us" }).getByRole("link", { name: UI_TEXT.whatsapp }),
-  ).toBeVisible();
-  // No client has given its logo yet (D7): the section is not on the page, nor on the line.
+  const steps = page.getByRole("region", { name: /Care arranged/ }).getByRole("listitem");
+  await expect(steps).toHaveCount(4);
+  const form = page.getByRole("region", { name: "Talk to us about the care you need" });
+  await expect(form.getByRole("button", { name: UI_TEXT.sendMessage })).toBeVisible();
+  await expect(form.getByRole("link", { name: SEED_SITE.contact.email })).toHaveAttribute(
+    "href",
+    `mailto:${SEED_SITE.contact.email}`,
+  );
+  // No client has given its logo yet (D7): the section is not on the page.
   await expect(page.locator("#clients")).toHaveCount(0);
+});
+
+test("the statement darkens with the scroll, and every word stays readable before it does (D97)", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveClass(/\blenis\b/);
+  const ink = page.locator("#statement [data-ink]").first();
+  await expect.poll(() => ink.evaluate((element) => getComputedStyle(element).opacity)).toBe("0");
+  await page.locator("#statement").scrollIntoViewIfNeeded();
+  await page.mouse.wheel(0, 400);
+  await expect.poll(() => ink.evaluate((element) => Number(getComputedStyle(element).opacity))).toBeGreaterThan(0);
 });
 
 test("no rail runs down the page, and the header scrolls away with it (D101, D107)", async ({ page }) => {

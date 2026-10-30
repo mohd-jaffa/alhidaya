@@ -1,19 +1,20 @@
 import type { PageKey, SectionType } from "@/constants/sections";
 import type { SiteImage } from "@/features/media/types";
-import type {
-  ClientDocument,
-  JobDocument,
-  PageDocument,
-  Section,
-  ServiceDocument,
-  SiteDocument,
+import {
+  type ClientDocument,
+  type JobDocument,
+  NO_HERO,
+  type PageDocument,
+  type Section,
+  type ServiceDocument,
+  type SiteDocument,
 } from "@/lib/validation";
 
 /** Valid content to start a test from; every value is made up for tests. */
 const en = <T>(value: T) => ({ en: value });
 
 const CONTENT: Record<SectionType, Section["content"]> = {
-  SIGN: { headline: en("Nursing care, at your doorstep"), lede: en(null), image: null },
+  SIGN: { headline: en("Nursing care, at your doorstep"), lede: en(null), image: null, ...NO_HERO },
   INTRO: {
     heading: en("Who we are"),
     body: [{ type: "paragraph", text: en("A nursing company in Doha.") }],
@@ -30,6 +31,51 @@ const CONTENT: Record<SectionType, Section["content"]> = {
   CONTACT_DETAILS: { heading: en("Contact") },
   FORM: { heading: en("Send a message"), text: en(null), form: "CONTACT" },
   RICH_TEXT: { heading: en(null), body: [{ type: "paragraph", text: en("Text.") }] },
+  STATEMENT: {
+    parts: [
+      { text: en("We bring"), strong: false, pictogram: null },
+      { text: en("nursing care"), strong: true, pictogram: "heart" },
+    ],
+  },
+  HIGHLIGHTS: {
+    note: { pictogram: "globe", title: en("Across Doha"), text: en("Care at home and in clinics.") },
+    first: { image: null, label: en("Care at home") },
+    accent: {
+      title: en("Two businesses"),
+      text: en(null),
+      avatars: [],
+      fact: { value: en("8"), label: en("Services") },
+    },
+    second: { image: null, label: en(null) },
+  },
+  FOR_INSTITUTIONS: {
+    label: en("For institutions"),
+    headingStart: en("Nurse staffing for"),
+    pictogram: "staffing",
+    headingEnd: en("hospitals and schools"),
+    team: { title: en("Nurses for your team"), text: en(null), avatars: [] },
+    photo: { image: null, text: en(null) },
+    reach: { title: en("Across Doha"), avatars: [] },
+    facts: [{ value: en("24/7"), label: en("Nurses around the clock") }],
+  },
+  FOR_FAMILIES: {
+    label: en("For families"),
+    headingStart: en("Care for the people you love,"),
+    pictogram: "heart",
+    headingEnd: en("at home."),
+    photo: { image: null, text: en(null) },
+    features: [{ pictogram: "clock", title: en("Day and night") }],
+  },
+  PROCESS: {
+    label: en("How it works"),
+    headingStart: en("Care arranged"),
+    pictogram: null,
+    headingEnd: en(null),
+    steps: [
+      { image: null, title: en("Tell us what you need"), text: en(null) },
+      { image: null, title: en("Care begins"), text: en(null) },
+    ],
+  },
 };
 
 export const section = (type: SectionType, visible = true): Section =>

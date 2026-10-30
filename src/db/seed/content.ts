@@ -1,8 +1,15 @@
 import { ROUTES } from "@/constants/routes";
 import type { PageKey, SectionType } from "@/constants/sections";
-import type { JobDocument, PageDocument, Section, ServiceDocument, SiteDocument } from "@/lib/validation";
+import {
+  type JobDocument,
+  NO_HERO,
+  type PageDocument,
+  type Section,
+  type ServiceDocument,
+  type SiteDocument,
+} from "@/lib/validation";
 
-import { NO_PHOTOS, type SeedPhotoRefs } from "./photos";
+import { NO_PHOTOS, type SeedPhoto, type SeedPhotoRefs } from "./photos";
 
 /**
  * The current site's content (alhidaya.qa, read 2026-10-28), rewritten in
@@ -21,6 +28,17 @@ const noSeo = { title: en(null), description: en(null) };
 
 const section = <T extends SectionType>(type: T, content: Extract<Section, { type: T }>["content"]): Section =>
   ({ id: crypto.randomUUID(), type, visible: true, content }) as Section;
+
+/** Faces that are there: a photograph not imported yet is left out. */
+const faces = (...refs: ({ mediaId: string } | null)[]) =>
+  refs.filter((ref): ref is { mediaId: string } => ref !== null);
+
+type SignContent = Extract<Section, { type: "SIGN" }>["content"];
+type HeroParts = Pick<SignContent, keyof typeof NO_HERO>;
+
+/** A page's sign: Home's hero holds more (D97), every other page's leaves it empty. */
+const sign = (content: Omit<SignContent, keyof HeroParts> & Partial<HeroParts>): Section =>
+  section("SIGN", { ...NO_HERO, ...content });
 
 const contactBand = () =>
   section("CONTACT_BAND", {
@@ -42,65 +60,126 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
   return {
     HOME: {
       seo: noSeo,
+      // The reference's sections (D97), in its order, in the company's own facts (D7, D99).
       sections: [
-        section("SIGN", {
+        sign({
           headline: en("Quality nursing care at your doorstep"),
+          highlight: en("nursing care"),
           lede: en(
             "Nursing care at home and in clinics across Doha, and nurse staffing for hospitals, clinics and schools.",
           ),
-          image: photos.careAtHome,
+          image: photos.heroNurse,
+          avatars: faces(photos.avatarNavy, photos.avatarBraids, photos.avatarGreen, photos.avatarTurban),
+          chips: [en("At home"), en("Day and night"), en("Across Doha")],
+          card: { title: en("Home nursing care"), tag: en("Our services"), image: photos.homeNursing },
+          note: { pictogram: "clock", text: en("Nurses around the clock") },
+          fact: { value: en("24/7"), label: en("Nurses around the clock") },
         }),
-        section("INTRO", {
-          heading: en("Who we are"),
-          body: [
-            paragraph(
-              "Al Hidaya Health Care Services is a nursing care company in Doha. Our nurses care for patients at home and in clinics, and we supply nurses to hospitals, clinics and schools across Qatar.",
+        section("STATEMENT", {
+          parts: [
+            { text: en("We bring"), strong: false, pictogram: null },
+            { text: en("quality nursing care"), strong: true, pictogram: "careAtHome" },
+            { text: en("to your doorstep, and"), strong: false, pictogram: null },
+            { text: en("nurse staffing"), strong: true, pictogram: "staffing" },
+            { text: en("to"), strong: false, pictogram: null },
+            { text: en("hospitals, clinics and schools"), strong: true, pictogram: "heart" },
+            { text: en("across Doha."), strong: false, pictogram: null },
+          ],
+        }),
+        section("HIGHLIGHTS", {
+          note: {
+            pictogram: "location",
+            title: en("Across Doha"),
+            text: en("Nursing care at home and in clinics, for families and for institutions across Doha."),
+          },
+          first: { image: photos.laughingCare, label: en("Care at home") },
+          accent: {
+            title: en("Two businesses under one roof"),
+            text: en("Home care for families, and nurse staffing for hospitals, clinics and schools."),
+            avatars: faces(photos.avatarTurban, photos.avatarGreen, photos.avatarNavy),
+            fact: { value: en("8"), label: en("Services") },
+          },
+          second: { image: photos.nursesTalking, label: en("Nurse staffing") },
+        }),
+        section("FOR_INSTITUTIONS", {
+          label: en("For hospitals, clinics & schools"),
+          headingStart: en("Nurse staffing for"),
+          pictogram: "staffing",
+          headingEnd: en("hospitals, clinics and schools"),
+          team: {
+            title: en("Nurses for your team"),
+            text: en("Tell us the roles you need to fill, and we will prepare a quote."),
+            avatars: faces(
+              photos.avatarGreen,
+              photos.avatarBraids,
+              photos.avatarNavy,
+              photos.avatarTurban,
+              photos.heroNurse,
             ),
-          ],
-          image: photos.clinicCheck,
-        }),
-        section("SERVICES_INDEX", {
-          heading: en("Our services"),
-          intro: en("Care for families at home, and nurses for the institutions that need them."),
-        }),
-        section("VALUES", {
-          heading: en("Why Al Hidaya"),
-          items: [
-            {
-              title: en("Care at home"),
-              text: en(
-                "Nursing care at home costs less than a stay in hospital, without lowering the standard of care.",
-              ),
-            },
-            {
-              title: en("Nurses around the clock"),
-              text: en("Our nurses are available 24 hours a day, 7 days a week."),
-            },
-            {
-              title: en("A plan that fits"),
-              text: en("We agree a care plan with each patient and family that fits their needs and their budget."),
-            },
-            {
-              title: en("Compassion and dignity"),
-              text: en(
-                "Every patient is cared for with compassion, dignity and respect for their culture and choices.",
-              ),
-            },
+          },
+          photo: { image: photos.wardNurse, text: en("Nurses for hospital wards, clinics and school rooms.") },
+          reach: {
+            title: en("Across Doha, day and night"),
+            avatars: faces(photos.avatarNavy, photos.avatarGreen, photos.avatarTurban, photos.avatarBraids),
+          },
+          facts: [
+            { value: en("24/7"), label: en("Nurses around the clock") },
+            { value: en("8"), label: en("Nursing services") },
+            { value: en("Doha"), label: en("Homes, hospitals, clinics and schools") },
           ],
         }),
-        institutions(photos.hospitalCorridor),
+        section("FOR_FAMILIES", {
+          label: en("For families"),
+          headingStart: en("Care for the people you love,"),
+          pictogram: "heart",
+          headingEnd: en("at home"),
+          photo: { image: photos.elderlyCare, text: en("A nurse comes to your home, so care fits your family's day.") },
+          features: [
+            { pictogram: "clock", title: en("Day and night") },
+            { pictogram: "chat", title: en("On WhatsApp") },
+            { pictogram: "careAtHome", title: en("At your doorstep") },
+          ],
+        }),
+        section("PROCESS", {
+          label: en("How it works"),
+          headingStart: en("Care arranged"),
+          pictogram: "check",
+          headingEnd: en("in four steps"),
+          steps: [
+            {
+              image: photos.onThePhone,
+              title: en("Tell us what you need"),
+              text: en("Call us, message us on WhatsApp, or send a request."),
+            },
+            {
+              image: photos.consultation,
+              title: en("We talk it through"),
+              text: en("We ask about the person, the care they need and the hours."),
+            },
+            {
+              image: photos.avatarNavy,
+              title: en("We agree a care plan"),
+              text: en("A plan that fits the patient's needs and the family's budget."),
+            },
+            {
+              image: photos.careAtHome,
+              title: en("Care begins"),
+              text: en("At home, in the clinic, or on your ward."),
+            },
+          ],
+        }),
+        section("FORM", {
+          heading: en("Talk to us about the care you need"),
+          text: en("Write to us and we will reply. For anything urgent, call or message us on WhatsApp."),
+          form: "CONTACT",
+        }),
         section("CLIENTS", { heading: en("Our clients") }),
-        section("CAREERS_BAND", {
-          heading: en("Nurses: join us"),
-          text: en("We are looking for registered nurses to care for patients at home in Doha."),
-        }),
-        contactBand(),
       ],
     },
     ABOUT: {
       seo: noSeo,
       sections: [
-        section("SIGN", {
+        sign({
           headline: en("Nursing care with compassion and dignity"),
           lede: en("A nursing care company in Doha, caring for patients at home and supplying nurses to institutions."),
           image: null,
@@ -149,7 +228,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     SERVICES: {
       seo: noSeo,
       sections: [
-        section("SIGN", {
+        sign({
           headline: en("Care at home, and nurses for institutions"),
           lede: en("Nursing care for families across Doha, and nurse staffing for hospitals, clinics and schools."),
           image: null,
@@ -162,7 +241,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     CAREERS: {
       seo: noSeo,
       sections: [
-        section("SIGN", {
+        sign({
           headline: en("Nursing careers in Doha"),
           lede: en("Join a team that cares for patients at home across Doha."),
           image: null,
@@ -188,7 +267,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     CONTACT: {
       seo: noSeo,
       sections: [
-        section("SIGN", {
+        sign({
           headline: en("We are here day and night"),
           lede: en("Message us on WhatsApp, call, email, or visit our office in Al Sadd."),
           image: null,
@@ -200,7 +279,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     QUOTE: {
       seo: noSeo,
       sections: [
-        section("SIGN", {
+        sign({
           headline: en("Tell us the care you need"),
           lede: en("For families, hospitals, clinics and schools. We will reply with a quote."),
           image: null,
@@ -211,7 +290,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     PRIVACY: {
       seo: noSeo,
       sections: [
-        section("SIGN", { headline: en("Privacy notice"), lede: en(null), image: null }),
+        sign({ headline: en("Privacy notice"), lede: en(null), image: null }),
         section("RICH_TEXT", {
           heading: en(null),
           body: [
@@ -248,7 +327,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     TERMS: {
       seo: noSeo,
       sections: [
-        section("SIGN", { headline: en("Terms of use"), lede: en(null), image: null }),
+        sign({ headline: en("Terms of use"), lede: en(null), image: null }),
         section("RICH_TEXT", {
           heading: en(null),
           body: [
@@ -373,6 +452,23 @@ export const SEED_SERVICES: readonly ServiceDocument[] = [
     "Older people and their families.",
   ),
 ];
+
+/** The photograph each seeded service shows (D102): in the families' card and on its own page. */
+const SERVICE_PHOTOS: Record<string, SeedPhoto> = {
+  "hospital-and-clinic-staffing": "hospitalCorridor",
+  "school-nurse-staffing": "schoolNurse",
+  "home-nursing-care": "homeNursing",
+  "chronic-condition-care": "chronicCare",
+  "child-care": "childCare",
+  "maternity-and-newborn-care": "newbornCare",
+  "palliative-care": "palliativeCare",
+  "elderly-care": "elderlyCare",
+};
+
+/** The services with their photographs, once imported (D102). */
+export function seedServices(photos: SeedPhotoRefs = NO_PHOTOS): ServiceDocument[] {
+  return SEED_SERVICES.map((service) => ({ ...service, image: photos[SERVICE_PHOTOS[service.slug]] ?? null }));
+}
 
 /**
  * The current posting (plan §9.1). The old site gives no employment type and

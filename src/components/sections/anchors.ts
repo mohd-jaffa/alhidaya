@@ -15,6 +15,11 @@ const ANCHORS: Record<SectionType, string> = {
   CONTACT_DETAILS: "reach-us",
   FORM: "form",
   RICH_TEXT: "text",
+  STATEMENT: "statement",
+  HIGHLIGHTS: "highlights",
+  FOR_INSTITUTIONS: "for-institutions",
+  FOR_FAMILIES: "families",
+  PROCESS: "how-it-works",
 };
 
 /**

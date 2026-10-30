@@ -34,7 +34,7 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
       <SkipLink />
       <PreviewBar active={view === "preview"} />
       <SiteHeader site={site} />
-      <main id="main" tabIndex={-1} className="focus:outline-none">
+      <main id="main" tabIndex={-1} className="overflow-x-clip focus:outline-none">
         {children}
       </main>
       <SiteFooter site={site} />

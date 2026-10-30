@@ -24,11 +24,22 @@ describe("Reveal", () => {
       opacity: 0,
       y: MOTION.revealDistance,
       duration: MOTION.duration.reveal,
+      delay: 0,
       ease: MOTION.ease.out,
       scrollTrigger: { trigger: element, start: "top 90%", once: true },
     });
     unmount();
     expect(fake.revert).toHaveBeenCalled();
+  });
+
+  it("arrives a moment after the one before it in a group (D97)", () => {
+    const fake = fakeEngine();
+    motion.engine = fake.engine;
+    render(<Reveal order={2}>Child care</Reveal>);
+    expect(fake.gsap.from).toHaveBeenCalledWith(
+      screen.getByText("Child care"),
+      expect.objectContaining({ delay: 2 * MOTION.stagger }),
+    );
   });
 
   it("never hides what is already on screen", () => {

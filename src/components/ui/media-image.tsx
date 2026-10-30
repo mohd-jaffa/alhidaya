@@ -17,12 +17,15 @@ export function MediaImage({
   image,
   sizes,
   priority = false,
+  decorative = false,
   className,
 }: {
   image: SiteImage;
   /** How wide the image is drawn at each screen width, as the `sizes` attribute. */
   sizes: string;
   priority?: boolean;
+  /** A face in a group, or a photo whose words are beside it: nothing for a screen reader to say (D97). */
+  decorative?: boolean;
   className?: string;
 }) {
   const groups = TYPES.map((type) =>
@@ -41,7 +44,7 @@ export function MediaImage({
         src={last[last.length - 1].url}
         srcSet={srcSet(last)}
         sizes={sizes}
-        alt={image.alt}
+        alt={decorative ? "" : image.alt}
         width={image.width}
         height={image.height}
         loading={priority ? "eager" : "lazy"}

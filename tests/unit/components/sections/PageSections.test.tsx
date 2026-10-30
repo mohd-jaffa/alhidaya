@@ -65,6 +65,11 @@ describe("PageSections", () => {
       "reach-us",
       "form",
       "text",
+      "statement",
+      "highlights",
+      "for-institutions",
+      "families",
+      "how-it-works",
     ]);
     expect(screen.getByRole("img", { name: "A nurse at home" })).toHaveAttribute("fetchpriority", "high");
     expect(screen.getByRole("img", { name: "Doha Clinic" })).toBeInTheDocument();
@@ -72,8 +77,8 @@ describe("PageSections", () => {
     expect(screen.queryByText(UI_TEXT.youAreHere)).not.toBeInTheDocument();
   });
 
-  it("starts Home's three lines under its sign, and draws no form the page did not give", () => {
-    const data: SectionData = { site: null, services: [], jobs: [], clients: [], images: new Map() };
+  it("opens Home with its hero, gives a form the site's email, and draws no form the page did not give", () => {
+    const data: SectionData = { site: siteFixture(), services: [], jobs: [], clients: [], images: new Map() };
     render(
       <PageSections
         page="HOME"
@@ -81,8 +86,16 @@ describe("PageSections", () => {
         data={data}
       />,
     );
-    expect(screen.getByText(UI_TEXT.youAreHere)).toBeInTheDocument();
+    expect(screen.queryByText(UI_TEXT.youAreHere)).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: UI_TEXT.whatsapp })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: siteFixture().contact.email })).toBeInTheDocument();
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
     expect(screen.queryByRole("form")).not.toBeInTheDocument();
+  });
+
+  it("gives a form no email before the site content is published", () => {
+    const data: SectionData = { site: null, services: [], jobs: [], clients: [], images: new Map() };
+    render(<PageSections page="CONTACT" sections={[withImage("SIGN", null), section("FORM")]} data={data} />);
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 });

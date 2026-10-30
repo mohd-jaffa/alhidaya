@@ -1,3 +1,5 @@
+import type { PictogramName } from "@/assets/brand/pictograms";
+
 /**
  * The pages and their sections (plan §7, D58): the pages are a fixed set, and
  * each may hold only the section types listed for it, at most as many of each
@@ -27,8 +29,34 @@ export const SECTION_TYPES = [
   "CONTACT_DETAILS",
   "FORM",
   "RICH_TEXT",
+  // The redesign's Home (D97, D100): the statement, the highlights, the two audiences and how it works.
+  "STATEMENT",
+  "HIGHLIGHTS",
+  "FOR_INSTITUTIONS",
+  "FOR_FAMILIES",
+  "PROCESS",
 ] as const;
 export type SectionType = (typeof SECTION_TYPES)[number];
+
+/** The pictograms a section's words may carry in a chip (D97), as the admin picks them. */
+export const SECTION_PICTOGRAMS = [
+  "careAtHome",
+  "staffing",
+  "careers",
+  "heart",
+  "shield",
+  "team",
+  "stethoscope",
+  "clipboard",
+  "calendar",
+  "clock",
+  "globe",
+  "location",
+  "phone",
+  "chat",
+  "check",
+] as const satisfies readonly PictogramName[];
+export type SectionPictogram = (typeof SECTION_PICTOGRAMS)[number];
 
 export interface PageRule {
   /** The types the page may hold, each at most once unless `max` says more. */
@@ -43,7 +71,22 @@ export const FIXED_FIRST_SECTION: SectionType = "SIGN";
 
 export const PAGE_RULES: Record<PageKey, PageRule> = {
   HOME: {
-    allowed: ["SIGN", "INTRO", "SERVICES_INDEX", "VALUES", "INSTITUTIONS", "CLIENTS", "CAREERS_BAND", "CONTACT_BAND"],
+    allowed: [
+      "SIGN",
+      "STATEMENT",
+      "HIGHLIGHTS",
+      "FOR_INSTITUTIONS",
+      "FOR_FAMILIES",
+      "PROCESS",
+      "FORM",
+      "INTRO",
+      "SERVICES_INDEX",
+      "VALUES",
+      "INSTITUTIONS",
+      "CLIENTS",
+      "CAREERS_BAND",
+      "CONTACT_BAND",
+    ],
   },
   ABOUT: {
     allowed: ["SIGN", "INTRO", "RICH_TEXT", "MISSION", "VALUES", "CLIENTS", "CONTACT_BAND"],

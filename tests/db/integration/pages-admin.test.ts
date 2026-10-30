@@ -93,7 +93,8 @@ describe("the admin's pages, against the local MySQL", () => {
 
   it("refuse to publish a draft the page's rules no longer allow, and keep the published copy", async () => {
     const published = await readPublishedDocument("PAGE:HOME");
-    const broken = { ...pageFixture("HOME"), sections: pageFixture("QUOTE").sections };
+    // Contact's details have no place on Home.
+    const broken = { ...pageFixture("HOME"), sections: pageFixture("CONTACT").sections };
     await saveDocumentDraft("PAGE:HOME", broken, actor);
     await expect(publishPage("HOME", actor)).rejects.toThrow();
     expect(await readPublishedDocument("PAGE:HOME")).toEqual(published);
