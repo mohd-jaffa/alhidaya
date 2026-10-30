@@ -2,8 +2,10 @@ import Link from "next/link";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_ROUTES } from "@/constants/routes";
-import { EnquiryLog } from "@/features/enquiries/components/EnquiryLog";
 import { pageFrom } from "@/lib/pagination";
+import { todayKey } from "@/lib/inbox/keys";
+
+import { TodayLog } from "./TodayLog";
 
 type View = "needs" | "everything";
 
@@ -11,9 +13,9 @@ const hrefFor = (view: View) =>
   view === "everything" ? `${ADMIN_ROUTES.overview}?view=everything` : ADMIN_ROUTES.overview;
 
 /**
- * Today (R6.1, the plan's Overview, §16): what needs the admin, newest first
- * in the day's log, or everything that arrived. Applications join this
- * stream with their phase (Phase 5).
+ * Today (R6.1, the plan's Overview, §16, D81): what needs the admin,
+ * enquiries and applications in one stream, newest first in the day's log,
+ * or everything that arrived.
  */
 export function TodayScreen({
   searchParams,
@@ -43,9 +45,9 @@ export function TodayScreen({
           ))}
         </nav>
       </div>
-      <EnquiryLog
+      <TodayLog
         key={`${view}-${page}`}
-        query={view === "needs" ? { needsYou: true, page } : { page }}
+        listKey={todayKey({ needsYou: view === "needs", page })}
         pageBase={hrefFor(view)}
         empty={
           view === "needs"

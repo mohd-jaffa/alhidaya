@@ -1,15 +1,26 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES, VALIDATION_MESSAGES } from "@/constants/messages";
-import { API_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
 import { EnquiryOpened } from "@/features/enquiries/components/EnquiryOpened";
 import type { EnquiryOpened as Opened } from "@/features/enquiries/types";
-import { type Answer, stubApi, WithSWR } from "@tests/support/api";
+import { type Answer, stubApi, stubDialogs, WithSWR } from "@tests/support/api";
 
-afterEach(() => vi.unstubAllGlobals());
+const navigation = vi.hoisted(() => ({ pathname: "/admin", replace: vi.fn() }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => navigation.pathname,
+  useRouter: () => ({ replace: navigation.replace }),
+}));
+
+beforeAll(stubDialogs);
+afterEach(() => {
+  vi.unstubAllGlobals();
+  navigation.pathname = "/admin";
+  navigation.replace.mockClear();
+});
 
 const LONG = "We need two school nurses from January, full time, for a primary school of 600 pupils.";
 
@@ -147,6 +158,30 @@ describe("EnquiryOpened", () => {
     refuse = false;
     await user.click(within(notes).getByRole("button", { name: ADMIN_TEXT.saveNote }));
     await waitFor(() => expect(within(notes).queryByRole("alert")).not.toBeInTheDocument());
+  });
+
+  it("deletes it once asked, and leaves its own page for the inbox (D82)", async () => {
+    const user = userEvent.setup();
+    const fetch = api(enquiry());
+    navigation.pathname = ADMIN_ROUTES.enquiry("e-1");
+    open();
+    await user.click(await screen.findByRole("button", { name: ADMIN_TEXT.delete }));
+    expect(screen.getByRole("dialog", { name: ADMIN_TEXT.deleteEnquiryTitle("Omar Haddad") })).toHaveTextContent(
+      ADMIN_TEXT.deleteEnquiryBody,
+    );
+    await user.click(screen.getAllByRole("button", { name: ADMIN_TEXT.delete }).at(-1)!);
+    await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith(ADMIN_ROUTES.enquiries));
+    expect(fetch).toHaveBeenCalledWith(API_ROUTES.adminEnquiry("e-1"), expect.objectContaining({ method: "DELETE" }));
+  });
+
+  it("deleted from a list, stays where it is", async () => {
+    const user = userEvent.setup();
+    api(enquiry());
+    open();
+    await user.click(await screen.findByRole("button", { name: ADMIN_TEXT.delete }));
+    await user.click(screen.getAllByRole("button", { name: ADMIN_TEXT.delete }).at(-1)!);
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(navigation.replace).not.toHaveBeenCalled();
   });
 
   it("says when the enquiry did not load, and tries again", async () => {

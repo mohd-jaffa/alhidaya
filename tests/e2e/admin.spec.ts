@@ -6,17 +6,20 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES } from "@/constants/messages";
 import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
 import { closeDb, getDb } from "@/db/client";
-import { authUser, enquiries } from "@/db/schema";
+import { applications, authUser, enquiries } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";
+import { receiveApplication } from "@/features/careers/api";
 import { submitEnquiry } from "@/features/enquiries/api";
+import { applicationFormSchema } from "@/lib/validation";
 
 import { E2E_ORIGIN } from "@tests/support/e2e-app";
 
 /**
- * The admin, through the built app (plan §16, R6.1, R6.2, R4.4): signing in,
- * Today's log of what needs the admin, an enquiry handled in its row, the
- * Enquiries inbox, the alert email's link, the phone's menu and signing out;
- * axe on every screen at both widths.
+ * The admin, through the built app (plan §16, R6.1, R6.2, R4.4, R5.5):
+ * signing in, Today's log of what needs the admin, an enquiry handled in its
+ * row and deleted once asked (D82), the Enquiries and Applications inboxes,
+ * the alert email's link, the phone's menu and signing out; axe on every
+ * screen at both widths.
  */
 const PASSWORD = "a long admin password";
 const RUN = crypto.randomUUID().slice(0, 8);
@@ -25,6 +28,9 @@ test.afterAll(async () => {
   await getDb()
     .delete(enquiries)
     .where(like(enquiries.email, `admin-e2e-${RUN}-%`));
+  await getDb()
+    .delete(applications)
+    .where(like(applications.email, `admin-e2e-${RUN}-%`));
   await getDb()
     .delete(authUser)
     .where(like(authUser.email, `admin-${RUN}-%`));
@@ -53,6 +59,27 @@ async function enquiry(name: string, phone = "+97455512345") {
     },
     `admin-e2e-${crypto.randomUUID()}`,
   );
+}
+
+/** An application of this journey's own, new and waiting, its CV kept. */
+async function application(name: string, phone = "5551 2345") {
+  const { id } = await receiveApplication(
+    applicationFormSchema.parse({
+      name,
+      email: `admin-e2e-${RUN}-${crypto.randomUUID().slice(0, 6)}@example.com`,
+      phone,
+      whereNow: "OUTSIDE_QATAR",
+      mophLicence: "IN_PROGRESS",
+      dataflow: "DONE",
+      prometric: "NOT_YET",
+      experienceYears: "4",
+      consent: true,
+      turnstileToken: "token-from-cloudflare",
+      cv: new File(["%PDF-1.7 a CV"], "cv.pdf"),
+    }),
+    `admin-e2e-${crypto.randomUUID()}`,
+  );
+  return id;
 }
 
 async function signIn(page: Page, email: string) {
@@ -147,6 +174,61 @@ test("the Enquiries inbox finds an enquiry by its phone as typed, and the alert'
   const row = page.getByRole("button", { name: new RegExp(ADMIN_TEXT.quoteFrom(name)) });
   await expect(row).toHaveAttribute("aria-expanded", "true");
   await expect(page.getByRole("link", { name: ADMIN_TEXT.emailAction }).first()).toBeVisible();
+});
+
+test("an enquiry is deleted from its row only once asked, and Keep it leaves it be (D82)", async ({ page }) => {
+  const email = await admin("Fatima");
+  const name = `Delete Visitor ${RUN}`;
+  const id = await enquiry(name);
+  await signIn(page, email);
+  await page.goto(ADMIN_ROUTES.enquiry(id));
+  const row = page.getByRole("button", { name: new RegExp(ADMIN_TEXT.quoteFrom(name)) });
+  await expect(row).toHaveAttribute("aria-expanded", "true");
+
+  await page.getByRole("button", { name: ADMIN_TEXT.delete, exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: ADMIN_TEXT.deleteEnquiryTitle(name) });
+  await expect(dialog).toContainText(ADMIN_TEXT.deleteEnquiryBody);
+  await axe(page);
+  await dialog.getByRole("button", { name: ADMIN_TEXT.keep }).click();
+  await expect(dialog).toBeHidden();
+  await expect(row).toBeVisible();
+
+  await page.getByRole("button", { name: ADMIN_TEXT.delete, exact: true }).click();
+  await dialog.getByRole("button", { name: ADMIN_TEXT.delete, exact: true }).click();
+  await expect(page).toHaveURL(ADMIN_ROUTES.enquiries);
+  await expect(row).toHaveCount(0);
+  expect(await getDb().select({ id: enquiries.id }).from(enquiries).where(eq(enquiries.id, id))).toEqual([]);
+});
+
+test("a new application waits in Today; the Applications inbox finds it by job and phone and opens it with its CV", async ({
+  page,
+}) => {
+  const email = await admin("Fatima");
+  const name = `Applicant ${RUN}`;
+  await application(name, "3321 6655");
+  await signIn(page, email);
+
+  await page.goto(ADMIN_ROUTES.overview);
+  const inToday = page.getByRole("button", { name: new RegExp(ADMIN_TEXT.applicationFrom(name)) });
+  await expect(inToday).toContainText(ADMIN_TEXT.generalApplication);
+
+  await page.goto(ADMIN_ROUTES.applications);
+  await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.applications })).toBeVisible();
+  await page.getByRole("combobox", { name: ADMIN_TEXT.job }).selectOption({ label: ADMIN_TEXT.generalApplications });
+  await page.getByRole("searchbox", { name: ADMIN_TEXT.search }).fill("3321 6655");
+  await page.getByRole("button", { name: ADMIN_TEXT.find }).click();
+  await expect(page).toHaveURL(/job=general/);
+  const row = page.getByRole("button", { name: new RegExp(ADMIN_TEXT.applicationFrom(name)) });
+  await expect(row).toBeVisible();
+  await axe(page);
+
+  await row.click();
+  const opened = page.locator(`#${await row.getAttribute("aria-controls")}`.replaceAll(":", "\\:"));
+  await expect(opened.getByText("Outside Qatar")).toBeVisible();
+  await expect(opened.getByRole("link", { name: ADMIN_TEXT.downloadCv })).toHaveAttribute("download", "");
+  await axe(page);
+  await opened.getByRole("button", { name: "In review" }).click();
+  await expect(row).toContainText("In review");
 });
 
 test("on a phone the sections open as a menu; signing out leaves the admin behind", async ({ page }, testInfo) => {

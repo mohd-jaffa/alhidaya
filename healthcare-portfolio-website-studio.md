@@ -647,7 +647,7 @@ scroll. Desktop first; usable on a phone for reading the inbox.
 | Screen | Purpose |
 |---|---|
 | Sign in | Email and password; lockout after 5 failures for 15 minutes (§26.4); forgotten password by email link. |
-| Today (the Overview, D81) | What needs the admin, newest first in the day's log: new enquiries and applications, failed mails or CV saves, items with unpublished changes (each as its phase builds it); "Everything" for all that arrived. |
+| Today (the Overview, D81) | What needs the admin, newest first in the day's log: new enquiries and applications, failed mails or CV saves, items with unpublished changes (each as its phase builds it); "Everything" for all that arrived. Enquiries and applications are one stream, paged together. "Needs you" is an arrival still new, or one whose email to the team did not go; a CV not stored is marked on its row (it arrives new, so it needs the admin until they move it along: nothing can bring the file back, §9.3). |
 | Pages | Each page's sections: show/hide, move up/down and drag to reorder, edit, preview, publish, discard. |
 | Services | List, order, create, edit, preview, publish, archive. |
 | Jobs | List by status, create, edit, close, publish, archive. |
@@ -1416,8 +1416,8 @@ one commit (D27).
 | R5.2 | Application form with CV (type by bytes, size); general application | §9.2 | Q4, Q7 | DONE (2026-10-30; the CV is saved in the private folder now, the rest of R5.3 to come; a closed job's form sends the visitor to the job) |
 | R5.3 | The CV folder in use: save under a random id, admin-only download, delete with the application | §9.4 | — | DONE (2026-10-30; the download is a file to save under the CV's kept name, `no-store`, `nosniff`, sandboxed, and recorded; a CV not kept is refused with where to find it) |
 | R5.4 | Submit: row, CV saved, HR email with the CV attached, failure paths and retry | §9.3 | — | DONE (2026-10-30; the email after the answer, as D79; Retry attaches the kept CV; a CV not stored has no Retry of its own) |
-| R5.5 | Applications inbox | §9.5 | — | TODO |
-| R5.6 | Integration + E2E (mail caught by Mailpit) | §34 | — | TODO |
+| R5.5 | Applications inbox | §9.5 | — | DONE (2026-10-30; in the day's log like the enquiries, with Today one stream of both, D81; Delete asked first for both inboxes, D82) |
+| R5.6 | Integration + E2E (mail caught by Mailpit) | §34 | — | DONE (2026-10-30; a job's application through HR's email, its CV attached, to the admin's download and Delete) |
 
 ### Phase 6 — Admin CMS
 

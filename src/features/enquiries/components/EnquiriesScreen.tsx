@@ -115,7 +115,7 @@ export function EnquiriesScreen({
         empty={
           q
             ? { title: ADMIN_TEXT.nothingFound, body: ADMIN_TEXT.nothingFoundBody }
-            : { title: ADMIN_TEXT.everythingEmpty, body: ADMIN_TEXT.everythingEmptyBody }
+            : { title: ADMIN_TEXT.enquiriesEmpty, body: ADMIN_TEXT.enquiriesEmptyBody }
         }
       />
     </div>

@@ -65,6 +65,8 @@ export const API_ROUTES = {
   enquiries: "/api/enquiries",
   /** The application form (plan §9.3). */
   applications: "/api/applications",
+  /** Today: enquiries and applications as one stream (D81). */
+  adminToday: "/api/admin/today",
   /** The enquiries inbox (plan §10.5). */
   adminEnquiries: "/api/admin/enquiries",
   adminEnquiry: (id: string) => `/api/admin/enquiries/${id}`,

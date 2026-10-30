@@ -39,7 +39,7 @@ describe("EnquiriesScreen", () => {
         query: { status: undefined, form: undefined, q: undefined, page: 1 },
         pageBase: ADMIN_ROUTES.enquiries,
         initiallyOpen: null,
-        empty: { title: ADMIN_TEXT.everythingEmpty, body: ADMIN_TEXT.everythingEmptyBody },
+        empty: { title: ADMIN_TEXT.enquiriesEmpty, body: ADMIN_TEXT.enquiriesEmptyBody },
       }),
     );
   });

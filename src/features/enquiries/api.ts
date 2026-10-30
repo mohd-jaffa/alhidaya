@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 
 import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, INBOX_SUMMARY_LENGTH } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
@@ -15,6 +15,7 @@ import { newId } from "@/db/schema/columns";
 import { listPublishedServices } from "@/features/services/api";
 import { logActionSafe } from "@/lib/audit/auditLog";
 import { captureError } from "@/lib/audit/errorLog";
+import { needsAttention } from "@/lib/inbox/arrivals";
 import { displayPhone } from "@/lib/contact";
 import type { Actor } from "@/lib/content/actor";
 import { getOperations } from "@/lib/content/operations";
@@ -238,7 +239,7 @@ export async function listEnquiries(
   const where = and(
     query.form ? eq(enquiries.form, query.form) : undefined,
     query.status ? eq(enquiries.status, query.status) : undefined,
-    query.needsYou ? or(eq(enquiries.status, "NEW"), eq(enquiries.emailStatus, "NOT_SENT")) : undefined,
+    query.needsYou ? needsAttention(enquiries) : undefined,
     query.q ? matchingPerson(query.q, enquiries) : undefined,
   );
   const db = getDb();
@@ -252,11 +253,22 @@ export async function listEnquiries(
       .offset((query.page - 1) * INBOX_PAGE_SIZE),
     db.select({ total: count() }).from(enquiries).where(where),
   ]);
-  const items = rows.map(({ fields, ...row }) => ({
-    ...(row as Omit<EnquirySummary, "summary">),
-    summary: summarise(row.form as FormKind, fields),
-  }));
-  return { items, total, page: query.page, pageSize: INBOX_PAGE_SIZE };
+  return { items: rows.map(summarised), total, page: query.page, pageSize: INBOX_PAGE_SIZE };
+}
+
+/** A row as the inbox lists it, its line under the name made from its answers. */
+const summarised = ({ fields, ...row }: Record<keyof typeof summary, unknown> & { fields: SubmittedField[] }) => ({
+  ...(row as Omit<EnquirySummary, "summary">),
+  summary: summarise(row.form as FormKind, fields),
+});
+
+/** Enquiries by their ids, as the inbox lists them, for Today's stream (D81). */
+export async function enquirySummaries(ids: string[]): Promise<EnquirySummary[]> {
+  const rows = await getDb()
+    .select({ ...summary, fields: enquiries.fields })
+    .from(enquiries)
+    .where(inArray(enquiries.id, ids));
+  return rows.map(summarised);
 }
 
 /** One enquiry with its notes (plan §10.5): two reads. */

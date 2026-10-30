@@ -2264,3 +2264,65 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R5.5, R5.6, D82: the applications inbox, Today as one stream, Delete (Phase 5 complete)
+
+### Added
+- **The Applications inbox** (plan §9.5, R5.5) in the day's log, like the
+  enquiries': status tabs, the job (each job with applications, or the
+  general ones) and a search as one plain form; a row says when, who applied
+  for which job, an HR email not sent or a CV not stored, and where it
+  stands. Opened in place: the job and every answer, Call, WhatsApp, Email,
+  **the CV** with *Download the CV* while it is kept (a plain link, never
+  fetched ahead, since every download is recorded) or why it cannot be
+  (not stored, expired, still being saved), Move to, the HR email's Retry,
+  the team's notes and Delete. `/admin/applications/[id]`, where HR's email
+  leads, opens on it. The rail has its station, with the new count.
+- **Today is one stream** (D81, plan §16): enquiries and applications
+  newest first, paged together (`GET /api/admin/today`, admin only), "needs
+  you" being an arrival still new or one whose email to the team did not go.
+  The merge lives in `src/lib/inbox/arrivals.ts`; each feature hands in its
+  own rows (`enquirySummaries`, `applicationSummaries`), so lib needs none.
+- **Delete, asked first** (D82), in an opened enquiry and an opened
+  application: a dialog says what goes and that it cannot be undone, with
+  Keep it as the way out; deleted on its own page, the inbox takes its
+  place; a failure says so in the dialog.
+- **The Phase 5 journey** (R5.6): a nurse applies for a job with a CV; HR's
+  email arrives in Mailpit with the CV attached byte for byte; the admin
+  follows its link, signs in, finds the application open, downloads the CV
+  under its kept name (recorded), shortlists it and deletes it, the file
+  with it.
+
+### Changed
+- The inboxes share their parts (`src/components/admin`): `InboxLog` (the
+  day's log, from `EnquiryLog`), `ReachActions`, `MoveTo`, `EmailNotSent`,
+  `TeamNotes` and `DeleteAction`; the enquiries' screens use them unchanged
+  in what they show.
+- "Needs you" is one rule for both inboxes and Today (`needsAttention`).
+- Today's and the enquiries inbox's empty words name what arrives there.
+
+### Notes
+- Plan §16 lists failed CV saves under what needs the admin. A CV not stored
+  is marked on its row and in its opened view; the application arrives new,
+  so it is in "Needs you" until the admin moves it along. It does not stay
+  there after: nothing the admin does can bring the file back.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: the shared inbox parts
+  (Delete asked, kept, failed, done); Today's screen and its log of both
+  kinds; the application row, opened view (every CV state, Move to, Retry,
+  a note, Delete on its own page and in a list, a failed load), log (a named
+  application above the list, or its failure), filters and screen; the
+  rail's Applications count; Today's route and key; against the local
+  MySQL, the stream in time order across both tables, needs-you, paging,
+  an arrival deleted between the reads, and empty.
+- E2E with axe at both widths: an enquiry deleted only once asked; a new
+  application in Today and the Applications inbox, found by job and phone,
+  opened with its CV and moved along; and the journey above. E2E passed in
+  full (122, 24 skipped).
+- Screenshots of Today with both kinds, the Applications inbox, an opened
+  application and the Delete dialog, at desktop and phone.
+
+### Blockers
+- None. Phase 5 is complete.

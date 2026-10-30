@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, isNotNull, isNull, max, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, isNull, max } from "drizzle-orm";
 import type { Metadata } from "next";
 
 import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, TEXT_LIMITS } from "@/constants/limits";
@@ -19,6 +19,7 @@ import { applicationNotes, applications, authUser, records, type SubmittedField 
 import { newId } from "@/db/schema/columns";
 import { logActionSafe } from "@/lib/audit/auditLog";
 import { captureError } from "@/lib/audit/errorLog";
+import { needsAttention } from "@/lib/inbox/arrivals";
 import { displayPhone } from "@/lib/contact";
 import type { Actor } from "@/lib/content/actor";
 import { getOperations } from "@/lib/content/operations";
@@ -467,7 +468,7 @@ export async function listApplications(query: ApplicationListQueryPayload): Prom
         ? eq(applications.jobId, query.job)
         : undefined,
     query.status ? eq(applications.status, query.status) : undefined,
-    query.needsYou ? or(eq(applications.status, "NEW"), eq(applications.emailStatus, "NOT_SENT")) : undefined,
+    query.needsYou ? needsAttention(applications) : undefined,
     query.q ? matchingPerson(query.q, applications) : undefined,
   );
   const db = getDb();
@@ -498,6 +499,12 @@ export async function listApplications(query: ApplicationListQueryPayload): Prom
     pageSize: INBOX_PAGE_SIZE,
     jobs: [...jobs].map(([id, title]) => ({ id, title })),
   };
+}
+
+/** Applications by their ids, as the inbox lists them, for Today's stream (D81). */
+export async function applicationSummaries(ids: string[]): Promise<ApplicationSummary[]> {
+  const rows = await getDb().select(applicationSummary).from(applications).where(inArray(applications.id, ids));
+  return rows as ApplicationSummary[];
 }
 
 /** One application with its notes (plan §9.5): two reads. */

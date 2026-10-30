@@ -20,11 +20,18 @@ afterEach(() => {
   navigation.pathname = "/admin";
 });
 
-/** The rail's two counts: three need the admin, two are new. */
+/** The rail's counts: three need the admin, two enquiries and one application are new. */
 const counts = (method: string, url: string): Answer =>
   method === "DELETE"
     ? { data: { signedOut: true } }
-    : { data: { items: [], total: url.includes("needsYou") ? 3 : 2, page: 1, pageSize: 25 } };
+    : {
+        data: {
+          items: [],
+          total: url.includes("needsYou") ? 3 : url.startsWith(API_ROUTES.adminApplications) ? 1 : 2,
+          page: 1,
+          pageSize: 25,
+        },
+      };
 
 const shell = () =>
   render(
@@ -46,6 +53,9 @@ describe("AdminShell", () => {
     const enquiries = within(rail).getByRole("link", { name: /Enquiries/ });
     await waitFor(() => expect(enquiries).toHaveTextContent(ADMIN_TEXT.newCount(2)));
     expect(enquiries).not.toHaveAttribute("aria-current");
+    const applications = within(rail).getByRole("link", { name: /Applications/ });
+    expect(applications).toHaveAttribute("href", ADMIN_ROUTES.applications);
+    await waitFor(() => expect(applications).toHaveTextContent(ADMIN_TEXT.newCount(1)));
     expect(screen.getByText(ADMIN_TEXT.signedInAs("Fatima"), { selector: "aside p" })).toBeVisible();
     expect(screen.getByRole("main")).toHaveTextContent("Page");
   });

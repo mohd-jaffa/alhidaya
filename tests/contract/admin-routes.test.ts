@@ -46,6 +46,7 @@ describe("the admin API", () => {
         "applications/[id]/notes POST",
         "applications/[id]/cv GET",
         "enquiries/[id] DELETE",
+        "today GET",
       ]),
     );
   });

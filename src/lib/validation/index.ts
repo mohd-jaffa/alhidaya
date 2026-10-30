@@ -78,6 +78,8 @@ export {
   type QuoteFormPayload,
 } from "./schemas/enquiries";
 
+export { todayQuerySchema, type TodayQueryInput, type TodayQueryPayload } from "./schemas/inbox";
+
 export { pageDocumentSchema, sectionSchema, type PageDocument, type Section } from "./schemas/pages";
 
 export { previewQuerySchema, type PreviewQueryPayload } from "./schemas/preview";

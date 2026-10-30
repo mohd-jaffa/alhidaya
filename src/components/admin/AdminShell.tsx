@@ -11,8 +11,9 @@ import { Pictogram } from "@/components/ui/pictogram";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_ROUTES } from "@/constants/routes";
 import { AuthClient } from "@/features/auth/api.client";
+import { applicationsKey } from "@/features/careers/api.client";
 import { enquiriesKey } from "@/features/enquiries/api.client";
-import type { EnquiryList } from "@/features/enquiries/types";
+import { todayKey } from "@/lib/inbox/keys";
 import { useApiMutation } from "@/lib/query/useApiMutation";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 
@@ -122,8 +123,9 @@ function SignOut({ adminName }: { adminName: string }) {
 export function AdminShell({ adminName, children }: { adminName: string; children: ReactNode }) {
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
-  const needs = useApiQuery<EnquiryList>(enquiriesKey({ needsYou: true }));
-  const fresh = useApiQuery<EnquiryList>(enquiriesKey({ status: "NEW" }));
+  const needs = useApiQuery<{ total: number }>(todayKey({ needsYou: true }));
+  const freshEnquiries = useApiQuery<{ total: number }>(enquiriesKey({ status: "NEW" }));
+  const freshApplications = useApiQuery<{ total: number }>(applicationsKey({ status: "NEW" }));
   const count = (total: number | undefined, said: (count: number) => string) =>
     total === undefined ? undefined : { value: total, said: said(total) };
 
@@ -143,7 +145,12 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         {
           label: ADMIN_TEXT.enquiries,
           href: ADMIN_ROUTES.enquiries,
-          count: count(fresh.data?.total, ADMIN_TEXT.newCount),
+          count: count(freshEnquiries.data?.total, ADMIN_TEXT.newCount),
+        },
+        {
+          label: ADMIN_TEXT.applications,
+          href: ADMIN_ROUTES.applications,
+          count: count(freshApplications.data?.total, ADMIN_TEXT.newCount),
         },
       ],
     },
