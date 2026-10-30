@@ -81,7 +81,7 @@ test("an edit is saved, previewed, published and seen by a visitor (plan §14, D
     await page.goto(ADMIN_ROUTES.page("PRIVACY"));
     const bar = page.locator("form").filter({ has: page.getByRole("heading", { level: 1, name: "Privacy" }) });
     await expect(bar.getByText(ADMIN_TEXT.published)).toBeVisible();
-    await page.getByRole("button", { name: /Top of the page/, expanded: false }).click();
+    await page.getByRole("button", { name: /Page header/, expanded: false }).click();
     await page.getByRole("textbox", { name: ADMIN_TEXT.headline }).fill(headline);
     await expect(bar.getByText(ADMIN_TEXT.unsavedChanges)).toBeVisible();
 
@@ -132,14 +132,14 @@ test("leaving a page with unsaved changes asks first, and Leave without saving g
   await expect(page.getByText(ADMIN_TEXT.hidden)).toBeVisible();
 
   const rail = page.getByRole("complementary");
-  await rail.getByRole("link", { name: /Today/ }).click();
+  await rail.getByRole("link", { name: /Dashboard/ }).click();
   const asking = page.getByRole("dialog", { name: ADMIN_TEXT.leaveTitle });
   await expect(asking).toBeVisible();
   await axe(page);
   await asking.getByRole("button", { name: ADMIN_TEXT.stay }).click();
   await expect(page).toHaveURL(ADMIN_ROUTES.page("HOME"));
 
-  await rail.getByRole("link", { name: /Today/ }).click();
+  await rail.getByRole("link", { name: /Dashboard/ }).click();
   await asking.getByRole("button", { name: ADMIN_TEXT.leave }).click();
   await expect(page).toHaveURL(ADMIN_ROUTES.overview);
   expect((await readDocumentDraft<PageDocument>("PAGE:HOME"))!.draft.sections.every((section) => section.visible)).toBe(

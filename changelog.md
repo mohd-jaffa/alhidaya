@@ -3302,3 +3302,51 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None.
+
+## 2026-10-31 — R6B.7: the user's review of the admin
+
+### Added
+- **Profile** (D115), at `/admin/profile`, from the column's foot: the
+  admin's name and sign-in email; their name changed (the column greets them
+  by it at once); their password changed with the current one and the new
+  one twice. A wrong current password is said under its field; tries are
+  limited to 10 an hour; every other session is ended; both changes are
+  recorded in the activity log ("Changed the account name", "Changed the
+  password"). New endpoints: `PATCH /api/admin/profile`,
+  `POST /api/admin/profile/password`, each behind the admin's session.
+- **Log out is asked first**, in a dialog, with Cancel.
+
+### Changed
+- **Today is the Dashboard.**
+- **The admin's column**: each section beside its mark (new pictograms in
+  the set's line: dashboard, page, briefcase, image, settings, profile, log
+  out); the groups ("Inbox", "Website content", "Administration") under
+  bold headings parted by a light rule; the current row marked by its
+  highlight alone, not in bold; Profile and Log out at its foot, each with
+  its mark; its scroll stays its own, never carrying on into the page (as
+  does a dialog's).
+- **The sign-in page's panel** no longer draws the old line and its
+  station: it names the admin panel, says what it is for, lists what it
+  looks after with their marks, and ends on the way back to the website.
+- **Every word in the admin** in a plain, professional register: "Action
+  required", "could not be saved", "Data retention", "Server storage",
+  "Activity log", "Media library", "Client logos", "Resend notification",
+  "Cancel"; nothing chatty.
+- **In a page's sections**, only the Edit action is lit under the pointer,
+  never the section's name beside it; the whole row still opens it.
+- Plan: D115; the admin's screen list and §30.5 describe the new column;
+  tracker R6B.7 DONE (2026-10-31). `DESIGN.md`: the admin's column.
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed (1,187, in one run with R6B.6 and
+  R6B.8), coverage 100%: the profile's routes (no session refused, a wrong
+  current password marked on its field, the rate limit), its screen, the
+  column's marks, groups and log out asked first.
+- E2E passed (phone, desktop, axe on every page): the profile journey (a
+  wrong current password said under its field, the name changed and greeted
+  at once, the password changed and signed in with); log out asked first on
+  a phone, Cancel staying; the page editor reaches the Dashboard.
+
+### Blockers
+- None.

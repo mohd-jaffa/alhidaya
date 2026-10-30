@@ -89,14 +89,22 @@ const shell = () =>
   );
 
 describe("AdminShell", () => {
-  it("lays the sections on the line, the current one marked, each with what waits there", async () => {
+  it("lists the sections in ruled groups, each with its mark, the current one marked, each with what waits there", async () => {
     stubApi(counts);
     shell();
     const rail = screen.getAllByRole("navigation", { name: ADMIN_TEXT.navigation })[0];
-    const today = within(rail).getByRole("link", { name: /Today/ });
+    // Every section beside its mark (D115); the groups parted by a light rule, under bold headings.
+    for (const link of within(rail).getAllByRole("link")) expect(link.querySelector("svg")).not.toBeNull();
+    const [, inbox] = [...rail.children];
+    expect(inbox).toHaveClass("border-t");
+    expect(within(inbox as HTMLElement).getByText(ADMIN_TEXT.inbox)).toHaveClass("font-bold", "text-body");
+    const today = within(rail).getByRole("link", { name: /Dashboard/ });
+    // Marked by its highlight alone, never in bold (D115).
+    expect(today).toHaveClass("bg-on-deep/10");
+    expect(today).not.toHaveClass("font-bold");
     expect(today).toHaveAttribute("aria-current", "page");
     expect(today).toHaveAttribute("href", ADMIN_ROUTES.overview);
-    await waitFor(() => expect(today).toHaveAccessibleName(`${ADMIN_TEXT.today}${ADMIN_TEXT.needsYouCount(3)}`));
+    await waitFor(() => expect(today).toHaveAccessibleName(`${ADMIN_TEXT.dashboard}${ADMIN_TEXT.needsYouCount(3)}`));
     const enquiries = within(rail).getByRole("link", { name: /Enquiries/ });
     await waitFor(() => expect(enquiries).toHaveTextContent(ADMIN_TEXT.newCount(2)));
     expect(enquiries).not.toHaveAttribute("aria-current");
@@ -112,7 +120,7 @@ describe("AdminShell", () => {
     const jobs = within(rail).getByRole("link", { name: /Jobs/ });
     expect(jobs).toHaveAttribute("href", ADMIN_ROUTES.jobs);
     await waitFor(() => expect(jobs).toHaveAccessibleName(`${ADMIN_TEXT.jobs}${ADMIN_TEXT.waitingCount(1)}`));
-    const clients = within(rail).getByRole("link", { name: /Clients/ });
+    const clients = within(rail).getByRole("link", { name: /Client logos/ });
     await waitFor(() => expect(clients).toHaveAccessibleName(`${ADMIN_TEXT.clients}${ADMIN_TEXT.waitingCount(1)}`));
     expect(within(rail).getByRole("link", { name: ADMIN_TEXT.media })).toHaveAttribute("href", ADMIN_ROUTES.media);
     expect(within(rail).getByRole("link", { name: ADMIN_TEXT.activity })).toHaveAttribute(
@@ -122,6 +130,10 @@ describe("AdminShell", () => {
     const settings = within(rail).getByRole("link", { name: /Settings/ });
     await waitFor(() => expect(settings).toHaveAccessibleName(`${ADMIN_TEXT.settings}${ADMIN_TEXT.waitingCount(1)}`));
     expect(screen.getByText(ADMIN_TEXT.signedInAs("Fatima"), { selector: "aside p" })).toBeVisible();
+    const profile = within(screen.getByRole("complementary")).getByRole("link", { name: ADMIN_TEXT.profile });
+    expect(profile).toHaveAttribute("href", ADMIN_ROUTES.profile);
+    expect(profile).not.toHaveAttribute("aria-current");
+    expect(profile.querySelector("svg")).not.toBeNull();
     expect(screen.getByRole("main")).toHaveTextContent("Page");
   });
 
@@ -143,9 +155,9 @@ describe("AdminShell", () => {
     shell();
     const rail = screen.getAllByRole("navigation", { name: ADMIN_TEXT.navigation })[0];
     expect(within(rail).getByRole("link", { name: ADMIN_TEXT.enquiries })).toHaveAttribute("aria-current", "page");
-    expect(within(rail).getByRole("link", { name: ADMIN_TEXT.today })).not.toHaveAttribute("aria-current");
+    expect(within(rail).getByRole("link", { name: ADMIN_TEXT.dashboard })).not.toHaveAttribute("aria-current");
     await waitFor(() =>
-      expect(within(rail).getByRole("link", { name: ADMIN_TEXT.today })).toHaveTextContent(/^Today$/),
+      expect(within(rail).getByRole("link", { name: ADMIN_TEXT.dashboard })).toHaveTextContent(/^Dashboard$/),
     );
     await waitFor(() =>
       expect(within(rail).getByRole("link", { name: ADMIN_TEXT.services })).toHaveTextContent(/^Services$/),
@@ -156,18 +168,50 @@ describe("AdminShell", () => {
     const user = userEvent.setup();
     stubApi(counts);
     shell();
-    expect(screen.getByRole("banner")).toHaveTextContent(ADMIN_TEXT.today);
+    expect(screen.getByRole("banner")).toHaveTextContent(ADMIN_TEXT.dashboard);
     await user.click(screen.getByRole("button", { name: ADMIN_TEXT.menu }));
     const menu = screen.getByRole("dialog", { name: ADMIN_TEXT.menu });
     await user.click(within(menu).getByRole("link", { name: /Enquiries/ }));
     expect(menu).not.toHaveAttribute("open");
+    await user.click(screen.getByRole("button", { name: ADMIN_TEXT.menu }));
+    await user.click(within(menu).getByRole("link", { name: ADMIN_TEXT.profile }));
+    expect(menu).not.toHaveAttribute("open");
   });
 
-  it("signs out, and goes to sign in whether or not the session was still there", async () => {
+  it("marks the profile as where the admin is on its page, and names it in the phone's bar", () => {
+    navigation.pathname = ADMIN_ROUTES.profile;
+    stubApi(counts);
+    shell();
+    const aside = within(screen.getByRole("complementary"));
+    expect(aside.getByRole("link", { name: ADMIN_TEXT.profile })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("banner")).toHaveTextContent(ADMIN_TEXT.profile);
+  });
+
+  it("asks before logging out, and a cancel keeps the admin signed in (D115)", async () => {
     const user = userEvent.setup();
     const fetch = stubApi(counts);
     shell();
     await user.click(within(screen.getByRole("complementary")).getByRole("button", { name: ADMIN_TEXT.signOut }));
+    const asked = screen.getByRole("dialog", { name: ADMIN_TEXT.signOutTitle });
+    expect(asked).toHaveTextContent(ADMIN_TEXT.signOutBody);
+    await user.click(within(asked).getByRole("button", { name: ADMIN_TEXT.cancel }));
+    expect(asked).not.toHaveAttribute("open");
+    expect(fetch).not.toHaveBeenCalledWith(
+      ADMIN_API_ROUTES.adminSession,
+      expect.objectContaining({ method: "DELETE" }),
+    );
+  });
+
+  it("logs out once confirmed, and goes to sign in whether or not the session was still there", async () => {
+    const user = userEvent.setup();
+    const fetch = stubApi(counts);
+    shell();
+    const logOut = async () => {
+      await user.click(within(screen.getByRole("complementary")).getByRole("button", { name: ADMIN_TEXT.signOut }));
+      const asked = screen.getByRole("dialog", { name: ADMIN_TEXT.signOutTitle });
+      await user.click(within(asked).getByRole("button", { name: ADMIN_TEXT.signOut }));
+    };
+    await logOut();
     await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith(ADMIN_ROUTES.login));
     expect(fetch).toHaveBeenCalledWith(ADMIN_API_ROUTES.adminSession, expect.objectContaining({ method: "DELETE" }));
 
@@ -177,7 +221,9 @@ describe("AdminShell", () => {
         ? { status: 401, error: { code: "AUTH_SESSION_REQUIRED", message: "Please sign in." } }
         : counts(method, url),
     );
-    await user.click(within(screen.getByRole("complementary")).getByRole("button", { name: ADMIN_TEXT.signOut }));
+    // The dialog stays open while the way to sign in loads; asked again, it is confirmed there.
+    const asked = screen.getByRole("dialog", { name: ADMIN_TEXT.signOutTitle });
+    await user.click(within(asked).getByRole("button", { name: ADMIN_TEXT.signOut }));
     await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith(ADMIN_ROUTES.login));
   });
 });

@@ -33,8 +33,8 @@ export function TodayScreen({
   return (
     <div className="grid max-w-5xl gap-6">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <h1 className="text-section font-bold">{ADMIN_TEXT.today}</h1>
-        <nav aria-label={ADMIN_TEXT.today} className="flex gap-1">
+        <h1 className="text-section font-bold">{ADMIN_TEXT.dashboard}</h1>
+        <nav aria-label={ADMIN_TEXT.dashboard} className="flex gap-1">
           {tabs.map((tab) => (
             <Link
               key={tab.view}

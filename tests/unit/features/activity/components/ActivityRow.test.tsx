@@ -31,6 +31,9 @@ const CASES: [string, Partial<ActivityItem>, string, string | null][] = [
   ["a sign-out", { action: "SIGN_OUT" }, ADMIN_TEXT.didSignOut, null],
   ["a reset asked for", { action: "PASSWORD_RESET_REQUESTED", who: null }, ADMIN_TEXT.didAskReset, null],
   ["a password set", { action: "PASSWORD_CHANGED", who: null }, ADMIN_TEXT.didSetPassword, null],
+  // From the profile, by the admin themselves (D115).
+  ["a password changed", { action: "PASSWORD_CHANGED" }, ADMIN_TEXT.didChangePassword, null],
+  ["a new name", { action: "UPDATE" }, ADMIN_TEXT.didRename, null],
   [
     "the nightly clean-up",
     {

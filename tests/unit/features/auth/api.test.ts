@@ -2,7 +2,14 @@
 import { APIError } from "better-auth/api";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const api = { signInEmail: vi.fn(), signOut: vi.fn(), requestPasswordReset: vi.fn(), resetPassword: vi.fn() };
+const api = {
+  signInEmail: vi.fn(),
+  signOut: vi.fn(),
+  requestPasswordReset: vi.fn(),
+  resetPassword: vi.fn(),
+  updateUser: vi.fn(),
+  changePassword: vi.fn(),
+};
 const lockout = {
   lockoutKeys: vi.fn(() => ["email-key", "ip-key"]),
   isLocked: vi.fn(async () => false),
@@ -16,7 +23,8 @@ vi.mock("@/features/auth/lockout", () => lockout);
 vi.mock("@/lib/rate-limit/rate-limit", () => ({ consumeRateLimit }));
 vi.mock("@/lib/audit/auditLog", () => ({ logActionSafe }));
 
-const { requestPasswordReset, resetPassword, signIn, signOut } = await import("@/features/auth/api");
+const { changeAdminPassword, renameAdmin, requestPasswordReset, resetPassword, signIn, signOut } =
+  await import("@/features/auth/api");
 
 const asker = { ip: "203.0.113.9", userAgent: "Firefox", requestId: "req_1" };
 const credentials = { email: "admin@alhidaya.qa", password: "a long passphrase" };
@@ -143,5 +151,55 @@ describe("resetPassword", () => {
     api.resetPassword.mockRejectedValueOnce(down);
     await expect(resetPassword("t", "a long passphrase", "r")).rejects.toBe(down);
     expect(logActionSafe).not.toHaveBeenCalled();
+  });
+});
+
+describe("renameAdmin (D115)", () => {
+  it("renames the signed-in admin and records it", async () => {
+    const headers = new Headers({ cookie: "alhidaya.session_token=x" });
+    await renameAdmin(headers, "a1", "Mariam Ali", "req_9");
+    expect(api.updateUser).toHaveBeenCalledWith({ body: { name: "Mariam Ali" }, headers });
+    expect(logActionSafe).toHaveBeenCalledWith(
+      expect.objectContaining({ actorId: "a1", action: "UPDATE", entityType: "auth_user", entityId: "a1" }),
+    );
+  });
+});
+
+describe("changeAdminPassword (D115)", () => {
+  const passwords = { currentPassword: "the old passphrase", newPassword: "a new long passphrase" };
+  const headers = new Headers({ cookie: "alhidaya.session_token=x" });
+
+  it("changes it with the current one, ends every other session, records it, and answers the renewed cookie", async () => {
+    const renewed = new Headers({ "set-cookie": "alhidaya.session_token=y" });
+    api.changePassword.mockResolvedValue({ headers: renewed, response: {} });
+    expect(await changeAdminPassword(headers, "a1", passwords, "req_9")).toBe(renewed);
+    expect(api.changePassword).toHaveBeenCalledWith({
+      body: { ...passwords, revokeOtherSessions: true },
+      headers,
+      returnHeaders: true,
+    });
+    expect(consumeRateLimit).toHaveBeenCalledWith(expect.objectContaining({ scope: "password:change", key: "a1" }));
+    expect(logActionSafe).toHaveBeenCalledWith(expect.objectContaining({ actorId: "a1", action: "PASSWORD_CHANGED" }));
+  });
+
+  it("names the current password when it is wrong, and records nothing", async () => {
+    api.changePassword.mockRejectedValue(refused("INVALID_PASSWORD"));
+    await expect(changeAdminPassword(headers, "a1", passwords, "req_9")).rejects.toMatchObject({
+      code: "AUTH_PASSWORD_WRONG",
+      httpStatus: 400,
+      details: [expect.objectContaining({ path: "currentPassword" })],
+    });
+    expect(logActionSafe).not.toHaveBeenCalled();
+  });
+
+  it("refuses too many tries, before the password is checked", async () => {
+    consumeRateLimit.mockResolvedValueOnce(false);
+    await expect(changeAdminPassword(headers, "a1", passwords, "req_9")).rejects.toMatchObject({ httpStatus: 429 });
+    expect(api.changePassword).not.toHaveBeenCalled();
+  });
+
+  it("lets any other failure through", async () => {
+    api.changePassword.mockRejectedValue(new Error("database down"));
+    await expect(changeAdminPassword(headers, "a1", passwords, "req_9")).rejects.toThrow("database down");
   });
 });

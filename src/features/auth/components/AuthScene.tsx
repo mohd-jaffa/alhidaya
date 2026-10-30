@@ -1,13 +1,27 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import type { PictogramName } from "@/assets/brand/pictograms";
 import { Logo } from "@/components/site/Logo";
+import { Pictogram } from "@/components/ui/pictogram";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
+import { UI_TEXT } from "@/constants/messages";
+import { ROUTES } from "@/constants/routes";
+import { dohaDay } from "@/lib/dates";
+
+/** What the panel looks after, as the way in names it (D115). */
+const LOOKS_AFTER: { pictogram: PictogramName; label: string }[] = [
+  { pictogram: "mail", label: ADMIN_TEXT.authInbox },
+  { pictogram: "document", label: ADMIN_TEXT.authContent },
+  { pictogram: "settings", label: ADMIN_TEXT.authAdministration },
+];
 
 /**
- * The frame of the admin's way in (R6.1): the navy rail's colour with the
- * logo and the line's one station on a wide screen, a navy band on a phone;
- * the form on white beside it, alone, with one way elsewhere under it.
+ * The frame of the admin's way in (R6.1, D101, D115). On a wide screen a navy
+ * panel: the logo at its top; the panel's name, what it is for and the three
+ * things it looks after, each with its mark; the way back to the website and
+ * the year at its foot. On a phone a navy band with the logo. The form sits on
+ * white beside it, alone, with one way elsewhere under it.
  */
 export function AuthScene({
   title,
@@ -23,15 +37,39 @@ export function AuthScene({
 }) {
   return (
     <div className="grid min-h-dvh md:grid-cols-[minmax(18rem,26rem)_1fr]">
-      <header className="flex flex-col gap-10 bg-navy px-gutter py-6 text-on-deep-2 md:px-10 md:py-12">
+      <header className="flex flex-col gap-10 bg-navy px-gutter py-6 text-on-deep-2 md:justify-between md:px-10 md:py-12">
         <Logo variant="white" priority className="h-10 w-auto self-start md:h-12" />
-        <p className="relative hidden ps-8 font-semibold text-on-deep before:absolute before:start-[0.45rem] before:top-1 before:h-40 before:w-[3px] before:rounded-full before:bg-sky/40 md:block">
-          <span
-            aria-hidden="true"
-            className="absolute start-0 top-0 size-4 rounded-full border-[3px] border-on-deep bg-on-deep"
-          />
-          {ADMIN_TEXT.admin}
-        </p>
+        <div className="hidden gap-8 md:grid">
+          <div className="grid gap-3">
+            <p className="text-section font-semibold text-on-deep">{ADMIN_TEXT.admin}</p>
+            <p className="max-w-[32ch]">{ADMIN_TEXT.authAside}</p>
+          </div>
+          <ul className="grid gap-4">
+            {LOOKS_AFTER.map(({ pictogram, label }) => (
+              <li key={pictogram} className="flex items-center gap-3 text-on-deep">
+                <span
+                  aria-hidden="true"
+                  className="grid size-10 shrink-0 place-items-center rounded-full bg-on-deep/10"
+                >
+                  <Pictogram name={pictogram} size="sm" />
+                </span>
+                {label}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="hidden gap-3 text-small md:grid">
+          <a
+            href={ROUTES.home}
+            className="inline-flex items-center gap-2 justify-self-start font-semibold text-on-deep underline decoration-transparent underline-offset-4 hover:decoration-current focus-visible:outline-focus-on-deep"
+          >
+            {ADMIN_TEXT.backToWebsite}
+            <Pictogram name="arrow" size="sm" />
+          </a>
+          <p className="text-on-deep-2/80">
+            © {dohaDay().slice(0, 4)} {UI_TEXT.siteName}
+          </p>
+        </div>
       </header>
       <main id="main" className="grid content-start px-gutter py-10 md:content-center md:px-16">
         <div className="grid w-full max-w-md gap-8">

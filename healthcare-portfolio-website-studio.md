@@ -196,6 +196,7 @@ question (§41) the user may overturn.
 | D112 | **Each page keeps its own sections** (the user, recommended): Home's new sections (statement, highlights, how it works, the audiences) stay Home's; the other pages' sections (who we are, mission, values, clients, the services, the jobs, the contact details and band, the admin's text) are redrawn in the new look and motion, with nothing new to edit. | 2026-10-30 |
 | D113 | **The footer's running words loop on their own** (the user, 2026-10-31: "the name is not moving like I guessed it will be moving in an infinite loop"): an endless slow loop (48 s) by CSS alone, the one exception to "nothing moves on its own"; a round pause button beside them (a checkbox, no script) stops them (WCAG 2.2.2; asked, the user chose to keep it over removing it or going back to scroll-driven movement), and with motion reduced they stand still. Supersedes D106's scroll-driven movement. | 2026-10-31 |
 | D114 | **The current site's slide sentences carry into Home, and the footer is simpler** (the user, 2026-10-31): "Compassionate nursing care for your loved ones" (families), "Trained nurses who deliver excellence every time" (institutions), "Affordable nursing care, without compromising quality" (the first highlight) and "Experience the difference with Al Hidaya" (the form) become those sections' headings, as editable content, with no new element; the footer's column headings are larger and bolder, its contact column keeps to the phone, the email, the hours and each social network with its mark (the address stays on Contact), and it has no quote button. | 2026-10-31 |
+| D115 | **The admin's polish** (the user, 2026-10-31): "Today" is the **Dashboard**; each menu section has its mark, the groups ("Inbox", "Website content", "Administration") sit under bold headings parted by a light rule, and the current one is marked by its highlight alone, never bold; the column's scroll stays its own; **Profile** (with its mark) shows the admin's name and sign-in email, renames them, and changes their password with the current one (limited to 10 tries an hour, every other session ended, both recorded in Activity); **Log out** (with its mark) is asked first; the sign-in page's navy panel names the panel, what it looks after and the way back, with no rail; every word in the admin is in a plain, professional register; in a page's sections, only the Edit action is lit under the pointer. | 2026-10-31 |
 | D116 | **The header offers the brochure** (the user, 2026-10-31): "Download brochure", in the header and the phone menu, in place of Request a quote, downloading the PDF published in Settings (the old site's `profile.pdf` at launch, D91) under the company's name, `Al-Hidaya-Health-Care-Services-Brochure.pdf`; until a brochure is published the header keeps Request a quote. The footer no longer links the brochure. | 2026-10-31 |
 | D117 | **The phone menu opens smoothly** (the user, 2026-10-31: "in small screens the menu opening there is no animation, add something smooth"; the motion itself is the agent default): the sheet fades in over the page (200 ms, its logo and close button where the header's logo and menu button were), its rows rise into place one after another (640 ms, ease-out, 45 ms apart), and closing it fades away; CSS only, so no script is added, and with motion reduced it simply appears. The navy backdrop is dropped: the sheet covers the screen, so it only showed as a grey flash while fading. | 2026-10-31 |
 
@@ -698,7 +699,7 @@ scroll. Desktop first; usable on a phone for reading the inbox.
 | Screen | Purpose |
 |---|---|
 | Sign in | Email and password; lockout after 5 failures for 15 minutes (§26.4); forgotten password by email link. |
-| Today (the Overview, D81) | What needs the admin, newest first in the day's log: new enquiries and applications, failed mails or CV saves, items with unpublished changes (each as its phase builds it); "Everything" for all that arrived. Enquiries and applications are one stream, paged together. "Needs you" is an arrival still new, or one whose email to the team did not go; a CV not stored is marked on its row (it arrives new, so it needs the admin until they move it along: nothing can bring the file back, §9.3). |
+| The Dashboard (the Overview, D81; "Today" until D115) | What needs the admin, newest first in the day's log: new enquiries and applications, failed mails or CV saves, items with unpublished changes (each as its phase builds it); "Everything" for all that arrived. Enquiries and applications are one stream, paged together. "Needs you" is an arrival still new, or one whose email to the team did not go; a CV not stored is marked on its row (it arrives new, so it needs the admin until they move it along: nothing can bring the file back, §9.3). |
 | Pages | The eight pages with their state; each page's sections: show/hide, move up/down and drag to reorder, add and remove (D87), edit in place, the page's SEO, save draft, preview, publish, discard (D88). |
 | Services | List, order, create, edit, preview, publish, archive. |
 | Jobs | List by status, create, edit, close, publish, archive. |
@@ -1253,10 +1254,12 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 
 The same tokens, type and pictograms, quieter: Operate mode, dense where it
 helps. Shaped with `/impeccable shape` (R6.1, brought forward, D80) as **the
-day's log** (D81): a navy column listing its sections, the current one marked,
-what waits in a sky count (a plain list since D101, without the line and its
-stations); on a phone a navy bar naming the section, with the list as a
-menu. The work area is white; a list is ruled by day with times in even
+day's log** (D81): a navy column listing its sections, each with its mark, in
+groups under bold headings parted by a light rule, the current one marked by
+its highlight, what waits in a sky count (a plain list since D101, without the
+line and its stations; D115); at its foot the admin's name, Profile and Log
+out (asked first); on a phone a navy bar naming the section, with the list
+as a menu. The work area is white; a list is ruled by day with times in even
 figures; a row opens in place on mist. Deep blue for actions and "New", sky for
 in progress, leaf for resolved, the error red only for failures. Fixed type
 sizes (28 px headings), no smooth scroll, motion only for state. The sign-in
@@ -1528,6 +1531,7 @@ one commit (D27).
 | R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | DONE (2026-10-31; D109 – D112) |
 | R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | DONE (2026-10-31) |
 | R6B.6 | The user's review of the redesign, the public site: the scroll that stopped short of the page's end fixed and Lenis made snappier; the footer's words in an endless loop with a pause button (D113); the current site's slide sentences as Home's headings, and a simpler footer (D114); the brochure in the header (D116); the phone menu opening smoothly (D117) | D113, D114, D116, D117 | R6B.5 | DONE (2026-10-31) |
+| R6B.7 | The user's review of the admin (D115): the Dashboard, the menu's marks and ruled groups, the profile (name, password), log out asked first, the sign-in page's panel, the professional wording, the menu's own scroll | D115 | R6B.6 | DONE (2026-10-31) |
 
 ### Phase 7 — Performance, accessibility and the finish
 

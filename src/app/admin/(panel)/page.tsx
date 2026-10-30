@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { TodayScreen } from "@/components/admin/TodayScreen";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 
-export const metadata: Metadata = { title: ADMIN_TEXT.today };
+export const metadata: Metadata = { title: ADMIN_TEXT.dashboard };
 
 /** Today (R6.1): what needs the admin. */
 export default async function Today({

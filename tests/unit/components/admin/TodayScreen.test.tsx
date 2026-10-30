@@ -22,7 +22,7 @@ vi.mock("@/components/admin/TodayLog", () => ({
 describe("TodayScreen", () => {
   it("opens on what needs the admin, the first page, and says so when nothing does", () => {
     render(<TodayScreen searchParams={{}} />);
-    expect(screen.getByRole("heading", { level: 1, name: ADMIN_TEXT.today })).toBeVisible();
+    expect(screen.getByRole("heading", { level: 1, name: ADMIN_TEXT.dashboard })).toBeVisible();
     expect(screen.getByText("What waits to be published")).toBeVisible();
     expect(screen.getByText("The server is running out of room")).toBeVisible();
     expect(screen.getByRole("link", { name: ADMIN_TEXT.needsYou })).toHaveAttribute("aria-current", "page");

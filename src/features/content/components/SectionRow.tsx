@@ -67,14 +67,17 @@ export function SectionRow({
             aria-expanded={open}
             aria-controls={open ? panel : undefined}
             onClick={onToggle}
-            className="flex min-h-touch w-full items-center gap-3 rounded-control px-2 py-1.5 text-start hover:bg-mist"
+            className="flex min-h-touch w-full items-center gap-3 rounded-control px-2 py-1.5 text-start"
           >
             <span className="w-5 shrink-0 text-ink-2 tabular-nums">{index + 1}</span>
             <span className="grid min-w-0 flex-1 gap-0.5">
               <span className="font-semibold">{name}</span>
               {summary ? <span className="truncate text-small text-ink-2">{summary}</span> : null}
             </span>
-            <span className="shrink-0 font-semibold text-deep">{open ? ADMIN_TEXT.closeSection : ADMIN_TEXT.edit}</span>
+            {/* The whole row opens the section; only its action is lit under the pointer, never the name beside it. */}
+            <span className="shrink-0 rounded-control px-3 py-1.5 font-semibold text-deep hover:bg-mist">
+              {open ? ADMIN_TEXT.closeSection : ADMIN_TEXT.edit}
+            </span>
           </button>
         </h3>
         <div className="flex flex-wrap items-center gap-2 ps-9 sm:ps-0">

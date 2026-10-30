@@ -33,6 +33,8 @@ export const ADMIN_ROUTES = {
   settings: "/admin/settings",
   operations: "/admin/settings/operations",
   activity: "/admin/activity",
+  /** The signed-in admin's own details: their name and their password (D115). */
+  profile: "/admin/profile",
 } as const;
 
 /** What Activity's address can narrow it to (`?kind=`, D96); kept here, off the public pages, as the routes are. */
@@ -44,6 +46,9 @@ export const ADMIN_API_ROUTES = {
   adminSession: "/api/admin/session",
   passwordForgot: "/api/admin/password/forgot",
   passwordReset: "/api/admin/password/reset",
+  /** The signed-in admin's name, and a new password from their profile (D115). */
+  adminProfile: "/api/admin/profile",
+  adminProfilePassword: "/api/admin/profile/password",
   /** Today: enquiries and applications as one stream (D81). */
   adminToday: "/api/admin/today",
   /** The enquiries inbox (plan §10.5). */

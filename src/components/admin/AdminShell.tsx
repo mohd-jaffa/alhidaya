@@ -4,8 +4,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useState } from "react";
 
+import type { PictogramName } from "@/assets/brand/pictograms";
+
 import { Logo } from "@/components/site/Logo";
 import { SkipLink } from "@/components/site/SkipLink";
+import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Pictogram } from "@/components/ui/pictogram";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
@@ -25,11 +28,13 @@ import { useApiQuery } from "@/lib/query/useApiQuery";
 interface Station {
   label: string;
   href: string;
+  /** Its mark beside its name (D115). */
+  pictogram: PictogramName;
   /** How many wait there, and how a screen reader says so. */
   count?: { value: number; said: string };
 }
 
-/** A station is where the admin is when they are on its page, or under it (Today only on its own). */
+/** A station is where the admin is when they are on its page, or under it (the dashboard only on its own). */
 const isHere = (pathname: string, href: string) =>
   href === ADMIN_ROUTES.overview ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
 
@@ -37,10 +42,17 @@ const isHere = (pathname: string, href: string) =>
 const currentStation = (pathname: string, stations: Station[]) =>
   stations.filter((station) => isHere(pathname, station.href)).sort((a, b) => b.href.length - a.href.length)[0];
 
+/** A row of the column: a station, the profile, the way out. */
+const ROW = "flex min-h-touch w-full items-center gap-3 rounded-control px-3 text-start";
+const ROW_IDLE = "text-on-deep-2 hover:bg-on-deep/5 hover:text-on-deep";
+// The current row is marked by its highlight alone, never by a heavier weight (D115).
+const ROW_HERE = "bg-on-deep/10 text-on-deep";
+
 /**
- * The admin's sections as a plain list in groups (R6.1, D101): the current
- * one marked, and what waits shown in a sky count. No line and no station
- * dots since the redesign.
+ * The admin's sections as a plain list in groups (R6.1, D101, D115): each
+ * with its mark, the groups under bold headings and parted by a light rule,
+ * the current one marked, and what waits shown in a sky count. No line and no
+ * station dots since the redesign.
  */
 function Stations({
   groups,
@@ -54,12 +66,13 @@ function Stations({
     groups.flatMap((group) => group.stations),
   );
   return (
-    <nav aria-label={ADMIN_TEXT.navigation}>
-      {groups.map((group) => (
-        <div key={group.label ?? "home"} className="grid gap-1">
-          {group.label ? (
-            <p className="mt-5 mb-1 px-3 text-small font-semibold text-on-deep-2/80">{group.label}</p>
-          ) : null}
+    <nav aria-label={ADMIN_TEXT.navigation} className="grid">
+      {groups.map((group, at) => (
+        <div
+          key={group.label ?? "home"}
+          className={`grid gap-1 ${at > 0 ? "mt-4 border-t border-on-deep/15 pt-4" : ""}`}
+        >
+          {group.label ? <p className="mb-1 px-3 text-body font-bold text-on-deep">{group.label}</p> : null}
           <ul className="grid gap-1">
             {group.stations.map((station) => {
               const here = station === current;
@@ -69,13 +82,10 @@ function Stations({
                     href={station.href}
                     aria-current={here ? "page" : undefined}
                     onClick={onNavigate}
-                    className={`flex min-h-touch items-center justify-between gap-3 rounded-control px-3 ${
-                      here
-                        ? "bg-on-deep/10 font-bold text-on-deep"
-                        : "text-on-deep-2 hover:bg-on-deep/5 hover:text-on-deep"
-                    }`}
+                    className={`${ROW} ${here ? ROW_HERE : ROW_IDLE}`}
                   >
-                    {station.label}
+                    <Pictogram name={station.pictogram} size="sm" />
+                    <span className="grow">{station.label}</span>
                     {station.count && station.count.value > 0 ? (
                       <span className="rounded-full bg-sky px-2 text-small font-bold text-navy tabular-nums">
                         <span aria-hidden="true">{station.count.value}</span>
@@ -93,22 +103,42 @@ function Stations({
   );
 }
 
-/** Who is signed in, and the way out. */
-function SignOut({ adminName }: { adminName: string }) {
+/** Who is signed in (D115): their profile, and the way out, asked first, each with its mark. */
+function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: () => void }) {
   const router = useRouter();
+  const here = usePathname() === ADMIN_ROUTES.profile;
+  const [asking, setAsking] = useState(false);
   const leave = () => router.replace(ADMIN_ROUTES.login);
   const { submit, submitting } = useApiMutation(AuthClient.signOut, { onSuccess: leave, onError: leave });
   return (
-    <div className="grid gap-1 text-small">
-      <p className="text-on-deep-2/80">{ADMIN_TEXT.signedInAs(adminName)}</p>
-      <button
-        type="button"
-        onClick={() => submit(undefined)}
-        disabled={submitting}
-        className="min-h-touch justify-self-start font-semibold text-on-deep underline underline-offset-4"
+    <div className="grid gap-1 border-t border-on-deep/15 pt-4">
+      <p className="px-3 pb-1 text-small text-on-deep-2/80">{ADMIN_TEXT.signedInAs(adminName)}</p>
+      <Link
+        href={ADMIN_ROUTES.profile}
+        aria-current={here ? "page" : undefined}
+        onClick={onNavigate}
+        className={`${ROW} ${here ? ROW_HERE : ROW_IDLE}`}
       >
+        <Pictogram name="profile" size="sm" />
+        {ADMIN_TEXT.profile}
+      </Link>
+      <button type="button" onClick={() => setAsking(true)} className={`${ROW} ${ROW_IDLE}`}>
+        <Pictogram name="logout" size="sm" />
         {ADMIN_TEXT.signOut}
       </button>
+      <Dialog open={asking} onClose={() => setAsking(false)} title={ADMIN_TEXT.signOutTitle}>
+        <div className="grid gap-5">
+          <p>{ADMIN_TEXT.signOutBody}</p>
+          <div className="flex flex-wrap gap-3">
+            <Button pending={submitting} onClick={() => submit(undefined)}>
+              {submitting ? ADMIN_TEXT.signingOut : ADMIN_TEXT.signOut}
+            </Button>
+            <Button variant="secondary" onClick={() => setAsking(false)}>
+              {ADMIN_TEXT.cancel}
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }
@@ -139,8 +169,9 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
     {
       stations: [
         {
-          label: ADMIN_TEXT.today,
+          label: ADMIN_TEXT.dashboard,
           href: ADMIN_ROUTES.overview,
+          pictogram: "dashboard",
           count: count(needs.data?.total, ADMIN_TEXT.needsYouCount),
         },
       ],
@@ -151,11 +182,13 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         {
           label: ADMIN_TEXT.enquiries,
           href: ADMIN_ROUTES.enquiries,
+          pictogram: "mail",
           count: count(freshEnquiries.data?.total, ADMIN_TEXT.newCount),
         },
         {
           label: ADMIN_TEXT.applications,
           href: ADMIN_ROUTES.applications,
+          pictogram: "careers",
           count: count(freshApplications.data?.total, ADMIN_TEXT.newCount),
         },
       ],
@@ -166,11 +199,13 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         {
           label: ADMIN_TEXT.pages,
           href: ADMIN_ROUTES.pages,
+          pictogram: "document",
           count: count(pages.data && waiting(pages.data), ADMIN_TEXT.waitingCount),
         },
         {
           label: ADMIN_TEXT.services,
           href: ADMIN_ROUTES.services,
+          pictogram: "stethoscope",
           // The order waiting counts as one more.
           count: count(
             services.data && waiting(services.data.items) + Number(services.data.order.unpublishedChanges),
@@ -180,20 +215,23 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         {
           label: ADMIN_TEXT.jobs,
           href: ADMIN_ROUTES.jobs,
+          pictogram: "briefcase",
           count: count(jobs.data && waiting(jobs.data), ADMIN_TEXT.waitingCount),
         },
         {
           label: ADMIN_TEXT.clients,
           href: ADMIN_ROUTES.clients,
+          pictogram: "staffing",
           count: count(
             clients.data && waiting(clients.data.items) + Number(clients.data.order.unpublishedChanges),
             ADMIN_TEXT.waitingCount,
           ),
         },
-        { label: ADMIN_TEXT.media, href: ADMIN_ROUTES.media },
+        { label: ADMIN_TEXT.media, href: ADMIN_ROUTES.media, pictogram: "image" },
         {
           label: ADMIN_TEXT.settings,
           href: ADMIN_ROUTES.settings,
+          pictogram: "settings",
           count: count(site.data && Number(site.data.unpublishedChanges), ADMIN_TEXT.waitingCount),
         },
       ],
@@ -201,32 +239,34 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
     {
       label: ADMIN_TEXT.runningTheSite,
       stations: [
-        { label: ADMIN_TEXT.operations, href: ADMIN_ROUTES.operations },
-        { label: ADMIN_TEXT.activity, href: ADMIN_ROUTES.activity },
+        { label: ADMIN_TEXT.operations, href: ADMIN_ROUTES.operations, pictogram: "clipboard" },
+        { label: ADMIN_TEXT.activity, href: ADMIN_ROUTES.activity, pictogram: "clock" },
       ],
     },
   ];
-  const current = currentStation(
-    pathname,
-    groups.flatMap((group) => group.stations),
-  );
+  // The profile is named in the phone's bar too, though it sits apart from the sections.
+  const current = currentStation(pathname, [
+    ...groups.flatMap((group) => group.stations),
+    { label: ADMIN_TEXT.profile, href: ADMIN_ROUTES.profile, pictogram: "profile" },
+  ]);
 
   return (
     <div className="min-h-dvh bg-ground lg:grid lg:grid-cols-[15.5rem_1fr]">
       <SkipLink />
-      <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto bg-navy px-5 py-6 lg:flex">
+      {/* The column scrolls on its own; reaching its end never carries on into the page (D115). */}
+      <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto overscroll-contain bg-navy px-5 py-6 lg:flex">
         <Link href={ADMIN_ROUTES.overview} className="grid gap-1 text-on-deep">
           <Logo variant="white" className="h-9 w-auto" />
           <span className="text-small text-on-deep-2/80">{ADMIN_TEXT.admin}</span>
         </Link>
         <Stations groups={groups} />
         <div className="mt-auto">
-          <SignOut adminName={adminName} />
+          <Account adminName={adminName} />
         </div>
       </aside>
 
       <header className="sticky top-0 z-10 flex items-center gap-3 bg-navy px-gutter py-2 text-on-deep lg:hidden">
-        <Link href={ADMIN_ROUTES.overview} aria-label={ADMIN_TEXT.today} className="shrink-0">
+        <Link href={ADMIN_ROUTES.overview} aria-label={ADMIN_TEXT.dashboard} className="shrink-0">
           <Logo variant="white" className="h-8 w-auto" />
         </Link>
         <span className="ms-auto truncate font-semibold">{current?.label}</span>
@@ -242,7 +282,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
       <Dialog open={menu} onClose={() => setMenu(false)} title={ADMIN_TEXT.menu}>
         <div className="grid gap-6 rounded-panel bg-navy p-5">
           <Stations groups={groups} onNavigate={() => setMenu(false)} />
-          <SignOut adminName={adminName} />
+          <Account adminName={adminName} onNavigate={() => setMenu(false)} />
         </div>
       </Dialog>
 

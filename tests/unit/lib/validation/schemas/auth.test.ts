@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { VALIDATION_MESSAGES } from "@/constants/messages";
-import { forgotPasswordSchema, resetPasswordSchema, signInSchema } from "@/lib/validation";
+import {
+  changePasswordSchema,
+  forgotPasswordSchema,
+  profileNameSchema,
+  resetPasswordSchema,
+  signInSchema,
+} from "@/lib/validation";
 
 describe("the admin's forms", () => {
   it("keep a password exactly as typed", () => {
@@ -40,5 +46,32 @@ describe("the admin's forms", () => {
 
   it("need an email to send a reset to", () => {
     expect(forgotPasswordSchema.parse({ email: "HR@alhidaya.qa" })).toEqual({ email: "hr@alhidaya.qa" });
+  });
+
+  it("tidy the admin's name, and need one (D115)", () => {
+    expect(profileNameSchema.parse({ name: "  Fatima   Ali " })).toEqual({ name: "Fatima Ali" });
+    expect(profileNameSchema.safeParse({ name: " " }).error?.issues[0].message).toBe(
+      VALIDATION_MESSAGES.required("Name"),
+    );
+  });
+
+  it("change a password only with the current one, and the new one twice, the same (D115)", () => {
+    const passwords = {
+      currentPassword: "  the old one  ",
+      newPassword: "a new long passphrase",
+      confirmPassword: "a new long passphrase",
+    };
+    expect(changePasswordSchema.parse(passwords)).toEqual(passwords);
+    expect(changePasswordSchema.safeParse({ ...passwords, currentPassword: "" }).error?.issues[0].message).toBe(
+      VALIDATION_MESSAGES.required("Password"),
+    );
+    expect(
+      changePasswordSchema.safeParse({ ...passwords, newPassword: "short", confirmPassword: "short" }).success,
+    ).toBe(false);
+    const differ = changePasswordSchema.safeParse({ ...passwords, confirmPassword: "something else entirely" });
+    expect(differ.error?.issues[0]).toMatchObject({
+      path: ["confirmPassword"],
+      message: VALIDATION_MESSAGES.passwordsDiffer,
+    });
   });
 });

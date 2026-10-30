@@ -114,9 +114,28 @@ export const PICTOGRAMS = {
   ],
   x: ["M4.5 4.5l15 15", "M19.5 4.5l-15 15"],
   youtube: ["M6 5.5h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3Z", "M10 9.5v5l4.5-2.5Z"],
+
+  // The admin's menu (R6B.7): each section beside its mark.
+  dashboard: ["M4 4h7v7H4Z", "M13 4h7v4h-7Z", "M13 10h7v10h-7Z", "M4 13h7v7H4Z"],
+  document: ["M6 3.5h8l4.5 4.5v12.5H6Z", "M14 3.5V8h4.5", "M9 12.5h6", "M9 16h6"],
+  briefcase: ["M3.5 7.5h17v12h-17Z", "M8.5 7.5V5a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2.5", "M3.5 12.5h17"],
+  image: ["M3.5 5h17v14h-17Z", "M8.5 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z", "M3.5 17l5-5 4 4 3-3 5 5"],
+  settings: [
+    "M4 6.5h10",
+    "M18 6.5h2",
+    "M16 4.5v4",
+    "M4 12h2",
+    "M10 12h10",
+    "M8 10v4",
+    "M4 17.5h8",
+    "M16 17.5h4",
+    "M14 15.5v4",
+  ],
+  profile: ["M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z", "M4.5 20.5a7.5 7.5 0 0 1 15 0"],
+  logout: ["M10 4.5H5.5v15H10", "M15 8l4 4-4 4", "M19 12H9.5"],
 } as const satisfies Record<string, readonly string[]>;
 
 export type PictogramName = keyof typeof PICTOGRAMS;
 
 /** The pictograms that point somewhere, mirrored when the page reads right to left (plan §33). */
-export const DIRECTIONAL_PICTOGRAMS: readonly PictogramName[] = ["arrow", "external", "play"];
+export const DIRECTIONAL_PICTOGRAMS: readonly PictogramName[] = ["arrow", "external", "play", "logout"];

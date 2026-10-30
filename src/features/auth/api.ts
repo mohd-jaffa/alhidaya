@@ -1,6 +1,7 @@
 import { APIError } from "better-auth/api";
 
-import { RESET_RATE_LIMITS, SIGN_IN_FAILURE_MIN_MS } from "@/constants/limits";
+import { PASSWORD_CHANGE_RATE_LIMIT, RESET_RATE_LIMITS, SIGN_IN_FAILURE_MIN_MS } from "@/constants/limits";
+import { ERROR_MESSAGES } from "@/constants/messages";
 import { AUDIT_ENTITIES } from "@/constants/statuses";
 import { logActionSafe } from "@/lib/audit/auditLog";
 import { getAuth } from "@/lib/auth/auth";
@@ -111,4 +112,52 @@ export async function resetPassword(token: string, password: string, requestId: 
     throw error;
   }
   await logActionSafe({ actorId: null, action: "PASSWORD_CHANGED", entityType: AUDIT_ENTITIES.account, requestId });
+}
+
+/** Renames the signed-in admin (D115): the name their profile shows and the admin greets them by. */
+export async function renameAdmin(headers: Headers, adminId: string, name: string, requestId: string): Promise<void> {
+  await getAuth().api.updateUser({ body: { name }, headers });
+  await logActionSafe({
+    actorId: adminId,
+    action: "UPDATE",
+    entityType: AUDIT_ENTITIES.account,
+    entityId: adminId,
+    requestId,
+  });
+}
+
+/**
+ * Changes the signed-in admin's password from their profile (D115): only with
+ * the current one, tried at most a few times an hour, and every other session
+ * they had is ended. Answers with this session's renewed cookie.
+ */
+export async function changeAdminPassword(
+  headers: Headers,
+  adminId: string,
+  passwords: { currentPassword: string; newPassword: string },
+  requestId: string,
+): Promise<Headers> {
+  const allowed = await consumeRateLimit({ scope: "password:change", key: adminId, ...PASSWORD_CHANGE_RATE_LIMIT });
+  if (!allowed) throw rateLimitError("RATE_LIMITED");
+  try {
+    const result = await getAuth().api.changePassword({
+      body: { ...passwords, revokeOtherSessions: true },
+      headers,
+      returnHeaders: true,
+    });
+    await logActionSafe({
+      actorId: adminId,
+      action: "PASSWORD_CHANGED",
+      entityType: AUDIT_ENTITIES.account,
+      entityId: adminId,
+      requestId,
+    });
+    return result.headers;
+  } catch (error) {
+    if (refusedWith(error, "INVALID_PASSWORD"))
+      throw validationError("AUTH_PASSWORD_WRONG", [
+        { path: "currentPassword", message: ERROR_MESSAGES.AUTH_PASSWORD_WRONG },
+      ]);
+    throw error;
+  }
 }

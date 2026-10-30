@@ -127,7 +127,7 @@ test("Today shows what needs the admin, and an enquiry is handled where it is", 
   await enquiry(name);
   await signIn(page, email);
   await page.goto(ADMIN_ROUTES.overview);
-  await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.today })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.dashboard })).toBeVisible();
   await expect(page.getByRole("link", { name: ADMIN_TEXT.needsYou, exact: true })).toHaveAttribute(
     "aria-current",
     "page",
@@ -236,7 +236,7 @@ test("on a phone the sections open as a menu; signing out leaves the admin behin
   const email = await admin("Fatima");
   await signIn(page, email);
   await page.goto(ADMIN_ROUTES.overview);
-  await expect(page.getByRole("banner")).toContainText(ADMIN_TEXT.today);
+  await expect(page.getByRole("banner")).toContainText(ADMIN_TEXT.dashboard);
   await page.getByRole("button", { name: ADMIN_TEXT.menu }).click();
   const menu = page.getByRole("dialog", { name: ADMIN_TEXT.menu });
   await axe(page);
@@ -246,9 +246,68 @@ test("on a phone the sections open as a menu; signing out leaves the admin behin
 
   await page.getByRole("button", { name: ADMIN_TEXT.menu }).click();
   await page.getByRole("dialog", { name: ADMIN_TEXT.menu }).getByRole("button", { name: ADMIN_TEXT.signOut }).click();
+  // Asked first (D115).
+  await page
+    .getByRole("dialog", { name: ADMIN_TEXT.signOutTitle })
+    .getByRole("button", { name: ADMIN_TEXT.signOut })
+    .click();
   await expect(page).toHaveURL(ADMIN_ROUTES.login);
   await page.goto(ADMIN_ROUTES.overview);
   await expect(page).toHaveURL(new RegExp(`^${E2E_ORIGIN}${ADMIN_ROUTES.login}`));
   // The account is still there; only the session ended.
   expect(await getDb().select({ id: authUser.id }).from(authUser).where(eq(authUser.email, email))).toHaveLength(1);
+});
+
+test("the admin renames themselves and changes their password from their profile (D115)", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "one change of password is enough");
+  const email = await admin("Fatima");
+  await signIn(page, email);
+  await page.goto(ADMIN_ROUTES.overview);
+  const column = page.getByRole("complementary");
+  await column.getByRole("link", { name: ADMIN_TEXT.profile }).click();
+  await expect(page).toHaveURL(ADMIN_ROUTES.profile);
+  await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.profile })).toBeVisible();
+  await axe(page);
+
+  const details = page.locator("section", { has: page.getByRole("heading", { name: ADMIN_TEXT.accountDetails }) });
+  await expect(details).toContainText(email);
+  await details.getByRole("textbox", { name: ADMIN_TEXT.name }).fill("Fatima Ali");
+  await details.getByRole("button", { name: ADMIN_TEXT.saveName }).click();
+  await expect(details.getByText(ADMIN_TEXT.nameSaved)).toBeVisible();
+  await expect(column).toContainText(ADMIN_TEXT.signedInAs("Fatima Ali"));
+
+  const change = page.locator("section", { has: page.getByRole("heading", { name: ADMIN_TEXT.changePassword }) });
+  const fill = async (current: string) => {
+    await change.getByLabel(ADMIN_TEXT.currentPassword).fill(current);
+    await change.getByLabel(ADMIN_TEXT.newPassword, { exact: true }).fill("a brand new admin password");
+    await change.getByLabel(ADMIN_TEXT.confirmPassword).fill("a brand new admin password");
+    await change.getByRole("button", { name: ADMIN_TEXT.savePassword }).click();
+  };
+  await fill("not the password");
+  await expect(change.getByText(ERROR_MESSAGES.AUTH_PASSWORD_WRONG)).toBeVisible();
+  await fill(PASSWORD);
+  await expect(change.getByText(ADMIN_TEXT.passwordUpdated)).toBeVisible();
+
+  // This session stays; the next sign-in takes the new password, not the old.
+  await page.goto(ADMIN_ROUTES.activity);
+  await expect(page.getByRole("main")).toContainText(ADMIN_TEXT.didChangePassword);
+  await expect(page.getByRole("main")).toContainText(ADMIN_TEXT.didRename);
+  await column.getByRole("button", { name: ADMIN_TEXT.signOut }).click();
+  await page
+    .getByRole("dialog", { name: ADMIN_TEXT.signOutTitle })
+    .getByRole("button", { name: ADMIN_TEXT.signOut })
+    .click();
+  await expect(page).toHaveURL(ADMIN_ROUTES.login);
+  const old = await page.request.post(ADMIN_API_ROUTES.adminSession, {
+    data: { email, password: PASSWORD },
+    headers: { origin: E2E_ORIGIN },
+  });
+  expect(old.status()).toBe(401);
+  const renewed = await page.request.post(ADMIN_API_ROUTES.adminSession, {
+    data: { email, password: "a brand new admin password" },
+    headers: { origin: E2E_ORIGIN },
+  });
+  expect(renewed.status()).toBe(200);
 });

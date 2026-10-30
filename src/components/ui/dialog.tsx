@@ -37,7 +37,7 @@ export function Dialog({
       ref={ref}
       aria-labelledby={titleId}
       onClose={onClose}
-      className="m-auto w-[min(36rem,calc(100vw-2rem))] max-h-[calc(100dvh-2rem)] rounded-panel bg-ground p-0 text-navy shadow-overlay backdrop:bg-navy/60"
+      className="m-auto w-[min(36rem,calc(100vw-2rem))] max-h-[calc(100dvh-2rem)] overscroll-contain rounded-panel bg-ground p-0 text-navy shadow-overlay backdrop:bg-navy/60"
     >
       <div className="flex items-start justify-between gap-4 border-b border-rule px-6 py-4">
         <h2 id={titleId} className="text-title font-bold">

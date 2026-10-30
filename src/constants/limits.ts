@@ -149,6 +149,9 @@ export const PASSWORD_RESET_MINUTES = 30;
 /** The admin's password (plan §26.4): long rather than clever. */
 export const PASSWORD_LENGTH = { min: 12, max: 128 } as const;
 
+/** How often the signed-in admin may try their current password to change it (D115): enough for slips, not for guessing. */
+export const PASSWORD_CHANGE_RATE_LIMIT = { limit: 10, windowMinutes: 60 } as const;
+
 /** How long an admin session lasts, and how often it is extended while in use. */
 export const ADMIN_SESSION = { hours: 8, refreshMinutes: 60 } as const;
 

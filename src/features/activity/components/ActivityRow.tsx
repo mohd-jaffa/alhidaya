@@ -86,7 +86,8 @@ function describeActivity(item: ActivityItem): string {
     case "PASSWORD_RESET_REQUESTED":
       return ADMIN_TEXT.didAskReset;
     case "PASSWORD_CHANGED":
-      return ADMIN_TEXT.didSetPassword;
+      // From the profile, by the admin themselves (D115); else from a reset link.
+      return item.who ? ADMIN_TEXT.didChangePassword : ADMIN_TEXT.didSetPassword;
     case "RETENTION_PURGE": {
       const { enquiries, applications, cvs } = item.counts!;
       return ADMIN_TEXT.didPurge(ADMIN_TEXT.purgeDeleted(enquiries, applications, cvs));
@@ -100,6 +101,7 @@ function describeActivity(item: ActivityItem): string {
     case "CREATE":
       return item.subject.type === "media" ? ADMIN_TEXT.didUpload(thing) : ADMIN_TEXT.didCreate(thing);
     case "UPDATE":
+      if (item.subject.type === "account") return ADMIN_TEXT.didRename;
       if (item.changed.includes("archived")) return ADMIN_TEXT.didRestore(thing);
       if (item.changed.includes("emailStatus")) {
         return item.to === "SENT" ? ADMIN_TEXT.didSendAgain(thing) : ADMIN_TEXT.didNotSendAgain(thing);

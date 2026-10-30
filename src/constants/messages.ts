@@ -179,6 +179,7 @@ export const ERROR_MESSAGES = {
   AUTH_PERMISSION_DENIED: "You don't have permission to do this.",
   // One wording for a wrong password and an unknown email (plan §26.4).
   AUTH_INVALID_CREDENTIALS: "That email and password don't match.",
+  AUTH_PASSWORD_WRONG: "That is not your current password.",
   AUTH_LOCKED: "Too many attempts. Sign-in is paused for 15 minutes.",
   AUTH_RESET_INVALID: "This reset link has expired or was already used. Please ask for a new one.",
   REQUEST_ORIGIN_REFUSED: "This request was refused. Please reload the page and try again.",
@@ -218,6 +219,7 @@ export const VALIDATION_MESSAGES = {
   email: (label: string) => `${label} must look like name@example.com.`,
   phone: (label: string) => `${label} must be a Qatar number (8 digits) or start with a country code, like +44.`,
   passwordLength: (min: number, max: number) => `Use a password of ${min} to ${max} characters.`,
+  passwordsDiffer: "The two new passwords differ. Please type the same one twice.",
   link: "Use a page of this site (starting with /) or a full https:// address.",
   slug: "Use lowercase letters, numbers and single hyphens, like home-nursing-care.",
   slugReserved: "This web address is the site's own. Please choose a different one.",
