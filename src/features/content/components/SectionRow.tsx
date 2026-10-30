@@ -1,6 +1,6 @@
 "use client";
 
-import { type DragEvent, useId, useState } from "react";
+import { useId, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 import { StatusChip } from "@/components/admin/StatusChip";
@@ -12,8 +12,9 @@ import type { PageKey } from "@/constants/sections";
 import type { PageDocumentInput, SectionInput } from "@/lib/validation";
 
 import { sectionLock, sectionSummary } from "../editor";
-import { useHasErrors } from "./EditorText";
-import { ItemControls } from "./ItemControls";
+import { useHasErrors } from "@/components/admin/editor/EditorText";
+import { DragHandle } from "@/components/admin/editor/DragOrder";
+import { ItemControls } from "@/components/admin/editor/ItemControls";
 import { SectionFields } from "./SectionFields";
 
 /**
@@ -51,13 +52,6 @@ export function SectionRow({
   const [asking, setAsking] = useState(false);
   const panel = useId();
 
-  const startDrag = (event: DragEvent<HTMLSpanElement>) => {
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", name);
-    event.dataTransfer.setDragImage(event.currentTarget.closest("article")!, 24, 24);
-    onDragStart();
-  };
-
   return (
     <article className={open ? "rounded-panel border border-rule bg-mist" : "border-b border-rule"}>
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-2 py-1.5">
@@ -65,16 +59,7 @@ export function SectionRow({
         {lock === "fixed" ? (
           <span aria-hidden="true" className="hidden size-touch shrink-0 sm:block" />
         ) : (
-          <span
-            draggable
-            onDragStart={startDrag}
-            onDragEnd={onDragEnd}
-            aria-hidden="true"
-            title={ADMIN_TEXT.sectionsHint}
-            className="hidden size-touch shrink-0 cursor-grab place-items-center rounded-control text-ink-2 hover:bg-sky/15 hover:text-navy active:cursor-grabbing sm:grid"
-          >
-            <Pictogram name="grip" size="sm" />
-          </span>
+          <DragHandle thing={name} hint={ADMIN_TEXT.sectionsHint} onStart={onDragStart} onEnd={onDragEnd} />
         )}
         <h3 className="min-w-0 flex-1 basis-56">
           <button

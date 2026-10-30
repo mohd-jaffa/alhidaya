@@ -2495,3 +2495,87 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. R6.9's pages journey is partly covered by
   `tests/e2e/page-editor.spec.ts`; the row stays open for the rest.
+
+## 2026-10-30 — R6.4: the Services and Jobs editors
+
+### Decisions
+- D91 (the user's): every open question answered as its default (Q3 – Q9,
+  Q11 – Q18, Q21, Q22, Q26, Q28 – Q30, Q40, Q43 – Q45); D38, D60, D73,
+  D77, D78 and D79 are the user's from now on. Plan §41 says so.
+- D92 (R6.4 shaped with the user): services and jobs open in the Pages
+  editor's frame; the services' order is a draft of its own, published or
+  discarded on the Services list; a web address follows the name until it
+  is edited or published; Close now closes a job at once and Reopen opens it
+  again; Archive and Restore; the lists grouped by state.
+- D93 – D96 (the user's, for R6.5 – R6.8, asked up front): images uploaded
+  in the library and from the picker, with optional source fields;
+  Settings one page in groups, a new brochure live with Settings' Publish,
+  navigation links picked or https; disk use in Operations, Today warning
+  past 80 %; Activity a day's log, filtered by kind.
+
+### Added
+- `/admin/services`: the services in their order, each row with its line,
+  address and state; drag by the handle or Move up and Move down, each move
+  saved as the order's draft at once and said aloud; the order's bar with
+  Preview, Discard the new order and Publish the order, both asked first;
+  the archived folded below; New service.
+- `/admin/services/new` and `/[id]`: the service editor (name, web address,
+  line, summary, who it's for, photo; the description block by block; what's
+  included; SEO; Archive or Restore, asked first). A new service is made on
+  its first save, and the address bar then names it.
+- `/admin/jobs`: the jobs grouped Open, Not published yet, Closed, and the
+  archived folded below, newest posting first. `/admin/jobs/new` and
+  `/[id]`: the job editor (title, address, department, location, terms,
+  experience, summary; the dates; the description; responsibilities,
+  qualifications, benefits; SEO; whether it takes applications, with Close
+  now or Reopen; Archive or Restore).
+- Routes: `/api/admin/services` (GET, POST), `[id]` (GET, PUT), `/publish`,
+  `/discard`, `/archive`; `/order` (PUT), `/order/publish`, `/order/discard`;
+  `/api/admin/jobs` (GET, POST), `[id]` (GET, PUT), `/publish`, `/discard`,
+  `/archive`, `/close`. Each checks the session and the site's origin.
+- `setRecordClosed` and `getRecordForAdmin` (`lib/content/records.ts`); a
+  job's `closed`, false unless the admin closes it, read by every public
+  job read and the application's check; `slugify` (`lib/text/slug.ts`).
+- The rail's Services and Jobs, counting what waits; Today's "Not published
+  yet" lists pages, services, jobs and the services' order
+  (`WaitingToPublish`, from the content feature's `UnpublishedPages`).
+- `AskedAction` (an action asked first; `DeleteAction` is built on it);
+  the `off` status tone (archived).
+
+### Changed
+- The Pages editor's frame and fields moved to
+  `src/components/admin/editor/`, since three features now use them:
+  `DraftEditor` (the bar, its states, Save draft, Preview, Publish and
+  Discard, the notices, the dialogs, leaving unsaved), `EditorGroup`,
+  `SeoFields`, `EditorText`, `EditorSelect`, `EditorDate`, `SlugField`,
+  `PointsField`, `RichTextField`, `PhotoField`, `ItemControls` (Remove now
+  optional), `DraftStateChip` (archived too), `DragOrder` (the drag and
+  drop the section list and the services' order share), `EditorLoading`,
+  `countErrors`. AGENTS.md §5 says so.
+- `publishRecord` takes the slug as a function of the held draft, so the
+  collection's check runs inside the publishing transaction; a taken slug is
+  refused with the field it belongs to.
+- The editor's words say "it", not "the page", where every editor uses them.
+- A job's department bound is `TEXT_LIMITS.department`.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: every new route with and
+  without a session and from another site; against the local MySQL, a
+  service made, published, moved (its old address redirecting), refused
+  (photo, checks, taken address), reordered, archived and restored; a job
+  made, published, closed and reopened on both copies (a save from the
+  editor keeps it closed), archived, and every change audited.
+- E2E (phone and desktop, axe): the Services list, a service's editor and a
+  new one; a new service saved, previewed, published, seen by a visitor and
+  archived; a move saving a new order that waits, then discarded; the Jobs
+  list and a job's editor; the posting closed at once for visitors, then
+  reopened.
+- Screens looked at, at 1440 and 390 px: the lists, the order's bar, both
+  editors, a new service refused.
+- First paint, JavaScript (gzip, within 170 KB): Home 159.3 KB, About,
+  Careers and Services 160.8 KB, Contact and Request a Quote 168.8 KB, the
+  apply page 169.1 KB. No admin address or word reaches a public page.
+
+### Blockers
+- None.

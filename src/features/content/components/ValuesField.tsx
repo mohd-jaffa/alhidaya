@@ -7,8 +7,8 @@ import { FieldError } from "@/components/ui/field";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
 
-import { EditorText, useEditorError } from "./EditorText";
-import { ItemControls } from "./ItemControls";
+import { EditorText, useEditorError } from "@/components/admin/editor/EditorText";
+import { ItemControls } from "@/components/admin/editor/ItemControls";
 
 /** The values a section lists (plan §7.2): one to six, each a title and an optional line. */
 export function ValuesField({ name, label }: { name: string; label: string }) {

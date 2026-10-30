@@ -138,7 +138,7 @@ src/
 │   └── api/              # REST endpoints (plan §29)
 ├── assets/brand/         # the logo, pictograms, the map
 ├── components/
-│   ├── site/  admin/     # shells
+│   ├── site/  admin/     # shells; admin/editor/: the content editor's frame and fields (D92)
 │   ├── motion/           # the motion system (Lenis, the line, reveals)
 │   ├── sections/         # one component per section type (plan §7.2)
 │   └── ui/               # the shared kit

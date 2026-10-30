@@ -399,6 +399,7 @@ export function seedJob(postedOn: string): JobDocument {
     benefits: [],
     postedOn,
     closesOn: null,
+    closed: false,
     seo: noSeo,
   };
 }

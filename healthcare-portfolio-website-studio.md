@@ -172,6 +172,12 @@ question (§41) the user may overturn.
 | D88 | **The Pages editor is the day's log for content** (R6.3 shaped with the user, 2026-10-30; the pattern the Services, Jobs, Clients and Settings editors follow): `/admin/pages` lists the eight pages with their state; a page's sections are numbered rows, one opened in place on mist with its type's fields, and the page's SEO last. A bar kept in view names the page and its state, with **Save draft** (a button, as §14), **Preview** (a new tab, showing the saved draft), **Publish** and **Discard draft**, both asked first; Publish saves unsaved changes first, and leaving with unsaved changes asks first. Whole-page routes: `GET /api/admin/pages`, `GET`/`PUT /api/admin/pages/[key]`, `POST …/publish`, `POST …/discard`; the plan's `/sections` route is not needed. | 2026-10-30 |
 | D89 | **A section's photo is picked from the media library** (the user, 2026-10-30): R6.3's photo field chooses among the images already kept (the licensed stock, D75) in a dialog, or none; `GET /api/admin/media` (the list) comes forward from R6.5, and Upload joins the picker when R6.5 builds the library. | 2026-10-30 |
 | D90 | **Sections reorder by the browser's drag and by buttons; text is edited block by block** (the user, 2026-10-30): the browser's own drag-and-drop on a desktop, and Move up / Move down on every row for the keyboard and phones, with no drag library; a text section is a list of blocks (heading, paragraph, list, link), each its own field, added, moved and removed one at a time, as it is stored (§7.2). No word-processor editor. | 2026-10-30 |
+| D91 | **The open questions are answered as their defaults** (the user, 2026-10-30, choosing each recommended option): Q3 (the current `profile.pdf` is the brochure until the admin uploads another), Q4 (PDF, DOC or DOCX, at most 5 MB), Q5 and Q6 (the forms' fields as §10.1 and §10.2), Q7 (the general application at `/careers/apply`), Q8 (180 days each), Q9 (the current eight services in plain English, in today's order, "included" only where the client confirms), Q11 (Unsplash and Pexels, each source recorded), Q12 (the site's own pictograms), Q13 (clinicdesk's majors, D38), Q14 (the WhatsApp prefill as written), Q15 (CSV export Later), Q16 (5 submissions per form per 10 minutes), Q17 (`info@` for Quote and Contact, `hr@` for applications, both editable), Q18 (drafted from what the site does; the client reviews before launch), Q21 (content per locale), Q22 (the pre-switch check under a hidden temporary subdomain), Q26 (Apache serves the media folder), Q28 (the old service photos only where good enough), Q29 (two tables, D60), Q30 (the seed runs once at R8.1, with the user's go-ahead), Q40 (a `<picture>`, D73), Q43 (the forms' checks after first paint, D77), Q44 (Turnstile seen only when needed; refused when Cloudflare cannot be reached, D78), Q45 (the alert after the visitor's answer, D79). D38, D60, D73, D77, D78 and D79 are the user's from now on. | 2026-10-30 |
+| D92 | **Services and jobs follow the Pages editor** (R6.4 shaped with the user, 2026-10-30): each opens in the same editor (the bar: Save draft, Preview, Publish, Discard draft; fields in groups; leaving unsaved asks first). **The services' order** is set on the Services list by drag or Move up/Move down and saved as a draft that goes live with its own Publish (asked first) or Discard, as D86; client logos do the same at R6.5. **A web address** is filled in from the name as it is typed until the admin edits it; changing a published one keeps the old address redirecting (§8). **Close now** (asked first) stops a job's applications at once: it stays at its address marked closed, and Reopen undoes it; Archive takes a service or a job off the site, and Restore brings it back. **The lists are grouped by state**: services in the site's order with the archived folded below; jobs as Open, Drafts, Closed and Archived, newest first; each row shows its state and whether changes wait. | 2026-10-30 |
+| D93 | **Images are uploaded in the Media library and from the photo picker** (the user, 2026-10-30, for R6.5): an upload asks for its alt text (or Decorative) and, from the picker, is chosen at once. **A stock photo's source** is three optional fields (provider, link, licence), seen only in the admin. | 2026-10-30 |
+| D94 | **Settings is one page in groups** (the user, 2026-10-30, for R6.6): company, contact, social links, the WhatsApp button, navigation, footer, SEO defaults and the brochure, with the editor's one bar (Save draft, Preview, Publish, Discard). **A new brochure goes live with Settings' Publish** (it is site content, §13); `/brochure` never changes. **A navigation link** points at one of the site's pages or services, picked from a list, or at an https address typed in, each with its label, order and Visible. | 2026-10-30 |
+| D95 | **Disk use shows in Operations** (the user, 2026-10-30, for R6.7): each folder's use against its budget (§21.2); Today warns only once a folder passes 80 %. | 2026-10-30 |
+| D96 | **Activity is a day's log** (the user, 2026-10-30, for R6.8): the admin's changes newest first, grouped by day, filtered by kind (content, inbox, settings, sign-ins), 50 at a time: who, what and when, never personal details; kept a year (§36). | 2026-10-30 |
 
 ## 3. Audiences and the admin
 
@@ -257,8 +263,8 @@ Arabic arrives later under `/ar` with the same paths (D4, §33).
 ### 5.2 Admin routes
 
 `/admin/login`, `/admin` (overview), `/admin/pages` (the eight pages, D88),
-`/admin/pages/[page]`, `/admin/services`,
-`/admin/jobs`, `/admin/clients`, `/admin/media`, `/admin/enquiries`,
+`/admin/pages/[page]`, `/admin/services` (+ `/new`, `/[id]`, D92),
+`/admin/jobs` (+ `/new`, `/[id]`), `/admin/clients`, `/admin/media`, `/admin/enquiries`,
 `/admin/applications`, `/admin/settings` (content, contact, navigation, footer,
 SEO, brochure), `/admin/settings/operations` (recipients, retention),
 `/admin/activity`. Never indexed (`noindex`, disallowed in robots).
@@ -1070,8 +1076,8 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `POST`/`DELETE /api/admin/session` | sign in (lockout first) and sign out, through Better Auth on the server; its own HTTP routes are never mounted (R1.2) |
 | `POST /api/admin/password/forgot`, `/reset` | ask for a reset link (the same answer for any email; rate-limited), and set a new password from it |
 | `GET /api/admin/pages`, `/api/admin/pages/[key]` (+ `/publish`, `/discard`) | the pages and their state; a page's draft, saved whole (D88) |
-| `/api/admin/services` (+ `[id]`, `/publish`, `/order`) | services |
-| `/api/admin/jobs` (+ `[id]`, `/publish`) | jobs |
+| `/api/admin/services` (+ `[id]`, `/publish`, `/discard`, `/archive`; `/order` + `/publish`, `/discard`) | services: made, saved, published, discarded, archived and restored one at a time; their order a draft of its own (D92) |
+| `/api/admin/jobs` (+ `[id]`, `/publish`, `/discard`, `/archive`, `/close`) | jobs, as the services; `/close` closes one at once or opens it again (D92) |
 | `/api/admin/clients` (+ `[id]`, `/publish`, `/order`) | client logos |
 | `/api/admin/media` (+ `[id]`) | upload, list, alt text, delete (the list came forward with R6.3, D89) |
 | `/api/admin/enquiries` (+ `[id]`, `/notes`, `/retry-mail`) | the inbox |
@@ -1451,7 +1457,7 @@ one commit (D27).
 | R6.1 | `/impeccable shape` the admin (Operate) | §30.5 | — | DONE (2026-10-29; brought forward, D80; the day's log, D81; brief and direction in `.impeccable/surfaces/src-app-admin-page-tsx.md`) |
 | R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | DONE (2026-10-29; brought forward, D80; Today is the Overview, D81; Applications and the content screens join the rail with their rows) |
 | R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | DONE (2026-10-30; shaped with the user, D86 – D90) |
-| R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
+| R6.4 | Services and jobs editors | §8, §9.1 | — | DONE (2026-10-30; shaped with the user, D92) |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO (the sizing step and `storeImage` came forward with D75, 2026-10-29) |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | TODO |
@@ -1531,34 +1537,34 @@ Each carries the **default** built if no answer arrives before its row starts.
 |---|---|---|
 | Q1 | ~~Is the CV Google account Workspace or personal Gmail?~~ | **Answered by D41:** no Google Drive. |
 | Q2 | ~~Does the client have the logo as a vector (SVG/AI/EPS/PDF)?~~ | **Answered by D62:** no; it is redrawn as SVG from the JPG, for the client to approve. |
-| Q3 | Reuse the current `profile.pdf` as the brochure? | Yes, until the admin uploads a new one. |
-| Q4 | CV rules | PDF, DOC or DOCX; at most 5 MB (size limits confirmed, D52). |
-| Q5 | Quote form fields | As §10.1. |
-| Q6 | Contact form fields | As §10.2. |
-| Q7 | Keep a general application (no job), like today's "Submit your resume"? | Yes, at `/careers/apply`. |
-| Q8 | Retention and CV expiry before the admin sets them | 180 days each. |
-| Q9 | Service names, slugs, order and "what's included" | The current eight, renamed in plain English during the copy rewrite, in the current order; "included" items only where the client confirms them. |
+| Q3 | ~~Reuse the current `profile.pdf` as the brochure?~~ | **Answered by D91:** Yes, until the admin uploads a new one. |
+| Q4 | ~~CV rules~~ | **Answered by D91:** PDF, DOC or DOCX; at most 5 MB (size limits confirmed, D52). |
+| Q5 | ~~Quote form fields~~ | **Answered by D91:** As §10.1. |
+| Q6 | ~~Contact form fields~~ | **Answered by D91:** As §10.2. |
+| Q7 | ~~Keep a general application (no job), like today's "Submit your resume"?~~ | **Answered by D91:** Yes, at `/careers/apply`. |
+| Q8 | ~~Retention and CV expiry before the admin sets them~~ | **Answered by D91:** 180 days each. |
+| Q9 | ~~Service names, slugs, order and "what's included"~~ | **Answered by D91:** The current eight, renamed in plain English during the copy rewrite, in the current order; "included" items only where the client confirms them. |
 | Q10 | ~~Typeface~~ | **Answered by D61:** Atkinson Hyperlegible Next, with Noto Sans Arabic. |
-| Q11 | Stock photo source | Unsplash and Pexels (free licences), each image's source recorded. |
-| Q12 | Pictograms | Drawn for this site in the system's line weight (built in R2.3). |
-| Q13 | Dependency majors | clinicdesk's (D38). |
-| Q14 | WhatsApp prefilled message | "Hello Al Hidaya, I would like to ask about nursing care." |
-| Q15 | CSV export of enquiries and applications | Later. |
-| Q16 | Rate limit | 5 submissions per form per 10 minutes per visitor. |
-| Q17 | Who receives which email | Quote and Contact → `info@alhidaya.qa`; applications → `hr@alhidaya.qa`; both editable in Operations. |
-| Q18 | Legal review of Privacy and Terms | Drafted from what the site actually does; the client reviews before launch. |
+| Q11 | ~~Stock photo source~~ | **Answered by D91:** Unsplash and Pexels (free licences), each image's source recorded. |
+| Q12 | ~~Pictograms~~ | **Answered by D91:** Drawn for this site in the system's line weight (built in R2.3). |
+| Q13 | ~~Dependency majors~~ | **Answered by D91:** clinicdesk's (D38). |
+| Q14 | ~~WhatsApp prefilled message~~ | **Answered by D91:** "Hello Al Hidaya, I would like to ask about nursing care." |
+| Q15 | ~~CSV export of enquiries and applications~~ | **Answered by D91:** Later. |
+| Q16 | ~~Rate limit~~ | **Answered by D91:** 5 submissions per form per 10 minutes per visitor. |
+| Q17 | ~~Who receives which email~~ | **Answered by D91:** Quote and Contact → `info@alhidaya.qa`; applications → `hr@alhidaya.qa`; both editable in Operations. |
+| Q18 | ~~Legal review of Privacy and Terms~~ | **Answered by D91:** Drafted from what the site actually does; the client reviews before launch. |
 | Q19 | ~~Publish per item, or one "publish all"?~~ | **Answered by D86:** per item; the Pages list and Today show what waits. |
 | Q20 | ~~Where the daily purge job runs~~ | **Answered by D39:** a cPanel cron job. |
-| Q21 | Store content per locale now (`{ "en": … }`)? | Yes (§33). |
-| Q22 | Pre-switch check under a hidden temporary subdomain on the server (not a public staging site)? | Yes. |
+| Q21 | ~~Store content per locale now (`{ "en": … }`)?~~ | **Answered by D91:** Yes (§33). |
+| Q22 | ~~Pre-switch check under a hidden temporary subdomain on the server (not a public staging site)?~~ | **Answered by D91:** Yes. |
 | Q23 | ~~A floating WhatsApp button on every page, as today?~~ | **Answered by D67:** yes, and the admin can turn it off. |
 | Q24 | ~~Send from the existing `noreply@alhidaya.qa`?~~ | **Answered by D53:** yes. |
 | Q25 | ~~Upgrade the HostCarts plan?~~ | **Answered by D51:** no; build within §21.2's budget. |
-| Q26 | How uploaded images are served | From a media folder inside `public_html` that no release touches, served by Apache (§21.3); verified on the server at R8.2. |
+| Q26 | ~~How uploaded images are served~~ | **Answered by D91:** From a media folder inside `public_html` that no release touches, served by Apache (§21.3); verified on the server at R8.2. |
 | Q27 | ~~What happens to the old site's 83 CVs and its database?~~ | **Answered by D50:** they go with the user's backup to the client and are cleared from the server; nothing is imported. |
-| Q28 | Reuse the old site's service photos (`upload/Services`)? | Only where they are good enough for the new design; otherwise licensed stock (D8). |
-| Q29 | Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)? | Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
-| Q30 | How does the approved copy reach the production database? | The seed (`npm run db:seed`, local only today) runs once against the empty production database at R8.1, with the user's go-ahead, after the client approves the copy (R3.1, R7.5); it writes drafts, and the admin publishes them. |
+| Q28 | ~~Reuse the old site's service photos (`upload/Services`)?~~ | **Answered by D91:** Only where they are good enough for the new design; otherwise licensed stock (D8). |
+| Q29 | ~~Content in two tables (`documents` and `records`), or a table per kind (services, jobs, clients, the site)?~~ | **Answered by D91:** Two tables (D60): one draft-and-publish mechanism everywhere, each kind's rules in its own schema; the database still checks every key and collection. |
+| Q30 | ~~How does the approved copy reach the production database?~~ | **Answered by D91:** The seed (`npm run db:seed`, local only today) runs once against the empty production database at R8.1, with the user's go-ahead, after the client approves the copy (R3.1, R7.5); it writes drafts, and the admin publishes them. |
 | Q31 | ~~May form errors use a red, the one colour outside the logo's (D35)?~~ | **Answered by D63:** yes, for errors only. |
 | Q32 | ~~Show WhatsApp's own logo on WhatsApp actions?~~ | **Answered by D66:** the site's chat pictogram and the word *WhatsApp*. |
 | Q33 | ~~Keep the kit preview page (`/kit`, D64), local and test only?~~ | **Answered:** yes, local and test only (D64). |
@@ -1568,12 +1574,12 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q37 | ~~How the copy goes to the client for approval (R3.1)~~ | **Answered by D70:** reviewed at the user's demo; changes are made in the admin. |
 | Q38 | ~~The three lines' names on Home: edited by the admin, or fixed in code?~~ | **Answered by D71:** fixed in code. |
 | Q39 | ~~How many open jobs Home's careers section shows~~ | **Answered by D72:** the three most recent, then a link to all. |
-| Q40 | Uploaded images as a `<picture>` from their made sizes, or through a custom `next/image` loader? | A `<picture>` (D73): AVIF with a WebP fallback, at every made width, and no script. |
+| Q40 | ~~Uploaded images as a `<picture>` from their made sizes, or through a custom `next/image` loader?~~ | **Answered by D91:** A `<picture>` (D73): AVIF with a WebP fallback, at every made width, and no script. |
 | Q41 | ~~Choose the licensed stock photos now and bring forward the step that makes an image's sizes?~~ | **Answered by D75:** yes. |
 | Q42 | ~~How public pages are cached (§22.1)~~ | **Answered by D76:** (b), per-request rendering from cached reads, Publish revalidating exactly its tags. |
-| Q43 | The public forms' checks: Zod fetched when the visitor first reaches into the form, without React Hook Form (≈ 164 KB at first paint), or React Hook Form and Zod in the first load (≈ 194 KB, over the 170 KB budget)? | The first (D77). |
-| Q44 | Turnstile: seen only when Cloudflare needs the visitor to tick a box, or always shown under the form? And when Cloudflare cannot be reached: refuse the form (nothing kept unchecked), or keep it marked unchecked? | Seen only when needed; refused (D78). |
-| Q45 | Send an enquiry's alert after the visitor's answer (fast; a restart in that moment leaves it for Retry), or before it (the visitor waits about a second on the mail server)? | After (D79). |
+| Q43 | ~~The public forms' checks: Zod fetched when the visitor first reaches into the form, without React Hook Form (≈ 164 KB at first paint), or React Hook Form and Zod in the first load (≈ 194 KB, over the 170 KB budget)?~~ | **Answered by D91:** The first (D77). |
+| Q44 | ~~Turnstile: seen only when Cloudflare needs the visitor to tick a box, or always shown under the form? And when Cloudflare cannot be reached: refuse the form (nothing kept unchecked), or keep it marked unchecked?~~ | **Answered by D91:** Seen only when needed; refused (D78). |
+| Q45 | ~~Send an enquiry's alert after the visitor's answer (fast; a restart in that moment leaves it for Retry), or before it (the visitor waits about a second on the mail server)?~~ | **Answered by D91:** After (D79). |
 | Q46 | ~~When an applicant's CV cannot be saved: keep nothing and ask them to send it again, keep the application and ask for the CV, or keep it as now?~~ | **Answered by D84:** (a), tried 3 times, then nothing kept and "Something went wrong with your CV upload. Please send it again." |
 | Q47 | ~~How a failed automated email is sent again: a cron job, quick tries in the request, or both? Does the password reset take part?~~ | **Answered by D85:** (a), a cron job every 10 minutes, up to 3 more tries, each recorded; the password reset left out. |
 

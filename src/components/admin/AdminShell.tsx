@@ -12,8 +12,10 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { AuthClient } from "@/features/auth/api.client";
 import { applicationsKey } from "@/features/careers/api.client";
+import type { JobSummaryItem } from "@/features/careers/types";
 import type { PageStateItem } from "@/features/content/types";
 import { enquiriesKey } from "@/features/enquiries/api.client";
+import type { ServiceListItems } from "@/features/services/types";
 import { todayKey } from "@/lib/inbox/keys";
 import { useApiMutation } from "@/lib/query/useApiMutation";
 import { useApiQuery } from "@/lib/query/useApiQuery";
@@ -128,6 +130,10 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
   const freshEnquiries = useApiQuery<{ total: number }>(enquiriesKey({ status: "NEW" }));
   const freshApplications = useApiQuery<{ total: number }>(applicationsKey({ status: "NEW" }));
   const pages = useApiQuery<PageStateItem[]>(ADMIN_API_ROUTES.adminPages);
+  const services = useApiQuery<ServiceListItems>(ADMIN_API_ROUTES.adminServices);
+  const jobs = useApiQuery<JobSummaryItem[]>(ADMIN_API_ROUTES.adminJobs);
+  const waiting = (items: { unpublishedChanges: boolean; archivedAt?: string | null }[]) =>
+    items.filter((item) => item.unpublishedChanges && !item.archivedAt).length;
   const count = (total: number | undefined, said: (count: number) => string) =>
     total === undefined ? undefined : { value: total, said: said(total) };
 
@@ -162,7 +168,21 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         {
           label: ADMIN_TEXT.pages,
           href: ADMIN_ROUTES.pages,
-          count: count(pages.data?.filter((state) => state.unpublishedChanges).length, ADMIN_TEXT.waitingCount),
+          count: count(pages.data && waiting(pages.data), ADMIN_TEXT.waitingCount),
+        },
+        {
+          label: ADMIN_TEXT.services,
+          href: ADMIN_ROUTES.services,
+          // The order waiting counts as one more.
+          count: count(
+            services.data && waiting(services.data.items) + Number(services.data.order.unpublishedChanges),
+            ADMIN_TEXT.waitingCount,
+          ),
+        },
+        {
+          label: ADMIN_TEXT.jobs,
+          href: ADMIN_ROUTES.jobs,
+          count: count(jobs.data && waiting(jobs.data), ADMIN_TEXT.waitingCount),
         },
       ],
     },

@@ -11,9 +11,9 @@ import { PAGE_NAMES } from "@/constants/messages";
 import { FORM_KINDS } from "@/constants/statuses";
 
 import { SECTION_FIELDS } from "../editor";
-import { EditorText } from "./EditorText";
-import { PhotoField } from "./PhotoField";
-import { RichTextField } from "./RichTextField";
+import { EditorText } from "@/components/admin/editor/EditorText";
+import { PhotoField } from "@/components/admin/editor/PhotoField";
+import { RichTextField } from "@/components/admin/editor/RichTextField";
 import { ValuesField } from "./ValuesField";
 
 /** Which of the two forms a form section shows (plan §7.2), each named as the page it belongs to. */

@@ -2,11 +2,11 @@ import Link from "next/link";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_ROUTES } from "@/constants/admin-routes";
-import { UnpublishedPages } from "@/features/content/components/UnpublishedPages";
 import { pageFrom } from "@/lib/pagination";
 import { todayKey } from "@/lib/inbox/keys";
 
 import { TodayLog } from "./TodayLog";
+import { WaitingToPublish } from "./WaitingToPublish";
 
 type View = "needs" | "everything";
 
@@ -46,7 +46,7 @@ export function TodayScreen({
           ))}
         </nav>
       </div>
-      {view === "needs" ? <UnpublishedPages /> : null}
+      {view === "needs" ? <WaitingToPublish /> : null}
       <TodayLog
         key={`${view}-${page}`}
         listKey={todayKey({ needsYou: view === "needs", page })}

@@ -1,8 +1,9 @@
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import type { ApplicationStatus } from "@/constants/statuses";
-import { deleteJson, patchJson, postJson } from "@/lib/api/client";
+import { deleteJson, patchJson, postJson, putJson } from "@/lib/api/client";
+import type { JobDocument } from "@/lib/validation";
 
-import type { ApplicationListQuery, ApplicationNoteItem } from "./types";
+import type { ApplicationListQuery, ApplicationNoteItem, JobDraftItem } from "./types";
 
 /**
  * A list's address, which is also its SWR key: only what differs from the
@@ -28,4 +29,17 @@ export const ApplicationsClient = {
     postJson<ApplicationNoteItem>(ADMIN_API_ROUTES.adminApplicationNotes(id), { body }),
   retryAlert: (id: string) => postJson<{ emailStatus: string }>(ADMIN_API_ROUTES.adminApplicationRetryMail(id)),
   remove: (id: string) => deleteJson<{ deleted: true }>(ADMIN_API_ROUTES.adminApplication(id)),
+};
+
+/** The endpoints the Jobs screens call (plan §14, D92). */
+export const JobsClient = {
+  create: (document: JobDocument) => postJson<JobDraftItem>(ADMIN_API_ROUTES.adminJobs, document),
+  save: ({ id, document }: { id: string; document: JobDocument }) =>
+    putJson<JobDraftItem>(ADMIN_API_ROUTES.adminJob(id), document),
+  publish: (id: string) => postJson<JobDraftItem>(ADMIN_API_ROUTES.adminJobPublish(id)),
+  discard: (id: string) => postJson<JobDraftItem>(ADMIN_API_ROUTES.adminJobDiscard(id)),
+  setArchived: ({ id, archived }: { id: string; archived: boolean }) =>
+    postJson<JobDraftItem>(ADMIN_API_ROUTES.adminJobArchive(id), { archived }),
+  setClosed: ({ id, closed }: { id: string; closed: boolean }) =>
+    postJson<JobDraftItem>(ADMIN_API_ROUTES.adminJobClose(id), { closed }),
 };

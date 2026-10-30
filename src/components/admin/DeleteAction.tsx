@@ -1,13 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
-import { Notice } from "@/components/ui/notice";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { errorMessage } from "@/lib/errors/errorMessage";
-import { useApiMutation } from "@/lib/query/useApiMutation";
+
+import { AskedAction } from "./AskedAction";
 
 /**
  * Delete, asked first (D82): the dialog says what goes and that it cannot
@@ -29,46 +24,17 @@ export function DeleteAction({
   revalidate: readonly string[];
   afterwards?: () => void;
 }) {
-  const [asking, setAsking] = useState(false);
-  const [failure, setFailure] = useState<string | null>(null);
-  const { submit, submitting } = useApiMutation(remove, {
-    revalidate,
-    onSuccess: () => {
-      setAsking(false);
-      afterwards?.();
-    },
-    onError: (error) => setFailure(errorMessage(error)),
-  });
   return (
-    <>
-      <Button
-        variant="secondary"
-        onClick={() => {
-          setFailure(null);
-          setAsking(true);
-        }}
-        className="justify-self-start"
-      >
-        {ADMIN_TEXT.delete}
-      </Button>
-      <Dialog open={asking} onClose={() => setAsking(false)} title={title}>
-        <div className="grid gap-5">
-          <p>{body}</p>
-          {failure ? (
-            <Notice tone="error" title={ADMIN_TEXT.notDeleted}>
-              {failure}
-            </Notice>
-          ) : null}
-          <div className="flex flex-wrap gap-3">
-            <Button pending={submitting} onClick={() => submit(undefined)}>
-              {submitting ? ADMIN_TEXT.deleting : ADMIN_TEXT.delete}
-            </Button>
-            <Button variant="secondary" onClick={() => setAsking(false)}>
-              {ADMIN_TEXT.keep}
-            </Button>
-          </div>
-        </div>
-      </Dialog>
-    </>
+    <AskedAction
+      label={ADMIN_TEXT.delete}
+      pendingLabel={ADMIN_TEXT.deleting}
+      title={title}
+      body={body}
+      keep={ADMIN_TEXT.keep}
+      failed={ADMIN_TEXT.notDeleted}
+      act={remove}
+      revalidate={revalidate}
+      afterwards={afterwards ? () => afterwards() : undefined}
+    />
   );
 }

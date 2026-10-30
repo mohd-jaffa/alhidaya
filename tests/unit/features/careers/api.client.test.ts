@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
-import { ApplicationsClient, applicationsKey } from "@/features/careers/api.client";
+import { ApplicationsClient, applicationsKey, JobsClient } from "@/features/careers/api.client";
+import { jobFixture } from "@tests/support/fixtures/content";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -31,6 +32,28 @@ describe("the inbox's writes", () => {
       [ADMIN_API_ROUTES.adminApplicationNotes("a1"), "POST", JSON.stringify({ body: "Call on Sunday." })],
       [ADMIN_API_ROUTES.adminApplicationRetryMail("a1"), "POST", undefined],
       [ADMIN_API_ROUTES.adminApplication("a1"), "DELETE", undefined],
+    ]);
+  });
+});
+
+describe("JobsClient", () => {
+  it("makes, saves, publishes, discards, archives and closes a job, each at its endpoint", async () => {
+    const fetch = vi.fn<typeof globalThis.fetch>(async () => Response.json({ success: true, data: {} }));
+    vi.stubGlobal("fetch", fetch);
+    const document = jobFixture();
+    await JobsClient.create(document);
+    await JobsClient.save({ id: "j1", document });
+    await JobsClient.publish("j1");
+    await JobsClient.discard("j1");
+    await JobsClient.setArchived({ id: "j1", archived: false });
+    await JobsClient.setClosed({ id: "j1", closed: true });
+    expect(fetch.mock.calls.map(([url, init]) => [url, init?.method, init?.body])).toEqual([
+      [ADMIN_API_ROUTES.adminJobs, "POST", JSON.stringify(document)],
+      [ADMIN_API_ROUTES.adminJob("j1"), "PUT", JSON.stringify(document)],
+      [ADMIN_API_ROUTES.adminJobPublish("j1"), "POST", undefined],
+      [ADMIN_API_ROUTES.adminJobDiscard("j1"), "POST", undefined],
+      [ADMIN_API_ROUTES.adminJobArchive("j1"), "POST", JSON.stringify({ archived: false })],
+      [ADMIN_API_ROUTES.adminJobClose("j1"), "POST", JSON.stringify({ closed: true })],
     ]);
   });
 });

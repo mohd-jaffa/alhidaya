@@ -23,6 +23,7 @@ export const TEXT_LIMITS = {
   /** A section's longer text: a mission, the institutions' words, the jobs list's introduction. */
   sectionText: 600,
   valueTitle: 80,
+  department: 80,
   url: 500,
   fileName: 255,
   /** A stored file's key: its month folder and generated name. */

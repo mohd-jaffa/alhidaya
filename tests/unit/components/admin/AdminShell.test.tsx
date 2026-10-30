@@ -26,20 +26,47 @@ const PAGES = [
   { page: "ABOUT", publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false },
 ];
 
-/** The rail's counts: three need the admin, two enquiries and one application are new, one page waits. */
+/** The services: one waits to be published, one is archived with changes, and the new order waits too. */
+const SERVICES = {
+  items: [
+    { id: "s1", unpublishedChanges: true, archivedAt: null },
+    { id: "s2", unpublishedChanges: false, archivedAt: null },
+    { id: "s3", unpublishedChanges: true, archivedAt: "2026-10-29T08:00:00Z" },
+  ],
+  order: { publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: true },
+};
+
+/** The jobs: one never published, one as published. */
+const JOBS = [
+  { id: "j1", unpublishedChanges: true, archivedAt: null },
+  { id: "j2", unpublishedChanges: false, archivedAt: null },
+];
+
+/** Nothing waits anywhere. */
+const NOTHING: Record<string, unknown> = {
+  [ADMIN_API_ROUTES.adminPages]: [],
+  [ADMIN_API_ROUTES.adminServices]: { items: [], order: { publishedAt: null, unpublishedChanges: false } },
+  [ADMIN_API_ROUTES.adminJobs]: [],
+};
+
+/** The rail's counts: three need the admin, two enquiries and one application are new, one page, two of the services and one job wait. */
 const counts = (method: string, url: string): Answer =>
   method === "DELETE"
     ? { data: { signedOut: true } }
     : url === ADMIN_API_ROUTES.adminPages
       ? { data: PAGES }
-      : {
-          data: {
-            items: [],
-            total: url.includes("needsYou") ? 3 : url.startsWith(ADMIN_API_ROUTES.adminApplications) ? 1 : 2,
-            page: 1,
-            pageSize: 25,
-          },
-        };
+      : url === ADMIN_API_ROUTES.adminServices
+        ? { data: SERVICES }
+        : url === ADMIN_API_ROUTES.adminJobs
+          ? { data: JOBS }
+          : {
+              data: {
+                items: [],
+                total: url.includes("needsYou") ? 3 : url.startsWith(ADMIN_API_ROUTES.adminApplications) ? 1 : 2,
+                page: 1,
+                pageSize: 25,
+              },
+            };
 
 const shell = () =>
   render(
@@ -67,21 +94,28 @@ describe("AdminShell", () => {
     const pages = within(rail).getByRole("link", { name: /Pages/ });
     expect(pages).toHaveAttribute("href", ADMIN_ROUTES.pages);
     await waitFor(() => expect(pages).toHaveAccessibleName(`${ADMIN_TEXT.pages}${ADMIN_TEXT.waitingCount(1)}`));
+    const services = within(rail).getByRole("link", { name: /Services/ });
+    expect(services).toHaveAttribute("href", ADMIN_ROUTES.services);
+    await waitFor(() => expect(services).toHaveAccessibleName(`${ADMIN_TEXT.services}${ADMIN_TEXT.waitingCount(2)}`));
+    const jobs = within(rail).getByRole("link", { name: /Jobs/ });
+    expect(jobs).toHaveAttribute("href", ADMIN_ROUTES.jobs);
+    await waitFor(() => expect(jobs).toHaveAccessibleName(`${ADMIN_TEXT.jobs}${ADMIN_TEXT.waitingCount(1)}`));
     expect(screen.getByText(ADMIN_TEXT.signedInAs("Fatima"), { selector: "aside p" })).toBeVisible();
     expect(screen.getByRole("main")).toHaveTextContent("Page");
   });
 
   it("marks a section as current on the pages under it, and shows no count while nothing waits", async () => {
     navigation.pathname = "/admin/enquiries/e-1";
-    stubApi((_, url) => ({
-      data: url === ADMIN_API_ROUTES.adminPages ? [] : { items: [], total: 0, page: 1, pageSize: 25 },
-    }));
+    stubApi((_, url) => ({ data: NOTHING[url] ?? { items: [], total: 0, page: 1, pageSize: 25 } }));
     shell();
     const rail = screen.getAllByRole("navigation", { name: ADMIN_TEXT.navigation })[0];
     expect(within(rail).getByRole("link", { name: ADMIN_TEXT.enquiries })).toHaveAttribute("aria-current", "page");
     expect(within(rail).getByRole("link", { name: ADMIN_TEXT.today })).not.toHaveAttribute("aria-current");
     await waitFor(() =>
       expect(within(rail).getByRole("link", { name: ADMIN_TEXT.today })).toHaveTextContent(/^Today$/),
+    );
+    await waitFor(() =>
+      expect(within(rail).getByRole("link", { name: ADMIN_TEXT.services })).toHaveTextContent(/^Services$/),
     );
   });
 

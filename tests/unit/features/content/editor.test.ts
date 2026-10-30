@@ -1,14 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { PAGE_KEYS, PAGE_RULES, SECTION_TYPES } from "@/constants/sections";
-import {
-  addableTypes,
-  blankSection,
-  countErrors,
-  SECTION_FIELDS,
-  sectionLock,
-  sectionSummary,
-} from "@/features/content/editor";
+import { addableTypes, blankSection, SECTION_FIELDS, sectionLock, sectionSummary } from "@/features/content/editor";
 import { pageDocumentSchema, sectionSchema } from "@/lib/validation";
 import { contentFixture, pageFixture, section } from "@tests/support/fixtures/content";
 
@@ -82,21 +75,6 @@ describe("the editor's fields", () => {
       "Contact us",
     );
     expect(sectionSummary({ heading: { en: "" } })).toBe("");
-  });
-
-  it("count each marked field once, wherever it sits, and never look inside a field's element", () => {
-    const errors = Object.assign([undefined, { content: { heading: { en: { message: "Heading is required." } } } }], {
-      root: { message: "This page needs a visible “Form” section." },
-    });
-    expect(
-      countErrors({
-        sections: errors,
-        seo: { title: { en: { message: "Too long.", ref: { focus: () => {} } } } },
-      }),
-    ).toBe(3);
-    expect(countErrors({ ref: { message: "an element's own words" }, en: { message: "Too long." } })).toBe(1);
-    expect(countErrors({})).toBe(0);
-    expect(countErrors(undefined)).toBe(0);
   });
 
   it("agree with the page's checks on what a filled page is", () => {

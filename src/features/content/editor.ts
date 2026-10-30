@@ -126,11 +126,3 @@ export function sectionSummary(content: Record<string, unknown>): string {
   }
   return "";
 }
-
-/** How many fields a form's errors mark (D88): each message once, wherever it sits. */
-export function countErrors(node: unknown): number {
-  if (!node || typeof node !== "object") return 0;
-  const record = node as Record<string, unknown>;
-  if (typeof record.message === "string") return 1;
-  return Object.entries(record).reduce((sum, [key, value]) => (key === "ref" ? sum : sum + countErrors(value)), 0);
-}

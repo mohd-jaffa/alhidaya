@@ -3,12 +3,14 @@ import type { ReactNode } from "react";
 /**
  * Where something stands in the admin (R6.1): a dot in its line's colour and
  * its words, never colour alone. New is deep blue, under way sky, done leaf;
- * a failure is the error red (D63).
+ * off the site (archived, closed) the quiet ink; a failure is the error red
+ * (D63).
  */
 const TONES = {
   new: { chip: "bg-deep/10 text-deep", dot: "bg-deep" },
   progress: { chip: "bg-sky/15 text-navy", dot: "bg-sky" },
   done: { chip: "bg-leaf/20 text-navy", dot: "bg-leaf" },
+  off: { chip: "bg-mist text-ink-2", dot: "bg-ink-2" },
   error: { chip: "bg-error/10 text-error", dot: "bg-error" },
 } as const;
 

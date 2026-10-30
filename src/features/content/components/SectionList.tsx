@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
 
+import { DropLine, useDragOrder } from "@/components/admin/editor/DragOrder";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
@@ -68,43 +69,20 @@ export function SectionList({
     name: "sections",
     keyName: "key",
   });
-  const [from, setFrom] = useState<number | null>(null);
-  const [over, setOver] = useState<number | null>(null);
   const [said, setSaid] = useState("");
 
   const moveTo = (index: number, to: number) => {
     move(index, to);
     setSaid(ADMIN_TEXT.movedTo(SECTION_NAMES[fields[index].type], to + 1, fields.length));
   };
-  const endDrag = () => {
-    setFrom(null);
-    setOver(null);
-  };
+  const drag = useDragOrder({ first: 1, onMove: moveTo });
 
   return (
     <div className="grid gap-6">
       <ol className="grid gap-1">
         {fields.map((field, index) => (
-          <li
-            key={field.key}
-            className="relative"
-            onDragOver={(event) => {
-              if (from === null || index === 0) return;
-              event.preventDefault();
-              setOver(index);
-            }}
-            onDrop={(event) => {
-              event.preventDefault();
-              if (from !== null && over !== null && from !== over) moveTo(from, over);
-              endDrag();
-            }}
-          >
-            {from !== null && over === index && from !== index ? (
-              <span
-                aria-hidden="true"
-                className={`absolute inset-x-0 z-[1] h-[3px] rounded-full bg-sky ${from < index ? "-bottom-0.5" : "-top-0.5"}`}
-              />
-            ) : null}
+          <li key={field.key} className="relative" {...drag.target(index)}>
+            <DropLine side={drag.lineAt(index)} />
             <SectionRow
               page={page}
               index={index}
@@ -112,8 +90,8 @@ export function SectionList({
               onToggle={() => onOpen(openId === field.id ? null : field.id)}
               onMove={(to) => moveTo(index, to)}
               onRemove={() => remove(index)}
-              onDragStart={() => setFrom(index)}
-              onDragEnd={endDrag}
+              onDragStart={() => drag.start(index)}
+              onDragEnd={drag.end}
             />
           </li>
         ))}

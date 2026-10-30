@@ -1,5 +1,7 @@
 import { and, desc, eq, isNotNull, isNull, sql } from "drizzle-orm";
+import { ZodError } from "zod";
 
+import { ERROR_MESSAGES } from "@/constants/messages";
 import type { RecordCollection } from "@/constants/statuses";
 import { getDb } from "@/db/client";
 import { records } from "@/db/schema";
@@ -140,27 +142,40 @@ export interface AdminRecord<T> {
   unpublishedChanges: boolean;
 }
 
+const adminColumns = {
+  id: records.id,
+  slug: records.slug,
+  draft: records.draft,
+  published: records.published,
+  publishedAt: records.publishedAt,
+  archivedAt: records.archivedAt,
+  updatedAt: records.updatedAt,
+};
+
+/** Both copies come from MySQL's JSON, which keeps keys in one order, so equal copies read as equal text. */
+const asAdminRecord = <T>(row: Omit<AdminRecord<T>, "unpublishedChanges">): AdminRecord<T> => ({
+  ...row,
+  unpublishedChanges: JSON.stringify(row.draft) !== JSON.stringify(row.published),
+});
+
 /** The admin's view of a collection: drafts, published and archived alike, newest change first. */
 export async function listRecordsForAdmin<T>(collection: RecordCollection): Promise<AdminRecord<T>[]> {
   const rows = await getDb()
-    .select({
-      id: records.id,
-      slug: records.slug,
-      draft: records.draft,
-      published: records.published,
-      publishedAt: records.publishedAt,
-      archivedAt: records.archivedAt,
-      updatedAt: records.updatedAt,
-    })
+    .select(adminColumns)
     .from(records)
     .where(eq(records.collection, collection))
     .orderBy(desc(records.updatedAt));
-  return rows.map((row) => ({
-    ...row,
-    draft: row.draft as T,
-    published: row.published as T | null,
-    unpublishedChanges: JSON.stringify(row.draft) !== JSON.stringify(row.published),
-  }));
+  return rows.map((row) => asAdminRecord(row as Omit<AdminRecord<T>, "unpublishedChanges">));
+}
+
+/** One record as the admin edits it (D92), or a 404 for one the collection does not hold. */
+export async function getRecordForAdmin<T>(collection: RecordCollection, id: string): Promise<AdminRecord<T>> {
+  const [row] = await getDb()
+    .select(adminColumns)
+    .from(records)
+    .where(and(eq(records.id, id), eq(records.collection, collection)));
+  if (!row) throw notFoundError("RECORD_NOT_FOUND");
+  return asAdminRecord(row as Omit<AdminRecord<T>, "unpublishedChanges">);
 }
 
 /** Makes a record as a draft; nothing shows on the site until it is published. */
@@ -201,23 +216,27 @@ export async function saveRecordDraft(
 /**
  * Publishes a record's draft under `slug` (null for client logos). When the
  * slug changes, the old one is kept so its address answers with a redirect;
- * a slug another record of the collection uses is refused.
+ * a slug another record of the collection uses is refused. Given as a
+ * function, the slug is read from the draft with its row held, by the
+ * collection's own check, so what is published is exactly what was checked
+ * (AGENTS.md §13); a draft it refuses stays a draft.
  */
 export async function publishRecord(
   collection: RecordCollection,
   id: string,
-  slug: string | null,
+  slugOf: string | null | ((draft: unknown) => string | null),
   actor: Actor,
 ): Promise<Date> {
   const at = new Date();
   try {
     await getDb().transaction(async (tx) => {
       const [row] = await tx
-        .select({ slug: records.slug, previousSlugs: records.previousSlugs })
+        .select({ slug: records.slug, previousSlugs: records.previousSlugs, draft: records.draft })
         .from(records)
         .where(and(eq(records.id, id), eq(records.collection, collection)))
         .for("update");
       if (!row) throw notFoundError("RECORD_NOT_FOUND");
+      const slug = typeof slugOf === "function" ? slugOf(row.draft) : slugOf;
       const kept = row.slug && row.slug !== slug ? [...row.previousSlugs, row.slug] : row.previousSlugs;
       await tx
         .update(records)
@@ -232,8 +251,11 @@ export async function publishRecord(
         .where(eq(records.id, id));
     });
   } catch (error) {
-    // Only the slug is unique among the columns written, so a duplicate is the slug.
-    throw databaseErrorCode(error) === "ER_DUP_ENTRY" ? conflictError("SLUG_TAKEN") : fromDatabaseError(error);
+    // Only the slug is unique among the columns written, so a duplicate is the slug, marked where it is typed.
+    if (databaseErrorCode(error) === "ER_DUP_ENTRY")
+      throw conflictError("SLUG_TAKEN", [{ path: "slug", message: ERROR_MESSAGES.SLUG_TAKEN }]);
+    // The collection's check refusing the draft says which field, as at the route.
+    throw error instanceof ZodError ? error : fromDatabaseError(error);
   }
   await logActionSafe({
     actorId: actor.adminId,
@@ -280,6 +302,37 @@ export async function setRecordArchived(
     entityType: collection,
     entityId: id,
     changes: archived ? null : { archived: { from: true, to: false } },
+    requestId: actor.requestId,
+  });
+}
+
+/**
+ * Closes a published job at once, or opens it again (D92), on both copies
+ * so neither a later publish nor a discard undoes it, and nothing else of
+ * the draft goes live with it.
+ */
+export async function setRecordClosed(
+  collection: RecordCollection,
+  id: string,
+  closed: boolean,
+  actor: Actor,
+): Promise<void> {
+  const [result] = await getDb()
+    .update(records)
+    .set({
+      draft: sql`json_set(${records.draft}, '$.closed', ${closed ? sql`true` : sql`false`})`,
+      published: sql`json_set(${records.published}, '$.closed', ${closed ? sql`true` : sql`false`})`,
+      updatedBy: actor.adminId,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(records.id, id), eq(records.collection, collection), isNotNull(records.published)));
+  if (result.affectedRows === 0) throw businessRuleError("NOTHING_PUBLISHED");
+  await logActionSafe({
+    actorId: actor.adminId,
+    action: "STATUS_CHANGE",
+    entityType: collection,
+    entityId: id,
+    changes: { closed: { from: !closed, to: closed } },
     requestId: actor.requestId,
   });
 }

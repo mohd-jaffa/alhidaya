@@ -92,12 +92,18 @@ export {
 export { previewQuerySchema, type PreviewQueryPayload } from "./schemas/preview";
 
 export {
+  archiveSchema,
   clientDocumentSchema,
+  closeSchema,
   jobDocumentSchema,
   serviceDocumentSchema,
+  type ArchivePayload,
+  type ClosePayload,
   type ClientDocument,
   type JobDocument,
+  type JobDocumentInput,
   type ServiceDocument,
+  type ServiceDocumentInput,
 } from "./schemas/records";
 
 export {

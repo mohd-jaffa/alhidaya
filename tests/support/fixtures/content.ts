@@ -83,6 +83,7 @@ export const jobFixture = (overrides: Partial<JobDocument> = {}): JobDocument =>
   benefits: [],
   postedOn: "2026-10-01",
   closesOn: null,
+  closed: false,
   seo,
   ...overrides,
 });

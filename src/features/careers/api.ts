@@ -9,6 +9,7 @@ import {
   type CvStatus,
   DATAFLOW_LABELS,
   type EmailStatus,
+  type EmploymentType,
   MOPH_LICENCE_LABELS,
   PROMETRIC_LABELS,
   WHERE_NOW_LABELS,
@@ -22,8 +23,23 @@ import { captureError } from "@/lib/audit/errorLog";
 import { needsAttention } from "@/lib/inbox/arrivals";
 import { displayPhone } from "@/lib/contact";
 import type { Actor } from "@/lib/content/actor";
+import { publishedTags, revalidateContent } from "@/lib/content/cache";
 import { getOperations } from "@/lib/content/operations";
-import { findPublishedRecord, findRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
+import {
+  type AdminRecord,
+  createRecord,
+  discardRecordDraft,
+  findPublishedRecord,
+  findRecord,
+  getRecordForAdmin,
+  listRecords,
+  listRecordsForAdmin,
+  publishRecord,
+  type PublishedRecord,
+  saveRecordDraft,
+  setRecordArchived,
+  setRecordClosed,
+} from "@/lib/content/records";
 import type { ContentView } from "@/lib/content/view";
 import { dohaDay } from "@/lib/dates";
 import {
@@ -46,14 +62,15 @@ import {
   type ApplicationListQueryPayload,
   GENERAL_APPLICATIONS,
   type JobDocument,
+  jobDocumentSchema,
 } from "@/lib/validation";
 
 export interface PublishedJob extends PublishedRecord<JobDocument> {
-  /** Open until the end of its closing day in Doha; with no closing date, open (plan §9.1). */
+  /** Open until the end of its closing day in Doha, or until the admin closes it (plan §9.1, D92). */
   open: boolean;
 }
 
-const isOpen = (job: JobDocument, today: string) => job.closesOn === null || job.closesOn >= today;
+const isOpen = (job: JobDocument, today: string) => !job.closed && (job.closesOn === null || job.closesOn >= today);
 
 const withOpen = (job: PublishedRecord<JobDocument>, today: string): PublishedJob => ({
   ...job,
@@ -164,6 +181,115 @@ export async function getJobShareImage(slug: string) {
 /** The general application's share picture (plan §19, Q7): its headline on the nurses' leaf-green sign. */
 export function getGeneralApplicationShareImage() {
   return renderShareImage({ title: UI_TEXT.generalApplicationHeadline, tone: "leaf" });
+}
+
+/** A job in the admin's list (D92): what its row says, and where it stands on the site. */
+export interface JobSummary {
+  id: string;
+  title: string;
+  /** The address its draft gives it. */
+  slug: string;
+  location: string;
+  employmentType: EmploymentType;
+  postedOn: string;
+  closesOn: string | null;
+  publishedAt: Date | null;
+  archivedAt: Date | null;
+  unpublishedChanges: boolean;
+  /** Whether the site takes applications for it now; never, before it is published. */
+  open: boolean;
+}
+
+/** A job opened in the editor (D92), as its draft reads, and whether the site takes applications for it. */
+export interface JobDraft {
+  id: string;
+  draft: JobDocument;
+  publishedAt: Date | null;
+  archivedAt: Date | null;
+  unpublishedChanges: boolean;
+  open: boolean;
+}
+
+const liveOpen = (record: AdminRecord<JobDocument>, today: string) =>
+  record.published !== null && isOpen(record.published, today);
+
+const asJobDraft = (record: AdminRecord<JobDocument>, at: Date): JobDraft => ({
+  id: record.id,
+  draft: record.draft,
+  publishedAt: record.publishedAt,
+  archivedAt: record.archivedAt,
+  unpublishedChanges: record.unpublishedChanges,
+  open: liveOpen(record, dohaDay(at)),
+});
+
+/** Every job for the admin (D92), newest posting first; the screen groups them by where they stand. */
+export async function listJobsForAdmin(at: Date = new Date()): Promise<JobSummary[]> {
+  const today = dohaDay(at);
+  return (await listRecordsForAdmin<JobDocument>("JOBS"))
+    .map((record) => ({
+      id: record.id,
+      title: record.draft.title.en,
+      slug: record.draft.slug,
+      location: record.draft.location.en,
+      employmentType: record.draft.employmentType,
+      postedOn: record.draft.postedOn,
+      closesOn: record.draft.closesOn,
+      publishedAt: record.publishedAt,
+      archivedAt: record.archivedAt,
+      unpublishedChanges: record.unpublishedChanges,
+      open: liveOpen(record, today),
+    }))
+    .sort((a, b) => b.postedOn.localeCompare(a.postedOn));
+}
+
+export async function getJobForAdmin(id: string, at: Date = new Date()): Promise<JobDraft> {
+  return asJobDraft(await getRecordForAdmin<JobDocument>("JOBS", id), at);
+}
+
+/** Makes a job as a draft (D92), open until it is closed; nothing shows on the site until it is published. */
+export async function createJob(document: JobDocument, actor: Actor): Promise<JobDraft> {
+  return getJobForAdmin(await createRecord("JOBS", { ...document, closed: false }, actor));
+}
+
+/**
+ * Saves a job's draft (plan §14). Whether it is closed is not the editor's
+ * to change: Close now and Reopen set it (D92), so the saved draft keeps it.
+ */
+export async function saveJobDraft(id: string, document: JobDocument, actor: Actor): Promise<JobDraft> {
+  const current = await getRecordForAdmin<JobDocument>("JOBS", id);
+  await saveRecordDraft("JOBS", id, { ...document, closed: current.draft.closed ?? false }, actor);
+  return getJobForAdmin(id);
+}
+
+/** Publishes a job's saved draft (plan §14, §9.1), checked as it goes live; its old address redirects. */
+export async function publishJob(id: string, actor: Actor): Promise<JobDraft> {
+  const before = await getRecordForAdmin<JobDocument>("JOBS", id);
+  await publishRecord("JOBS", id, (draft) => jobDocumentSchema.parse(draft).slug, actor);
+  const after = await getJobForAdmin(id);
+  revalidateContent(publishedTags({ collection: "JOBS", slugs: [before.slug, after.draft.slug] }));
+  return after;
+}
+
+/** Throws a job's draft away, back to what is published (plan §14). */
+export async function discardJobDraft(id: string, actor: Actor): Promise<JobDraft> {
+  await discardRecordDraft("JOBS", id, actor);
+  return getJobForAdmin(id);
+}
+
+/** Closes a published job at once, or opens it again (D92): it stays at its address, saying so. */
+export async function setJobClosed(id: string, closed: boolean, actor: Actor): Promise<JobDraft> {
+  await setRecordClosed("JOBS", id, closed, actor);
+  const job = await getRecordForAdmin<JobDocument>("JOBS", id);
+  revalidateContent(publishedTags({ collection: "JOBS", slugs: [job.slug] }));
+  return asJobDraft(job, new Date());
+}
+
+/** Takes a job off the site, or puts it back (D92); it and its applications are kept. */
+export async function setJobArchived(id: string, archived: boolean, actor: Actor): Promise<JobDraft> {
+  const job = await getRecordForAdmin<JobDocument>("JOBS", id);
+  await setRecordArchived("JOBS", id, archived, actor);
+  revalidateContent(publishedTags({ collection: "JOBS", slugs: [job.slug] }));
+  return getJobForAdmin(id);
 }
 
 /**

@@ -14,8 +14,13 @@ export const ADMIN_ROUTES = {
   /** The eight pages with their state, and one page's editor (D88). */
   pages: "/admin/pages",
   page: (page: PageKey) => `/admin/pages/${pageSlug(page)}`,
+  /** The services and the jobs, a new one, and one opened in its editor (D92). */
   services: "/admin/services",
+  newService: "/admin/services/new",
+  service: (id: string) => `/admin/services/${id}`,
   jobs: "/admin/jobs",
+  newJob: "/admin/jobs/new",
+  job: (id: string) => `/admin/jobs/${id}`,
   clients: "/admin/clients",
   media: "/admin/media",
   enquiries: "/admin/enquiries",
@@ -50,6 +55,25 @@ export const ADMIN_API_ROUTES = {
   adminPage: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}`,
   adminPagePublish: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}/publish`,
   adminPageDiscard: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}/discard`,
+  /**
+   * The services: made, saved, published, discarded, archived and restored
+   * one at a time; their order saved, published and discarded (D92).
+   */
+  adminServices: "/api/admin/services",
+  adminService: (id: string) => `/api/admin/services/${id}`,
+  adminServicePublish: (id: string) => `/api/admin/services/${id}/publish`,
+  adminServiceDiscard: (id: string) => `/api/admin/services/${id}/discard`,
+  adminServiceArchive: (id: string) => `/api/admin/services/${id}/archive`,
+  adminServiceOrder: "/api/admin/services/order",
+  adminServiceOrderPublish: "/api/admin/services/order/publish",
+  adminServiceOrderDiscard: "/api/admin/services/order/discard",
+  /** The jobs, as the services, and a job closed or opened again (D92). */
+  adminJobs: "/api/admin/jobs",
+  adminJob: (id: string) => `/api/admin/jobs/${id}`,
+  adminJobPublish: (id: string) => `/api/admin/jobs/${id}/publish`,
+  adminJobDiscard: (id: string) => `/api/admin/jobs/${id}/discard`,
+  adminJobArchive: (id: string) => `/api/admin/jobs/${id}/archive`,
+  adminJobClose: (id: string) => `/api/admin/jobs/${id}/close`,
   /** The media library's images, for a section's photo (D89). */
   adminMedia: "/api/admin/media",
 } as const;

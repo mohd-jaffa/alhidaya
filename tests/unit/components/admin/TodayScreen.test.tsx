@@ -6,8 +6,8 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 
 const log = vi.hoisted(() => vi.fn());
-vi.mock("@/features/content/components/UnpublishedPages", () => ({
-  UnpublishedPages: () => <p>What waits to be published</p>,
+vi.mock("@/components/admin/WaitingToPublish", () => ({
+  WaitingToPublish: () => <p>What waits to be published</p>,
 }));
 vi.mock("@/components/admin/TodayLog", () => ({
   TodayLog: (props: unknown) => {

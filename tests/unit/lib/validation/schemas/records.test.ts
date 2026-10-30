@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import { VALIDATION_MESSAGES } from "@/constants/messages";
-import { clientDocumentSchema, jobDocumentSchema, serviceDocumentSchema } from "@/lib/validation";
+import { TEXT_LIMITS } from "@/constants/limits";
+import {
+  archiveSchema,
+  clientDocumentSchema,
+  closeSchema,
+  jobDocumentSchema,
+  serviceDocumentSchema,
+} from "@/lib/validation";
 import { clientFixture, jobFixture, serviceFixture } from "@tests/support/fixtures/content";
 
 describe("a service", () => {
@@ -33,6 +40,18 @@ describe("a job", () => {
     expect(jobDocumentSchema.safeParse(jobFixture({ slug: "apply-now" })).success).toBe(true);
   });
 
+  it("is open until the admin closes it, a job saved before Close now existed included (D92)", () => {
+    const before: Partial<ReturnType<typeof jobFixture>> = jobFixture();
+    delete before.closed;
+    expect(jobDocumentSchema.parse(before).closed).toBe(false);
+    expect(jobDocumentSchema.parse(jobFixture({ closed: true })).closed).toBe(true);
+  });
+
+  it("bounds its department", () => {
+    const long = { en: "x".repeat(TEXT_LIMITS.department + 1) };
+    expect(jobDocumentSchema.safeParse(jobFixture({ department: long })).success).toBe(false);
+  });
+
   it("bounds its lists", () => {
     const many = Array.from({ length: 21 }, () => ({ en: "x" }));
     expect(jobDocumentSchema.safeParse(jobFixture({ qualifications: many })).error?.issues[0].message).toBe(
@@ -46,5 +65,14 @@ describe("a client logo", () => {
     expect(clientDocumentSchema.safeParse(clientFixture({ url: "https://client.example" })).success).toBe(true);
     expect(clientDocumentSchema.safeParse(clientFixture({ url: "http://client.example" })).success).toBe(false);
     expect(clientDocumentSchema.safeParse({ ...clientFixture(), logo: null }).success).toBe(false);
+  });
+});
+
+describe("archiving and closing (D92)", () => {
+  it("say yes or no, nothing else", () => {
+    expect(archiveSchema.parse({ archived: true })).toEqual({ archived: true });
+    expect(archiveSchema.safeParse({ archived: "true" }).success).toBe(false);
+    expect(closeSchema.parse({ closed: false })).toEqual({ closed: false });
+    expect(closeSchema.safeParse({}).success).toBe(false);
   });
 });

@@ -12,7 +12,7 @@ import { errorMessage } from "@/lib/errors/errorMessage";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 
 import type { PageStateItem } from "../types";
-import { PageStateChip } from "./PageStateChip";
+import { DraftStateChip } from "@/components/admin/editor/DraftStateChip";
 
 /** Pages (D88): the eight fixed pages, each a row with its address and where it stands, opening its editor. */
 export function PagesScreen() {
@@ -48,7 +48,7 @@ export function PagesScreen() {
                   <span className="font-semibold">{PAGE_NAMES[state.page]}</span>
                   <span className="text-small text-ink-2">{PAGE_ROUTES[state.page]}</span>
                 </span>
-                <PageStateChip state={state} />
+                <DraftStateChip state={state} />
               </Link>
             </li>
           ))}
