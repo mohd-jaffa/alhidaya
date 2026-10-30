@@ -29,6 +29,9 @@ export const TEXT_LIMITS = {
   turnstileToken: 2048,
 } as const;
 
+/** Years of nursing experience, as the application form takes them (plan §9.2). */
+export const EXPERIENCE_YEARS = { min: 0, max: 50 } as const;
+
 /** How many of a repeated thing a document may hold (plan §7.2, §8, §9.1, §13). */
 export const LIST_LIMITS = {
   sections: 20,
@@ -59,6 +62,9 @@ export const UPLOAD_LIMITS = {
   /** The most pixels an image may decode to: the server has 1 GB of memory (plan §21.1). */
   imageMaxPixels: 40_000_000,
 } as const;
+
+/** Room in an application's body for its fields beside the CV (plan §9.2): read whole, never more. */
+export const APPLICATION_FIELDS_BYTES = 64 * 1024;
 
 /** The 1 GB disk, shared out (plan §21.2, D51): an upload past its budget is refused. */
 export const DISK_BUDGETS = {

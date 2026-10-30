@@ -22,20 +22,21 @@ function takeFocus(node: HTMLDivElement | null) {
 }
 
 /**
- * What the Quote and Contact forms share (plan §10, §30.3): their fields, the
- * consent to the privacy notice, the trap for bots and Turnstile (§10.3), one
- * send action, and the outcome in place.
+ * What the site's forms share (plan §9.2, §10, §30.3): Quote, Contact and the
+ * application. Their fields, the consent to the privacy notice, the trap for
+ * bots and Turnstile (§10.3), one send action, and the outcome in place.
  * Sent, the form gives way to the thanks, which takes focus, with WhatsApp as
- * the fastest follow-up (§10.4); not sent, the reason shows above the action
- * and everything typed stays.
+ * the fastest follow-up when the form offers it (§10.4); not sent, the reason
+ * shows above the action and everything typed stays.
  */
-export function EnquiryForm({
+export function SiteForm({
   schema,
   send,
   action,
   sent,
+  sentNext = UI_TEXT.sentNext,
   notSent,
-  whatsapp,
+  whatsapp = null,
   botCheck,
   children,
 }: {
@@ -43,11 +44,12 @@ export function EnquiryForm({
   send: (values: Record<string, unknown>) => Promise<unknown>;
   /** The send action's words. */
   action: string;
-  /** The thanks once it is sent, and the heading when it was not. */
+  /** The thanks once it is sent, what happens next, and the heading when it was not. */
   sent: string;
+  sentNext?: string;
   notSent: string;
-  /** The company's WhatsApp number, from the published site content. */
-  whatsapp: string | null;
+  /** The company's WhatsApp number, from the published site content, when the thanks offers it. */
+  whatsapp?: string | null;
   /** Turnstile's site key, and the form's name in Cloudflare's dashboard. */
   botCheck: { siteKey: string; action: string };
   children: (errors: FieldErrors) => ReactNode;
@@ -65,7 +67,7 @@ export function EnquiryForm({
         className="grid scroll-mt-[calc(var(--header-height)+4rem)] gap-6 outline-none"
       >
         <Notice tone="success" title={sent} titleId={sentId}>
-          <p>{whatsapp ? `${UI_TEXT.sentNext} ${UI_TEXT.fasterOnWhatsApp}` : UI_TEXT.sentNext}</p>
+          <p>{whatsapp ? `${sentNext} ${UI_TEXT.fasterOnWhatsApp}` : sentNext}</p>
         </Notice>
         {whatsapp ? <ContactAction kind="whatsapp" to={whatsapp} className="justify-self-start" /> : null}
       </div>

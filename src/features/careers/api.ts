@@ -1,20 +1,32 @@
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import type { Metadata } from "next";
 
-import { FORM_RATE_LIMIT } from "@/constants/limits";
-import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
+import { FORM_RATE_LIMIT, TEXT_LIMITS } from "@/constants/limits";
+import { PAGE_NAMES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
-import type { FileType } from "@/constants/uploads";
+import {
+  type CvStatus,
+  DATAFLOW_LABELS,
+  MOPH_LICENCE_LABELS,
+  PROMETRIC_LABELS,
+  WHERE_NOW_LABELS,
+} from "@/constants/statuses";
+import { CV_TYPES, type FileType } from "@/constants/uploads";
 import { getDb } from "@/db/client";
 import { applications, records, type SubmittedField } from "@/db/schema";
 import { newId } from "@/db/schema/columns";
+import { captureError } from "@/lib/audit/errorLog";
+import { displayPhone } from "@/lib/contact";
 import { findPublishedRecord, findRecord, listRecords, type PublishedRecord } from "@/lib/content/records";
 import type { ContentView } from "@/lib/content/view";
 import { dohaDay } from "@/lib/dates";
-import { businessRuleError, rateLimitError } from "@/lib/errors";
+import { businessRuleError, rateLimitError, validationError } from "@/lib/errors";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
 import { renderShareImage } from "@/lib/seo/share-image";
-import type { JobDocument } from "@/lib/validation";
+import { saveCv } from "@/lib/storage/cvs";
+import { detectFileType } from "@/lib/storage/file-type";
+import { normaliseLine } from "@/lib/text/normalise";
+import type { ApplicationFormPayload, JobDocument } from "@/lib/validation";
 
 export interface PublishedJob extends PublishedRecord<JobDocument> {
   /** Open until the end of its closing day in Doha; with no closing date, open (plan §9.1). */
@@ -63,6 +75,43 @@ export async function getPublishedJobPage(
 }
 
 /**
+ * The job an application page is for (plan §9.3): the job at its address
+ * (or where it moved to), open or not; in the admin's preview, the draft.
+ */
+export async function findJobToApply(
+  slug: string,
+  view: ContentView = "published",
+  at: Date = new Date(),
+): Promise<PublishedJob | { movedTo: string } | null> {
+  const found = await findRecord<JobDocument>("JOBS", slug, view);
+  if (!found || "movedTo" in found) return found;
+  return withOpen(found.record, dohaDay(at));
+}
+
+/**
+ * An application page's title and description (plan §19): for a job, its
+ * title, while it is open; without one, the general application's.
+ */
+export async function getApplyMetadata(slug: string | null, at: Date = new Date()): Promise<Metadata> {
+  let title: string = UI_TEXT.generalApplicationHeadline;
+  let description: string = UI_TEXT.generalApplicationLede;
+  let url: string = ROUTES.applyGeneral;
+  if (slug !== null) {
+    const found = await findPublishedJob(slug, at);
+    if (!found || "movedTo" in found || !found.record.open) return {};
+    title = UI_TEXT.applyFor(found.record.published.title.en);
+    description = UI_TEXT.applyLede;
+    url = ROUTES.applyForJob(found.record.published.slug);
+  }
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: "website", siteName: UI_TEXT.siteName },
+  };
+}
+
+/**
  * A job page's title and description (plan §19): the admin's SEO words, or
  * the job's own. A closed job stays for anyone who has its address, but is
  * kept out of search.
@@ -90,6 +139,11 @@ export async function getJobShareImage(slug: string) {
     title: found && "record" in found ? found.record.published.title.en : PAGE_NAMES.CAREERS,
     tone: "leaf",
   });
+}
+
+/** The general application's share picture (plan §19, Q7): its headline on the nurses' leaf-green sign. */
+export function getGeneralApplicationShareImage() {
+  return renderShareImage({ title: UI_TEXT.generalApplicationHeadline, tone: "leaf" });
 }
 
 /**
@@ -157,4 +211,73 @@ export async function submitApplication(
     return title;
   });
   return { id, jobTitle };
+}
+
+/**
+ * Every answer as the applicant saw and gave it (plan §9.3): each field's
+ * label, and a choice's words rather than its code, so the inbox and the HR
+ * email read the application as it was sent whatever the form says later.
+ * A left-out note is left out.
+ */
+export function applicationFields(payload: ApplicationFormPayload): SubmittedField[] {
+  const answers: [string, string | null][] = [
+    [UI_TEXT.fullName, payload.name],
+    [UI_TEXT.email, payload.email],
+    [UI_TEXT.phone, displayPhone(payload.phone)],
+    [UI_TEXT.whereNow, WHERE_NOW_LABELS[payload.whereNow]],
+    [UI_TEXT.mophLicence, MOPH_LICENCE_LABELS[payload.mophLicence]],
+    [UI_TEXT.dataflow, DATAFLOW_LABELS[payload.dataflow]],
+    [UI_TEXT.prometric, PROMETRIC_LABELS[payload.prometric]],
+    [UI_TEXT.experienceYears, String(payload.experienceYears)],
+    [UI_TEXT.applicationNote, payload.note],
+    [UI_TEXT.consent, UI_TEXT.consentGiven],
+  ];
+  return answers.flatMap(([label, value]) => (value === null ? [] : [{ label, value }]));
+}
+
+/** A CV's name as uploaded, kept only to be shown and attached: tidied, bounded, never a path. */
+const uploadedName = (name: string) =>
+  normaliseLine(name.replace(/^.*[\\/]/, "")).slice(0, TEXT_LIMITS.fileName) || "cv";
+
+/**
+ * An application as the route received it (plan §9.3): the CV must be a PDF
+ * or Word file by its first bytes; then the row is stored (steps 1 – 2) and
+ * the CV saved in the private CV folder (step 3). A CV that cannot be saved
+ * leaves the application stored with its CV marked not stored, the failure
+ * logged by the application's id alone; the applicant is never told.
+ */
+export async function receiveApplication(
+  payload: ApplicationFormPayload,
+  visitorIp: string,
+  at: Date = new Date(),
+): Promise<{ id: string; cvStatus: CvStatus }> {
+  const bytes = new Uint8Array(await payload.cv.arrayBuffer());
+  const type = detectFileType(bytes);
+  if (type === null || !CV_TYPES.includes(type)) {
+    throw validationError("VALIDATION_ERROR", [{ path: "cv", message: VALIDATION_MESSAGES.cvType }]);
+  }
+  const { jobId, name, email, phone } = payload;
+  const { id, jobTitle } = await submitApplication(
+    {
+      jobId,
+      name,
+      email,
+      phone,
+      fields: applicationFields(payload),
+      cv: { name: uploadedName(payload.cv.name), type, bytes: bytes.byteLength },
+    },
+    visitorIp,
+    at,
+  );
+
+  let cvKey: string | null = null;
+  let cvStatus: CvStatus = "STORED";
+  try {
+    cvKey = await saveCv({ bytes, type, jobTitle, applicantName: name, receivedAt: at });
+  } catch (error) {
+    cvStatus = "NOT_STORED";
+    await captureError({ message: "Application CV not stored", error, context: { applicationId: id } });
+  }
+  await getDb().update(applications).set({ cvKey, cvStatus, updatedAt: new Date() }).where(eq(applications.id, id));
+  return { id, cvStatus };
 }

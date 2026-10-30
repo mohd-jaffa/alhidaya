@@ -77,6 +77,41 @@ export const CONTACT_METHOD_LABELS: Record<ContactMethod, string> = {
   EMAIL: "Email",
 };
 
+/**
+ * The application form's choices (plan §9.2): where the nurse is, and how far
+ * along Qatar's licensing (the MOPH licence, Dataflow's check of their
+ * papers, the Prometric exam). Only the form knows them: an application keeps
+ * the words the applicant chose, so the database has no CHECK for them.
+ */
+export const WHERE_NOW = ["IN_QATAR", "OUTSIDE_QATAR"] as const;
+export type WhereNow = (typeof WHERE_NOW)[number];
+export const WHERE_NOW_LABELS: Record<WhereNow, string> = {
+  IN_QATAR: "In Qatar",
+  OUTSIDE_QATAR: "Outside Qatar",
+};
+
+export const MOPH_LICENCE = ["HAVE", "IN_PROGRESS", "NOT_YET"] as const;
+export type MophLicence = (typeof MOPH_LICENCE)[number];
+export const MOPH_LICENCE_LABELS: Record<MophLicence, string> = {
+  HAVE: "I have one",
+  IN_PROGRESS: "In progress",
+  NOT_YET: "Not yet",
+};
+
+export const DATAFLOW = ["DONE", "NOT_YET"] as const;
+export type Dataflow = (typeof DATAFLOW)[number];
+export const DATAFLOW_LABELS: Record<Dataflow, string> = {
+  DONE: "Done",
+  NOT_YET: "Not yet",
+};
+
+export const PROMETRIC = ["PASSED", "NOT_YET"] as const;
+export type Prometric = (typeof PROMETRIC)[number];
+export const PROMETRIC_LABELS: Record<Prometric, string> = {
+  PASSED: "Passed",
+  NOT_YET: "Not yet",
+};
+
 /** Social networks the footer may link (plan §13). */
 export const SOCIAL_NETWORKS = ["INSTAGRAM", "FACEBOOK", "LINKEDIN", "X", "YOUTUBE"] as const;
 export type SocialNetwork = (typeof SOCIAL_NETWORKS)[number];

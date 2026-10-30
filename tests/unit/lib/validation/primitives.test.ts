@@ -12,6 +12,7 @@ import {
   requiredLines,
   requiredPhone,
 } from "@/lib/validation";
+import { botCheck, consent } from "@/lib/validation/primitives";
 
 /** The first message a schema gives for a value, or the parsed value. */
 function parse<T>(schema: z.ZodType<T>, value: unknown) {
@@ -73,6 +74,17 @@ describe("phone", () => {
     expect(parse(requiredPhone("Phone"), "12")).toEqual({ message: VALIDATION_MESSAGES.phone("Phone") });
     expect(parse(optionalPhone("Phone"), "")).toEqual({ value: null });
     expect(parse(optionalPhone("Phone"), "+44 7700 900123")).toEqual({ value: "+447700900123" });
+  });
+});
+
+describe("a public form's consent and bot check", () => {
+  it("takes only a ticked consent and a token Cloudflare gave", () => {
+    expect(parse(consent, true)).toEqual({ value: true });
+    expect(parse(consent, false)).toEqual({ message: VALIDATION_MESSAGES.consent });
+    const token = botCheck.turnstileToken;
+    expect(parse(token, "token")).toEqual({ value: "token" });
+    expect(parse(token, "")).toEqual({ message: VALIDATION_MESSAGES.botCheck });
+    expect(parse(token, undefined)).toEqual({ message: VALIDATION_MESSAGES.botCheck });
   });
 });
 

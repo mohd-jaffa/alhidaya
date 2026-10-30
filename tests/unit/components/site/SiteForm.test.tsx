@@ -5,7 +5,7 @@ import * as z from "zod";
 
 import { ERROR_MESSAGES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
-import { EnquiryForm } from "@/features/enquiries/components/EnquiryForm";
+import { SiteForm } from "@/components/site/SiteForm";
 import { ApiError } from "@/lib/api/client";
 import { HONEYPOT_FIELD } from "@/lib/api/honeypot";
 
@@ -42,7 +42,7 @@ function Form({
   whatsapp?: string | null;
 }) {
   return (
-    <EnquiryForm
+    <SiteForm
       schema={schema}
       send={send}
       action="Send it"
@@ -57,7 +57,7 @@ function Form({
           <span id="name-error">{errors.name}</span>
         </label>
       )}
-    </EnquiryForm>
+    </SiteForm>
   );
 }
 
@@ -71,7 +71,7 @@ beforeEach(() => {
   Element.prototype.scrollIntoView = vi.fn();
 });
 
-describe("EnquiryForm", () => {
+describe("SiteForm", () => {
   it("lays a trap for bots that no person sees, reaches or has filled in for them (plan §10.3)", () => {
     const { container } = render(<Form />);
     const trap = container.querySelector(`input[name="${HONEYPOT_FIELD}"]`);

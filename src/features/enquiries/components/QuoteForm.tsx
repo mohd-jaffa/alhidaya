@@ -1,6 +1,7 @@
 "use client";
 
-import { RadioGroup } from "@/components/ui/choice";
+import { SiteForm } from "@/components/site/SiteForm";
+import { choiceOptions, RadioGroup } from "@/components/ui/choice";
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
 import { TextArea, TextInput } from "@/components/ui/text-input";
@@ -9,12 +10,8 @@ import { UI_TEXT } from "@/constants/messages";
 import { CARE_FOR, CARE_FOR_LABELS, CONTACT_METHOD_LABELS, CONTACT_METHODS } from "@/constants/statuses";
 
 import { EnquiriesClient } from "../api.client";
-import { EnquiryForm } from "./EnquiryForm";
 
 const schema = () => import("@/lib/validation/schemas/enquiries").then((module) => module.quoteFormSchema);
-
-const choices = <T extends string>(values: readonly T[], labels: Record<T, string>) =>
-  values.map((value) => ({ value, label: labels[value] }));
 
 /**
  * The Quote form (plan §10.1): who the care is for, the service (from the
@@ -35,7 +32,7 @@ export function QuoteForm({
   siteKey: string;
 }) {
   return (
-    <EnquiryForm
+    <SiteForm
       schema={schema}
       send={(values) => EnquiriesClient.submit("QUOTE", values)}
       action={UI_TEXT.sendQuote}
@@ -55,7 +52,7 @@ export function QuoteForm({
           <RadioGroup
             legend={UI_TEXT.careFor}
             name="careFor"
-            options={choices(CARE_FOR, CARE_FOR_LABELS)}
+            options={choiceOptions(CARE_FOR, CARE_FOR_LABELS)}
             required
             error={errors.careFor}
           />
@@ -78,7 +75,7 @@ export function QuoteForm({
           <RadioGroup
             legend={UI_TEXT.contactMethod}
             name="contactMethod"
-            options={choices(CONTACT_METHODS, CONTACT_METHOD_LABELS)}
+            options={choiceOptions(CONTACT_METHODS, CONTACT_METHOD_LABELS)}
             required
             error={errors.contactMethod}
           />
@@ -87,6 +84,6 @@ export function QuoteForm({
           </Field>
         </>
       )}
-    </EnquiryForm>
+    </SiteForm>
   );
 }

@@ -4,6 +4,7 @@ import { TEXT_LIMITS } from "@/constants/limits";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
 import { toE164 } from "@/lib/phone";
 import { normaliseLine, normaliseLines } from "@/lib/text/normalise";
+import { TURNSTILE_FIELD } from "@/lib/turnstile/endpoints";
 
 /**
  * The building blocks every form and route schema is made of (AGENTS.md §12).
@@ -133,3 +134,14 @@ export function requiredPhone(label: string) {
 export function optionalPhone(label: string) {
   return optionalString(label, TEXT_LIMITS.phone, normaliseLine, phoneCheck(label));
 }
+
+/** A public form's consent to the privacy notice (plan §10.1, §9.2): ticked, or not sent. */
+export const consent = z.literal(true, { error: VALIDATION_MESSAGES.consent });
+
+/** Turnstile's token (plan §10.3): present once the check has passed; the route verifies it with Cloudflare. */
+export const botCheck = {
+  [TURNSTILE_FIELD]: z
+    .string({ error: VALIDATION_MESSAGES.botCheck })
+    .min(1, VALIDATION_MESSAGES.botCheck)
+    .max(TEXT_LIMITS.turnstileToken),
+};

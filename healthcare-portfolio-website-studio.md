@@ -449,6 +449,12 @@ outside Qatar); MOPH licence (have / in progress / not yet); Dataflow
 optional note; consent to the privacy notice. Turnstile, honeypot and rate
 limit as §10.3.
 
+Years of experience are a whole number from 0 to 50. The fields go as one
+JSON part beside the CV, and the route reads the whole body within 5 MB and
+64 KB. An application keeps each answer as the applicant saw it, as an
+enquiry does (§10.4). A closed job's form sends the visitor to the job's
+page, which says it is closed (§6.6); a renamed job's moves on for good.
+
 ### 9.3 What happens on submit
 
 1. The route checks Turnstile, the honeypot and the rate limit, then parses
@@ -1393,7 +1399,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R5.1 | Careers page, job page, closed and empty states, `JobPosting` | §6.5, §6.6 | — | DONE (2026-10-29; a closed job is `noindex`; `apply` is no job's address) |
-| R5.2 | Application form with CV (type by bytes, size); general application | §9.2 | Q4, Q7 | TODO |
+| R5.2 | Application form with CV (type by bytes, size); general application | §9.2 | Q4, Q7 | DONE (2026-10-30; the CV is saved in the private folder now, the rest of R5.3 to come; a closed job's form sends the visitor to the job) |
 | R5.3 | The CV folder in use: save under a random id, admin-only download, delete with the application | §9.4 | — | TODO |
 | R5.4 | Submit: row, CV saved, HR email with the CV attached, failure paths and retry | §9.3 | — | TODO |
 | R5.5 | Applications inbox | §9.5 | — | TODO |

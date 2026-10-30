@@ -62,6 +62,8 @@ export const API_ROUTES = {
   passwordReset: "/api/admin/password/reset",
   /** The Quote and Contact forms send here (plan §10). */
   enquiries: "/api/enquiries",
+  /** The application form (plan §9.3). */
+  applications: "/api/applications",
   /** The enquiries inbox (plan §10.5). */
   adminEnquiries: "/api/admin/enquiries",
   adminEnquiry: (id: string) => `/api/admin/enquiries/${id}`,

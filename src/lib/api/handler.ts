@@ -65,7 +65,7 @@ export function readQuery<T>(request: Request, schema: ZodType<T>): T {
 export async function readBody(
   request: Request,
   { maxBytes, tooLarge }: { maxBytes: number; tooLarge: ErrorMessageCode },
-): Promise<Uint8Array> {
+): Promise<Uint8Array<ArrayBuffer>> {
   const declared = Number(request.headers.get("content-length"));
   if (Number.isFinite(declared) && declared > maxBytes) throw validationError(tooLarge);
   if (!request.body) return new Uint8Array(0);
@@ -91,6 +91,26 @@ export async function readBody(
     offset += chunk.byteLength;
   }
   return body;
+}
+
+/**
+ * A form sent with a file (plan §9.2), read whole within `limits` as
+ * `readBody` reads: its fields as one JSON part named `fields`, so they parse
+ * exactly as a JSON body would, and each file under its own name in `form`.
+ */
+export async function readFormData(
+  request: Request,
+  limits: { maxBytes: number; tooLarge: ErrorMessageCode },
+): Promise<{ fields: unknown; form: FormData }> {
+  const body = await readBody(request, limits);
+  try {
+    const form = await new Response(body, {
+      headers: { "content-type": request.headers.get("content-type") ?? "" },
+    }).formData();
+    return { fields: JSON.parse(String(form.get("fields") ?? "")), form };
+  } catch {
+    throw validationError("VALIDATION_INVALID_JSON");
+  }
 }
 
 /** Any thrown value as an AppError; a Zod failure keeps which field went wrong. */

@@ -1,19 +1,19 @@
 "use client";
 
+import { SiteForm } from "@/components/site/SiteForm";
 import { Field } from "@/components/ui/field";
 import { TextArea, TextInput } from "@/components/ui/text-input";
 import { TEXT_LIMITS } from "@/constants/limits";
 import { UI_TEXT } from "@/constants/messages";
 
 import { EnquiriesClient } from "../api.client";
-import { EnquiryForm } from "./EnquiryForm";
 
 const schema = () => import("@/lib/validation/schemas/enquiries").then((module) => module.contactFormSchema);
 
 /** The Contact form (plan §10.2): name, phone, email and message. */
 export function ContactForm({ whatsapp, siteKey }: { whatsapp: string | null; siteKey: string }) {
   return (
-    <EnquiryForm
+    <SiteForm
       schema={schema}
       send={(values) => EnquiriesClient.submit("CONTACT", values)}
       action={UI_TEXT.sendMessage}
@@ -38,6 +38,6 @@ export function ContactForm({ whatsapp, siteKey }: { whatsapp: string | null; si
           </Field>
         </>
       )}
-    </EnquiryForm>
+    </SiteForm>
   );
 }

@@ -1,11 +1,17 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+
 import { eq } from "drizzle-orm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { FORM_RATE_LIMIT, UPLOAD_LIMITS } from "@/constants/limits";
+import { UI_TEXT } from "@/constants/messages";
 import { closeDb, getDb } from "@/db/client";
-import { applicationNotes, applications, auditLog, rateLimits, records } from "@/db/schema";
-import { type ApplicationSubmission, submitApplication } from "@/features/careers/api";
+import { applicationNotes, applications, auditLog, errorLog, rateLimits, records } from "@/db/schema";
+import { type ApplicationSubmission, receiveApplication, submitApplication } from "@/features/careers/api";
 import { createRecord, publishRecord, saveRecordDraft, setRecordArchived } from "@/lib/content/records";
+import { applicationFormSchema } from "@/lib/validation";
 import { jobFixture, serviceFixture } from "@tests/support/fixtures/content";
 
 const REQUEST = `req_applications_${crypto.randomUUID()}`;
@@ -51,6 +57,7 @@ afterAll(async () => {
   await getDb().delete(rateLimits);
   await getDb().delete(records);
   await getDb().delete(auditLog).where(eq(auditLog.requestId, REQUEST));
+  await getDb().delete(errorLog).where(eq(errorLog.message, "Application CV not stored"));
   await closeDb();
 });
 
@@ -122,5 +129,116 @@ describe("submitApplication, against the local MySQL", () => {
     await getDb().insert(applicationNotes).values({ applicationId: id, body: "Shortlist." });
     await getDb().delete(applications).where(eq(applications.id, id));
     expect(await getDb().select().from(applicationNotes).where(eq(applicationNotes.applicationId, id))).toEqual([]);
+  });
+});
+
+/** An application as the route parses it, with a CV of these bytes under this name. */
+const received = (cv: { bytes: Uint8Array | string; name: string }, overrides: Record<string, unknown> = {}) =>
+  applicationFormSchema.parse({
+    jobId: "",
+    name: "Mariam Ali",
+    email: "Mariam@Example.com",
+    phone: "5551 2345",
+    whereNow: "OUTSIDE_QATAR",
+    mophLicence: "IN_PROGRESS",
+    dataflow: "DONE",
+    prometric: "NOT_YET",
+    experienceYears: "4",
+    note: "",
+    consent: true,
+    turnstileToken: "token-from-cloudflare",
+    cv: new File([cv.bytes as BlobPart], cv.name),
+    ...overrides,
+  });
+
+const PDF = "%PDF-1.7 Mariam's CV";
+const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
+
+describe("receiveApplication, against the local MySQL", () => {
+  let root = "";
+  beforeEach(async () => {
+    root = await fs.mkdtemp(path.join(os.tmpdir(), "alhidaya-applications-"));
+    vi.stubEnv("CV_DIR", path.join(root, "cvs"));
+  });
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await fs.rm(root, { recursive: true, force: true });
+  });
+
+  it("keeps each answer as the applicant saw it, and the CV in the private folder under a readable name", async () => {
+    const { id, cvStatus } = await receiveApplication(received({ bytes: PDF, name: "Mariam CV.pdf" }), ip(), at);
+    expect(cvStatus).toBe("STORED");
+    const [row] = await getDb().select().from(applications).where(eq(applications.id, id));
+    expect(row).toMatchObject({
+      jobId: null,
+      email: "mariam@example.com",
+      phone: "+97455512345",
+      cvName: "Mariam CV.pdf",
+      cvType: "pdf",
+      cvBytes: PDF.length,
+      cvStatus: "STORED",
+      emailStatus: "PENDING",
+      fields: [
+        { label: UI_TEXT.fullName, value: "Mariam Ali" },
+        { label: UI_TEXT.email, value: "mariam@example.com" },
+        { label: UI_TEXT.phone, value: "+974 5551 2345" },
+        { label: UI_TEXT.whereNow, value: "Outside Qatar" },
+        { label: UI_TEXT.mophLicence, value: "In progress" },
+        { label: UI_TEXT.dataflow, value: "Done" },
+        { label: UI_TEXT.prometric, value: "Not yet" },
+        { label: UI_TEXT.experienceYears, value: "4" },
+        { label: UI_TEXT.consent, value: UI_TEXT.consentGiven },
+      ],
+    });
+    expect(row.cvKey).toMatch(/^2026-10\/2026-10-29_general_mariam-ali_[0-9a-f]{10}\.pdf$/);
+    const file = path.join(root, "cvs", row.cvKey!);
+    expect(await fs.readFile(file, "utf8")).toBe(PDF);
+    expect((await fs.stat(file)).mode & 0o777).toBe(0o600);
+  });
+
+  it("names the CV by the job applied for, keeps the note, and tidies the name the CV was uploaded under", async () => {
+    const application = received(
+      { bytes: PDF, name: "C:\\fakepath\\My   CV.pdf" },
+      { jobId: jobs.open, note: "ICU, from March." },
+    );
+    const { id } = await receiveApplication(application, ip(), at);
+    const [row] = await getDb().select().from(applications).where(eq(applications.id, id));
+    expect(row.cvName).toBe("My CV.pdf");
+    expect(row.cvKey).toMatch(/_registered-general-nurse-home-care_mariam-ali_/);
+    expect(row.fields).toContainEqual({ label: UI_TEXT.applicationNote, value: "ICU, from March." });
+
+    const unnamed = await receiveApplication(received({ bytes: PDF, name: "" }), ip(), at);
+    const [{ cvName }] = await getDb()
+      .select({ cvName: applications.cvName })
+      .from(applications)
+      .where(eq(applications.id, unnamed.id));
+    expect(cvName).toBe("cv");
+  });
+
+  it("refuses a CV that is not a PDF or Word file by its first bytes, whatever its name, keeping nothing", async () => {
+    const before = (await getDb().select({ id: applications.id }).from(applications)).length;
+    for (const bytes of [PNG, "plain words", ""]) {
+      await expect(receiveApplication(received({ bytes, name: "cv.pdf" }), ip(), at)).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        details: [{ path: "cv", message: expect.any(String) }],
+      });
+    }
+    expect(await getDb().select({ id: applications.id }).from(applications)).toHaveLength(before);
+    await expect(fs.readdir(path.join(root, "cvs"))).rejects.toThrow();
+  });
+
+  it("keeps the application when its CV cannot be saved: marked not stored, logged without anything personal", async () => {
+    await fs.writeFile(path.join(root, "not-a-folder"), "");
+    vi.stubEnv("CV_DIR", path.join(root, "not-a-folder", "cvs"));
+    const { id, cvStatus } = await receiveApplication(received({ bytes: PDF, name: "cv.pdf" }), ip(), at);
+    expect(cvStatus).toBe("NOT_STORED");
+    const [row] = await getDb().select().from(applications).where(eq(applications.id, id));
+    expect(row).toMatchObject({ cvKey: null, cvStatus: "NOT_STORED", cvName: "cv.pdf" });
+    const logged = await getDb()
+      .select({ context: errorLog.context, detail: errorLog.detail, stack: errorLog.stack })
+      .from(errorLog)
+      .where(eq(errorLog.message, "Application CV not stored"));
+    expect(logged.map((entry) => entry.context)).toContainEqual({ applicationId: id });
+    expect(JSON.stringify(logged)).not.toContain("mariam");
   });
 });

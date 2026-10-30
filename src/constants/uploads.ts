@@ -18,6 +18,11 @@ export type FileType = keyof typeof FILE_TYPES;
 /** A CV: PDF or Word (plan Q4, D52). */
 export const CV_TYPES: readonly FileType[] = ["pdf", "docx", "doc"];
 
+/** What the CV picker offers (plan §9.2): a suggestion to the browser, never the check. */
+export const CV_ACCEPT = CV_TYPES.flatMap((type) => [`.${FILE_TYPES[type].extension}`, FILE_TYPES[type].mime]).join(
+  ",",
+);
+
 /** An image the admin uploads; SVG is refused (plan §15). */
 export const IMAGE_TYPES: readonly FileType[] = ["jpeg", "png", "webp", "avif"];
 

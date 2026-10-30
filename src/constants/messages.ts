@@ -119,6 +119,32 @@ export const UI_TEXT = {
   messageNotSent: "Your message was not sent.",
   nothingLost: "What you typed is still here.",
   formNeedsScript: "This form needs JavaScript. You can call, email or message us on WhatsApp instead.",
+  /**
+   * The application (plan §9.2, Q7). Like an enquiry, an application keeps
+   * each label as the applicant saw it.
+   */
+  yourApplication: "Your application",
+  applyLede: "Tell us where you are with your licence, and send your CV. It takes a few minutes.",
+  applyFor: (job: string) => `Apply for ${job}`,
+  applyingFor: "You are applying for",
+  generalApplicationHeadline: "A general application",
+  generalApplicationLede: "No open job that fits? Send us your CV, and tell us where you are with your licence.",
+  generalApplicationFor: "This application is for no one job in particular. It goes to our team with your CV.",
+  fullName: "Full name",
+  whereNow: "Where are you now?",
+  mophLicence: "Your MOPH licence",
+  dataflow: "Dataflow verification",
+  prometric: "Prometric exam",
+  experienceYears: "Years of nursing experience",
+  experienceYearsHint: "A whole number, like 3. Write 0 if you are newly qualified.",
+  cv: "Your CV",
+  cvHint: (max: string) => `A PDF or Word file, at most ${max}.`,
+  applicationNote: "Anything else we should know",
+  applicationNoteHint: "Your specialty, when you could start, or anything else that helps.",
+  sendApplication: "Send my application",
+  applicationSent: "Thank you. We have your application.",
+  applicationSentNext: "Our team will read it, and will contact you if it suits an opening.",
+  applicationNotSent: "Your application was not sent.",
   /** The forms' trap for bots (plan §10.3): hidden from everyone, said plainly for anyone who meets it. */
   honeypot: "Leave this empty",
   botCheckUnavailable:
@@ -211,6 +237,14 @@ export const VALIDATION_MESSAGES = {
   service: "Please choose a service from the list, or Not sure yet.",
   consent: "Please agree, so that we can use your details to answer you.",
   botCheck: "We are still checking that a person is sending this. If a box appears, tick it, then send again.",
+  /** The application form's choices and its CV (plan §9.2, Q4). */
+  whereNow: "Please choose where you are now.",
+  mophLicence: "Please choose where you are with your MOPH licence.",
+  dataflow: "Please choose where you are with Dataflow.",
+  prometric: "Please choose where you are with Prometric.",
+  cvRequired: "Please choose your CV to send.",
+  cvSize: (max: string) => `Your CV can be at most ${max}. Please send a smaller file.`,
+  cvType: "Your CV must be a PDF or a Word file (.pdf, .doc or .docx).",
 } as const;
 
 export function isErrorMessageCode(code: string | null | undefined): code is ErrorMessageCode {

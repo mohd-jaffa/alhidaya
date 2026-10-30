@@ -16,6 +16,8 @@ export {
   requiredPhone,
 } from "./primitives";
 
+export { applicationFormSchema, type ApplicationFormInput, type ApplicationFormPayload } from "./schemas/applications";
+
 export {
   forgotPasswordSchema,
   resetPasswordSchema,

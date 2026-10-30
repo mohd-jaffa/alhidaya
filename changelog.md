@@ -2096,3 +2096,68 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R5.2: the application form with its CV
+
+### Added
+- **The application form** (plan §9.2, Q7): full name, email, phone, where
+  the nurse is now, their MOPH licence, Dataflow, Prometric, years of nursing
+  experience, **the CV** (PDF or Word, at most 5 MB), an optional note and
+  the consent; Turnstile and the trap as on the enquiry forms. The page of a
+  job's Apply, `/careers/[slug]/apply`, names the job on the nurses'
+  leaf-green sign with the way back to it; `/careers/apply` is the general
+  application, with the way back to the open jobs. Sent, the thanks takes
+  the form's place (no WhatsApp: an applicant is not asking for care).
+- **`POST /api/applications`** (plan §9.3): only from the site's own pages;
+  the whole body read within 5 MB and 64 KB, refused past it before reading
+  when its length says so; a filled trap taken and thrown away; the fields
+  and the file through `applicationFormSchema`; Cloudflare's check; then the
+  CV's **type read from its first bytes** (a PDF or Word file, whatever its
+  name), refused beside the CV otherwise, before anything is kept.
+- `receiveApplication` (`src/features/careers/api.ts`): the application is
+  stored with its rate limit and each answer as the applicant saw it, then
+  **the CV saved in the private CV folder** under its readable name (§9.4,
+  R5.3's saving): marked stored, or **not stored** when it cannot be saved,
+  logged by the application's id alone, and the applicant still thanked.
+  The name the CV was uploaded under is kept tidied, never as a path.
+- `findJobToApply`, `getApplyMetadata`, the apply pages' share pictures;
+  `readFormData` beside `readBody`; `CareersClient.apply`; the choices'
+  vocabularies and labels in `statuses.ts` (the form's only);
+  `EXPERIENCE_YEARS`, `APPLICATION_FIELDS_BYTES`, `CV_ACCEPT`.
+
+### Changed
+- The enquiry forms' shared frame is `SiteForm` (`src/components/site`),
+  which the application form uses too; it offers WhatsApp in the thanks only
+  when it is given a number, and takes its own words for what happens next.
+- `useSchemaForm` reads a file field as the file picked (or none).
+- The consent and the bot check are primitives (`src/lib/validation`),
+  shared by the enquiry and application schemas; `choiceOptions` is in the
+  kit's `choice.tsx`, shared by the Quote and application forms.
+
+### Validation
+- Lint, format check, typecheck and the test-path check passed.
+- Unit and integration tests passed, coverage 100%: the schema (tidying,
+  every field's wording, years from 0 to 50, the CV's size and presence);
+  the form (its choices, the picker's types and hint, sending the CV, the
+  route's refusal of its type beside it); the apply page for a job and
+  without; the multipart reader; the route (taken, trap, Turnstile, another
+  site, no CV, too large, not a form); against the local MySQL, an
+  application kept with its answers and its CV saved (`600`, named by the
+  job and the applicant), a file refused by its bytes with nothing kept, a
+  CV that cannot be saved marked not stored and logged without anything
+  personal; the job an apply page is for and its title.
+- E2E with axe at both widths: from a job's Apply to its form, each mistake,
+  then the application and its CV kept; the general application refusing an
+  image named `cv.pdf` beside the CV, keeping what was typed, then taking a
+  Word file; a closed job's form leading to the job; an unknown one 404.
+  E2E passed in full (116, 22 skipped).
+- First paint: both apply pages 168.2 KB of JavaScript (gzip, within
+  170 KB); LCP 256 ms and 260 ms on a throttled phone, CLS 0. The new words
+  in the shared catalogue raised Request a Quote and Contact from 166.3 KB
+  to 168.0 KB: `UI_TEXT` and `VALIDATION_MESSAGES` reach every form page
+  whole, so every form page now has under 2 KB left for new public words
+  (`MAIL_TEXT` and `ADMIN_TEXT` do not reach them). R7.1's look at the
+  catalogue is now due before any public page gains many more words.
+
+### Blockers
+- None.

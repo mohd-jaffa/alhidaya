@@ -6,6 +6,7 @@ describe("the validation module", () => {
   it("offers the primitives and the schemas", () => {
     expect(Object.keys(validation).sort()).toEqual([
       "EMAIL",
+      "applicationFormSchema",
       "clientDocumentSchema",
       "contactFormSchema",
       "enquiryListQuerySchema",

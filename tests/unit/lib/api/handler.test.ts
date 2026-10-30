@@ -5,7 +5,15 @@ import * as z from "zod";
 const { captureError } = vi.hoisted(() => ({ captureError: vi.fn(async (capture: unknown) => void capture) }));
 vi.mock("@/lib/audit/errorLog", () => ({ captureError }));
 
-import { createRequestId, normalizeApiError, readBody, readJson, readQuery, withApiHandler } from "@/lib/api/handler";
+import {
+  createRequestId,
+  normalizeApiError,
+  readBody,
+  readFormData,
+  readJson,
+  readQuery,
+  withApiHandler,
+} from "@/lib/api/handler";
 import { conflictError, internalError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
@@ -77,6 +85,38 @@ describe("readBody", () => {
       duplex: "half",
     } as RequestInit);
     await expect(readBody(request, limit)).rejects.toMatchObject({ code: "UPLOAD_TOO_LARGE" });
+  });
+});
+
+describe("readFormData", () => {
+  const limit = { maxBytes: 1024, tooLarge: "UPLOAD_TOO_LARGE" as const };
+
+  it("reads the fields as JSON and keeps each file under its name", async () => {
+    const form = new FormData();
+    form.set("fields", JSON.stringify({ name: "Mariam", consent: true }));
+    form.set("cv", new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" }));
+    const { fields, form: read } = await readFormData(post(form), limit);
+    expect(fields).toEqual({ name: "Mariam", consent: true });
+    const cv = read.get("cv") as File;
+    expect([cv.name, await cv.text()]).toEqual(["cv.pdf", "%PDF-1.7"]);
+  });
+
+  it("refuses a body that is not a form, or a form without its fields as JSON", async () => {
+    await expect(readFormData(post("plain words"), limit)).rejects.toMatchObject({ code: "VALIDATION_INVALID_JSON" });
+    // Bytes alone carry no content type at all.
+    await expect(readFormData(post(new Uint8Array([1, 2])), limit)).rejects.toMatchObject({
+      code: "VALIDATION_INVALID_JSON",
+    });
+    const unnamed = new FormData();
+    unnamed.set("name", "Mariam");
+    await expect(readFormData(post(unnamed), limit)).rejects.toMatchObject({ code: "VALIDATION_INVALID_JSON" });
+  });
+
+  it("refuses a form larger than its limit", async () => {
+    const form = new FormData();
+    form.set("fields", "{}");
+    form.set("cv", new File([new Uint8Array(2048)], "cv.pdf"));
+    await expect(readFormData(post(form), limit)).rejects.toMatchObject({ code: "UPLOAD_TOO_LARGE" });
   });
 });
 

@@ -13,6 +13,7 @@ const schema = z.object({
   choice: z.enum(["A", "B"], { error: "Choose one." }),
   size: z.string(),
   agree: z.literal(true, { error: "Please agree." }),
+  file: z.unknown(),
 });
 
 function Probe({
@@ -49,6 +50,9 @@ function Probe({
         <input type="checkbox" name="agree" /> Agree
       </label>
       <p data-testid="agree-error">{errors.agree}</p>
+      <label>
+        File <input type="file" name="file" />
+      </label>
       <input aria-label="Unnamed" />
       <a href="#terms">Terms</a>
       <button type="submit">Send</button>
@@ -128,7 +132,7 @@ describe("useSchemaForm", () => {
     expect(name()).not.toHaveAccessibleDescription();
   });
 
-  it("sends what the form holds: a box as ticked, the chosen answer, and says it was sent", async () => {
+  it("sends what the form holds: a box as ticked, the chosen answer, no file, and says it was sent", async () => {
     const user = userEvent.setup();
     let finish = () => {};
     const sent = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
@@ -139,11 +143,23 @@ describe("useSchemaForm", () => {
     // A second press while the first is under way sends nothing more.
     await user.click(send());
     expect(sent).toHaveBeenCalledOnce();
-    expect(sent).toHaveBeenCalledWith({ name: "Mariam", choice: "B", size: "s", agree: true });
+    expect(sent).toHaveBeenCalledWith({ name: "Mariam", choice: "B", size: "s", agree: true, file: null });
     expect(screen.getByTestId("answered")).toHaveTextContent("0");
     await act(async () => finish());
     expect(screen.getByRole("status")).toHaveTextContent("sent");
     expect(screen.getByTestId("answered")).toHaveTextContent("1");
+  });
+
+  it("sends a picked file as the file itself", async () => {
+    const user = userEvent.setup();
+    const sent = vi.fn(async () => {});
+    render(<Probe send={sent} />);
+    await fillValid(user);
+    const file = new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" });
+    await user.upload(screen.getByLabelText("File"), file);
+    await user.click(send());
+    await waitFor(() => expect(sent).toHaveBeenCalledOnce());
+    expect(sent).toHaveBeenCalledWith(expect.objectContaining({ file }));
   });
 
   it("shows what the route refused beside its field", async () => {

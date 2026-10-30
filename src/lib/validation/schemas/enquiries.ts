@@ -3,9 +3,16 @@ import * as z from "zod";
 import { TEXT_LIMITS } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { CARE_FOR, CONTACT_METHODS, ENQUIRY_STATUSES, FORM_KINDS } from "@/constants/statuses";
-import { TURNSTILE_FIELD } from "@/lib/turnstile/endpoints";
 
-import { optionalLine, requiredEmail, requiredLine, requiredLines, requiredPhone } from "../primitives";
+import {
+  botCheck,
+  consent,
+  optionalLine,
+  requiredEmail,
+  requiredLine,
+  requiredLines,
+  requiredPhone,
+} from "../primitives";
 
 /**
  * The Quote and Contact forms (plan §10.1, §10.2), each field named by the
@@ -16,14 +23,6 @@ const name = requiredLine(UI_TEXT.yourName, { max: TEXT_LIMITS.name });
 const phone = requiredPhone(UI_TEXT.phone);
 const email = requiredEmail(UI_TEXT.email);
 const message = requiredLines(UI_TEXT.message, { max: TEXT_LIMITS.message });
-const consent = z.literal(true, { error: VALIDATION_MESSAGES.consent });
-/** Turnstile's token (plan §10.3): present once the check has passed; the route verifies it with Cloudflare. */
-const botCheck = {
-  [TURNSTILE_FIELD]: z
-    .string({ error: VALIDATION_MESSAGES.botCheck })
-    .min(1, VALIDATION_MESSAGES.botCheck)
-    .max(TEXT_LIMITS.turnstileToken),
-};
 
 export const contactFormSchema = z.object({ name, phone, email, message, consent, ...botCheck });
 export type ContactFormInput = z.input<typeof contactFormSchema>;
