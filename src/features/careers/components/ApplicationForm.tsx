@@ -20,7 +20,7 @@ import {
 import { CV_ACCEPT } from "@/constants/uploads";
 import { formatBytes } from "@/lib/files/size";
 
-import { CareersClient } from "../api.client";
+import { CareersClient } from "../form.client";
 
 const schema = () => import("@/lib/validation/schemas/applications").then((module) => module.applicationFormSchema);
 

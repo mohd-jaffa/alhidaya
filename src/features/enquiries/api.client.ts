@@ -1,5 +1,5 @@
-import { API_ROUTES } from "@/constants/routes";
-import type { EnquiryStatus, FormKind } from "@/constants/statuses";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
+import type { EnquiryStatus } from "@/constants/statuses";
 import { deleteJson, patchJson, postJson } from "@/lib/api/client";
 
 import type { EnquiryListQuery, EnquiryNoteItem } from "./types";
@@ -17,18 +17,15 @@ export function enquiriesKey(query: EnquiryListQuery = {}): string {
   if (query.q) params.set("q", query.q);
   if (query.page && query.page > 1) params.set("page", String(query.page));
   const search = params.toString();
-  return search ? `${API_ROUTES.adminEnquiries}?${search}` : API_ROUTES.adminEnquiries;
+  return search ? `${ADMIN_API_ROUTES.adminEnquiries}?${search}` : ADMIN_API_ROUTES.adminEnquiries;
 }
 
-/** The endpoints the forms and the inbox call (AGENTS.md §14). */
+/** The endpoints the enquiries inbox calls; the forms' is in `form.client.ts` (plan §31). */
 export const EnquiriesClient = {
-  /** What was typed is sent as it is, to be read once more by the route's schema. */
-  submit: (form: FormKind, values: Record<string, unknown>) =>
-    postJson<{ received: true }>(API_ROUTES.enquiries, { ...values, form }),
   setStatus: ({ id, status }: { id: string; status: EnquiryStatus }) =>
-    patchJson<{ status: EnquiryStatus }>(API_ROUTES.adminEnquiry(id), { status }),
+    patchJson<{ status: EnquiryStatus }>(ADMIN_API_ROUTES.adminEnquiry(id), { status }),
   addNote: ({ id, body }: { id: string; body: string }) =>
-    postJson<EnquiryNoteItem>(API_ROUTES.adminEnquiryNotes(id), { body }),
-  retryAlert: (id: string) => postJson<{ emailStatus: string }>(API_ROUTES.adminEnquiryRetryMail(id)),
-  remove: (id: string) => deleteJson<{ deleted: true }>(API_ROUTES.adminEnquiry(id)),
+    postJson<EnquiryNoteItem>(ADMIN_API_ROUTES.adminEnquiryNotes(id), { body }),
+  retryAlert: (id: string) => postJson<{ emailStatus: string }>(ADMIN_API_ROUTES.adminEnquiryRetryMail(id)),
+  remove: (id: string) => deleteJson<{ deleted: true }>(ADMIN_API_ROUTES.adminEnquiry(id)),
 };

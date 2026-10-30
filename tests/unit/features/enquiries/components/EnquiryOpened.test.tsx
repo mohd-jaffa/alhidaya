@@ -4,7 +4,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES, VALIDATION_MESSAGES } from "@/constants/messages";
-import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { EnquiryOpened } from "@/features/enquiries/components/EnquiryOpened";
 import type { EnquiryOpened as Opened } from "@/features/enquiries/types";
 import { type Answer, stubApi, stubDialogs, WithSWR } from "@tests/support/api";
@@ -45,7 +45,7 @@ const enquiry = (overrides: Partial<Opened> = {}): Opened => ({
 /** The enquiry's endpoint, and whatever a write to it answers. */
 function api(opened: Opened, write: (method: string, url: string, body: unknown) => Answer = () => ({ data: {} })) {
   return stubApi((method, url, body) =>
-    method === "GET" && url === API_ROUTES.adminEnquiry(opened.id) ? { data: opened } : write(method, url, body),
+    method === "GET" && url === ADMIN_API_ROUTES.adminEnquiry(opened.id) ? { data: opened } : write(method, url, body),
   );
 }
 
@@ -80,7 +80,7 @@ describe("EnquiryOpened", () => {
     await user.click(screen.getByRole("button", { name: "Resolved" }));
     await waitFor(() =>
       expect(fetch).toHaveBeenCalledWith(
-        API_ROUTES.adminEnquiry("e-1"),
+        ADMIN_API_ROUTES.adminEnquiry("e-1"),
         expect.objectContaining({ method: "PATCH", body: JSON.stringify({ status: "RESOLVED" }) }),
       ),
     );
@@ -106,7 +106,7 @@ describe("EnquiryOpened", () => {
     await user.click(within(alert).getByRole("button", { name: ADMIN_TEXT.retryAlert }));
     await waitFor(() => expect(alert).toHaveTextContent(ERROR_MESSAGES.EXTERNAL_SERVICE_ERROR));
     expect(fetch).toHaveBeenCalledWith(
-      API_ROUTES.adminEnquiryRetryMail("e-1"),
+      ADMIN_API_ROUTES.adminEnquiryRetryMail("e-1"),
       expect.objectContaining({ method: "POST" }),
     );
   });
@@ -145,7 +145,7 @@ describe("EnquiryOpened", () => {
     await user.click(within(notes).getByRole("button", { name: ADMIN_TEXT.saveNote }));
     await waitFor(() => expect(box).toHaveValue(""));
     expect(fetch).toHaveBeenCalledWith(
-      API_ROUTES.adminEnquiryNotes("e-1"),
+      ADMIN_API_ROUTES.adminEnquiryNotes("e-1"),
       expect.objectContaining({ body: JSON.stringify({ body: "Called back." }) }),
     );
 
@@ -171,7 +171,10 @@ describe("EnquiryOpened", () => {
     );
     await user.click(screen.getAllByRole("button", { name: ADMIN_TEXT.delete }).at(-1)!);
     await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith(ADMIN_ROUTES.enquiries));
-    expect(fetch).toHaveBeenCalledWith(API_ROUTES.adminEnquiry("e-1"), expect.objectContaining({ method: "DELETE" }));
+    expect(fetch).toHaveBeenCalledWith(
+      ADMIN_API_ROUTES.adminEnquiry("e-1"),
+      expect.objectContaining({ method: "DELETE" }),
+    );
   });
 
   it("deleted from a list, stays where it is", async () => {

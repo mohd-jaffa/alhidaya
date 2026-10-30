@@ -147,6 +147,7 @@ src/
 ├── features/<domain>/
 │   ├── api.ts            # server data functions
 │   ├── api.client.ts     # the endpoints the browser calls
+│   ├── form.client.ts    # a public form's endpoint, apart from the admin's (plan §31)
 │   ├── components/       # PascalCase screens and parts
 │   ├── hooks/            # useXxx.ts
 │   └── types.ts
@@ -167,7 +168,10 @@ src/
 - **Strict constant centralisation:** no magic strings, no inline messages.
   Every word is in `src/constants/messages.ts`, the admin's in
   `src/constants/admin-messages.ts` (apart, so the public pages never load
-  them, plan §31); every vocabulary the database knows is in
+  them, plan §31). For the same reason the admin's addresses are in
+  `src/constants/admin-routes.ts`, and a public form calls its endpoint
+  through its feature's `form.client.ts`, never the inbox's `api.client.ts`;
+  every vocabulary the database knows is in
   `src/constants/statuses.ts` or `sections.ts`.
 - **Use the shared UI kit.** A screen never restyles a button, field, panel or
   card. Needed twice → it belongs in `src/components/ui`.
@@ -470,7 +474,8 @@ numbers.
 | `messages.ts` | `UI_TEXT`, `ERROR_MESSAGES`, `VALIDATION_MESSAGES`, `MAIL_TEXT`: every word |
 | `admin-messages.ts` | `ADMIN_TEXT`: the admin panel's words, kept out of the public pages' JavaScript |
 | `site.ts` | fixed company facts, WhatsApp prefill |
-| `routes.ts` | every public and admin route |
+| `routes.ts` | every public route and the endpoints the public pages call |
+| `admin-routes.ts` | the admin's pages and endpoints, kept out of the public pages' JavaScript |
 | `sections.ts` | the section catalogue and its rules |
 | `statuses.ts` | statuses, audiences, employment types, with labels |
 | `limits.ts` | field bounds, upload sizes, rate limits, retention bounds, lockout |

@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES, VALIDATION_MESSAGES } from "@/constants/messages";
-import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { SignInScreen } from "@/features/auth/components/SignInScreen";
 import { stubApi, WithSWR } from "@tests/support/api";
 
@@ -60,7 +60,7 @@ describe("SignInScreen", () => {
     await user.type(fields().password, "the long password");
     await user.click(screen.getByRole("button", { name: ADMIN_TEXT.signIn }));
     await waitFor(() => expect(replace).toHaveBeenCalledWith("/admin/enquiries/e-1"));
-    expect(fetch).toHaveBeenCalledWith(API_ROUTES.adminSession, expect.objectContaining({ method: "POST" }));
+    expect(fetch).toHaveBeenCalledWith(ADMIN_API_ROUTES.adminSession, expect.objectContaining({ method: "POST" }));
   });
 
   it("says it is signing in while the server answers, and takes no second press", async () => {

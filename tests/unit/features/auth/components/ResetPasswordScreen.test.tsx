@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { PASSWORD_LENGTH } from "@/constants/limits";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES, VALIDATION_MESSAGES } from "@/constants/messages";
-import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { ResetPasswordScreen } from "@/features/auth/components/ResetPasswordScreen";
 import { stubApi, WithSWR } from "@tests/support/api";
 
@@ -31,7 +31,7 @@ describe("ResetPasswordScreen", () => {
     expect(await screen.findByRole("heading", { name: ADMIN_TEXT.passwordChanged })).toBeVisible();
     expect(screen.getByRole("link", { name: ADMIN_TEXT.signIn })).toHaveAttribute("href", ADMIN_ROUTES.login);
     expect(fetch).toHaveBeenCalledWith(
-      API_ROUTES.passwordReset,
+      ADMIN_API_ROUTES.passwordReset,
       expect.objectContaining({ body: JSON.stringify({ token: "one-time", password: "a long new password" }) }),
     );
   });

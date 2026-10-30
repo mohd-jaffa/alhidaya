@@ -10,7 +10,7 @@ import { TeamNotes } from "@/components/admin/TeamNotes";
 import { Button } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { ENQUIRY_STATUS_LABELS, ENQUIRY_STATUSES } from "@/constants/statuses";
 import { errorMessage } from "@/lib/errors/errorMessage";
 import { useApiQuery } from "@/lib/query/useApiQuery";
@@ -20,7 +20,7 @@ import { EnquiriesClient } from "../api.client";
 import type { EnquiryOpened as Opened } from "../types";
 
 /** The lists an enquiry is in: its inbox, and Today. */
-const LISTS = [API_ROUTES.adminEnquiries, API_ROUTES.adminToday];
+const LISTS = [ADMIN_API_ROUTES.adminEnquiries, ADMIN_API_ROUTES.adminToday];
 
 /**
  * An enquiry opened in its row (plan §10.5, R6.1): every answer as the
@@ -30,7 +30,7 @@ const LISTS = [API_ROUTES.adminEnquiries, API_ROUTES.adminToday];
  * takes its place.
  */
 export function EnquiryOpened({ id }: { id: string }) {
-  const { data, error, isLoading, mutate } = useApiQuery<Opened>(API_ROUTES.adminEnquiry(id));
+  const { data, error, isLoading, mutate } = useApiQuery<Opened>(ADMIN_API_ROUTES.adminEnquiry(id));
   const router = useRouter();
   const pathname = usePathname();
   if (error) {
@@ -44,7 +44,7 @@ export function EnquiryOpened({ id }: { id: string }) {
     );
   }
   if (isLoading || !data) return <p aria-busy="true" className="h-40 animate-pulse rounded-panel bg-rule/40" />;
-  const stale = [...LISTS, API_ROUTES.adminEnquiry(id)];
+  const stale = [...LISTS, ADMIN_API_ROUTES.adminEnquiry(id)];
   return (
     <div className="grid gap-6">
       <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
@@ -77,7 +77,7 @@ export function EnquiryOpened({ id }: { id: string }) {
         notes={data.notes}
         schema={enquiryNoteSchema}
         add={(body) => EnquiriesClient.addNote({ id, body })}
-        revalidate={[API_ROUTES.adminEnquiry(id)]}
+        revalidate={[ADMIN_API_ROUTES.adminEnquiry(id)]}
       />
       <DeleteAction
         title={ADMIN_TEXT.deleteEnquiryTitle(data.name)}

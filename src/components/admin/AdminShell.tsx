@@ -9,9 +9,10 @@ import { SkipLink } from "@/components/site/SkipLink";
 import { Dialog } from "@/components/ui/dialog";
 import { Pictogram } from "@/components/ui/pictogram";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { AuthClient } from "@/features/auth/api.client";
 import { applicationsKey } from "@/features/careers/api.client";
+import type { PageStateItem } from "@/features/content/types";
 import { enquiriesKey } from "@/features/enquiries/api.client";
 import { todayKey } from "@/lib/inbox/keys";
 import { useApiMutation } from "@/lib/query/useApiMutation";
@@ -126,6 +127,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
   const needs = useApiQuery<{ total: number }>(todayKey({ needsYou: true }));
   const freshEnquiries = useApiQuery<{ total: number }>(enquiriesKey({ status: "NEW" }));
   const freshApplications = useApiQuery<{ total: number }>(applicationsKey({ status: "NEW" }));
+  const pages = useApiQuery<PageStateItem[]>(ADMIN_API_ROUTES.adminPages);
   const count = (total: number | undefined, said: (count: number) => string) =>
     total === undefined ? undefined : { value: total, said: said(total) };
 
@@ -151,6 +153,16 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
           label: ADMIN_TEXT.applications,
           href: ADMIN_ROUTES.applications,
           count: count(freshApplications.data?.total, ADMIN_TEXT.newCount),
+        },
+      ],
+    },
+    {
+      label: ADMIN_TEXT.theSite,
+      stations: [
+        {
+          label: ADMIN_TEXT.pages,
+          href: ADMIN_ROUTES.pages,
+          count: count(pages.data?.filter((state) => state.unpublishedChanges).length, ADMIN_TEXT.waitingCount),
         },
       ],
     },

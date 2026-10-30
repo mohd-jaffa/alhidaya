@@ -2,7 +2,8 @@ import { expect, test } from "@playwright/test";
 import { like } from "drizzle-orm";
 
 import { UI_TEXT } from "@/constants/messages";
-import { API_ROUTES, ROUTES } from "@/constants/routes";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
+import { ROUTES, API_ROUTES } from "@/constants/routes";
 import { closeDb, getDb } from "@/db/client";
 import { authUser } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";
@@ -47,7 +48,7 @@ test("the admin's preview shows drafts under its bar, unindexed; the public neve
     401,
   );
 
-  const signIn = await page.request.post(API_ROUTES.adminSession, {
+  const signIn = await page.request.post(ADMIN_API_ROUTES.adminSession, {
     data: { email: EMAIL, password: PASSWORD },
     headers: { origin: E2E_ORIGIN },
   });

@@ -44,6 +44,7 @@ export function Field({
   error,
   required = false,
   markOptional = true,
+  hideLabel = false,
   children,
 }: {
   label: string;
@@ -52,6 +53,8 @@ export function Field({
   required?: boolean;
   /** Whether a field that may be left empty says so; a search box need not. */
   markOptional?: boolean;
+  /** For a control whose label is already in view beside it (an editor's numbered block): kept for screen readers. */
+  hideLabel?: boolean;
   children: ReactNode;
 }) {
   const id = useId();
@@ -62,7 +65,7 @@ export function Field({
   if (error) control["aria-invalid"] = true;
   return (
     <div className="grid gap-2">
-      <label htmlFor={id} className="font-semibold">
+      <label htmlFor={id} className={hideLabel ? "sr-only" : "font-semibold"}>
         {label}
         {required || !markOptional ? null : (
           <>

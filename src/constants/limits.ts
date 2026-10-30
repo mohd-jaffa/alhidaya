@@ -20,6 +20,9 @@ export const TEXT_LIMITS = {
   slug: 80,
   seoTitle: 70,
   seoDescription: 160,
+  /** A section's longer text: a mission, the institutions' words, the jobs list's introduction. */
+  sectionText: 600,
+  valueTitle: 80,
   url: 500,
   fileName: 255,
   /** A stored file's key: its month folder and generated name. */

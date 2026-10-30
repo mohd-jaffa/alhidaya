@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { APPLICATION_STATUS_LABELS, APPLICATION_STATUSES, type ApplicationStatus } from "@/constants/statuses";
 import { pageFrom } from "@/lib/pagination";
 import { GENERAL_APPLICATIONS } from "@/lib/validation/schemas/applications";

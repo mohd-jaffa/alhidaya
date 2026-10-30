@@ -2430,3 +2430,68 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None. The screens are next.
+
+## 2026-10-30 — R6.3: the Pages editor's screens
+
+### Added
+- `/admin/pages`: the eight pages, each with its state (Published, Changes
+  not published, Not published yet) and when it was last published
+  (`PagesScreen`, `PageStateChip`).
+- `/admin/pages/[page]`: the page editor (`PageEditor`, D88). A bar kept in
+  view on desktop names the page and its state and holds Discard draft,
+  Preview (a new tab, showing the saved draft), Save draft and Publish.
+  Publish checks the page first, asks, and saves unsaved changes before it
+  publishes; Discard asks. A mistake opens its section and takes focus to
+  the first field that needs attention; the server's own refusals land on
+  their fields.
+- The sections as numbered rows, one opened in place with its type's fields
+  (`SectionList`, `SectionRow`, `SectionFields`, from the spec in
+  `features/content/editor.ts`): Hide/Show, Move up/Move down, the browser's
+  own drag by the grip with a sky line where the row will land (D90), Remove
+  (asked first) and Add a section (only what the page still allows, D87).
+  The sign stays first; a section the page needs is never hidden or removed.
+  Each move is said aloud to a screen reader.
+- The section fields: text lines and paragraphs (`EditorText`), the text
+  block by block (`RichTextField`: paragraph, heading, list, link), the
+  values (`ValuesField`), the form's choice, and the photo picked from the
+  library in a dialog (`PhotoField`, D89), then the page's SEO.
+- `LeaveGuard`: leaving a page with unsaved changes, by a link or by
+  closing the tab, asks first.
+- The rail's "The site" group with Pages, counting the pages that wait to
+  be published, and Today's "Not published yet" list in Needs you (D86).
+- `PagesClient` (save, publish, discard); `IconButton` in the kit (an action
+  that cannot run is marked unavailable, not hidden); the `quiet` button;
+  `Field`'s `hideLabel` (kept for screen readers); the grip, chevron-up and
+  plus pictograms.
+
+### Changed
+- The admin's addresses moved from `routes.ts` to `admin-routes.ts`
+  (`ADMIN_ROUTES`, `ADMIN_API_ROUTES`, `ADMIN_PUBLIC_ROUTES`), and the
+  application and enquiry forms call their endpoints through a new
+  `form.client.ts` in their feature, apart from the inbox's `api.client.ts`.
+  Reason: both rode along on every public page whole, and the editor's
+  additions took the apply page to 171.0 KB, over its 170 KB budget
+  (plan §31). Same reason as `admin-messages.ts`; AGENTS.md §5 and §21 and
+  plan §24 and §25 say so.
+- `SECTION_NAMES` moved to `admin-messages.ts`: only the admin and the
+  server name a section.
+- A section's longer text and a value's title take their bounds from
+  `TEXT_LIMITS` (`sectionText`, `valueTitle`), not numbers in the schema;
+  the pages schema exports `PageDocumentInput` and `SectionInput`.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (861), coverage 100%.
+- E2E passed (126, phone and desktop; 26 run on one size only): axe on the
+  Pages list, the editor with a section open and the photo dialog; on
+  desktop, a Privacy headline saved, previewed in a new tab, still old for a
+  visitor, published, then new for the visitor; leaving Home with a hidden
+  section asks first; Stay keeps the editor, Leave goes without saving.
+- First paint, JavaScript (gzip, within 170 KB): Home 159.3 KB, About and
+  Careers 160.8 KB, Contact and Request a Quote 168.7 KB (169.5 before this
+  row), the apply page 169.1 KB (169.9 before). No admin address or word
+  reaches a public page.
+
+### Blockers
+- None. R6.9's pages journey is partly covered by
+  `tests/e2e/page-editor.spec.ts`; the row stays open for the rest.

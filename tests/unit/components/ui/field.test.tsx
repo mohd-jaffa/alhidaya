@@ -19,6 +19,16 @@ describe("Field", () => {
     expect(screen.getByText("Phone must be a Qatar number.").closest("p")).toHaveClass("text-error");
   });
 
+  it("keeps a label for screen readers alone when it is already in view beside the control", () => {
+    render(
+      <Field label="Paragraph 2" required hideLabel>
+        <TextArea name="paragraph" />
+      </Field>,
+    );
+    expect(screen.getByRole("textbox", { name: "Paragraph 2" })).toBeVisible();
+    expect(screen.getByText("Paragraph 2")).toHaveClass("sr-only");
+  });
+
   it("leaves out the optional mark where it would say nothing useful, as on a search box", () => {
     render(
       <Field label="Search" markOptional={false}>

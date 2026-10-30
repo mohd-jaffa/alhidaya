@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { PASSWORD_RESET_MINUTES } from "@/constants/limits";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES, VALIDATION_MESSAGES } from "@/constants/messages";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { ForgotPasswordScreen } from "@/features/auth/components/ForgotPasswordScreen";
 import { stubApi, WithSWR } from "@tests/support/api";
 

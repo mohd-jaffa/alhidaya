@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { API_ROUTES } from "@/constants/routes";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { AuthClient } from "@/features/auth/api.client";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -14,10 +14,10 @@ describe("AuthClient", () => {
     await AuthClient.requestReset({ email: "admin@alhidaya.qa" });
     await AuthClient.resetPassword({ token: "t", password: "a long new password" });
     expect(fetch.mock.calls.map(([url, init]) => `${(init as RequestInit).method} ${url}`)).toEqual([
-      `POST ${API_ROUTES.adminSession}`,
-      `DELETE ${API_ROUTES.adminSession}`,
-      `POST ${API_ROUTES.passwordForgot}`,
-      `POST ${API_ROUTES.passwordReset}`,
+      `POST ${ADMIN_API_ROUTES.adminSession}`,
+      `DELETE ${ADMIN_API_ROUTES.adminSession}`,
+      `POST ${ADMIN_API_ROUTES.passwordForgot}`,
+      `POST ${ADMIN_API_ROUTES.passwordReset}`,
     ]);
   });
 });

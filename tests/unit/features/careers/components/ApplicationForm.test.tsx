@@ -8,7 +8,7 @@ import { ApplicationForm } from "@/features/careers/components/ApplicationForm";
 import { ApiError } from "@/lib/api/client";
 
 const { apply } = vi.hoisted(() => ({ apply: vi.fn(async (values: Record<string, unknown>) => void values) }));
-vi.mock("@/features/careers/api.client", () => ({ CareersClient: { apply } }));
+vi.mock("@/features/careers/form.client", () => ({ CareersClient: { apply } }));
 vi.mock("@/components/ui/bot-check", () => ({
   BotCheck: () => <input type="hidden" name="turnstileToken" value="token-from-cloudflare" readOnly />,
 }));

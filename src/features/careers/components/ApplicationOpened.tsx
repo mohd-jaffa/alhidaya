@@ -11,7 +11,7 @@ import { Button, buttonClasses } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { Pictogram } from "@/components/ui/pictogram";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { APPLICATION_STATUS_LABELS, APPLICATION_STATUSES } from "@/constants/statuses";
 import { errorMessage } from "@/lib/errors/errorMessage";
 import { formatBytes } from "@/lib/files/size";
@@ -22,7 +22,7 @@ import { ApplicationsClient } from "../api.client";
 import type { ApplicationOpened as Opened } from "../types";
 
 /** The lists an application is in: its inbox, and Today. */
-const LISTS = [API_ROUTES.adminApplications, API_ROUTES.adminToday];
+const LISTS = [ADMIN_API_ROUTES.adminApplications, ADMIN_API_ROUTES.adminToday];
 
 /** Why a CV is not there to download, in words and tone (plan §9.3, §9.4). */
 const CV_ABSENT = {
@@ -51,7 +51,7 @@ function CvPart({ application }: { application: Opened }) {
         </Notice>
       ) : (
         <a
-          href={API_ROUTES.adminApplicationCv(application.id)}
+          href={ADMIN_API_ROUTES.adminApplicationCv(application.id)}
           download
           className={buttonClasses({ variant: "secondary" }, "justify-self-start")}
         >
@@ -71,7 +71,7 @@ function CvPart({ application }: { application: Opened }) {
  * the inbox takes its place.
  */
 export function ApplicationOpened({ id }: { id: string }) {
-  const { data, error, isLoading, mutate } = useApiQuery<Opened>(API_ROUTES.adminApplication(id));
+  const { data, error, isLoading, mutate } = useApiQuery<Opened>(ADMIN_API_ROUTES.adminApplication(id));
   const router = useRouter();
   const pathname = usePathname();
   if (error) {
@@ -85,7 +85,7 @@ export function ApplicationOpened({ id }: { id: string }) {
     );
   }
   if (isLoading || !data) return <p aria-busy="true" className="h-40 animate-pulse rounded-panel bg-rule/40" />;
-  const stale = [...LISTS, API_ROUTES.adminApplication(id)];
+  const stale = [...LISTS, ADMIN_API_ROUTES.adminApplication(id)];
   const answers = [{ label: ADMIN_TEXT.job, value: data.jobTitle ?? ADMIN_TEXT.generalApplication }, ...data.fields];
   return (
     <div className="grid gap-6">
@@ -120,7 +120,7 @@ export function ApplicationOpened({ id }: { id: string }) {
         notes={data.notes}
         schema={applicationNoteSchema}
         add={(body) => ApplicationsClient.addNote({ id, body })}
-        revalidate={[API_ROUTES.adminApplication(id)]}
+        revalidate={[ADMIN_API_ROUTES.adminApplication(id)]}
       />
       <DeleteAction
         title={ADMIN_TEXT.deleteApplicationTitle(data.name)}

@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { ApplicationsScreen } from "@/features/careers/components/ApplicationsScreen";
 
 const log = vi.hoisted(() => vi.fn());

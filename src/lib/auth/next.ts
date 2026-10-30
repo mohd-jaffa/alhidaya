@@ -1,4 +1,4 @@
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 
 /**
  * Where sign-in sends the admin next (plan §26.4): the admin page they were

@@ -10,7 +10,7 @@ import { Notice } from "@/components/ui/notice";
 import { TextInput } from "@/components/ui/text-input";
 import { PASSWORD_RESET_MINUTES } from "@/constants/limits";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { errorMessage } from "@/lib/errors/errorMessage";
 import { useApiMutation } from "@/lib/query/useApiMutation";
 import { type ForgotPasswordInput, type ForgotPasswordPayload, forgotPasswordSchema } from "@/lib/validation";

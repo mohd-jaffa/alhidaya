@@ -1,4 +1,4 @@
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 
 import type { MailAttachment, MailProvider } from "./mail.provider";
 import { type ApplicationAlertInput, applicationAlertTemplate } from "./templates/application-alert";

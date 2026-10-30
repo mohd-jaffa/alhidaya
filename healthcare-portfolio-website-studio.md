@@ -925,6 +925,7 @@ src/
 │   ├── settings/             # site content, operations
 │   └── activity/             # the audit trail screen
 │       (each: api.ts · api.client.ts · components/ · hooks/ · types.ts)
+│       (careers and enquiries also: form.client.ts, the public form's endpoint, §31)
 ├── hooks/                    # shared hooks
 ├── lib/                      # api, audit, auth, env, errors, files, mail, motion, query,
 │                             # rate-limit, seo, storage, text, turnstile, validation
@@ -944,7 +945,9 @@ docs/                         # planning/ (the archived draft), brand/, RELEASE.
 |---|---|
 | `messages.ts` | `UI_TEXT`, `ERROR_MESSAGES`, `VALIDATION_MESSAGES`, `MAIL_TEXT`: every word, English now, keyed for Arabic later |
 | `site.ts` | the company's fixed facts used before content loads (name, domain), WhatsApp prefill text (Q14) |
-| `routes.ts` | every public and admin route |
+| `admin-messages.ts` | `ADMIN_TEXT`: the admin panel's words, apart so the public pages never load them (§31) |
+| `routes.ts` | every public route and the endpoints the public pages call |
+| `admin-routes.ts` | the admin's pages and endpoints, apart for the same reason |
 | `sections.ts` | the section catalogue: types, which pages allow them, fixed ones, maxima |
 | `statuses.ts` | content, job, enquiry and application statuses, audiences, employment types, with labels |
 | `limits.ts` | field bounds, upload sizes, rate-limit windows, retention bounds (1 – 365), lockout |
@@ -1447,7 +1450,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R6.1 | `/impeccable shape` the admin (Operate) | §30.5 | — | DONE (2026-10-29; brought forward, D80; the day's log, D81; brief and direction in `.impeccable/surfaces/src-app-admin-page-tsx.md`) |
 | R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | DONE (2026-10-29; brought forward, D80; Today is the Overview, D81; Applications and the content screens join the rail with their rows) |
-| R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | IN PROGRESS (2026-10-30; shaped with the user, D86 – D90; the routes are done, the screens next) |
+| R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | DONE (2026-10-30; shaped with the user, D86 – D90) |
 | R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO (the sizing step and `storeImage` came forward with D75, 2026-10-29) |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |

@@ -9,7 +9,7 @@ import { TEXT_LIMITS } from "@/constants/limits";
 import { UI_TEXT } from "@/constants/messages";
 import { CARE_FOR, CARE_FOR_LABELS, CONTACT_METHOD_LABELS, CONTACT_METHODS } from "@/constants/statuses";
 
-import { EnquiriesClient } from "../api.client";
+import { EnquiryFormClient } from "../form.client";
 
 const schema = () => import("@/lib/validation/schemas/enquiries").then((module) => module.quoteFormSchema);
 
@@ -34,7 +34,7 @@ export function QuoteForm({
   return (
     <SiteForm
       schema={schema}
-      send={(values) => EnquiriesClient.submit("QUOTE", values)}
+      send={(values) => EnquiryFormClient.submit("QUOTE", values)}
       action={UI_TEXT.sendQuote}
       sent={UI_TEXT.quoteSent}
       notSent={UI_TEXT.quoteNotSent}

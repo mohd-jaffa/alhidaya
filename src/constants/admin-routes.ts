@@ -1,0 +1,62 @@
+import { type PageKey, pageSlug } from "./sections";
+
+/**
+ * The admin's pages and endpoints (plan §5.2, §29), named once, apart from
+ * routes.ts so the public pages never carry them: every address that reaches
+ * a public page counts against its JavaScript budget (plan §31), as the
+ * admin's words do (admin-messages.ts).
+ */
+export const ADMIN_ROUTES = {
+  login: "/admin/login",
+  forgotPassword: "/admin/forgot-password",
+  resetPassword: "/admin/reset-password",
+  overview: "/admin",
+  /** The eight pages with their state, and one page's editor (D88). */
+  pages: "/admin/pages",
+  page: (page: PageKey) => `/admin/pages/${pageSlug(page)}`,
+  services: "/admin/services",
+  jobs: "/admin/jobs",
+  clients: "/admin/clients",
+  media: "/admin/media",
+  enquiries: "/admin/enquiries",
+  enquiry: (id: string) => `/admin/enquiries/${id}`,
+  applications: "/admin/applications",
+  application: (id: string) => `/admin/applications/${id}`,
+  settings: "/admin/settings",
+  operations: "/admin/settings/operations",
+  activity: "/admin/activity",
+} as const;
+
+/** Every endpoint the admin's screens call (AGENTS.md §14). */
+export const ADMIN_API_ROUTES = {
+  adminSession: "/api/admin/session",
+  passwordForgot: "/api/admin/password/forgot",
+  passwordReset: "/api/admin/password/reset",
+  /** Today: enquiries and applications as one stream (D81). */
+  adminToday: "/api/admin/today",
+  /** The enquiries inbox (plan §10.5). */
+  adminEnquiries: "/api/admin/enquiries",
+  adminEnquiry: (id: string) => `/api/admin/enquiries/${id}`,
+  adminEnquiryNotes: (id: string) => `/api/admin/enquiries/${id}/notes`,
+  adminEnquiryRetryMail: (id: string) => `/api/admin/enquiries/${id}/retry-mail`,
+  /** The applications inbox (plan §9.5), and an application's CV for the admin's download (§9.4). */
+  adminApplications: "/api/admin/applications",
+  adminApplication: (id: string) => `/api/admin/applications/${id}`,
+  adminApplicationNotes: (id: string) => `/api/admin/applications/${id}/notes`,
+  adminApplicationCv: (id: string) => `/api/admin/applications/${id}/cv`,
+  adminApplicationRetryMail: (id: string) => `/api/admin/applications/${id}/retry-mail`,
+  /** The pages and their state; a page's draft, its publish and its discard (plan §14, D88). */
+  adminPages: "/api/admin/pages",
+  adminPage: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}`,
+  adminPagePublish: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}/publish`,
+  adminPageDiscard: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}/discard`,
+  /** The media library's images, for a section's photo (D89). */
+  adminMedia: "/api/admin/media",
+} as const;
+
+/** The admin pages anyone may open: everything else under /admin needs a session (src/proxy.ts). */
+export const ADMIN_PUBLIC_ROUTES: readonly string[] = [
+  ADMIN_ROUTES.login,
+  ADMIN_ROUTES.forgotPassword,
+  ADMIN_ROUTES.resetPassword,
+];

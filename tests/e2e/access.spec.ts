@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 
 import { E2E_ORIGIN } from "@tests/support/e2e-app";
 

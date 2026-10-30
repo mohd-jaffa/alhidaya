@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { API_ROUTES } from "@/constants/routes";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { ApplicationLog } from "@/features/careers/components/ApplicationLog";
 import type { ApplicationListItem } from "@/features/careers/types";
 import { stubApi, WithSWR } from "@tests/support/api";
@@ -46,12 +46,12 @@ describe("ApplicationLog", () => {
     const fetch = stubApi(() => ({ data: list }));
     log();
     expect(await screen.findByRole("button", { name: /Application from Omar Haddad/ })).toBeVisible();
-    expect(fetch).toHaveBeenCalledWith(`${API_ROUTES.adminApplications}?job=general`, expect.anything());
+    expect(fetch).toHaveBeenCalledWith(`${ADMIN_API_ROUTES.adminApplications}?job=general`, expect.anything());
   });
 
   it("opens the application an address named above the list when it is not on this page", async () => {
     stubApi((_, url) =>
-      url === API_ROUTES.adminApplication("a-1")
+      url === ADMIN_API_ROUTES.adminApplication("a-1")
         ? {
             data: {
               ...item("a-1", "Mariam Ali"),
@@ -73,7 +73,7 @@ describe("ApplicationLog", () => {
 
   it("says when the named application did not load", async () => {
     stubApi((_, url) =>
-      url === API_ROUTES.adminApplication("a-1")
+      url === ADMIN_API_ROUTES.adminApplication("a-1")
         ? { status: 404, error: { code: "RECORD_NOT_FOUND", message: ERROR_MESSAGES.RECORD_NOT_FOUND } }
         : { data: list },
     );

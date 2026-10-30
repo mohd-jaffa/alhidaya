@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { API_ROUTES } from "@/constants/routes";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { EnquiryLog } from "@/features/enquiries/components/EnquiryLog";
 import type { EnquiryListItem } from "@/features/enquiries/types";
 import { type Answer, stubApi, WithSWR } from "@tests/support/api";
@@ -52,7 +52,7 @@ describe("EnquiryLog", () => {
     const thursday = await screen.findByRole("region", { name: "Thursday 29 October 2026" });
     expect(within(thursday).getAllByRole("button")).toHaveLength(2);
     expect(screen.getByRole("region", { name: "Wednesday 28 October 2026" })).toBeVisible();
-    expect(fetch).toHaveBeenCalledWith(`${API_ROUTES.adminEnquiries}?needsYou=true`, expect.anything());
+    expect(fetch).toHaveBeenCalledWith(`${ADMIN_API_ROUTES.adminEnquiries}?needsYou=true`, expect.anything());
 
     await user.click(screen.getByRole("button", { name: /Omar Haddad/ }));
     expect(screen.getByText("Opened e-3")).toBeVisible();
@@ -117,7 +117,7 @@ describe("EnquiryLog", () => {
 
   it("opens the enquiry an address named above the list when it is not on this page, even an empty one", async () => {
     stubApi((method, url) =>
-      url === API_ROUTES.adminEnquiry("e-9")
+      url === ADMIN_API_ROUTES.adminEnquiry("e-9")
         ? {
             data: {
               id: "e-9",
@@ -145,9 +145,9 @@ describe("EnquiryLog", () => {
 
   it("names a named quote as a quote, and says when the named enquiry cannot be found", async () => {
     stubApi((method, url) =>
-      url === API_ROUTES.adminEnquiry("gone")
+      url === ADMIN_API_ROUTES.adminEnquiry("gone")
         ? { status: 404, error: { code: "RECORD_NOT_FOUND", message: "This item no longer exists." } }
-        : url === API_ROUTES.adminEnquiry("e-8")
+        : url === ADMIN_API_ROUTES.adminEnquiry("e-8")
           ? {
               data: {
                 id: "e-8",

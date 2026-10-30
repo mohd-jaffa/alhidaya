@@ -49,6 +49,11 @@ export const PICTOGRAMS = {
   error: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 7.5V13", "M12 16.5v.01"],
   info: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 11v5.5", "M12 7.5v.01"],
 
+  // The admin's editors (R6.3): a row to drag, moved up, a thing added.
+  grip: ["M9 6v.01", "M15 6v.01", "M9 12v.01", "M15 12v.01", "M9 18v.01", "M15 18v.01"],
+  chevronUp: ["M6 14.5l6-6 6 6"],
+  plus: ["M12 5v14", "M5 12h14"],
+
   // The admin's password field (R6.2): what was typed, shown or hidden.
   eye: ["M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z", "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"],
   eyeOff: [

@@ -1,7 +1,8 @@
 import * as z from "zod";
 
 import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
-import { SECTION_NAMES, VALIDATION_MESSAGES } from "@/constants/messages";
+import { SECTION_NAMES } from "@/constants/admin-messages";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
 import { FIXED_FIRST_SECTION, PAGE_RULES, type PageKey, type SectionType } from "@/constants/sections";
 import { FORM_KINDS } from "@/constants/statuses";
 
@@ -24,23 +25,25 @@ const SECTION_CONTENT = {
   VALUES: z.object({
     heading,
     items: z
-      .array(z.object({ title: localized(requiredLine("Title", { max: 80 })), text: shortText("Text") }))
+      .array(
+        z.object({ title: localized(requiredLine("Title", { max: TEXT_LIMITS.valueTitle })), text: shortText("Text") }),
+      )
       .min(1, VALIDATION_MESSAGES.atLeastOne("Values"))
       .max(LIST_LIMITS.values, VALIDATION_MESSAGES.atMost("Values", LIST_LIMITS.values)),
   }),
   MISSION: z.object({
-    mission: localized(requiredLines("Mission", { max: 600 })),
-    vision: localized(requiredLines("Vision", { max: 600 })),
+    mission: localized(requiredLines("Mission", { max: TEXT_LIMITS.sectionText })),
+    vision: localized(requiredLines("Vision", { max: TEXT_LIMITS.sectionText })),
   }),
   INSTITUTIONS: z.object({
     heading,
-    text: localized(requiredLines("Text", { max: 600 })),
+    text: localized(requiredLines("Text", { max: TEXT_LIMITS.sectionText })),
     image: imageRefSchema.nullable(),
   }),
   CLIENTS: z.object({ heading }),
   CAREERS_BAND: z.object({ heading, text: shortText("Text") }),
   JOBS_LIST: z.object({
-    intro: localized(optionalLines("Introduction", 600)),
+    intro: localized(optionalLines("Introduction", TEXT_LIMITS.sectionText)),
     emptyText: localized(requiredLines("When there are no jobs", { max: TEXT_LIMITS.lede })),
   }),
   CONTACT_BAND: z.object({ heading, text: shortText("Text") }),
@@ -71,12 +74,15 @@ export const sectionSchema = z.discriminatedUnion("type", [
   sectionOf("RICH_TEXT"),
 ]);
 export type Section = z.output<typeof sectionSchema>;
+export type SectionInput = z.input<typeof sectionSchema>;
 
 const pageShape = z.object({
   seo: seoSchema,
   sections: z.array(sectionSchema).min(1).max(LIST_LIMITS.sections),
 });
 export type PageDocument = z.output<typeof pageShape>;
+/** A page as the admin's editor holds it, before its text is tidied (AGENTS.md §12). */
+export type PageDocumentInput = z.input<typeof pageShape>;
 
 /**
  * A page as one document (plan D58), held to its page's rules (plan §7.1): the

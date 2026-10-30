@@ -18,6 +18,8 @@ const VARIANTS = {
   /** On a deep-blue sign: the main action in white, a second one outlined. */
   onDeep: "bg-ground text-navy hover:bg-mist focus-visible:outline-focus-on-deep",
   onDeepQuiet: "border-2 border-on-deep text-on-deep hover:bg-on-deep/10 focus-visible:outline-focus-on-deep",
+  /** The admin's lesser actions beside a main one (R6.3): words in deep blue, no frame. */
+  quiet: "text-deep hover:bg-mist",
 } as const;
 
 const SIZES = {

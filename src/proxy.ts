@@ -1,7 +1,7 @@
 import { getSessionCookie } from "better-auth/cookies";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { ADMIN_PUBLIC_ROUTES, ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_PUBLIC_ROUTES } from "@/constants/admin-routes";
 
 /**
  * The admin's signed-in gate (AGENTS.md §9): a page under /admin without a

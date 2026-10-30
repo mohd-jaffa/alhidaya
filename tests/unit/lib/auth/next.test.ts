@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { adminReturnPath } from "@/lib/auth/next";
 
 describe("adminReturnPath", () => {

@@ -1,5 +1,3 @@
-import type { SectionType } from "./sections";
-
 /**
  * Every word the site shows (AGENTS.md §5): screens, metadata and emails read
  * from here, never from a string of their own. English now; an Arabic
@@ -152,23 +150,6 @@ export const UI_TEXT = {
   botCheckUnavailable:
     "The check that a person is sending this did not load. Please reload the page, or call or message us on WhatsApp.",
 } as const;
-
-/** Each section type's name (plan §7.2), in the admin's plain words: the editor and the page's checks say it. */
-export const SECTION_NAMES = {
-  SIGN: "Top of the page",
-  INTRO: "Introduction",
-  SERVICES_INDEX: "Services list",
-  VALUES: "Values",
-  MISSION: "Mission and vision",
-  INSTITUTIONS: "Hospitals, clinics and schools",
-  CLIENTS: "Client logos",
-  CAREERS_BAND: "Open jobs",
-  JOBS_LIST: "Jobs list",
-  CONTACT_BAND: "Ways to reach us",
-  CONTACT_DETAILS: "Contact details and map",
-  FORM: "Form",
-  RICH_TEXT: "Text",
-} as const satisfies Record<SectionType, string>;
 
 /** Each page's short name (plan §7.1): where its line starts, as "You are here" names it. */
 export const PAGE_NAMES = {

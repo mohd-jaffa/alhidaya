@@ -6,7 +6,7 @@ import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { QuoteForm } from "@/features/enquiries/components/QuoteForm";
 
 const { submit } = vi.hoisted(() => ({ submit: vi.fn(async () => ({ received: true })) }));
-vi.mock("@/features/enquiries/api.client", () => ({ EnquiriesClient: { submit } }));
+vi.mock("@/features/enquiries/form.client", () => ({ EnquiryFormClient: { submit } }));
 vi.mock("@/components/ui/bot-check", () => ({
   BotCheck: () => <input type="hidden" name="turnstileToken" value="token-from-cloudflare" readOnly />,
 }));

@@ -4,7 +4,7 @@ import { InboxLog } from "@/components/admin/InboxLog";
 import { StatusChip } from "@/components/admin/StatusChip";
 import { Notice } from "@/components/ui/notice";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { API_ROUTES } from "@/constants/routes";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { ENQUIRY_STATUS_LABELS } from "@/constants/statuses";
 import { dohaDateTime } from "@/lib/dates";
 import { errorMessage } from "@/lib/errors/errorMessage";
@@ -20,7 +20,7 @@ import { EnquiryRow, STATUS_TONES } from "./EnquiryRow";
  * this page of the list: open above it, so the link always lands on it.
  */
 function NamedEnquiry({ id }: { id: string }) {
-  const { data, error } = useApiQuery<Opened>(API_ROUTES.adminEnquiry(id));
+  const { data, error } = useApiQuery<Opened>(ADMIN_API_ROUTES.adminEnquiry(id));
   if (error) {
     return (
       <Notice tone="error" title={ADMIN_TEXT.loadFailed}>

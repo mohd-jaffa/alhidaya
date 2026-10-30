@@ -6,7 +6,7 @@ import { Select } from "@/components/ui/select";
 import { TextInput } from "@/components/ui/text-input";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { TEXT_LIMITS } from "@/constants/limits";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 import { GENERAL_APPLICATIONS } from "@/lib/validation/schemas/applications";
 

@@ -4,7 +4,8 @@ import { eq, like } from "drizzle-orm";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { UI_TEXT } from "@/constants/messages";
-import { ADMIN_ROUTES, ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
+import { ROUTES } from "@/constants/routes";
 import { closeDb, getDb } from "@/db/client";
 import { authUser, enquiries } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";

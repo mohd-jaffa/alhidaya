@@ -5,7 +5,7 @@ import { Field } from "@/components/ui/field";
 import { TextInput } from "@/components/ui/text-input";
 import { TEXT_LIMITS } from "@/constants/limits";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import {
   ENQUIRY_STATUS_LABELS,
   ENQUIRY_STATUSES,

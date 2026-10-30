@@ -4,7 +4,7 @@ import { eq, like } from "drizzle-orm";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { ADMIN_ROUTES, API_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { closeDb, getDb } from "@/db/client";
 import { applications, authUser, enquiries } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";
@@ -83,7 +83,7 @@ async function application(name: string, phone = "5551 2345") {
 }
 
 async function signIn(page: Page, email: string) {
-  const answer = await page.request.post(API_ROUTES.adminSession, {
+  const answer = await page.request.post(ADMIN_API_ROUTES.adminSession, {
     data: { email, password: PASSWORD },
     headers: { origin: E2E_ORIGIN },
   });

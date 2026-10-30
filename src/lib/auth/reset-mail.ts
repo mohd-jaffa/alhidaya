@@ -1,4 +1,4 @@
-import { ADMIN_ROUTES } from "@/constants/routes";
+import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { getServerEnv } from "@/lib/env/server";
 import { captureError } from "@/lib/audit/errorLog";
 import { createConfiguredMailService } from "@/lib/mail/nodemailer.provider";

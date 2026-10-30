@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { SECTION_NAMES, VALIDATION_MESSAGES } from "@/constants/messages";
+import { SECTION_NAMES } from "@/constants/admin-messages";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
 import { PAGE_KEYS, SECTION_TYPES } from "@/constants/sections";
 import { pageDocumentSchema, sectionSchema } from "@/lib/validation";
 import { pageFixture, section } from "@tests/support/fixtures/content";

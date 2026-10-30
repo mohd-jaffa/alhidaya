@@ -3,7 +3,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { eq } from "drizzle-orm";
 
 import { ERROR_MESSAGES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { API_ROUTES, ROUTES } from "@/constants/routes";
+import { ROUTES, API_ROUTES } from "@/constants/routes";
 import { closeDb, getDb } from "@/db/client";
 import { enquiries } from "@/db/schema";
 import { HONEYPOT_FIELD } from "@/lib/api/honeypot";

@@ -4,7 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { and, eq, like } from "drizzle-orm";
 
-import { API_ROUTES } from "@/constants/routes";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { closeDb, getDb } from "@/db/client";
 import { applications, auditLog, authUser, enquiries } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";
@@ -48,7 +48,7 @@ test("the admin lists, opens, moves along and notes an enquiry; nobody else can 
   const headers = { origin: E2E_ORIGIN };
 
   // Without the session, nothing: not the list, not the enquiry.
-  for (const path of [API_ROUTES.adminEnquiries, API_ROUTES.adminEnquiry(id)]) {
+  for (const path of [ADMIN_API_ROUTES.adminEnquiries, ADMIN_API_ROUTES.adminEnquiry(id)]) {
     const refused = await request.get(path);
     expect(refused.status()).toBe(401);
     expect(refused.headers()["cache-control"]).toContain("no-store");
@@ -56,21 +56,23 @@ test("the admin lists, opens, moves along and notes an enquiry; nobody else can 
 
   await createAdmin({ email: EMAIL, name: "Inbox", password: PASSWORD });
   expect(
-    (await request.post(API_ROUTES.adminSession, { data: { email: EMAIL, password: PASSWORD }, headers })).status(),
+    (
+      await request.post(ADMIN_API_ROUTES.adminSession, { data: { email: EMAIL, password: PASSWORD }, headers })
+    ).status(),
   ).toBe(200);
 
-  const list = await request.get(`${API_ROUTES.adminEnquiries}?form=QUOTE&q=${encodeURIComponent("5551 2345")}`);
+  const list = await request.get(`${ADMIN_API_ROUTES.adminEnquiries}?form=QUOTE&q=${encodeURIComponent("5551 2345")}`);
   expect(list.headers()["cache-control"]).toContain("no-store");
   const { data } = (await list.json()) as { data: { items: { id: string }[] } };
   expect(data.items.map((item) => item.id)).toContain(id);
 
   expect(
-    (await request.patch(API_ROUTES.adminEnquiry(id), { data: { status: "IN_PROGRESS" }, headers })).status(),
+    (await request.patch(ADMIN_API_ROUTES.adminEnquiry(id), { data: { status: "IN_PROGRESS" }, headers })).status(),
   ).toBe(200);
   expect(
-    (await request.post(API_ROUTES.adminEnquiryNotes(id), { data: { body: "Called back." }, headers })).status(),
+    (await request.post(ADMIN_API_ROUTES.adminEnquiryNotes(id), { data: { body: "Called back." }, headers })).status(),
   ).toBe(201);
-  const opened = (await (await request.get(API_ROUTES.adminEnquiry(id))).json()) as {
+  const opened = (await (await request.get(ADMIN_API_ROUTES.adminEnquiry(id))).json()) as {
     data: { status: string; notes: { body: string; author: string }[] };
   };
   expect(opened.data.status).toBe("IN_PROGRESS");
@@ -79,7 +81,7 @@ test("the admin lists, opens, moves along and notes an enquiry; nobody else can 
   // A write from another site is refused, session or not.
   expect(
     (
-      await request.patch(API_ROUTES.adminEnquiry(id), {
+      await request.patch(ADMIN_API_ROUTES.adminEnquiry(id), {
         data: { status: "RESOLVED" },
         headers: { origin: "https://example.com" },
       })
@@ -116,9 +118,9 @@ test("the admin lists, opens, notes, downloads the CV of and deletes an applicat
 
   // Without the session, nothing: not the list, not the application, not its CV.
   for (const route of [
-    API_ROUTES.adminApplications,
-    API_ROUTES.adminApplication(id),
-    API_ROUTES.adminApplicationCv(id),
+    ADMIN_API_ROUTES.adminApplications,
+    ADMIN_API_ROUTES.adminApplication(id),
+    ADMIN_API_ROUTES.adminApplicationCv(id),
   ]) {
     const refused = await request.get(route);
     expect(refused.status(), route).toBe(401);
@@ -127,28 +129,32 @@ test("the admin lists, opens, notes, downloads the CV of and deletes an applicat
 
   const email = `inbox-${crypto.randomUUID()}@example.com`;
   await createAdmin({ email, name: "Inbox", password: PASSWORD });
-  expect((await request.post(API_ROUTES.adminSession, { data: { email, password: PASSWORD }, headers })).status()).toBe(
-    200,
-  );
+  expect(
+    (await request.post(ADMIN_API_ROUTES.adminSession, { data: { email, password: PASSWORD }, headers })).status(),
+  ).toBe(200);
 
-  const list = await request.get(`${API_ROUTES.adminApplications}?job=general&q=${encodeURIComponent("5551 2345")}`);
+  const list = await request.get(
+    `${ADMIN_API_ROUTES.adminApplications}?job=general&q=${encodeURIComponent("5551 2345")}`,
+  );
   const { data } = (await list.json()) as { data: { items: { id: string }[] } };
   expect(data.items.map((item) => item.id)).toContain(id);
 
   expect(
-    (await request.patch(API_ROUTES.adminApplication(id), { data: { status: "SHORTLISTED" }, headers })).status(),
+    (await request.patch(ADMIN_API_ROUTES.adminApplication(id), { data: { status: "SHORTLISTED" }, headers })).status(),
   ).toBe(200);
   expect(
-    (await request.post(API_ROUTES.adminApplicationNotes(id), { data: { body: "Call on Sunday." }, headers })).status(),
+    (
+      await request.post(ADMIN_API_ROUTES.adminApplicationNotes(id), { data: { body: "Call on Sunday." }, headers })
+    ).status(),
   ).toBe(201);
-  const opened = (await (await request.get(API_ROUTES.adminApplication(id))).json()) as {
+  const opened = (await (await request.get(ADMIN_API_ROUTES.adminApplication(id))).json()) as {
     data: { status: string; cvStatus: string; notes: { body: string }[] };
   };
   expect(opened.data).toMatchObject({ status: "SHORTLISTED", cvStatus: "STORED" });
   expect(opened.data.notes).toEqual([expect.objectContaining({ body: "Call on Sunday." })]);
 
   // The CV, as a file to save, recorded.
-  const cv = await request.get(API_ROUTES.adminApplicationCv(id));
+  const cv = await request.get(ADMIN_API_ROUTES.adminApplicationCv(id));
   expect(cv.status()).toBe(200);
   expect(cv.headers()).toMatchObject({
     "content-type": "application/pdf",
@@ -165,9 +171,11 @@ test("the admin lists, opens, notes, downloads the CV of and deletes an applicat
 
   // Deleted from another site: refused. By the admin: gone, its CV file with it.
   expect(
-    (await request.delete(API_ROUTES.adminApplication(id), { headers: { origin: "https://example.com" } })).status(),
+    (
+      await request.delete(ADMIN_API_ROUTES.adminApplication(id), { headers: { origin: "https://example.com" } })
+    ).status(),
   ).toBe(403);
-  expect((await request.delete(API_ROUTES.adminApplication(id), { headers })).status()).toBe(200);
-  expect((await request.get(API_ROUTES.adminApplication(id))).status()).toBe(404);
+  expect((await request.delete(ADMIN_API_ROUTES.adminApplication(id), { headers })).status()).toBe(200);
+  expect((await request.get(ADMIN_API_ROUTES.adminApplication(id))).status()).toBe(404);
   await expect(fs.stat(path.join(process.env.CV_DIR!, cvKey!))).rejects.toThrow();
 });

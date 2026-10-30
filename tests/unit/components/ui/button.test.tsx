@@ -36,6 +36,7 @@ describe("Button", () => {
     expect(buttonClasses({ variant: "leaf" })).toContain("bg-leaf text-navy");
     expect(buttonClasses({ variant: "onDeepQuiet" }, "w-full")).toContain("text-on-deep");
     expect(buttonClasses({}, "w-full")).toMatch(/w-full$/);
+    expect(buttonClasses({ variant: "quiet" })).toContain("text-deep hover:bg-mist");
   });
 });
 

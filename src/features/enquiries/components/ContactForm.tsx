@@ -6,7 +6,7 @@ import { TextArea, TextInput } from "@/components/ui/text-input";
 import { TEXT_LIMITS } from "@/constants/limits";
 import { UI_TEXT } from "@/constants/messages";
 
-import { EnquiriesClient } from "../api.client";
+import { EnquiryFormClient } from "../form.client";
 
 const schema = () => import("@/lib/validation/schemas/enquiries").then((module) => module.contactFormSchema);
 
@@ -15,7 +15,7 @@ export function ContactForm({ whatsapp, siteKey }: { whatsapp: string | null; si
   return (
     <SiteForm
       schema={schema}
-      send={(values) => EnquiriesClient.submit("CONTACT", values)}
+      send={(values) => EnquiryFormClient.submit("CONTACT", values)}
       action={UI_TEXT.sendMessage}
       sent={UI_TEXT.messageSent}
       notSent={UI_TEXT.messageNotSent}

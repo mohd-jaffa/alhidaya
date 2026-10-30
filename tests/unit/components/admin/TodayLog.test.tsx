@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { TodayLog } from "@/components/admin/TodayLog";
-import { API_ROUTES } from "@/constants/routes";
+import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
 import { stubApi, WithSWR } from "@tests/support/api";
 
 vi.mock("@/features/enquiries/components/EnquiryOpened", () => ({ EnquiryOpened: () => null }));
@@ -43,7 +43,11 @@ describe("TodayLog", () => {
       },
     }));
     render(
-      <TodayLog listKey={`${API_ROUTES.adminToday}?needsYou=true`} pageBase="/admin" empty={{ title: "", body: "" }} />,
+      <TodayLog
+        listKey={`${ADMIN_API_ROUTES.adminToday}?needsYou=true`}
+        pageBase="/admin"
+        empty={{ title: "", body: "" }}
+      />,
       {
         wrapper: WithSWR,
       },

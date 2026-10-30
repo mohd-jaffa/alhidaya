@@ -80,7 +80,14 @@ export {
 
 export { todayQuerySchema, type TodayQueryInput, type TodayQueryPayload } from "./schemas/inbox";
 
-export { pageDocumentSchema, sectionSchema, type PageDocument, type Section } from "./schemas/pages";
+export {
+  pageDocumentSchema,
+  sectionSchema,
+  type PageDocument,
+  type PageDocumentInput,
+  type Section,
+  type SectionInput,
+} from "./schemas/pages";
 
 export { previewQuerySchema, type PreviewQueryPayload } from "./schemas/preview";
 
