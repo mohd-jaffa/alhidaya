@@ -52,3 +52,24 @@ Logo colours only (D35), light only (D28); the public site's tokens and kit;
 no smooth scroll, motion 150-250 ms for state only, none with reduced motion;
 WCAG 2.2 AA, 44 px targets; Arabic-ready logical properties; plain words, no
 jargon; no modal for daily work. The admin never loads the public site's motion.
+
+## The content editors (R6.3, shaped 2026-10-30; plan D86 – D90)
+
+The Pages editor sets the pattern Services, Jobs, Clients and Settings follow:
+the day's log, for content.
+
+- **Pages** (`/admin/pages`, the first station of "The site"): the eight fixed
+  pages as one-line rows with their address and state (Published, Changes not
+  published, Never published); the station's sky count is the pages waiting.
+  Today lists what waits to be published above its log.
+- **A page:** a bar kept in view with the page's name, its state (Unsaved
+  changes, Saved, Publishing, Published, Publish failed) and Save draft,
+  Preview (new tab, the saved draft), Publish and Discard draft (both asked
+  first; Publish saves first; leaving unsaved asks first). Below, the
+  sections as numbered rows: a grip, the type, its heading, Hidden when
+  hidden; Edit, Hide/Show, Move up/down, Remove (asked first). Edit opens
+  the row in place on mist with the type's fields; text block by block;
+  a photo picked from the library in a dialog. Add a section offers only
+  what the page allows. SEO last. Errors at their field and counted in the
+  bar.
+- Desktop first; on a phone rows are full width and actions wrap.

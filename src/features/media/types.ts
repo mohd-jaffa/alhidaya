@@ -14,3 +14,8 @@ export interface SiteImage {
   alt: string;
   sources: ImageSource[];
 }
+
+/** An image in the media library, as the admin picks it for a section (D89). */
+export interface LibraryImage extends SiteImage {
+  decorative: boolean;
+}

@@ -1,4 +1,4 @@
-import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, sql } from "drizzle-orm";
 
 import type { DocumentKey } from "@/constants/sections";
 import { getDb } from "@/db/client";
@@ -62,6 +62,31 @@ export async function readDocumentDraft<T>(key: DocumentKey): Promise<DraftView<
   };
 }
 
+/** Where a document stands for the admin's lists (D86): published when, and whether its draft differs. */
+export interface DocumentState {
+  key: DocumentKey;
+  publishedAt: Date | null;
+  unpublishedChanges: boolean;
+}
+
+/** The states of the documents named, in one query; one never saved is left out. The drafts stay in the database. */
+export async function listDocumentStates(keys: readonly DocumentKey[]): Promise<DocumentState[]> {
+  const rows = await getDb()
+    .select({
+      key: documents.key,
+      publishedAt: documents.publishedAt,
+      // MySQL compares JSON by value, as readDocumentDraft does.
+      unpublishedChanges: sql<number>`${documents.published} is null or ${documents.draft} <> ${documents.published}`,
+    })
+    .from(documents)
+    .where(inArray(documents.key, [...keys]));
+  return rows.map((row) => ({
+    ...row,
+    key: row.key as DocumentKey,
+    unpublishedChanges: Number(row.unpublishedChanges) === 1,
+  }));
+}
+
 /** Saves the draft; the public site is unchanged until Publish. */
 export async function saveDocumentDraft(key: DocumentKey, draft: unknown, actor: Actor): Promise<void> {
   const at = new Date();
@@ -78,14 +103,27 @@ export async function saveDocumentDraft(key: DocumentKey, draft: unknown, actor:
   });
 }
 
-/** Publishes the draft as it is, in one statement, and answers when. */
-export async function publishDocument(key: DocumentKey, actor: Actor): Promise<Date> {
+/**
+ * Publishes the draft as it is, and answers when. `check` reads the draft
+ * first, inside the same transaction with the row held, so what is published
+ * is exactly what was checked (AGENTS.md §13); a draft it refuses stays a
+ * draft.
+ */
+export async function publishDocument(key: DocumentKey, actor: Actor, check?: (draft: unknown) => void): Promise<Date> {
   const at = new Date();
-  const [result] = await getDb()
-    .update(documents)
-    .set({ published: sql`${documents.draft}`, publishedAt: at, updatedBy: actor.adminId, updatedAt: at })
-    .where(eq(documents.key, key));
-  if (result.affectedRows === 0) throw notFoundError("RECORD_NOT_FOUND");
+  await getDb().transaction(async (tx) => {
+    const [row] = await tx
+      .select({ draft: documents.draft })
+      .from(documents)
+      .where(eq(documents.key, key))
+      .for("update");
+    if (!row) throw notFoundError("RECORD_NOT_FOUND");
+    check?.(row.draft);
+    await tx
+      .update(documents)
+      .set({ published: sql`${documents.draft}`, publishedAt: at, updatedBy: actor.adminId, updatedAt: at })
+      .where(eq(documents.key, key));
+  });
   await logActionSafe({
     actorId: actor.adminId,
     action: "PUBLISH",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DOCUMENT_KEYS, PAGE_KEYS, PAGE_RULES, SECTION_TYPES } from "@/constants/sections";
+import { DOCUMENT_KEYS, PAGE_KEYS, PAGE_RULES, pageFromSlug, pageSlug, SECTION_TYPES } from "@/constants/sections";
 
 describe("the page rules", () => {
   it("let every page open with its sign, and require only what it allows", () => {
@@ -22,5 +22,12 @@ describe("the page rules", () => {
       "ORDER:CLIENTS",
     ]);
     expect(Math.max(...DOCUMENT_KEYS.map((key) => key.length))).toBeLessThanOrEqual(32);
+  });
+
+  it("name each page in the admin's addresses, and nothing else", () => {
+    for (const page of PAGE_KEYS) expect(pageFromSlug(pageSlug(page))).toBe(page);
+    expect(pageSlug("QUOTE")).toBe("quote");
+    expect(pageFromSlug("HOME")).toBeNull();
+    expect(pageFromSlug("blog")).toBeNull();
   });
 });

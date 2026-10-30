@@ -8,7 +8,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { closeDb, getDb } from "@/db/client";
 import { media, type MediaVariant } from "@/db/schema";
 import { ERROR_MESSAGES } from "@/constants/messages";
-import { findImageBySource, getImages, storeImage } from "@/features/media/api";
+import { assertImagesKept, findImageBySource, getImages, listImagesForAdmin, storeImage } from "@/features/media/api";
 import { getServerEnv } from "@/lib/env/server";
 import { deleteMediaFile } from "@/lib/storage/media";
 
@@ -138,5 +138,44 @@ describe("storeImage, against the local MySQL and the media folder", () => {
       storeImage({ bytes: await jpeg(500, 300), alt: "x", source: null, createdBy: crypto.randomUUID() }),
     ).rejects.toThrow();
     expect((await fs.readdir(getServerEnv().MEDIA_DIR, { recursive: true })).toSorted()).toEqual(before.toSorted());
+  });
+});
+
+describe("the library's images for the admin, against the local MySQL", () => {
+  it("lists every whole image newest first, marked decorative where it is, and leaves out the rest (D89)", async () => {
+    const older = await stored({
+      variants: [variant("2026-10/older-w640.webp", 640, "image/webp")],
+      alt: { en: "Older" },
+      createdAt: new Date("2026-01-01T00:00:00Z"),
+    });
+    const newer = await stored({
+      variants: [variant("2026-10/newer-w640.webp", 640, "image/webp")],
+      decorative: true,
+      createdAt: new Date("2026-12-01T00:00:00Z"),
+    });
+    const shapeless = await stored({ width: null, height: null });
+    const brochure = await stored({ kind: "PDF", width: null, height: null });
+
+    const listed = (await listImagesForAdmin()).filter((image) => ids.includes(image.id));
+    expect(listed.map((image) => image.id)).toEqual(expect.arrayContaining([newer, older]));
+    expect(listed.findIndex((image) => image.id === newer)).toBeLessThan(
+      listed.findIndex((image) => image.id === older),
+    );
+    expect(listed.find((image) => image.id === newer)).toMatchObject({ alt: "", decorative: true });
+    expect(listed.find((image) => image.id === older)).toMatchObject({ alt: "Older", decorative: false });
+    expect(listed.map((image) => image.id)).not.toContain(shapeless);
+    expect(listed.map((image) => image.id)).not.toContain(brochure);
+  });
+
+  it("accepts a save naming only images the library holds, and refuses any other", async () => {
+    const kept = await stored({});
+    const brochure = await stored({ kind: "PDF", width: null, height: null });
+    await expect(assertImagesKept([])).resolves.toBeUndefined();
+    await expect(assertImagesKept([kept, kept])).resolves.toBeUndefined();
+    await expect(assertImagesKept([kept, crypto.randomUUID()])).rejects.toMatchObject({ code: "IMAGE_NOT_FOUND" });
+    await expect(assertImagesKept([brochure])).rejects.toMatchObject({
+      code: "IMAGE_NOT_FOUND",
+      message: ERROR_MESSAGES.IMAGE_NOT_FOUND,
+    });
   });
 });

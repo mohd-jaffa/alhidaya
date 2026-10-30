@@ -1,3 +1,5 @@
+import type { SectionType } from "./sections";
+
 /**
  * Every word the site shows (AGENTS.md §5): screens, metadata and emails read
  * from here, never from a string of their own. English now; an Arabic
@@ -151,6 +153,23 @@ export const UI_TEXT = {
     "The check that a person is sending this did not load. Please reload the page, or call or message us on WhatsApp.",
 } as const;
 
+/** Each section type's name (plan §7.2), in the admin's plain words: the editor and the page's checks say it. */
+export const SECTION_NAMES = {
+  SIGN: "Top of the page",
+  INTRO: "Introduction",
+  SERVICES_INDEX: "Services list",
+  VALUES: "Values",
+  MISSION: "Mission and vision",
+  INSTITUTIONS: "Hospitals, clinics and schools",
+  CLIENTS: "Client logos",
+  CAREERS_BAND: "Open jobs",
+  JOBS_LIST: "Jobs list",
+  CONTACT_BAND: "Ways to reach us",
+  CONTACT_DETAILS: "Contact details and map",
+  FORM: "Form",
+  RICH_TEXT: "Text",
+} as const satisfies Record<SectionType, string>;
+
 /** Each page's short name (plan §7.1): where its line starts, as "You are here" names it. */
 export const PAGE_NAMES = {
   HOME: "Home",
@@ -174,6 +193,7 @@ export const ERROR_MESSAGES = {
   UPLOAD_TOO_LARGE: "That file is too large.",
   UPLOAD_TYPE_NOT_ALLOWED: "That type of file can't be uploaded here.",
   STORAGE_FULL: "There is no room left for this file. Please remove older files first.",
+  IMAGE_NOT_FOUND: "A photo chosen here is no longer in the media library. Please choose another.",
 
   AUTH_SESSION_REQUIRED: "Please sign in to continue.",
   AUTH_SESSION_INVALID: "Your session has expired. Please sign in again.",
@@ -228,10 +248,10 @@ export const VALIDATION_MESSAGES = {
   atLeastOne: (label: string) => `${label} needs at least one.`,
   noRepeats: (label: string) => `${label} can't list the same one twice.`,
   signFirst: "The page's sign must come first and stay visible.",
-  sectionNotAllowed: (type: string) => `This page can't hold a ${type} section.`,
-  sectionLimit: (type: string, max: number) =>
-    `This page can hold at most ${max} ${type} section${max === 1 ? "" : "s"}.`,
-  sectionRequired: (type: string) => `This page needs a visible ${type} section.`,
+  sectionNotAllowed: (name: string) => `This page can't hold a “${name}” section.`,
+  sectionLimit: (name: string, max: number) =>
+    `This page can hold at most ${max} “${name}” section${max === 1 ? "" : "s"}.`,
+  sectionRequired: (name: string) => `This page needs a visible “${name}” section.`,
   /** The enquiry forms' choices (plan §10.1). */
   careFor: "Please choose who the care is for.",
   contactMethod: "Please choose how we should reach you.",

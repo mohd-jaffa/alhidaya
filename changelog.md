@@ -2326,3 +2326,107 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None. Phase 5 is complete.
+
+## 2026-10-30 — Plan: retries for CV saving and automated emails (D83)
+
+### Decisions
+- D83 (the user's): a CV that could not be saved, and every automated email
+  that failed, get a retry system: a CV is tried again and the applicant is
+  asked to send it again when it still fails; a failed email is sent again
+  on its own, about three times. Not needed now: built before deployment as
+  **R6.10**, beside R6.7's cron. The plan's §9.3 and §17 say so.
+
+### Open questions
+- Q46: how a CV is retried (default: 3 tries during the upload, then nothing
+  kept and the applicant asked to send it again; a full CV folder refused
+  and shown on Today).
+- Q47: how emails are retried (default: a cron job every 10 minutes, up to 3
+  more tries per email, each recorded, then the admin's Retry; the password
+  reset left out).
+
+### Blockers
+- None. Both questions are asked when R6.10 starts.
+
+## 2026-10-30 — Plan: Q46 answered (D84)
+
+### Decisions
+- D84 (the user's answer to Q46, option (a)): a CV that cannot be saved is
+  tried 3 times during the upload; if it still fails, nothing is kept and
+  the form says "Something went wrong with your CV upload. Please send it
+  again.", beside the CV and above the send action, with what was typed and
+  the file still in the form. A full CV folder is refused the same way and
+  shown to the admin on Today. Built at R6.10, which now waits on Q47 only.
+
+### Blockers
+- None.
+
+## 2026-10-30 — Plan: Q47 answered (D85)
+
+### Decisions
+- D85 (the user's answer to Q47, option (a)): a second cPanel cron entry,
+  every 10 minutes, calls `POST /api/cron/mail-retry` (`CRON_SECRET`) to
+  send again each enquiry alert and HR email not sent, up to 3 more tries,
+  each recorded on its row (a small migration); then the admin's Retry. The
+  password reset is left out. Plan §21's diagram, §17, the API table, R6.10
+  and R8.2 say so; R6.10 no longer waits on a question.
+
+### Blockers
+- None.
+
+## 2026-10-30 — R6.3: the Pages editor shaped, and its routes
+
+### Decisions
+- D86 (the user's answer to Q19): each page publishes on its own; the Pages
+  list, the rail's Pages count and Today show what waits to be published.
+- D87 (the user's): the admin can add a section (only the types the page
+  allows, up to its limit) and remove one (asked first); the sign stays
+  fixed, and a section the page cannot work without is never hidden or
+  removed.
+- D88 (R6.3 shaped with the user): the Pages editor is the day's log for
+  content. `/admin/pages` lists the eight pages with their state; a page's
+  sections are rows opened in place; a bar kept in view holds Save draft
+  (a button), Preview (a new tab), Publish and Discard draft (asked first).
+  Whole-page routes; the plan's `/sections` route is not needed. The brief
+  is in `.impeccable/surfaces/src-app-admin-page-tsx.md`.
+- D89 (the user's): a section's photo is picked from the media library;
+  its list (`GET /api/admin/media`) comes forward from R6.5, and Upload
+  joins the picker at R6.5.
+- D90 (the user's): sections reorder by the browser's own drag and by
+  Move up / Move down, with no drag library; text is edited block by block.
+- Plan: §2, §5.2, §14, §16, §29 and Q19 say so.
+
+### Added
+- `GET /api/admin/pages`: the eight pages, each with when it was published
+  and whether its draft waits (`listPagesForAdmin`, from one query,
+  `listDocumentStates`, which compares draft and published in MySQL).
+- `GET`/`PUT /api/admin/pages/[key]`: a page's draft, and saving it whole,
+  held to its page's rules at the route and refused when it names a photo
+  the library does not hold (`IMAGE_NOT_FOUND`).
+- `POST /api/admin/pages/[key]/publish` and `/discard`: publish checks the
+  draft against the page's rules once more, inside the transaction that
+  publishes it, then drops exactly that page's cached reads.
+- `GET /api/admin/media`: the library's images, newest first, for the photo
+  picker (`listImagesForAdmin`).
+- `pageSlug` and `pageFromSlug`: a page is `/admin/pages/home` in the
+  admin's addresses; `ADMIN_ROUTES.pages` and the routes above in
+  `API_ROUTES`.
+- `SECTION_NAMES`: each section type in the admin's plain words ("Top of the
+  page", "Ways to reach us", "Text").
+
+### Changed
+- `publishDocument` takes an optional check, run on the draft with its row
+  held in the same transaction (AGENTS.md §13).
+- The page checks name a section by its plain name, not its code: "This page
+  needs a visible “Form” section."
+- `getImages` shares its row-to-image step with the admin's list.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (791), coverage 100%: every route with
+  and without a session and from another site; against the local MySQL, the
+  page list, a save with a known and an unknown photo, a publish dropping
+  only `page:HOME`, a draft the rules refuse left unpublished, discard, the
+  audit trail, and the media list and image check.
+
+### Blockers
+- None. The screens are next.

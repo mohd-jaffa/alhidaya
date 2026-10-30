@@ -164,6 +164,14 @@ question (§41) the user may overturn.
 | D80 | **The admin is brought forward into Phase 4**: R6.1 (shape the admin) and R6.2 (its shell, sign-in, overview and data layer) are done before R4.4's inbox screens, so Phase 4 ends with an inbox the team can use. R4.4's server side is done first. | 2026-10-29 |
 | D81 | **The admin is "the day's log"** (R6.1, the user's choice of three dealt layouts, and the brief they confirmed): the admin opens on **Today**, one stream of what needs them, newest first and ruled by day, each arrival handled in its own row (every answer, Call, WhatsApp, Email, Move to, notes); the rail is the line with each section a station. Today is the plan's Overview (§16) and carries what it listed. Built for a non-technical admin at a desktop, read on a phone; never like the public site, never cramped, never several clicks for daily work. | 2026-10-29 |
 | D82 | **The admin can delete an application or an enquiry from its inbox** (answers the plan's own disagreement between §16 and §9.5, §10.5): a Delete in the opened row, asked first in a dialog; the row, its notes and (for an application) its CV file go at once, and the deletion is audited without what it held. Retention (§18) still deletes the rest on its own. The enquiries' Delete arrives with the applications' (R5.5). | 2026-10-29 |
+| D83 | **Retries for a CV that could not be saved and for every automated email that failed** (the user, 2026-10-30: "keep automatic retry … when the applicants are applying with cv, if not properly stored, make them upload again or try again … also if any automated mail is to be sent, and it failed, … keep a retry system like 3 retries"). Not needed now: built before deployment, at R6.10. How a CV is retried is Q46; how the emails are retried is Q47. The admin's own Retry (§9.3, §10.4) stays for what still fails. | 2026-10-30 |
+| D84 | **A CV that cannot be saved is sent again by the applicant** (the user's answer to Q46, 2026-10-30: option (a)): the save is tried 3 times during the upload; if it still fails, nothing is kept (not counted against the applicant's limit) and the form says, beside the CV and above the send action, **"Something went wrong with your CV upload. Please send it again."**, with everything typed and the file still in the form. A CV folder past its budget is refused the same way and shown to the admin on Today. AGENTS.md §10 changes for this one case when R6.10 is built. | 2026-10-30 |
+| D85 | **A failed automated email is sent again by a second cron job** (the user's answer to Q47, 2026-10-30: option (a)): every 10 minutes a cPanel cron entry calls `POST /api/cron/mail-retry` with `CRON_SECRET`, which sends again each enquiry alert and HR email not sent (the HR email with the kept CV), up to 3 more tries per email, each try recorded on its row (a small migration: the tries and when the last one was); after the third it waits for the admin's Retry, which stays. The admin's password-reset email does not take part: its link lasts minutes, and the admin can ask again. AGENTS.md §17 changes when R6.10 is built. | 2026-10-30 |
+| D86 | **Each page publishes on its own** (the user's answer to Q19, 2026-10-30): a page's Publish and Discard draft act on that page alone; the Pages list shows each page's state, the rail's Pages station counts those waiting, and Today lists every page with changes not yet published above its log, each linking to its editor. | 2026-10-30 |
+| D87 | **The admin can add and remove sections** (the user, 2026-10-30, settling §16 against §7.1's limits): Add a section offers only the types the page allows that are not at their limit, and puts it at the end; Remove asks first. The sign stays first and fixed; a section the page cannot work without can be moved but neither hidden nor removed. A removed section leaves the site only when the page is published. | 2026-10-30 |
+| D88 | **The Pages editor is the day's log for content** (R6.3 shaped with the user, 2026-10-30; the pattern the Services, Jobs, Clients and Settings editors follow): `/admin/pages` lists the eight pages with their state; a page's sections are numbered rows, one opened in place on mist with its type's fields, and the page's SEO last. A bar kept in view names the page and its state, with **Save draft** (a button, as §14), **Preview** (a new tab, showing the saved draft), **Publish** and **Discard draft**, both asked first; Publish saves unsaved changes first, and leaving with unsaved changes asks first. Whole-page routes: `GET /api/admin/pages`, `GET`/`PUT /api/admin/pages/[key]`, `POST …/publish`, `POST …/discard`; the plan's `/sections` route is not needed. | 2026-10-30 |
+| D89 | **A section's photo is picked from the media library** (the user, 2026-10-30): R6.3's photo field chooses among the images already kept (the licensed stock, D75) in a dialog, or none; `GET /api/admin/media` (the list) comes forward from R6.5, and Upload joins the picker when R6.5 builds the library. | 2026-10-30 |
+| D90 | **Sections reorder by the browser's drag and by buttons; text is edited block by block** (the user, 2026-10-30): the browser's own drag-and-drop on a desktop, and Move up / Move down on every row for the keyboard and phones, with no drag library; a text section is a list of blocks (heading, paragraph, list, link), each its own field, added, moved and removed one at a time, as it is stored (§7.2). No word-processor editor. | 2026-10-30 |
 
 ## 3. Audiences and the admin
 
@@ -248,7 +256,8 @@ Arabic arrives later under `/ar` with the same paths (D4, §33).
 
 ### 5.2 Admin routes
 
-`/admin/login`, `/admin` (overview), `/admin/pages/[page]`, `/admin/services`,
+`/admin/login`, `/admin` (overview), `/admin/pages` (the eight pages, D88),
+`/admin/pages/[page]`, `/admin/services`,
 `/admin/jobs`, `/admin/clients`, `/admin/media`, `/admin/enquiries`,
 `/admin/applications`, `/admin/settings` (content, contact, navigation, footer,
 SEO, brochure), `/admin/settings/operations` (recipients, retention),
@@ -477,6 +486,12 @@ CV; without one (never kept, expired, or unreadable) the email says the CV
 is not attached. A CV that was not stored has no Retry of its own: its bytes
 lived only in the request, and the first HR email carried them.
 
+**To come (D83, D84, R6.10):** saving a CV is tried 3 times during the
+upload; if it still fails, nothing is kept and the applicant reads
+"Something went wrong with your CV upload. Please send it again.", with
+what they typed and their file still in the form. A failed HR email is sent
+again on its own by the mail-retry cron, up to three more times (D85).
+
 ### 9.4 Keeping CVs (D41, D52, D54)
 
 - **Where:** `~/alhidaya-data/cvs/<YYYY-MM>/` on the cPanel server, **outside
@@ -606,7 +621,7 @@ and applications, and **CV expiry days (1 – 365, D52)**.
 - **Publish** copies the draft to published in one database transaction,
   writes an audit row, and **revalidates exactly the cached pages that show
   it** (§22). **Discard draft** resets the draft to the published copy.
-- Each item publishes on its own (Q19 default); the admin overview lists every
+- Each item publishes on its own (D86); the admin overview lists every
   item with **unpublished changes**.
 - The public site reads **only** published copies; drafts are unreachable
   without the admin session (§26).
@@ -648,7 +663,7 @@ scroll. Desktop first; usable on a phone for reading the inbox.
 |---|---|
 | Sign in | Email and password; lockout after 5 failures for 15 minutes (§26.4); forgotten password by email link. |
 | Today (the Overview, D81) | What needs the admin, newest first in the day's log: new enquiries and applications, failed mails or CV saves, items with unpublished changes (each as its phase builds it); "Everything" for all that arrived. Enquiries and applications are one stream, paged together. "Needs you" is an arrival still new, or one whose email to the team did not go; a CV not stored is marked on its row (it arrives new, so it needs the admin until they move it along: nothing can bring the file back, §9.3). |
-| Pages | Each page's sections: show/hide, move up/down and drag to reorder, edit, preview, publish, discard. |
+| Pages | The eight pages with their state; each page's sections: show/hide, move up/down and drag to reorder, add and remove (D87), edit in place, the page's SEO, save draft, preview, publish, discard (D88). |
 | Services | List, order, create, edit, preview, publish, archive. |
 | Jobs | List by status, create, edit, close, publish, archive. |
 | Clients | Logos: add, order, publish. |
@@ -679,6 +694,10 @@ enquiry or application, change retention.
   record (`p=none` first) is published** before launch, then verified with
   real sends to info@ and hr@ (R8.3).
 - A failed send never undoes what it was for; it is logged and retryable.
+  **To come (D83, D85, R6.10):** an enquiry alert or HR email that failed is
+  sent again by a cron job every 10 minutes (`POST /api/cron/mail-retry`),
+  up to three more tries, each recorded, before it waits for the admin's
+  Retry. The password reset is not retried.
 - **The enquiry alert** (§10.4, D79): from `noreply@`, to every enquiries
   recipient set in Operations, Reply-To the visitor; who sent it and when
   (Doha time), every answer under its label, and a button to the enquiry in
@@ -742,13 +761,15 @@ alhidaya.qa ──► the client's cPanel server (everything below is on this on
                  │   ├─ ──► cPanel mail (SMTP, noreply@alhidaya.qa)
                  │   └─ ──► Cloudflare Turnstile (server-side verification)
                  ├─ the media folder (public images, served as static files)
-                 └─ cron (daily) ──► POST /api/cron/retention
+                 ├─ cron (daily) ──► POST /api/cron/retention
+                 └─ cron (every 10 minutes, D85) ──► POST /api/cron/mail-retry
 Browser ──► Cloudflare Web Analytics beacon · Turnstile widget
 GitHub Actions (on a release) ──► build ──► rsync over SSH ──► migrate ──► switch ──► restart
 ```
 
 - **No worker, queue, Redis or external database.** Work happens in the
-  request; the one timed job is a cPanel cron entry.
+  request; the timed jobs are cPanel cron entries: the daily purge, and the
+  mail retry every 10 minutes (D85).
 - **The database never listens to the internet**: only the app on the same
   machine connects to it (D39).
 
@@ -1042,13 +1063,14 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `POST /api/applications` | multipart application with the CV |
 | `GET /api/preview`, `GET /api/preview/exit` | enter and leave draft mode (admin only) |
 | `POST /api/cron/retention` | the daily purge (`CRON_SECRET`) |
+| `POST /api/cron/mail-retry` | every 10 minutes: emails not sent, tried again up to 3 times (`CRON_SECRET`, D85, R6.10) |
 | `POST`/`DELETE /api/admin/session` | sign in (lockout first) and sign out, through Better Auth on the server; its own HTTP routes are never mounted (R1.2) |
 | `POST /api/admin/password/forgot`, `/reset` | ask for a reset link (the same answer for any email; rate-limited), and set a new password from it |
-| `/api/admin/pages/[key]` (+ `/sections`, `/publish`, `/discard`) | pages |
+| `GET /api/admin/pages`, `/api/admin/pages/[key]` (+ `/publish`, `/discard`) | the pages and their state; a page's draft, saved whole (D88) |
 | `/api/admin/services` (+ `[id]`, `/publish`, `/order`) | services |
 | `/api/admin/jobs` (+ `[id]`, `/publish`) | jobs |
 | `/api/admin/clients` (+ `[id]`, `/publish`, `/order`) | client logos |
-| `/api/admin/media` (+ `[id]`) | upload, list, alt text, delete |
+| `/api/admin/media` (+ `[id]`) | upload, list, alt text, delete (the list came forward with R6.3, D89) |
 | `/api/admin/enquiries` (+ `[id]`, `/notes`, `/retry-mail`) | the inbox |
 | `/api/admin/applications` (+ `[id]`, `/notes`, `/cv`, `/retry`) | the inbox; `/cv` downloads the CV (§9.4) |
 | `/api/admin/site` (+ `/publish`), `/api/admin/operations` | settings |
@@ -1425,13 +1447,14 @@ one commit (D27).
 |---|---|---|---|---|
 | R6.1 | `/impeccable shape` the admin (Operate) | §30.5 | — | DONE (2026-10-29; brought forward, D80; the day's log, D81; brief and direction in `.impeccable/surfaces/src-app-admin-page-tsx.md`) |
 | R6.2 | Admin shell, sign-in screen, overview; `lib/query` (SWR reads and writes, from clinicdesk) | §16 | — | DONE (2026-10-29; brought forward, D80; Today is the Overview, D81; Applications and the content screens join the rail with their rows) |
-| R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | TODO |
+| R6.3 | Pages: section list (show/hide, move, drag), section editors per type, preview, publish, discard | §7, §14 | Q19 | IN PROGRESS (2026-10-30; shaped with the user, D86 – D90; the routes are done, the screens next) |
 | R6.4 | Services and jobs editors | §8, §9.1 | — | TODO |
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | TODO (the sizing step and `storeImage` came forward with D75, 2026-10-29) |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | TODO |
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | TODO |
 | R6.8 | Activity (audit trail) | §36 | — | TODO |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | TODO |
+| R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | TODO |
 
 ### Phase 7 — Performance, accessibility and the finish
 
@@ -1448,7 +1471,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R8.1 | The production MySQL database, created after the old one is cleared (D50), with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media folder (with its `.htaccess`) and the CV folder (`700`) | D39, D49, D54, §21.1 | Full payment (D48), R0.9 | TODO |
-| R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron; `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
+| R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron and the mail-retry cron (every 10 minutes, D85); `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
 | R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM added in cPanel; DMARC `p=none` published; verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
 | R8.4 | Turnstile keys for alhidaya.qa (replacing the test keys, which always pass; checked before go-live); Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
 | R8.5 | Pre-switch check on the server; speed from Qatar; the Cloudflare-proxy decision | D25 | Q22 | TODO |
@@ -1521,7 +1544,7 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q16 | Rate limit | 5 submissions per form per 10 minutes per visitor. |
 | Q17 | Who receives which email | Quote and Contact → `info@alhidaya.qa`; applications → `hr@alhidaya.qa`; both editable in Operations. |
 | Q18 | Legal review of Privacy and Terms | Drafted from what the site actually does; the client reviews before launch. |
-| Q19 | Publish per item, or one "publish all"? | Per item, with an overview of unpublished changes. |
+| Q19 | ~~Publish per item, or one "publish all"?~~ | **Answered by D86:** per item; the Pages list and Today show what waits. |
 | Q20 | ~~Where the daily purge job runs~~ | **Answered by D39:** a cPanel cron job. |
 | Q21 | Store content per locale now (`{ "en": … }`)? | Yes (§33). |
 | Q22 | Pre-switch check under a hidden temporary subdomain on the server (not a public staging site)? | Yes. |
@@ -1548,6 +1571,8 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q43 | The public forms' checks: Zod fetched when the visitor first reaches into the form, without React Hook Form (≈ 164 KB at first paint), or React Hook Form and Zod in the first load (≈ 194 KB, over the 170 KB budget)? | The first (D77). |
 | Q44 | Turnstile: seen only when Cloudflare needs the visitor to tick a box, or always shown under the form? And when Cloudflare cannot be reached: refuse the form (nothing kept unchecked), or keep it marked unchecked? | Seen only when needed; refused (D78). |
 | Q45 | Send an enquiry's alert after the visitor's answer (fast; a restart in that moment leaves it for Retry), or before it (the visitor waits about a second on the mail server)? | After (D79). |
+| Q46 | ~~When an applicant's CV cannot be saved: keep nothing and ask them to send it again, keep the application and ask for the CV, or keep it as now?~~ | **Answered by D84:** (a), tried 3 times, then nothing kept and "Something went wrong with your CV upload. Please send it again." |
+| Q47 | ~~How a failed automated email is sent again: a cron job, quick tries in the request, or both? Does the password reset take part?~~ | **Answered by D85:** (a), a cron job every 10 minutes, up to 3 more tries, each recorded; the password reset left out. |
 
 ## 42. Later (unscheduled)
 

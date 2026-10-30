@@ -7,6 +7,12 @@
 export const PAGE_KEYS = ["HOME", "ABOUT", "SERVICES", "CAREERS", "CONTACT", "QUOTE", "PRIVACY", "TERMS"] as const;
 export type PageKey = (typeof PAGE_KEYS)[number];
 
+/** A page as the admin's addresses name it (D88): /admin/pages/home. */
+export const pageSlug = (page: PageKey): string => page.toLowerCase();
+
+/** The page an admin address names, or null for one that is not a page. */
+export const pageFromSlug = (slug: string): PageKey | null => PAGE_KEYS.find((page) => pageSlug(page) === slug) ?? null;
+
 export const SECTION_TYPES = [
   "SIGN",
   "INTRO",

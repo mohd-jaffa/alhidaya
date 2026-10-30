@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
-import { VALIDATION_MESSAGES } from "@/constants/messages";
+import { SECTION_NAMES, VALIDATION_MESSAGES } from "@/constants/messages";
 import { FIXED_FIRST_SECTION, PAGE_RULES, type PageKey, type SectionType } from "@/constants/sections";
 import { FORM_KINDS } from "@/constants/statuses";
 
@@ -99,12 +99,13 @@ export function pageDocumentSchema(page: PageKey) {
     const counts = new Map<SectionType, number>();
     for (const section of sections) counts.set(section.type, (counts.get(section.type) ?? 0) + 1);
     for (const [type, count] of counts) {
-      if (!rule.allowed.includes(type)) issue(VALIDATION_MESSAGES.sectionNotAllowed(type));
-      else if (count > (rule.max?.[type] ?? 1)) issue(VALIDATION_MESSAGES.sectionLimit(type, rule.max?.[type] ?? 1));
+      if (!rule.allowed.includes(type)) issue(VALIDATION_MESSAGES.sectionNotAllowed(SECTION_NAMES[type]));
+      else if (count > (rule.max?.[type] ?? 1))
+        issue(VALIDATION_MESSAGES.sectionLimit(SECTION_NAMES[type], rule.max?.[type] ?? 1));
     }
     for (const type of rule.required ?? []) {
       if (!sections.some((section) => section.type === type && section.visible))
-        issue(VALIDATION_MESSAGES.sectionRequired(type));
+        issue(VALIDATION_MESSAGES.sectionRequired(SECTION_NAMES[type]));
     }
     if (new Set(sections.map((section) => section.id)).size !== sections.length) {
       issue(VALIDATION_MESSAGES.noRepeats("A page"));

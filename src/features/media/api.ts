@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 
 import { UPLOAD_LIMITS } from "@/constants/limits";
 import { FILE_TYPES, IMAGE_TYPES } from "@/constants/uploads";
@@ -11,7 +11,18 @@ import { detectFileType } from "@/lib/storage/file-type";
 import { makeImageSizes } from "@/lib/storage/images";
 import { deleteMediaFile, mediaKey, mediaUrl, saveMediaFile } from "@/lib/storage/media";
 
-import type { SiteImage } from "./types";
+import type { LibraryImage, SiteImage } from "./types";
+
+const IMAGE_COLUMNS = {
+  id: media.id,
+  variants: media.variants,
+  width: media.width,
+  height: media.height,
+  alt: media.alt,
+  decorative: media.decorative,
+};
+
+type ImageRow = Pick<typeof media.$inferSelect, keyof typeof IMAGE_COLUMNS>;
 
 /** The images' rows, kept until the media library changes (plan §22.1). */
 const imageRows = cachedRead(
@@ -19,18 +30,25 @@ const imageRows = cachedRead(
   // The ids, sorted and joined, name the read: the same images are one entry, whichever page asks.
   (ids: string) =>
     getDb()
-      .select({
-        id: media.id,
-        variants: media.variants,
-        width: media.width,
-        height: media.height,
-        alt: media.alt,
-        decorative: media.decorative,
-      })
+      .select(IMAGE_COLUMNS)
       .from(media)
       .where(and(inArray(media.id, ids.split(",")), eq(media.kind, "IMAGE"))),
   () => [CACHE_TAGS.media],
 );
+
+/** An image row as a page shows it, or null for one whose shape is unknown (it would shift the page). */
+function toSiteImage({ id, width, height, alt, decorative, variants }: ImageRow): SiteImage | null {
+  if (!width || !height) return null;
+  return {
+    id,
+    width,
+    height,
+    alt: decorative ? "" : (alt?.en ?? ""),
+    sources: variants.flatMap((variant) =>
+      variant.width === null ? [] : [{ url: mediaUrl(variant.key), width: variant.width, mime: variant.mime }],
+    ),
+  };
+}
 
 /**
  * The images published content refers to, by id (plan §15, §22.3), in one
@@ -41,21 +59,40 @@ const imageRows = cachedRead(
 export async function getImages(ids: readonly string[]): Promise<Map<string, SiteImage>> {
   const wanted = [...new Set(ids)].toSorted();
   if (wanted.length === 0) return new Map();
-  const rows = await imageRows(wanted.join(","));
   const images = new Map<string, SiteImage>();
-  for (const { id, width, height, alt, decorative, variants } of rows) {
-    if (!width || !height) continue;
-    images.set(id, {
-      id,
-      width,
-      height,
-      alt: decorative ? "" : (alt?.en ?? ""),
-      sources: variants.flatMap((variant) =>
-        variant.width === null ? [] : [{ url: mediaUrl(variant.key), width: variant.width, mime: variant.mime }],
-      ),
-    });
+  for (const row of await imageRows(wanted.join(","))) {
+    const image = toSiteImage(row);
+    if (image) images.set(image.id, image);
   }
   return images;
+}
+
+/**
+ * The library's images for a section's photo (D89), newest first: each as a
+ * page would show it, with whether it is marked decorative. Never cached: the
+ * admin sees an upload at once.
+ */
+export async function listImagesForAdmin(): Promise<LibraryImage[]> {
+  const rows = await getDb()
+    .select(IMAGE_COLUMNS)
+    .from(media)
+    .where(eq(media.kind, "IMAGE"))
+    .orderBy(desc(media.createdAt), media.id);
+  return rows.flatMap((row) => {
+    const image = toSiteImage(row);
+    return image ? [{ ...image, decorative: row.decorative }] : [];
+  });
+}
+
+/** Refuses a content save that names an image the library does not hold as one (plan §15). */
+export async function assertImagesKept(ids: readonly string[]): Promise<void> {
+  const wanted = [...new Set(ids)];
+  if (wanted.length === 0) return;
+  const kept = await getDb()
+    .select({ id: media.id })
+    .from(media)
+    .where(and(inArray(media.id, wanted), eq(media.kind, "IMAGE")));
+  if (kept.length !== wanted.length) throw validationError("IMAGE_NOT_FOUND");
 }
 
 /** Where a stock photo came from (plan Q11, D8): kept with it, never shown as Al Hidaya's own. */

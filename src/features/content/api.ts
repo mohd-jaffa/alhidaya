@@ -3,16 +3,33 @@ import { cache } from "react";
 
 import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { PAGE_ROUTES, ROUTES } from "@/constants/routes";
-import { pageDocumentKey, PAGE_RULES, type PageKey, type SectionType } from "@/constants/sections";
+import {
+  PAGE_KEYS,
+  pageDocumentKey,
+  pageFromSlug,
+  PAGE_RULES,
+  type PageKey,
+  type SectionType,
+} from "@/constants/sections";
 import { listPublishedJobs } from "@/features/careers/api";
 import { listPublishedClients } from "@/features/clients/api";
-import { getImages } from "@/features/media/api";
+import { assertImagesKept, getImages } from "@/features/media/api";
 import { listPublishedServices } from "@/features/services/api";
 import { getPublishedSite } from "@/features/settings/api";
-import { readDocument } from "@/lib/content/documents";
+import type { Actor } from "@/lib/content/actor";
+import { publishedTags, revalidateContent } from "@/lib/content/cache";
+import {
+  discardDocumentDraft,
+  listDocumentStates,
+  publishDocument,
+  readDocument,
+  readDocumentDraft,
+  saveDocumentDraft,
+} from "@/lib/content/documents";
 import type { ContentView } from "@/lib/content/view";
+import { notFoundError } from "@/lib/errors";
 import { renderShareImage } from "@/lib/seo/share-image";
-import type { PageDocument } from "@/lib/validation";
+import { type PageDocument, pageDocumentSchema } from "@/lib/validation";
 
 import type { SectionData } from "./types";
 
@@ -28,14 +45,18 @@ export const getPublishedPage = cache(
   },
 );
 
+/** The photos a page's sections hold. */
+const sectionImageIds = (document: PageDocument): string[] =>
+  document.sections.flatMap((section) =>
+    "image" in section.content && section.content.image ? [section.content.image.mediaId] : [],
+  );
+
 /** The images a page's sections show: its photos and its client logos. */
 function imageIds(document: PageDocument, clients: SectionData["clients"]): string[] {
-  const ids: string[] = [];
-  for (const section of document.sections) {
-    if ("image" in section.content && section.content.image) ids.push(section.content.image.mediaId);
-    if (section.type === "CLIENTS") ids.push(...clients.map((client) => client.published.logo.mediaId));
-  }
-  return ids;
+  const logos = document.sections.some((section) => section.type === "CLIENTS")
+    ? clients.map((client) => client.published.logo.mediaId)
+    : [];
+  return [...sectionImageIds(document), ...logos];
 }
 
 /**
@@ -105,4 +126,67 @@ export async function getPageMetadata(page: PageKey): Promise<Metadata> {
 export async function getPageShareImage(page: PageKey) {
   const sign = (await getPublishedPage(page))?.sections[0];
   return renderShareImage({ title: sign?.type === "SIGN" ? sign.content.headline.en : PAGE_NAMES[page] });
+}
+
+/** The page an admin address names (D88), or a 404 for one that is not a page. */
+export function pageFromParam(slug: string): PageKey {
+  const page = pageFromSlug(slug);
+  if (!page) throw notFoundError("RECORD_NOT_FOUND");
+  return page;
+}
+
+/** Where a page stands for the admin (D86): published when, and whether its draft waits to be published. */
+export interface PageState {
+  page: PageKey;
+  publishedAt: Date | null;
+  unpublishedChanges: boolean;
+}
+
+/** The eight pages for the admin, in the plan's order (plan §7.1), in one query. */
+export async function listPagesForAdmin(): Promise<PageState[]> {
+  const states = new Map((await listDocumentStates(PAGE_KEYS.map(pageDocumentKey))).map((state) => [state.key, state]));
+  return PAGE_KEYS.map((page) => {
+    const state = states.get(pageDocumentKey(page));
+    return { page, publishedAt: state?.publishedAt ?? null, unpublishedChanges: state?.unpublishedChanges ?? false };
+  });
+}
+
+/** A page's draft as the admin edits it (plan §14), with where it stands. */
+export interface PageDraft extends PageState {
+  draft: PageDocument;
+}
+
+export async function getPageForAdmin(page: PageKey): Promise<PageDraft> {
+  const view = await readDocumentDraft<PageDocument>(pageDocumentKey(page));
+  if (!view) throw notFoundError("RECORD_NOT_FOUND");
+  return { page, draft: view.draft, publishedAt: view.publishedAt, unpublishedChanges: view.unpublishedChanges };
+}
+
+/**
+ * Saves a page's draft (plan §14), already held to its page's rules by the
+ * route (§7.1), once each photo it names is known to the library; answers the
+ * page as saved. The public site is unchanged until Publish.
+ */
+export async function savePageDraft(page: PageKey, document: PageDocument, actor: Actor): Promise<PageDraft> {
+  await assertImagesKept(sectionImageIds(document));
+  await saveDocumentDraft(pageDocumentKey(page), document, actor);
+  return getPageForAdmin(page);
+}
+
+/**
+ * Publishes a page's saved draft (plan §14, D86): held to the page's rules
+ * once more as it is published, then exactly its cached reads are dropped, so
+ * the next visitor sees it.
+ */
+export async function publishPage(page: PageKey, actor: Actor): Promise<{ publishedAt: Date }> {
+  const key = pageDocumentKey(page);
+  const publishedAt = await publishDocument(key, actor, (draft) => pageDocumentSchema(page).parse(draft));
+  revalidateContent(publishedTags({ document: key }));
+  return { publishedAt };
+}
+
+/** Throws a page's draft away, back to what is published (plan §14); answers the page as it is again. */
+export async function discardPageDraft(page: PageKey, actor: Actor): Promise<PageDraft> {
+  await discardDocumentDraft(pageDocumentKey(page), actor);
+  return getPageForAdmin(page);
 }

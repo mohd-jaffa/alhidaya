@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { VALIDATION_MESSAGES } from "@/constants/messages";
+import { SECTION_NAMES, VALIDATION_MESSAGES } from "@/constants/messages";
 import { PAGE_KEYS, SECTION_TYPES } from "@/constants/sections";
 import { pageDocumentSchema, sectionSchema } from "@/lib/validation";
 import { pageFixture, section } from "@tests/support/fixtures/content";
@@ -39,29 +39,29 @@ describe("a page", () => {
   it("holds only what it allows, as many as it allows", () => {
     const home = pageFixture("HOME");
     expect(messages("HOME", { ...home, sections: [...home.sections, section("FORM")] })).toContain(
-      VALIDATION_MESSAGES.sectionNotAllowed("FORM"),
+      VALIDATION_MESSAGES.sectionNotAllowed(SECTION_NAMES.FORM),
     );
     expect(messages("HOME", { ...home, sections: [...home.sections, section("INTRO")] })).toContain(
-      VALIDATION_MESSAGES.sectionLimit("INTRO", 1),
+      VALIDATION_MESSAGES.sectionLimit(SECTION_NAMES.INTRO, 1),
     );
     const about = pageFixture("ABOUT");
     const five = Array.from({ length: 5 }, () => section("RICH_TEXT"));
     expect(messages("ABOUT", { ...about, sections: [...about.sections, ...five] })).toContain(
-      VALIDATION_MESSAGES.sectionLimit("RICH_TEXT", 4),
+      VALIDATION_MESSAGES.sectionLimit(SECTION_NAMES.RICH_TEXT, 4),
     );
   });
 
   it("keeps what it cannot work without, visible", () => {
     const contact = pageFixture("CONTACT");
     expect(messages("CONTACT", { ...contact, sections: contact.sections.slice(0, 2) })).toContain(
-      VALIDATION_MESSAGES.sectionRequired("FORM"),
+      VALIDATION_MESSAGES.sectionRequired(SECTION_NAMES.FORM),
     );
     expect(
       messages("CONTACT", {
         ...contact,
         sections: [...contact.sections.slice(0, 2), { ...contact.sections[2], visible: false }],
       }),
-    ).toContain(VALIDATION_MESSAGES.sectionRequired("FORM"));
+    ).toContain(VALIDATION_MESSAGES.sectionRequired(SECTION_NAMES.FORM));
   });
 
   it("never holds one section twice", () => {

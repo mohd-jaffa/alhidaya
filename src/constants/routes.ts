@@ -1,4 +1,4 @@
-import type { PageKey } from "./sections";
+import { type PageKey, pageSlug } from "./sections";
 
 /**
  * Every page the site serves (plan §5.1, §5.2), named once. English at the
@@ -42,7 +42,9 @@ export const ADMIN_ROUTES = {
   forgotPassword: "/admin/forgot-password",
   resetPassword: "/admin/reset-password",
   overview: "/admin",
-  page: (key: string) => `/admin/pages/${key}`,
+  /** The eight pages with their state, and one page's editor (D88). */
+  pages: "/admin/pages",
+  page: (page: PageKey) => `/admin/pages/${pageSlug(page)}`,
   services: "/admin/services",
   jobs: "/admin/jobs",
   clients: "/admin/clients",
@@ -78,6 +80,13 @@ export const API_ROUTES = {
   adminApplicationNotes: (id: string) => `/api/admin/applications/${id}/notes`,
   adminApplicationCv: (id: string) => `/api/admin/applications/${id}/cv`,
   adminApplicationRetryMail: (id: string) => `/api/admin/applications/${id}/retry-mail`,
+  /** The pages and their state; a page's draft, its publish and its discard (plan §14, D88). */
+  adminPages: "/api/admin/pages",
+  adminPage: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}`,
+  adminPagePublish: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}/publish`,
+  adminPageDiscard: (page: PageKey) => `/api/admin/pages/${pageSlug(page)}/discard`,
+  /** The media library's images, for a section's photo (D89). */
+  adminMedia: "/api/admin/media",
   /** Opens a public page in the admin's preview of unpublished changes (plan §14). */
   preview: "/api/preview",
   /** Leaves the admin's preview of unpublished changes (R3.6). */

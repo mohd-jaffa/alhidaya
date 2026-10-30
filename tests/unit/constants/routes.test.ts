@@ -8,21 +8,22 @@ describe("the routes", () => {
     expect(ROUTES.quoteFor("school-nurse-staffing")).toBe("/request-a-quote?service=school-nurse-staffing");
     expect(ROUTES.job("registered-nurse")).toBe("/careers/registered-nurse");
     expect(ROUTES.applyForJob("registered-nurse")).toBe("/careers/registered-nurse/apply");
-    expect(ADMIN_ROUTES.page("HOME")).toBe("/admin/pages/HOME");
+    expect(ADMIN_ROUTES.page("HOME")).toBe("/admin/pages/home");
     expect(ADMIN_ROUTES.enquiry("e1")).toBe("/admin/enquiries/e1");
   });
 
   it("keep every admin page under /admin", () => {
     for (const route of Object.values(ADMIN_ROUTES)) {
-      const path = typeof route === "function" ? route("x") : route;
+      const path = typeof route === "function" ? route("HOME") : route;
       expect(path.startsWith("/admin")).toBe(true);
     }
   });
 
   it("keep every endpoint under /api", () => {
     for (const route of Object.values(API_ROUTES)) {
-      expect((typeof route === "function" ? route("id") : route).startsWith("/api/")).toBe(true);
+      expect((typeof route === "function" ? route("HOME") : route).startsWith("/api/")).toBe(true);
     }
     expect(API_ROUTES.adminEnquiryRetryMail("e1")).toBe("/api/admin/enquiries/e1/retry-mail");
+    expect(API_ROUTES.adminPagePublish("PRIVACY")).toBe("/api/admin/pages/privacy/publish");
   });
 });
