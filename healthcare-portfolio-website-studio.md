@@ -1293,7 +1293,8 @@ retention purge; lockout; redaction of personal data; reduced motion.
 **The critical journey (E2E):** a family taps WhatsApp from Home; an
 institution sends a quote; a nurse applies with a CV (mail caught by Mailpit);
 the admin signs in, edits a service, previews, publishes, and the public page
-changes.
+changes (`tests/e2e/critical-journey.spec.ts`, R6.9; each part also runs on
+its own, at both widths, in its feature's journeys).
 
 ## 35. CI/CD, environments and deployment
 
@@ -1469,7 +1470,7 @@ one commit (D27).
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | DONE (2026-10-30; D94) |
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | DONE (2026-10-30) |
 | R6.8 | Activity (audit trail) | §36 | — | DONE (2026-10-30) |
-| R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | TODO |
+| R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | DONE (2026-10-30) |
 | R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | TODO |
 
 ### Phase 7 — Performance, accessibility and the finish

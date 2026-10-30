@@ -2796,3 +2796,30 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R6.9: the critical journey end to end
+
+### Added
+- `tests/e2e/critical-journey.spec.ts` (plan §34): in the built app, a
+  family's WhatsApp link from Home opens the company's chat with its words
+  written; a school's quote request is sent and the team's alert arrives
+  in Mailpit; a nurse applies with a CV and HR's email arrives with it
+  attached; the admin signs in through the sign-in page and finds both
+  waiting on Today; edits the summary of an existing service ("Elderly
+  care"), saves it, previews it (the draft under the preview bar, while a
+  visitor still sees the published words), publishes it, and the
+  visitor's page changes; Activity records the publish by the admin's
+  name. The service is put back through the same routes, and the public
+  page shows its words again.
+- The editors' own journeys already cover the rest of the row at both
+  widths: a page (R6.3), a new service (R6.4), a job closed and reopened,
+  a client logo (R6.5) and Settings (R6.6), each edited, previewed where
+  it has a page, published and seen by a visitor.
+
+### Validation
+- Typecheck, lint and format check passed.
+- E2E: the critical journey passed (desktop; each of its parts runs at
+  both widths in its own journey), and the whole suite passed after it.
+
+### Blockers
+- None.
