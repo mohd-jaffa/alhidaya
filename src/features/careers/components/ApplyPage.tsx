@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { TheLine } from "@/components/motion/TheLine";
 import { SectionFrame, SectionHeading } from "@/components/sections/SectionFrame";
 import { ButtonLink } from "@/components/ui/button";
 import { SignPanel } from "@/components/ui/sign-panel";
@@ -19,13 +18,8 @@ import { ApplicationForm } from "./ApplicationForm";
  */
 export function ApplyPage({ job }: { job: PublishedJob | null }) {
   const headline = job ? job.published.title.en : UI_TEXT.generalApplicationHeadline;
-  const stations = [
-    { id: "start", label: headline },
-    { id: "apply", label: UI_TEXT.yourApplication },
-  ];
   return (
     <>
-      <TheLine stations={stations} tone="leaf" />
       <div className="grid gap-section pt-16 pb-section xl:pt-12">
         <div id="start" className="mx-auto grid w-full max-w-site px-gutter">
           <SignPanel tone="leaf" headline={headline} lede={job ? UI_TEXT.applyLede : UI_TEXT.generalApplicationLede}>

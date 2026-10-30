@@ -1,4 +1,3 @@
-import { TheLine } from "@/components/motion/TheLine";
 import { JsonLd } from "@/components/site/JsonLd";
 import { JobLinks } from "@/components/sections/JobLinks";
 import { SectionFrame, SectionHeading } from "@/components/sections/SectionFrame";
@@ -43,11 +42,6 @@ function JobPoints({ title, items }: { title: string; items: readonly { en: stri
  */
 export function JobPage({ job, others }: { job: PublishedJob; others: readonly PublishedJob[] }) {
   const { published, open } = job;
-  const stations = [
-    { id: "start", label: published.title.en },
-    { id: "about", label: UI_TEXT.aboutJob },
-    { id: "line", label: UI_TEXT.lineCareers },
-  ];
   const facts: { term: string; value: string | null }[] = [
     { term: UI_TEXT.location, value: published.location.en },
     { term: UI_TEXT.employment, value: EMPLOYMENT_TYPE_LABELS[published.employmentType] },
@@ -74,7 +68,6 @@ export function JobPage({ job, others }: { job: PublishedJob; others: readonly P
           siteUrl,
         )}
       />
-      <TheLine stations={stations} tone="leaf" />
       <div className="grid gap-section pt-16 pb-section xl:pt-12">
         <div id="start" className="mx-auto grid w-full max-w-site gap-6 px-gutter">
           <SignPanel tone="leaf" headline={published.title.en} lede={published.summary.en}>

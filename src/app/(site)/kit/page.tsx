@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { PICTOGRAMS, type PictogramName } from "@/assets/brand/pictograms";
 import { Reveal } from "@/components/motion/Reveal";
-import { TheLine } from "@/components/motion/TheLine";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Checkbox, RadioGroup } from "@/components/ui/choice";
@@ -37,18 +36,9 @@ export default function KitPage() {
   if (!getServerEnv().KIT_PREVIEW) notFound();
   const sign = seedPages().HOME.sections[0];
   const phone = SEED_SITE.contact.whatsapp;
-  const stations = [
-    { id: "kit-lines", label: "Lines" },
-    { id: "kit-actions", label: "Actions" },
-    { id: "kit-fields", label: "Fields" },
-    { id: "kit-notices", label: "Notices" },
-    { id: "kit-frames", label: "Frames" },
-    ...SEED_SERVICES.map((service) => ({ id: service.slug, label: service.name.en })),
-  ];
 
   return (
     <div className="mx-auto grid max-w-site gap-section px-gutter pt-16 pb-section">
-      <TheLine stations={stations} tone="deep" />
       {sign.type === "SIGN" ? (
         <SignPanel
           headline={sign.content.headline.en}

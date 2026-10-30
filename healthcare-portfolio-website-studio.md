@@ -117,7 +117,7 @@ question (§41) the user may overturn.
 | D33 | **Admin sign-in: email and password**, with a lockout after repeated failures. | 2026-10-28 |
 | D34 | **The office location is a styled static map with an "Open in Google Maps" link**: no embedded map, no map cookies. | 2026-10-28 |
 | D35 | **The visual world comes from hospitals and healthcare, always in the logo's colours** (standing preference). | 2026-10-28 |
-| D36 | **The design direction is "Follow the Line"**: hospital wayfinding (§30.1), chosen on the Impeccable decision page after one re-roll. **Code-led build**: no image generation was available, so no mock-up comps; the direction contract carries the ambition. | 2026-10-28 |
+| D36 | *(Superseded by D97, 2026-10-30.)* **The design direction is "Follow the Line"**: hospital wayfinding (§30.1), chosen on the Impeccable decision page after one re-roll. **Code-led build**: no image generation was available, so no mock-up comps; the direction contract carries the ambition. | 2026-10-28 |
 | D37 | **Email is sent from a new `no-reply@alhidaya.qa` mailbox** on their cPanel. | 2026-10-28 |
 | D38 | **Dependency majors follow clinicdesk** (TypeScript 5.9, ESLint 9, Vitest 4), not the newest majors (TypeScript 7, ESLint 10, Vitest 5); everything else at its current release. **(agent default, Q13)** | 2026-10-28 |
 | D39 | **Supabase is replaced by the client's cPanel database** (supersedes the Supabase part of D1, and D20): **PostgreSQL if their cPanel offers it, otherwise MySQL/MariaDB**, confirmed over SSH (R0.8). The database is reachable only from the app on the same server. | 2026-10-28 |
@@ -142,7 +142,7 @@ question (§41) the user may overturn.
 | D58 | **Each page is stored as one document**, a draft copy and a published copy, with its sections inside in order (not a row per section, as §27 first had it): publishing a page is one atomic write, and every save is checked against the section rules (§7.2). | 2026-10-28 |
 | D59 | **A new order of services or client logos waits for Publish** like any other edit (D32): the draft order and the published order are kept apart. | 2026-10-28 |
 | D60 | **Content lives in two tables**, following D58: `documents` (keyed: each page, the site's content, each ordering) and `records` (collections: services, jobs, client logos), each row a draft and a published copy, with every kind's rules in its own schema; plus `media` and `site_operations`. Publishing is the same atomic step everywhere. **(agent default)** | 2026-10-29 |
-| D61 | **Typeface: Atkinson Hyperlegible Next**, with **Noto Sans Arabic** as its Arabic companion, chosen by the user from the specimen of three (R2.1; answers Q10). Self-hosted: one variable file (weights 200 – 800), Latin subset, 34 KB, with a metric-matched fallback; the Arabic file is added when Arabic arrives (§33). | 2026-10-29 |
+| D61 | *(Superseded by D108, 2026-10-30.)* **Typeface: Atkinson Hyperlegible Next**, with **Noto Sans Arabic** as its Arabic companion, chosen by the user from the specimen of three (R2.1; answers Q10). Self-hosted: one variable file (weights 200 – 800), Latin subset, 34 KB, with a metric-matched fallback; the Arabic file is added when Arabic arrives (§33). | 2026-10-29 |
 | D62 | **The client has no vector logo** (answers Q2): the mark and the wordmark are redrawn as SVG from the JPG, faithfully, for the client to approve (R2.2, R7.5). | 2026-10-29 |
 | D63 | **Errors may use red** (answers Q31), the one colour outside the logo's (D35): `#B42318`, 6.6:1 on white, for errors only, always with an icon and words (§30.3). | 2026-10-29 |
 | D64 | **A kit preview page at `/kit`**, served only where `KIT_PREVIEW=true` (locally and in the browser tests), never in production: the motion system and the UI kit are tested and screenshotted there (R2.4, R2.8). Confirmed by the user (Q33). | 2026-10-29 |
@@ -178,6 +178,18 @@ question (§41) the user may overturn.
 | D94 | **Settings is one page in groups** (the user, 2026-10-30, for R6.6): company, contact, social links, the WhatsApp button, navigation, footer, SEO defaults and the brochure, with the editor's one bar (Save draft, Preview, Publish, Discard). **A new brochure goes live with Settings' Publish** (it is site content, §13); `/brochure` never changes. **A navigation link** points at one of the site's pages or services, picked from a list, or at an https address typed in, each with its label, order and Visible. | 2026-10-30 |
 | D95 | **Disk use shows in Operations** (the user, 2026-10-30, for R6.7): each folder's use against its budget (§21.2); Today warns only once a folder passes 80 %. | 2026-10-30 |
 | D96 | **Activity is a day's log** (the user, 2026-10-30, for R6.8): the admin's changes newest first, grouped by day, filtered by kind (content, inbox, settings, sign-ins), 50 at a time: who, what and when, never personal details; kept a year (§36). | 2026-10-30 |
+| D97 | **The public site is redesigned after the user's reference** (the user, 2026-10-30: "I didn't like the portfolio design … try to do the 1st one … same to same … images instead of video … contents of Al Hidaya … the colour theme matching the logo … build this in phase 6B"): Dribbble shot 24320685, "Telehealth Website Design" (Eloqwnt for DocInPoc), followed section by section, with its kind of scroll and text motion, in Al Hidaya's words, photos and the logo's colours; the BeU shot (25587716) was the fallback and is not needed. **"Follow the Line" (D36) is superseded.** The studio's images and text are never reused (it is a real client's site): its layout, sections and motion are followed. Built as **Phase 6B**, after R6.10. §30.1 holds the direction; the public surface brief its contract. | 2026-10-30 |
+| D98 | **The redesign's greens are the logo's leaf, deepened and lightened** (the user's answer, 2026-10-30, the recommended option): forest `#3B6B24` (6.3:1 with white) for primary pills, the accent card and the footer; a pale tint `#EEF5E2` for audience pills, icon chips and the highlight behind a headline word. Logo colours only (D35). | 2026-10-30 |
+| D99 | **Counters show only real facts** (the user, recommended): the reference's counters keep their layout with true facts ("24/7", the number of services, "Across Doha"); a number such as patients or nurses shows only once the client gives it, editable in the admin. D7 stands. | 2026-10-30 |
+| D100 | **The new sections are section types in the Pages editor** (the user, recommended): their words, photos and items editable, shown or hidden and reordered; the design locked (D12). | 2026-10-30 |
+| D101 | **The rail is removed everywhere** (the user, 2026-10-30): the public line with its stations (and "You are here"), and in the admin the line and station dots of its left column, **which stays as a plain list of links** (the user's choice over a top bar); the admin is otherwise unchanged. | 2026-10-30 |
+| D102 | **The reference's app card shows Al Hidaya's services sliding inside it** (the user, recommended), each opening its page; there is no app. | 2026-10-30 |
+| D103 | **Every public page takes the new look and motion** (the user, recommended): Home in the reference's sections; About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms and the system pages restyled in the same language. | 2026-10-30 |
+| D104 | **Home's form section is the Contact form** (the user's choice over the quote form), in the reference's layout. | 2026-10-30 |
+| D105 | **Home's audience sections are "For Families" and "For Hospitals, Clinics & Schools"** (the user, recommended), in the reference's two layouts. | 2026-10-30 |
+| D106 | **The footer's running words read "AL HIDAYA HEALTH CARE"** (the user's choice), editable in Settings. | 2026-10-30 |
+| D107 | **The header is not pinned** (the user, 2026-10-30: "no need of the bar shown during scrolling"; recommended layout): the logo, About, Services, Careers, Contact in a light row, and the forest "Request a quote" pill; it scrolls away with the page. The phone moves to the page and the floating WhatsApp button. | 2026-10-30 |
+| D108 | **Inter Tight** (the user, recommended), a grotesk like the reference's, self-hosted, replaces Atkinson Hyperlegible Next (D61). | 2026-10-30 |
 
 ## 3. Audiences and the admin
 
@@ -1093,64 +1105,50 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 
 ## 30. Design system and motion
 
-### 30.1 The direction — "Follow the Line" (D36)
+### 30.1 The direction — the user's reference (D97)
 
-Chosen by the user on the Impeccable decision page (seed `04485a26`, after one
-re-roll; healthcare worlds only, D35). The direction contract lives in
-`.impeccable/surfaces/` (the public site's surface brief) and is the authority
-for every public screen; `DESIGN.md` is written from the built world at the
-end of Phase 7.
+Pinned by the user (2026-10-30): the telehealth landing language of Dribbble
+shot 24320685 (Eloqwnt for DocInPoc), followed section by section in Al
+Hidaya's words, photos and the logo's colours. The direction contract lives in
+the public site's surface brief (`.impeccable/surfaces/`) and is the authority
+for every public screen; `DESIGN.md` is written from the built world when
+Phase 6B ends. The reference's frames are the composition the build matches
+(code-led: no image generation).
 
-**Thesis.** *Al Hidaya* means "the guidance". The site works like a great
-hospital wayfinding system: it tells every visitor where they are and sends
-them down their own coloured line to the right next step. It refuses the
-category's template (a smiling-nurse hero, a grid of icon cards, a stats
-strip, a testimonial carousel).
+**The world.** A white page; pale mist cards with large soft radii; the logo's
+leaf green deepened to forest for the primary pills, the accent card and the
+footer, and lightened to a pale tint for audience pills, icon chips and the
+highlight behind a headline word (D98); navy ink with a quiet grey for the
+softer words of a statement; Inter Tight, large, light and tight (D108);
+round photo avatars in groups; round pill buttons with an arrow; thin line
+pictograms in chips. Licensed stock photography (D8), never captioned as Al
+Hidaya's staff.
 
-**The world.**
-- **Ground:** clinical white; **sign panels** in the logo's deep blue with
-  white type; detail panels in white with navy type.
-- **Three lines, from the logo:** **sky blue** = Care at home (families),
-  **deep blue** = Staffing (hospitals, clinics, schools), **leaf green** =
-  Careers (nurses). Colour is never the only signal: every line also carries
-  its name and pictogram.
-- **Type:** **Atkinson Hyperlegible Next** (D61), a signage-grade sans made
-  for readers with low vision, with Noto Sans Arabic as its companion; large,
-  confident sizes like real signage; tabular figures where digits line up.
-- **Pictograms:** one consistent set in the line weight of the system, in the
-  manner of hospital symbol systems (Q12).
-- **Sign grammar:** "You are here" markers, station dots, arrows, panel
-  edges coloured by line, generous signage spacing; every sign keeps a slot
-  for its Arabic line (§33).
-- **Photography:** licensed stock framed as panels within the sign system
-  (D8), never full-bleed decoration.
+**Home, in the reference's order.** The split hero: nurse avatars between
+round brackets, the headline with one word on a pale-green highlight, the
+supporting line, "WhatsApp us" (forest) and "Request a quote" (pale), a card
+with an avatar group and a real fact; beside it a tall rounded care photo with
+word chips and two floating cards. A statement that darkens word by word as
+it scrolls, with inline icon chips. Four highlight cards. "For Hospitals,
+Clinics & Schools": a heading with an inline icon, three cards (a team, a
+photo, Doha's reach) and real-fact counters. "For Families": the services
+sliding in a card (D102), a photo card and small feature cards. How it works:
+four steps with round photos, moving sideways while held. The Contact form
+(D104). The forest footer with "AL HIDAYA HEALTH CARE" running across it
+(D106) above its columns.
 
-**First viewport (Home).** A large deep-blue sign panel: the headline
-standing alone (e.g. *Nursing care, at your doorstep*, final copy per D6),
-the supporting line, and a care photograph in a panel beside it on desktop.
-Beneath, **the three lines** start from a navy **"You are here"** station, the
-point the visitor stands at (D68), and run across the width, each a coloured
-line with a station dot, its destination and its working actions: *Care at
-home* → WhatsApp · Call; *Staffing for hospitals, clinics and schools* →
-Request a Quote; *Nurses: join us* → Careers. On a phone the sign fills the
-width and the three lines stack as large tappable rows.
+**Motion.** A headline's letters settle from wide spacing into the word; a
+statement's words turn from grey to ink with the scroll; cards rise in;
+counters count; the process steps travel sideways while the section is held;
+the footer's words run with the scroll. Nothing moves on its own (WCAG
+2.2.2): every movement follows the scroll or arrives once. Reduced motion
+shows everything in place.
 
-**Signature interaction: the line.** As the visitor scrolls, the lines draw
-onward down the page (scrubbed with the scroll), through each section as a
-**station**; the station lights as its section arrives and a **"You are here"**
-marker travels along the line. On desktop the line runs in the margin; on a
-phone it becomes a slim progress line under the header with the current
-station's name. Services are stops on their audience's line.
+**The header** is not pinned (D107), and **no rail** runs down any page (D101).
 
-**Story.** The visitor understands that Al Hidaya brings qualified nurses into
-homes and supplies nurses to hospitals, clinics and schools across Doha, day
-and night; believes the company is organised and professional; and takes their
-line's next step.
-
-**Honest risk.** "Guidance" as wayfinding is the obvious reading of the name,
-and it can feel like a transit system rather than care. It is answered by
-warm photography, plain caring copy, and restraint: the line guides, it never
-performs.
+*Superseded:* "Follow the Line" (D36, 2026-10-28), the hospital wayfinding
+system with its coloured lines, stations and "You are here", built in Phases
+2 – 5 and retired in Phase 6B.
 
 ### 30.2 Tokens
 
@@ -1167,9 +1165,16 @@ performs.
   section 28 px, title and supporting line 21 px, body 17 px, small and label
   14 px. Radii 6 px (panels, controls) and 4 px (tags); the line 6 px wide,
   stations 22 px; durations 120, 200 and 640 ms; an exponential ease-out.
-- **Contrast rules (WCAG AA):** white text only on deep blue or navy; sky
-  blue and leaf green are line and accent colours, carrying navy text when text
-  sits on them; body text is navy on white.
+- **The redesign's tokens (Phase 6B, D98):** forest `#3B6B24` with white
+  (6.3:1) and its hover `#2F581C`; on forest, white and `#E3EED6`; the pale
+  leaf `#EEF5E2` carrying forest (5.7:1) or navy text; a quiet grey `#7D8AA0`
+  for large type only (3.5:1 on white). Display roles: hero 42 – 76 px,
+  display 32 – 52 px, statement 26 – 46 px, figure 40 – 60 px, the footer's
+  running words 64 – 176 px, light and tight; cards 28 px radius, photo
+  frames 24 px, pills round; a soft floating shadow for cards over a photo.
+- **Contrast rules (WCAG AA):** white text only on deep blue, navy or forest;
+  sky blue and leaf green carry navy text when text sits on them; body text
+  is navy on white; the quiet grey only at large sizes.
 - Every colour, size, radius, shadow and duration is a token in
   `src/app/globals.css`. **A component never picks its own value.**
 
@@ -1374,6 +1379,7 @@ order; a pre-push hook runs it (as clinicdesk, from Phase 7).
 | 4 | Enquiries | Quote and Contact end to end, with the inbox |
 | 5 | Careers | Jobs, applications with CVs kept privately and emailed, the inbox |
 | 6 | Admin CMS | Editing, ordering, media, settings, publish, retention |
+| 6B | The redesign | The public site after the user's reference (D97): new look, sections and motion; the rail removed everywhere; the header unpinned |
 | 7 | Performance, accessibility and the finish | Budgets in CI; audits; Impeccable finish review; `DESIGN.md`; client approvals |
 | 8 | Deploy and go-live (after full payment, D48) | The production database and folders on cPanel; the release workflow; mail DNS; keys; switch alhidaya.qa; v1.0.0 |
 
@@ -1475,6 +1481,16 @@ one commit (D27).
 | R6.8 | Activity (audit trail) | §36 | — | DONE (2026-10-30) |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | DONE (2026-10-30) |
 | R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | DONE (2026-10-30) |
+
+### Phase 6B — The redesign (D97 – D108)
+
+| ID | Work | Source | Waits on | Status |
+|---|---|---|---|---|
+| R6B.1 | The foundation: the new direction recorded (§30.1, the surface brief); the greens and the display type as tokens (D98); Inter Tight self-hosted (D108); the rail removed from every public page (D101); the header no longer pinned, with the four links and the forest quote pill (D107); the admin's left column a plain list, without its line and station dots (D101) | D97, D98, D101, D107, D108 | — | DONE (2026-10-30) |
+| R6B.2 | Home in the reference's sections (D97, D100): the split hero; the statement; the four highlight cards; "For Hospitals, Clinics & Schools" with its counters (D99, D105); "For Families" with the services sliding in a card (D102, D105); how it works, four steps; the Contact form (D104): each a section type in the Pages editor, seeded, with the new photographs (licensed stock, D8, D75) and their motion | D97, D99, D100, D102, D104, D105 | R6B.1 | TODO |
+| R6B.3 | The forest footer with its running words, editable in Settings (D106), and its columns | D106 | R6B.1 | TODO |
+| R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | TODO |
+| R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | TODO |
 
 ### Phase 7 — Performance, accessibility and the finish
 

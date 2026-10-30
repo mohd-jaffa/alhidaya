@@ -72,7 +72,6 @@ describe("JobPage", () => {
     expect(line.getByRole("link", { name: UI_TEXT.applyForJob })).toBeInTheDocument();
     expect(line.getByRole("link", { name: UI_TEXT.allOpenJobs })).toHaveAttribute("href", ROUTES.careers);
     expect(line.getByRole("link", { name: "School Nurse" })).toHaveAttribute("href", ROUTES.job("school-nurse"));
-    expect(screen.getByRole("navigation", { name: UI_TEXT.onThisPage })).toBeInTheDocument();
     expect(structuredData(container)).toEqual(["JobPosting", "BreadcrumbList"]);
   });
 

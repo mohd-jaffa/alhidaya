@@ -38,9 +38,9 @@ const currentStation = (pathname: string, stations: Station[]) =>
   stations.filter((station) => isHere(pathname, station.href)).sort((a, b) => b.href.length - a.href.length)[0];
 
 /**
- * The admin's sections as stations on the line (R6.1): the line runs down
- * the rail, the current section is the white station, and what waits shows
- * in a sky count.
+ * The admin's sections as a plain list in groups (R6.1, D101): the current
+ * one marked, and what waits shown in a sky count. No line and no station
+ * dots since the redesign.
  */
 function Stations({
   groups,
@@ -54,16 +54,11 @@ function Stations({
     groups.flatMap((group) => group.stations),
   );
   return (
-    <nav
-      aria-label={ADMIN_TEXT.navigation}
-      className="relative ps-7 before:absolute before:start-[0.5rem] before:top-3 before:bottom-3 before:w-[3px] before:rounded-full before:bg-sky/35"
-    >
+    <nav aria-label={ADMIN_TEXT.navigation}>
       {groups.map((group) => (
         <div key={group.label ?? "home"} className="grid gap-1">
           {group.label ? (
-            <p className="-ms-7 mt-5 mb-1 bg-navy py-1 ps-7 text-small font-semibold text-on-deep-2/80">
-              {group.label}
-            </p>
+            <p className="mt-5 mb-1 px-3 text-small font-semibold text-on-deep-2/80">{group.label}</p>
           ) : null}
           <ul className="grid gap-1">
             {group.stations.map((station) => {
@@ -74,20 +69,12 @@ function Stations({
                     href={station.href}
                     aria-current={here ? "page" : undefined}
                     onClick={onNavigate}
-                    className={`relative flex min-h-touch items-center justify-between gap-3 rounded-control px-3 ${
+                    className={`flex min-h-touch items-center justify-between gap-3 rounded-control px-3 ${
                       here
                         ? "bg-on-deep/10 font-bold text-on-deep"
                         : "text-on-deep-2 hover:bg-on-deep/5 hover:text-on-deep"
                     }`}
                   >
-                    <span
-                      aria-hidden="true"
-                      className={`absolute top-1/2 -translate-y-1/2 rounded-full border-[3px] ${
-                        here
-                          ? "-start-[1.75rem] size-4 border-on-deep bg-on-deep"
-                          : "-start-[1.6875rem] size-3.5 border-sky bg-navy"
-                      }`}
-                    />
                     {station.label}
                     {station.count && station.count.value > 0 ? (
                       <span className="rounded-full bg-sky px-2 text-small font-bold text-navy tabular-nums">
@@ -127,8 +114,8 @@ function SignOut({ adminName }: { adminName: string }) {
 }
 
 /**
- * The admin's frame (plan §16, R6.1): the navy rail on a wide screen; on a
- * phone a navy bar naming the section, with the rail in a menu. The page
+ * The admin's frame (plan §16, R6.1): the navy column of links on a wide
+ * screen; on a phone a navy bar naming the section, with the links in a menu. The page
  * beside it is white and quiet. No smooth scroll, no motion of the public
  * site's.
  */

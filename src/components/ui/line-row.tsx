@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 
 import type { PictogramName } from "@/assets/brand/pictograms";
-import type { LineTone } from "@/components/motion/TheLine";
 
 import { Pictogram } from "./pictogram";
 import { StationMarker } from "./station-marker";
+
+/** A line's colour: sky for care at home, deep blue for staffing, leaf green for careers. */
+export type LineTone = "sky" | "deep" | "leaf";
 
 const FILLS = { sky: "bg-sky", deep: "bg-deep", leaf: "bg-leaf" } as const;
 

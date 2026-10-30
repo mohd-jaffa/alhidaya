@@ -39,10 +39,10 @@ describe("SiteHeader", () => {
     expect(within(main).getByRole("link", { name: "About" })).not.toHaveAttribute("aria-current");
   });
 
-  it("offers the phone, in Qatar's grouping, and the quote", () => {
+  it("offers the quote as its one main action, and is not pinned over the page (D107)", () => {
     render(<SiteHeader site={site} />);
-    expect(screen.getByRole("link", { name: "+974 3130 6555" })).toHaveAttribute("href", "tel:+97431306555");
     expect(screen.getAllByRole("link", { name: UI_TEXT.requestQuote })[0]).toHaveAttribute("href", "/request-a-quote");
+    expect(screen.getByRole("banner").className).not.toMatch(/\b(sticky|fixed)\b/);
   });
 
   it("still stands, with the logo and the quote, before the site content is published", () => {

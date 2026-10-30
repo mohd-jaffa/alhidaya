@@ -10,7 +10,6 @@ export const UI_TEXT = {
   /** The first line of a WhatsApp chat a visitor starts; they still press send (plan Q14). */
   whatsappPrefill: "Hello Al Hidaya, I would like to ask about nursing care.",
   /** The line's own words (plan §30.1). */
-  onThisPage: "On this page",
   youAreHere: "You are here",
   /** The three lines' names (plan §6.1, D71): fixed, like their actions and colours. */
   lineCareAtHome: "Care at home",

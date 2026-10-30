@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { TheLine } from "@/components/motion/TheLine";
-import { pageStations } from "@/components/sections/anchors";
 import { PageSections } from "@/components/sections/PageSections";
 import { getPageMetadata, getPublishedPageContent } from "@/features/content/api";
 import { enquiryForms } from "@/features/enquiries/components/EnquiryForms";
@@ -23,7 +21,6 @@ export default async function RequestAQuote({
   const { document, data } = content;
   return (
     <>
-      <TheLine stations={pageStations("QUOTE", document.sections, data)} tone="deep" />
       <PageSections
         page="QUOTE"
         sections={document.sections}

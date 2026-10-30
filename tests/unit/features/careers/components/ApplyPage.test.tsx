@@ -42,7 +42,6 @@ describe("ApplyPage", () => {
     expect(apply.getByRole("link", { name: "Registered General Nurse – Home Care" })).toHaveAttribute("href", back);
     const form = apply.getByRole("form", { name: "Application" });
     expect([form.dataset.job, form.dataset.siteKey]).toEqual([job.id, "site-key"]);
-    expect(screen.getByRole("navigation", { name: UI_TEXT.onThisPage })).toHaveTextContent(UI_TEXT.yourApplication);
   });
 
   it("is the general application without a job, with the way back to the open jobs", () => {

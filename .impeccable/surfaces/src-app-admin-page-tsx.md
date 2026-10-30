@@ -25,17 +25,17 @@ arrived, newest first and ruled by day, each row handled where it is. It refuses
 the dashboard of KPI tiles and charts, the public site's signs and motion, and
 page-per-click inbox work.
 
-OWN-WORLD: the site's world, quieter. A navy rail that is the line: sections as
-stations on a sky line, the current one the white "You are here" station, new
-counts in sky pills. A white work area; mist for an opened row; deep blue for
-actions and "New", sky for in progress, leaf for resolved; error red only for
-failures, with icon and words. Atkinson Hyperlegible Next at a fixed rem scale;
-times in tabular figures; 6 px radii; hairline rules.
+OWN-WORLD: quiet and firm. A navy column of links in groups (since D101 a
+plain list: no line, no station dots), the current one marked, new counts in
+sky pills. A white work area; mist for an opened row; deep blue for actions
+and "New", sky for in progress, leaf for resolved; error red only for
+failures, with icon and words. Inter Tight (D108) at a fixed rem scale; times
+in tabular figures; 6 px radii; hairline rules.
 
 STORY: the admin opens on Today and sees what needs them, opens a row, calls,
 moves it along, notes it, and trusts nothing was missed.
 
-FIRST VIEWPORT: the rail; "Today" with Needs you / Everything; a day rule; the
+FIRST VIEWPORT: the column of links; "Today" with Needs you / Everything; a day rule; the
 newest arrival opened in place (every answer, Call, WhatsApp, Email, Move to,
 a note box), the rest as one-line rows with time, title, summary and a status
 chip. Phone: a top bar naming the section with a menu; full-width rows.

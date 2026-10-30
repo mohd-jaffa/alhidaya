@@ -1,4 +1,4 @@
-import type { LineTone } from "@/components/motion/TheLine";
+import type { LineTone } from "@/components/ui/line-row";
 
 import { StationMarker } from "./station-marker";
 

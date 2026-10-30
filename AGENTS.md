@@ -139,7 +139,7 @@ src/
 ├── assets/brand/         # the logo, pictograms, the map
 ├── components/
 │   ├── site/  admin/     # shells; admin/editor/: the content editor's frame and fields (D92)
-│   ├── motion/           # the motion system (Lenis, the line, reveals)
+│   ├── motion/           # the motion system (Lenis, reveals, the redesign's text and scroll motion)
 │   ├── sections/         # one component per section type (plan §7.2)
 │   └── ui/               # the shared kit
 ├── constants/            # messages, routes, site, sections, statuses, limits, redirects, uploads
@@ -440,8 +440,7 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 
 - **Lenis** for desktop wheel scrolling, driven by **GSAP's ticker**: one
   animation frame loop. Touch devices keep native scrolling.
-- **Animate only `transform` and `opacity`** (and SVG `stroke-dashoffset` for
-  the line). Never animate layout properties, `filter`, `box-shadow` or large
+- **Animate only `transform` and `opacity`**. Never animate layout properties, `filter`, `box-shadow` or large
   `clip-path`.
 - **Content is visible by default**; reveals only enhance.
 - Motion code is client-only, public-site only, and loaded after first paint;
@@ -450,9 +449,12 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
   from the engine `useMotion()` gives once it has loaded, and let them die
   with the component; refresh once after fonts and images settle; never leak listeners
   across navigations.
-- **Reduced motion:** Lenis off, lines drawn in full, no scrub, no reveals.
-- Durations and eases are tokens. One signature (the line), restrained
-  reveals, nothing scattered.
+- **Reduced motion:** Lenis off, everything shown in place, no scrub, no reveals.
+- **Nothing moves on its own** (WCAG 2.2.2): motion follows the scroll or
+  arrives once.
+- Durations and eases are tokens. One motion grammar (plan §30.1: letters
+  settling, a statement darkening with the scroll, steps held sideways, the
+  footer's words running), restrained reveals, nothing scattered.
 
 ---
 
@@ -494,11 +496,12 @@ numbers.
 Impeccable is a design-quality tool. It must not change product scope.
 
 `PRODUCT.md` (product truth) was set on 2026-10-28. The public site's
-direction, **"Follow the Line"** (plan §30.1, D36), lives in
+direction is **the user's reference** (plan §30.1, D97, Phase 6B; "Follow
+the Line", D36, is superseded), and its contract lives in
 `.impeccable/surfaces/src-app-site-page-tsx.md`; every public screen is built
 in that world and never invents its own colour, shape or motion. `DESIGN.md`
-is written from the built world at R7.4 and is then the design system's
-authority.
+is written from the built world when Phase 6B ends and is then the design
+system's authority.
 
 ```text
 /impeccable shape <screen>      before building a screen the plan has not shaped (the admin: R6.1)

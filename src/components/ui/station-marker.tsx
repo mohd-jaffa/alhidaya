@@ -1,4 +1,4 @@
-import type { LineTone } from "@/components/motion/TheLine";
+import type { LineTone } from "@/components/ui/line-row";
 
 /** A station's look in each state, on each line (plan §30.1). */
 const STATES = {

@@ -39,7 +39,6 @@ describe("ServicePage", () => {
       "href",
       ROUTES.service("elderly-care"),
     );
-    expect(screen.getByRole("navigation", { name: UI_TEXT.onThisPage })).toBeInTheDocument();
     const data = [...container.querySelectorAll('script[type="application/ld+json"]')].map(
       (script) => JSON.parse(script.innerHTML)["@type"],
     );

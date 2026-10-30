@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * The design tokens of "Follow the Line" (plan §30.2, R2.1): the only colours,
+ * The design tokens (plan §30.2; Phase 6B, D97 – D108): the only colours,
  * type sizes, radii, shadows and eases the site has. Tailwind's own palette,
  * sizes, shadows and eases are removed, so a component cannot pick a value of
  * its own (AGENTS.md §18); tests/contract/tokens.test.ts checks the contrast
@@ -37,6 +37,19 @@
   --color-rule: #d5e1ed;
   --color-on-deep: #ffffff;
   --color-on-deep-2: #dce9f6;
+  /*
+   * The redesign's greens (D98): the logo's leaf deepened to forest, which
+   * carries white text (6.3:1) on primary pills, the accent card and the
+   * footer, and lightened to a pale tint for audience pills, icon chips and
+   * the highlight behind a headline word. The quiet grey is for large type
+   * only (3.5:1): a statement's softer words.
+   */
+  --color-forest: #3b6b24;
+  --color-forest-2: #2f581c;
+  --color-on-forest: #ffffff;
+  --color-on-forest-2: #e3eed6;
+  --color-leaf-pale: #eef5e2;
+  --color-ink-soft: #7d8aa0;
   /* Errors only (D63): the one colour outside the logo's, always with an icon and words. */
   --color-error: #b42318;
   /* Focus rings: deep blue on light ground, white on a deep-blue or navy panel. */
@@ -44,10 +57,27 @@
   --color-focus-on-deep: #ffffff;
 
   /*
-   * One family, Atkinson Hyperlegible Next (D61), at signage sizes. Roles,
-   * not sizes: the sign's headline, a page's heading, a section's, a title
-   * (a job, a service), the supporting line, body, small print, a label.
+   * One family, Inter Tight (D108). Roles, not sizes. The redesign's display
+   * roles: the hero's headline, a section's heading, a statement, a counter's
+   * figure and the footer's running words, large, light and tight. The
+   * working roles: a page's heading, a section's in the admin, a title (a job,
+   * a service), the supporting line, body, small print, a label.
    */
+  --text-hero: clamp(2.625rem, 1.55rem + 4.3vw, 4.75rem);
+  --text-hero--line-height: 1.02;
+  --text-hero--letter-spacing: -0.035em;
+  --text-display: clamp(2rem, 1.35rem + 2.6vw, 3.25rem);
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.03em;
+  --text-statement: clamp(1.625rem, 1.1rem + 2.2vw, 2.875rem);
+  --text-statement--line-height: 1.22;
+  --text-statement--letter-spacing: -0.025em;
+  --text-figure: clamp(2.5rem, 1.75rem + 3vw, 3.75rem);
+  --text-figure--line-height: 1;
+  --text-figure--letter-spacing: -0.04em;
+  --text-marquee: clamp(4rem, 1.5rem + 10vw, 11rem);
+  --text-marquee--line-height: 0.9;
+  --text-marquee--letter-spacing: -0.04em;
   --text-sign: clamp(2.375rem, 1.5rem + 4.2vw, 4.25rem);
   --text-sign--line-height: 1.04;
   --text-sign--letter-spacing: -0.015em;
@@ -75,17 +105,22 @@
   --spacing-touch: 2.75rem;
   --spacing-sign: clamp(1.5rem, 1rem + 3vw, 3.25rem);
   --container-site: 78rem;
-  /* About 70 characters of running text: Atkinson's figures are wide, so its `ch` is larger than an average letter. */
-  --container-measure: 48ch;
+  /* About 70 characters of running text. */
+  --container-measure: 60ch;
 
-  /* Signs have small, firm corners; stations are round. */
+  /* The admin's firm corners; the site's soft cards, photo frames and round pills (D97). */
   --radius-panel: 6px;
   --radius-control: 6px;
   --radius-tag: 4px;
+  --radius-card: 1.75rem;
+  --radius-frame: 1.5rem;
+  --radius-pill: 999px;
 
   /* Flat signage: depth only where something floats over the page. */
   --shadow-raised: 0 8px 24px -12px rgb(11 36 64 / 0.28);
   --shadow-overlay: 0 24px 56px -16px rgb(11 36 64 / 0.38);
+  /* A card floating over a photo (the hero's). */
+  --shadow-float: 0 20px 44px -20px rgb(11 36 64 / 0.32);
 
   /* Motion (plan §30.4): an exponential ease-out for arrivals, a symmetric one for moves. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -101,7 +136,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-atkinson), system-ui, sans-serif;
+  --font-sans: var(--font-inter-tight), system-ui, sans-serif;
   --default-font-family: var(--font-sans);
 }
 
@@ -109,13 +144,8 @@
 :root {
   --line-width: 6px;
   --line-station: 22px;
-  /* The line in the margin (plan §30.1): halfway between the window's edge and the text, below the header. */
-  --line-rail-start: calc(
-    (max(0px, (100vw - var(--container-site)) / 2) + var(--spacing-gutter)) / 2 - var(--line-station) / 2
-  );
+  /* A line row's line, centred on its station (until those sections are redesigned, Phase 6B). */
   --line-rail-centre: calc(var(--line-station) / 2 - var(--line-width) / 2);
-  --line-rail-top: calc(var(--header-height) + 3rem);
-  --line-rail-bottom: 3rem;
   /* The site header's height (R2.6): the sign bar, taller on a wide screen. */
   --header-height: 4rem;
   --duration-press: 120ms;

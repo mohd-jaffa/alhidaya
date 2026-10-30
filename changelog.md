@@ -2880,3 +2880,54 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. Both cron entries are added on the server at R8.2, after full
   payment (D48).
+
+## 2026-10-30 — R6B.1: the redesign's foundation
+
+The user rejected "Follow the Line" and asked for the public site to follow
+a reference (Dribbble shot 24320685, "Telehealth Website Design", Eloqwnt
+for DocInPoc), with the rail removed everywhere and no bar while scrolling.
+Their answers are decisions D97 – D108; Phase 6B builds it.
+
+### Added
+- Decisions D97 – D108 and Phase 6B's rows in the plan; §30.1 rewritten for
+  the new direction ("Follow the Line", D36, superseded; Atkinson
+  Hyperlegible Next, D61, superseded); the public surface brief's direction
+  contract (code-led: the reference's frames are the composition, never its
+  images or words).
+- Inter Tight (D108), self-hosted from Fontsource 5.3.0 (OFL), its variable
+  file for the site and two WOFF weights for share pictures, checksums in
+  its README.
+- The redesign's tokens (D98): forest `#3B6B24` with white (6.3:1) and its
+  hover, the pale leaf `#EEF5E2`, a quiet grey for large type only, display
+  type roles (hero, display, statement, figure, the footer's running
+  words), soft card and frame radii, round pills and a floating shadow;
+  the contrast contract extended to every new pairing.
+- `Pill` and `PillLink` (`components/ui/pill.tsx`): the round actions,
+  forest with an arrow that steps forward, pale beside it, white on forest.
+
+### Changed
+- The header is no longer pinned (D107): the logo, the four links in a
+  light row with the current one marked, and the forest "Request a quote"
+  pill; it scrolls away with the page. The phone leaves the header for the
+  page and the floating WhatsApp button.
+- The rail is gone (D101): `TheLine`, its stations and "On this page" are
+  removed from every public page; sections keep their anchors.
+- The admin's left column is a plain list of links in its groups, without
+  the line and station dots (D101, the user's choice over a top bar); the
+  admin is otherwise unchanged, and its brief says so.
+- AGENTS.md §5, §19 and §22 for the new direction and its motion rules
+  (nothing moves on its own, WCAG 2.2.2).
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,112), coverage 100%; the token
+  contract checks every new colour pairing.
+- E2E (phone and desktop, axe): the header scrolls away and no rail runs
+  down Home; Inter Tight loads from the site itself; the whole suite passed.
+- Screens looked at, at 1440 and 390 px: the header, Home's opening (still
+  the old sections until R6B.2), the admin's column.
+- First paint, JavaScript (gzip, within 170 KB): the apply page 167.0 KB
+  (3,112 bytes left, the rail's code gone), Contact 166.6 KB, Home 158.1 KB.
+
+### Blockers
+- None.

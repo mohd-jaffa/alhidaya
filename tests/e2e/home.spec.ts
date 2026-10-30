@@ -55,24 +55,13 @@ test("Home shows every published service on its line, the open job and the way t
   await expect(page.locator("#clients")).toHaveCount(0);
 });
 
-test("on a wide screen each section is a station on the line, and a station takes the visitor there", async ({
-  page,
-}, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop", "the line in the margin is drawn on a wide screen");
+test("no rail runs down the page, and the header scrolls away with it (D101, D107)", async ({ page }) => {
   await page.goto("/");
-  const line = page.getByRole("navigation", { name: UI_TEXT.onThisPage });
-  await expect(line.getByRole("link")).toHaveText([
-    "Home",
-    "Who we are",
-    "Our services",
-    "Why Al Hidaya",
-    "Nurse staffing for hospitals, clinics and schools",
-    "Nurses: join us",
-    "Talk to us",
-  ]);
-  await line.getByRole("link", { name: "Why Al Hidaya" }).click();
-  await expect(page).toHaveURL(/#values$/);
-  await expect(page.getByRole("heading", { level: 2, name: "Why Al Hidaya" })).toBeInViewport();
+  const header = page.getByRole("banner");
+  await expect(header).toBeInViewport();
+  await expect(page.getByRole("navigation", { name: "On this page" })).toHaveCount(0);
+  await page.evaluate(() => window.scrollTo(0, 1200));
+  await expect(header).not.toBeInViewport();
 });
 
 test("Home passes axe", async ({ page }) => {
@@ -81,7 +70,7 @@ test("Home passes axe", async ({ page }) => {
   expect(violations).toEqual([]);
 });
 
-test("the site's own typeface loads, from the site itself (plan D61, §22.4)", async ({ page }) => {
+test("the site's own typeface loads, from the site itself (plan D108, §22.4)", async ({ page }) => {
   const fontRequests: string[] = [];
   page.on("request", (request) => {
     if (request.resourceType() === "font") fontRequests.push(new URL(request.url()).host);
@@ -92,7 +81,7 @@ test("the site's own typeface loads, from the site itself (plan D61, §22.4)", a
     await document.fonts.ready;
     return [...document.fonts].filter((face) => face.status === "loaded").map((face) => face.family);
   });
-  expect(loaded.some((family) => family.toLowerCase().includes("atkinson"))).toBe(true);
+  expect(loaded.some((family) => family.toLowerCase().replace(" ", "").includes("intertight"))).toBe(true);
   expect(fontRequests.length).toBeGreaterThan(0);
   expect(new Set(fontRequests)).toEqual(new Set([new URL(page.url()).host]));
 });

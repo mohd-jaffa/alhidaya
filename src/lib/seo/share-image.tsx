@@ -25,7 +25,7 @@ const SIGNS = {
   leaf: { background: COLOURS.leaf, title: COLOURS.navy, name: COLOURS.navy, station: COLOURS.navy },
 } as const;
 
-const FONTS = "src/assets/fonts/atkinson-hyperlegible-next/share";
+const FONTS = "src/assets/fonts/inter-tight/share";
 
 /**
  * The picture a page shows when it is shared (plan §19): its sign in its
@@ -41,7 +41,7 @@ export async function renderShareImage({
 }): Promise<ImageResponse> {
   const [regular, bold] = await Promise.all(
     ["400", "700"].map((weight) =>
-      readFile(path.join(process.cwd(), FONTS, `atkinson-hyperlegible-next-latin-${weight}-normal.woff`)),
+      readFile(path.join(process.cwd(), FONTS, `inter-tight-latin-${weight}-normal.woff`)),
     ),
   );
   const sign = SIGNS[tone];
@@ -59,7 +59,7 @@ export async function renderShareImage({
           padding: "64px 72px",
           borderRadius: 12,
           background: sign.background,
-          fontFamily: "Atkinson Hyperlegible Next",
+          fontFamily: "Inter Tight",
         }}
       >
         <div
@@ -89,8 +89,8 @@ export async function renderShareImage({
     {
       ...SHARE_IMAGE_SIZE,
       fonts: [
-        { name: "Atkinson Hyperlegible Next", data: regular, weight: 400, style: "normal" },
-        { name: "Atkinson Hyperlegible Next", data: bold, weight: 700, style: "normal" },
+        { name: "Inter Tight", data: regular, weight: 400, style: "normal" },
+        { name: "Inter Tight", data: bold, weight: 700, style: "normal" },
       ],
     },
   );

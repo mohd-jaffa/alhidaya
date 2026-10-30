@@ -24,12 +24,18 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe("the design tokens (plan §30.2)", () => {
-  it("are the logo's colours, their navy ink and the error red, and nothing else", () => {
+  it("are the logo's colours, their navy ink, the leaf deepened and lightened (D98) and the error red, and nothing else", () => {
     expect(Object.keys(colours).sort()).toEqual(
       [
         "deep",
         "sky",
         "leaf",
+        "forest",
+        "forest-2",
+        "on-forest",
+        "on-forest-2",
+        "leaf-pale",
+        "ink-soft",
         "navy",
         "ink-2",
         "ground",
@@ -66,9 +72,23 @@ describe("the design tokens (plan §30.2)", () => {
       ["error", "ground"],
       ["error", "mist"],
       ["on-deep", "error"],
+      ["forest", "ground"],
+      ["forest", "mist"],
+      ["forest", "leaf-pale"],
+      ["on-forest", "forest"],
+      ["on-forest-2", "forest"],
+      ["on-forest", "forest-2"],
+      ["navy", "leaf-pale"],
+      ["ink-2", "leaf-pale"],
     ]) {
       expect(contrast(text, surface), `${text} on ${surface}`).toBeGreaterThanOrEqual(4.5);
     }
+  });
+
+  it("keep the quiet grey to large type, where 3:1 is the bar", () => {
+    expect(contrast("ink-soft", "ground")).toBeGreaterThanOrEqual(3);
+    expect(contrast("ink-soft", "mist")).toBeGreaterThanOrEqual(3);
+    expect(contrast("ink-soft", "ground")).toBeLessThan(4.5);
   });
 
   it("keep white text off sky blue and leaf green, where it would fail", () => {
@@ -84,10 +104,8 @@ describe("the design tokens (plan §30.2)", () => {
     expect(contrast("error", "ground")).toBeGreaterThanOrEqual(3);
   });
 
-  it("set the site in Atkinson Hyperlegible Next, with tabular figures available (plan D61)", () => {
-    expect(css).toContain("--font-sans: var(--font-atkinson)");
-    expect(readFileSync("src/app/layout.tsx", "utf8")).toContain(
-      "atkinson-hyperlegible-next/atkinson-hyperlegible-next-latin-wght-normal.woff2",
-    );
+  it("set the site in Inter Tight, self-hosted (plan D108)", () => {
+    expect(css).toContain("--font-sans: var(--font-inter-tight)");
+    expect(readFileSync("src/app/layout.tsx", "utf8")).toContain("inter-tight/inter-tight-latin-wght-normal.woff2");
   });
 });

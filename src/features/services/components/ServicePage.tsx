@@ -1,4 +1,3 @@
-import { TheLine } from "@/components/motion/TheLine";
 import { JsonLd } from "@/components/site/JsonLd";
 import { SectionFrame, SectionHeading } from "@/components/sections/SectionFrame";
 import { LineActions, SERVICE_LINES, ServiceStops } from "@/components/sections/ServiceLine";
@@ -35,11 +34,6 @@ export function ServicePage({
 }) {
   const { published } = service;
   const line = SERVICE_LINES[published.audience];
-  const stations = [
-    { id: "start", label: published.name.en },
-    { id: "about", label: UI_TEXT.aboutService },
-    { id: "line", label: line.title },
-  ];
 
   const siteUrl = publicSiteUrl();
   return (
@@ -55,7 +49,6 @@ export function ServicePage({
           siteUrl,
         )}
       />
-      <TheLine stations={stations} tone={line.tone} />
       <div className="grid gap-section pt-16 pb-section xl:pt-12">
         <div id="start" className="mx-auto w-full max-w-site px-gutter">
           <SignPanel

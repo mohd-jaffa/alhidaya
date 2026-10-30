@@ -3,11 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { ButtonLink } from "@/components/ui/button";
-import { Pictogram } from "@/components/ui/pictogram";
+import { PillLink } from "@/components/ui/pill";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
-import { displayPhone, telHref } from "@/lib/contact";
 import type { SiteDocument } from "@/lib/validation";
 
 import { Logo } from "./Logo";
@@ -15,28 +13,29 @@ import { MobileMenu } from "./MobileMenu";
 import { isHere, visibleLinks } from "./navigation";
 
 /**
- * The sign bar (plan §30.1): the logo home, the site's pages with the current
- * one underlined in the line's weight as where the visitor is, the phone and
- * the quote on a wide screen, the menu on a phone. It stays in view.
+ * The header (D107): the logo home, the site's pages in a light row with the
+ * current one marked, and the forest quote pill on a wide screen; the menu on
+ * a phone. It is not pinned: it scrolls away with the page, so nothing
+ * stands over what the visitor reads.
  */
 export function SiteHeader({ site }: { site: SiteDocument | null }) {
   const pathname = usePathname();
   const links = visibleLinks(site);
 
   return (
-    <header className="sticky top-0 z-(--z-header) border-b border-rule bg-ground">
+    <header className="relative z-(--z-header) bg-ground">
       <div className="mx-auto flex h-(--header-height) max-w-site items-center justify-between gap-3 px-gutter sm:gap-6">
         <Link href={ROUTES.home} className="shrink-0">
-          <Logo priority className="h-8 w-auto min-[22.5rem]:h-10 lg:h-12" />
+          <Logo priority className="h-8 w-auto min-[22.5rem]:h-10 lg:h-11" />
         </Link>
-        <nav aria-label={UI_TEXT.mainNavigation} className="hidden h-full lg:block">
-          <ul className="flex h-full items-stretch gap-2">
+        <nav aria-label={UI_TEXT.mainNavigation} className="hidden lg:block">
+          <ul className="flex items-center gap-1">
             {links.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
                   aria-current={isHere(pathname, link.href) ? "page" : undefined}
-                  className="relative flex h-full items-center px-3 font-semibold hover:text-deep after:absolute after:inset-x-3 after:bottom-0 after:h-(--line-width) after:rounded-t-full after:bg-deep after:opacity-0 aria-[current=page]:after:opacity-100"
+                  className="flex min-h-touch items-center rounded-pill px-4 text-ink-2 transition-colors duration-(--duration-state) hover:text-navy aria-[current=page]:bg-mist aria-[current=page]:text-navy"
                 >
                   {link.label.en}
                 </Link>
@@ -44,17 +43,10 @@ export function SiteHeader({ site }: { site: SiteDocument | null }) {
             ))}
           </ul>
         </nav>
-        <div className="hidden items-center gap-5 lg:flex">
-          {site ? (
-            <a
-              href={telHref(site.contact.phone)}
-              className="flex min-h-touch items-center gap-2 font-semibold tabular-nums hover:text-deep"
-            >
-              <Pictogram name="phone" size="sm" className="text-deep" />
-              {displayPhone(site.contact.phone)}
-            </a>
-          ) : null}
-          <ButtonLink href={ROUTES.quote}>{UI_TEXT.requestQuote}</ButtonLink>
+        <div className="hidden lg:block">
+          <PillLink href={ROUTES.quote} arrow>
+            {UI_TEXT.requestQuote}
+          </PillLink>
         </div>
         <MobileMenu site={site} links={links} />
       </div>
