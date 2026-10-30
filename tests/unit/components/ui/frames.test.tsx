@@ -31,7 +31,7 @@ describe("the frames", () => {
         <span role="img" aria-label="A clinic" />
       </LogoTile>,
     );
-    expect(container.firstChild).toHaveClass("aspect-[4/3]", "[&_img]:object-contain");
+    expect(container.firstChild).toHaveClass("aspect-[4/3]", "[&_img]:object-contain", "[&_img]:mix-blend-multiply");
   });
 
   it("hold the place of what is loading, out of the screen reader's way", () => {

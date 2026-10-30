@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
+import { SEED_CLIENTS } from "@/db/seed/clients";
 import { SEED_SERVICES, SEED_SITE, seedPages } from "@/db/seed/content";
 import { SEED_PHOTOS } from "@/db/seed/photos";
 
@@ -59,8 +60,11 @@ test("Home follows the reference's sections, the family services in their card a
     "href",
     `mailto:${SEED_SITE.contact.email}`,
   );
-  // No client has given its logo yet (D7): the section is not on the page.
-  await expect(page.locator("#clients")).toHaveCount(0);
+  // The current site's client logos, in its order (D118); each loads as the visitor reaches it.
+  const clients = page.locator("#clients");
+  await clients.scrollIntoViewIfNeeded();
+  await expect(clients.getByRole("img")).toHaveCount(SEED_CLIENTS.length);
+  for (const client of SEED_CLIENTS) await expect(clients.getByRole("img", { name: client.name })).toBeVisible();
 });
 
 test("the statement darkens with the scroll, and every word stays readable before it does (D97)", async ({ page }) => {

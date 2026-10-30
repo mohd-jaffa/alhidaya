@@ -31,12 +31,14 @@ export function ImageFrame({
 }
 
 /**
- * A client's logo (plan §11, D97): a fixed 4:3 mist card, even padding, the
- * logo centred and never stretched or cropped.
+ * A client's logo (plan §11, D97): a fixed 4:3 mist card, the logo fitted
+ * inside its even padding, centred, never stretched or cropped, whatever its
+ * shape. The logo is multiplied into the card, so the white a logo file is
+ * drawn on takes the card's colour (D118).
  */
 export function LogoTile({ children }: { children: ReactNode }) {
   return (
-    <div className="grid aspect-[4/3] place-items-center rounded-card bg-mist p-6 [&_img]:max-h-full [&_img]:w-auto [&_img]:object-contain">
+    <div className="relative aspect-[4/3] rounded-card bg-mist [&_img]:absolute [&_img]:inset-6 [&_img]:size-[calc(100%-3rem)] [&_img]:object-contain [&_img]:mix-blend-multiply">
       {children}
     </div>
   );

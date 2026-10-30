@@ -38,3 +38,35 @@ own photographs replace them through the admin later (plan §42).
   2026-10-30 at 2000 px and kept at 1600 px on the long side (the most the site draws them at), each found with the free-licence filter and its
   page read as "Free Photo on Unsplash" before it was taken. None shows a
   readable name or another organisation's logo at the size the site draws it.
+
+## From the client's current site (D118)
+
+The photographs alhidaya.qa shows, in `current-site/`, taken from its public
+pages on 2026-10-31 at the user's request. They go into the media library
+only: no page uses one as seeded, since most are smaller than the site draws
+its photographs (up to 1600 px). The admin can choose any of them. Their
+licence is as the client holds it for its current site; nobody is named as
+Al Hidaya's staff.
+
+| File | Shows | On the current site | Source |
+|---|---|---|---|
+| `home-visit.jpg` | A nurse kneeling to talk with an older woman on a sofa, her crutches beside her | Slide 1, cropped to 1020 × 783 | [application/public/images/main-slider/1.jpg](https://alhidaya.qa/application/public/images/main-slider/1.jpg) |
+| `thumbs-up.jpg` | A smiling nurse beside an older man in a wheelchair giving a thumbs up | Slide 2, cropped to 1060 × 783 | [application/public/images/main-slider/2.jpg](https://alhidaya.qa/application/public/images/main-slider/2.jpg) |
+| `holding-hands.jpg` | A nurse in teal scrubs holding a patient's hand | Slide 3, cropped to 920 × 783 | [application/public/images/main-slider/3.jpg](https://alhidaya.qa/application/public/images/main-slider/3.jpg) |
+| `ward-round.jpg` | A doctor with a clipboard talking with a patient and her family on a ward | Slide 4, cropped to 1100 × 783 | [application/public/images/main-slider/4.jpg](https://alhidaya.qa/application/public/images/main-slider/4.jpg) |
+| `blood-pressure-at-home.jpg` | A nurse checking an older woman's blood pressure on a sofa | Slide 5, cropped to 1060 × 783 | [application/public/images/main-slider/5.jpg](https://alhidaya.qa/application/public/images/main-slider/5.jpg) |
+| `nurse-ok-sign.jpg` | A smiling nurse in navy scrubs making an OK sign | Home and About, 400 × 360 | [application/public/images/resource/image-4.jpg](https://alhidaya.qa/application/public/images/resource/image-4.jpg) |
+| `hands-held.jpg` | A younger person's hands holding an older person's hands | Home and About, 400 × 360 | [application/public/images/resource/image-5.jpg](https://alhidaya.qa/application/public/images/resource/image-5.jpg) |
+| `staffing-team.jpg` | A team of nurses and doctors standing with their arms folded | Hospital and clinic staffing, 570 × 325 | [upload/Services/brjyWOTssjkuYaF1vrL7uoLdtsoQNCYaEH38B6Fb.jpg](https://alhidaya.qa/upload/Services/brjyWOTssjkuYaF1vrL7uoLdtsoQNCYaEH38B6Fb.jpg) |
+| `school-nurse-girl.jpg` | A smiling nurse in blue scrubs talking with a girl | School nurse staffing, 570 × 325 | [upload/Services/S22ad3nMAUKtmcaGNoXJI3FXw4DALCjciGYchCFm.jpg](https://alhidaya.qa/upload/Services/S22ad3nMAUKtmcaGNoXJI3FXw4DALCjciGYchCFm.jpg) |
+| `home-care-visit.jpg` | A nurse helping an older man with a walking stick beside his bed | Home care nursing, 570 × 325 | [upload/Services/hJq1EJLBiX4YNdToNjwW7C1Na3Oka7Wik6ZlzSYL.jpg](https://alhidaya.qa/upload/Services/hJq1EJLBiX4YNdToNjwW7C1Na3Oka7Wik6ZlzSYL.jpg) |
+| `bedside-care.jpg` | A nurse sitting beside an older man resting in bed at home | Chronic patient care, 570 × 325 | [upload/Services/KHpCYx8RG1J3RqjsFtqK32Ko8KVnjYEIyZ1QP5Mj.jpg](https://alhidaya.qa/upload/Services/KHpCYx8RG1J3RqjsFtqK32Ko8KVnjYEIyZ1QP5Mj.jpg) |
+| `baby-check.jpg` | A doctor listening to a baby's chest with a stethoscope | Child care, 570 × 325 | [upload/Services/UF57klmKnoAqbkOqjctq0vi8c1Q6hM9IyqOLzfDP.jpg](https://alhidaya.qa/upload/Services/UF57klmKnoAqbkOqjctq0vi8c1Q6hM9IyqOLzfDP.jpg) |
+| `maternity-ward.jpg` | A nurse holding a newborn beside the mother's bed on a maternity ward | Maternity and newborn care, 570 × 325 | [upload/Services/lHA33nRpLVUMeUMYaGVVpyJWGNOCVYYGV0qaSxNg.jpg](https://alhidaya.qa/upload/Services/lHA33nRpLVUMeUMYaGVVpyJWGNOCVYYGV0qaSxNg.jpg) |
+| `comforting-hands.jpg` | Hands holding an older person's hand on a blue blanket | Palliative care, 570 × 325 | [upload/Services/1tI55Kp6lyhfYRfReazZeZmsYcz38fMH4dpebWe0.jpg](https://alhidaya.qa/upload/Services/1tI55Kp6lyhfYRfReazZeZmsYcz38fMH4dpebWe0.jpg) |
+| `helping-up.jpg` | A nurse helping an older man up from a sofa, a wheelchair beside them | Elderly care, 570 × 325 | [upload/Services/GzNHfjKCBD422q67yF4PxwhSOQujxenFxRI4uWFQ.jpg](https://alhidaya.qa/upload/Services/GzNHfjKCBD422q67yF4PxwhSOQujxenFxRI4uWFQ.jpg) |
+
+- **Prepared** with sharp: re-encoded as JPEG with no metadata (they carried
+  EXIF and XMP); the slides cropped from the left to the photograph, dropping
+  the white fade the slider's words sat on (the user's choice), a little of
+  which remains at the edge of two of them.

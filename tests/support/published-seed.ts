@@ -24,5 +24,7 @@ export async function publishSeed(): Promise<void> {
       await publishRecord(collection, record.id, record.draft.slug, ACTOR);
     }
   }
+  // The current site's client logos (D118), as at launch once the client confirms them (D7).
+  for (const record of await listRecordsForAdmin("CLIENTS")) await publishRecord("CLIENTS", record.id, null, ACTOR);
   for (const key of keys) await publishDocument(key, ACTOR);
 }

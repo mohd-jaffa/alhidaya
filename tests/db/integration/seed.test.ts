@@ -3,19 +3,22 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { closeDb, getDb } from "@/db/client";
 import { auditLog, documents, media, records } from "@/db/schema";
+import { SEED_CLIENTS } from "@/db/seed/clients";
 import { SEED_SERVICES } from "@/db/seed/content";
 import { SEED_PHOTOS } from "@/db/seed/photos";
 import { importSeedPhotos, seedContent } from "@/db/seed/seed";
 import { deleteMediaFile } from "@/lib/storage/media";
 import { readDocumentDraft, readPublishedDocument, saveDocumentDraft } from "@/lib/content/documents";
 import { listPublishedRecords, listRecordsForAdmin } from "@/lib/content/records";
-import type { PageDocument, ServiceDocument } from "@/lib/validation";
+import type { ClientDocument, PageDocument, ServiceDocument } from "@/lib/validation";
 import { pageFixture } from "@tests/support/fixtures/content";
 
 const REQUEST = `req_seed_${crypto.randomUUID()}`;
 const actor = { adminId: null, requestId: REQUEST };
 
-const SOURCES = Object.values(SEED_PHOTOS).map((photo) => photo.source.url);
+// The seed's images: its photographs and the current site's client logos (D118).
+const IMAGES = [...Object.values(SEED_PHOTOS), ...SEED_CLIENTS.map((client) => ({ ...client, alt: client.name }))];
+const SOURCES = IMAGES.map((image) => image.source.url);
 const seedPhotoRows = () =>
   getDb()
     .select({ id: media.id, variants: media.variants, alt: media.alt, source: media.source })
@@ -60,10 +63,12 @@ describe("seedContent, against the local MySQL", () => {
           "PAGE:PRIVACY",
           "SITE",
           "ORDER:SERVICES",
+          "ORDER:CLIENTS",
         ],
         services: 8,
         jobs: 1,
-        photos: Object.keys(SEED_PHOTOS).length,
+        clients: SEED_CLIENTS.length,
+        photos: IMAGES.length,
       });
       expect(await readDocumentDraft("PAGE:TERMS")).toMatchObject({ draft: own });
 
@@ -75,14 +80,12 @@ describe("seedContent, against the local MySQL", () => {
         expect.objectContaining({ published: null, draft: expect.objectContaining({ postedOn: "2026-10-29" }) }),
       ]);
 
-      // The pages show the photographs, each kept with its words and where it came from.
+      // Every image is in the library, each kept with its words and where it came from.
       const photos = await seedPhotoRows();
-      expect(photos.map((row) => row.alt?.en).toSorted()).toEqual(
-        Object.values(SEED_PHOTOS)
-          .map((photo) => photo.alt)
-          .toSorted(),
+      expect(photos.map((row) => [row.alt?.en, row.source]).toSorted()).toEqual(
+        IMAGES.map((image) => [image.alt, image.source]).toSorted(),
       );
-      expect(photos.every((row) => row.source?.licence === "Unsplash License" && row.variants.length > 0)).toBe(true);
+      expect(photos.every((row) => row.variants.length > 0)).toBe(true);
       const home = (await readDocumentDraft<PageDocument>("PAGE:HOME"))?.draft;
       const sign = home?.sections[0];
       const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.avatarBraids.source.url);
@@ -94,6 +97,15 @@ describe("seedContent, against the local MySQL", () => {
       });
       expect(services.every((service) => service.draft.image !== null)).toBe(true);
 
+      // The current site's client logos, as drafts in its order, each with its logo (D118).
+      const clients = await listRecordsForAdmin<ClientDocument>("CLIENTS");
+      const clientOrder = (await readDocumentDraft<string[]>("ORDER:CLIENTS"))?.draft;
+      const named = clientOrder?.map((id) => clients.find((client) => client.id === id)?.draft);
+      expect(named?.map((client) => client?.name.en)).toEqual(SEED_CLIENTS.map((client) => client.name));
+      const logo = photos.find((row) => row.source?.url === SEED_CLIENTS[0].source.url);
+      expect(named?.[0]?.logo).toEqual({ mediaId: logo?.id });
+      expect(await listPublishedRecords("CLIENTS")).toEqual([]);
+
       expect(await readPublishedDocument("PAGE:HOME")).toBeNull();
       expect(await readPublishedDocument("SITE")).toBeNull();
       expect(await listPublishedRecords("SERVICES")).toEqual([]);
@@ -101,14 +113,26 @@ describe("seedContent, against the local MySQL", () => {
   );
 
   it("writes nothing the second time", async () => {
-    expect(await seedContent(actor)).toEqual({ documents: [], services: 0, jobs: 0, photos: 0 });
+    expect(await seedContent(actor)).toEqual({ documents: [], services: 0, jobs: 0, clients: 0, photos: 0 });
     expect(await listRecordsForAdmin("SERVICES")).toHaveLength(8);
+  });
+
+  it("writes the client logos again once there are none, their images found in the library", async () => {
+    await getDb().delete(records).where(eq(records.collection, "CLIENTS"));
+    await getDb().delete(documents).where(eq(documents.key, "ORDER:CLIENTS"));
+    expect(await seedContent(actor)).toEqual({
+      documents: ["ORDER:CLIENTS"],
+      services: 0,
+      jobs: 0,
+      clients: SEED_CLIENTS.length,
+      photos: 0,
+    });
   });
 
   it("keeps each photograph once, finding it again by where it came from", async () => {
     const again = await importSeedPhotos();
     expect(again.stored).toBe(0);
     expect(Object.values(again.refs).every((ref) => ref !== null)).toBe(true);
-    expect(await seedPhotoRows()).toHaveLength(Object.keys(SEED_PHOTOS).length);
+    expect(await seedPhotoRows()).toHaveLength(IMAGES.length);
   });
 });

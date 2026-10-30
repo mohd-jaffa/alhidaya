@@ -199,6 +199,7 @@ question (§41) the user may overturn.
 | D115 | **The admin's polish** (the user, 2026-10-31): "Today" is the **Dashboard**; each menu section has its mark, the groups ("Inbox", "Website content", "Administration") sit under bold headings parted by a light rule, and the current one is marked by its highlight alone, never bold; the column's scroll stays its own; **Profile** (with its mark) shows the admin's name and sign-in email, renames them, and changes their password with the current one (limited to 10 tries an hour, every other session ended, both recorded in Activity); **Log out** (with its mark) is asked first; the sign-in page's navy panel names the panel, what it looks after and the way back, with no rail; every word in the admin is in a plain, professional register; in a page's sections, only the Edit action is lit under the pointer. | 2026-10-31 |
 | D116 | **The header offers the brochure** (the user, 2026-10-31): "Download brochure", in the header and the phone menu, in place of Request a quote, downloading the PDF published in Settings (the old site's `profile.pdf` at launch, D91) under the company's name, `Al-Hidaya-Health-Care-Services-Brochure.pdf`; until a brochure is published the header keeps Request a quote. The footer no longer links the brochure. | 2026-10-31 |
 | D117 | **The phone menu opens smoothly** (the user, 2026-10-31: "in small screens the menu opening there is no animation, add something smooth"; the motion itself is the agent default): the sheet fades in over the page (200 ms, its logo and close button where the header's logo and menu button were), its rows rise into place one after another (640 ms, ease-out, 45 ms apart), and closing it fades away; CSS only, so no script is added, and with motion reduced it simply appears. The navy backdrop is dropped: the sheet covers the screen, so it only showed as a grey flash while fading. | 2026-10-31 |
+| D118 | **The current site's images are seeded** (the user, 2026-10-31: "there are some images used in the old website, add them to the media library along with other seeded images"; the three choices below are the user's): **its 11 client logos** (The View Hospital, Hamad Medical Corporation, Military Medical City Hospital, Estithmar Holding and seven nurseries, kindergartens and clinics) become the seed's client logos, as drafts with their names in the current site's order, replacing the sample logos on the local database; each is published only once the client confirms it may still be named (D7). **Its 15 photographs** (the 5 slides, the 2 About pictures and the 8 service photographs) go into the media library only, the slides **cropped** to the photograph from the white fade the slider's words sat on; the pages keep their photographs, the current site's being smaller than the site draws them (Q28's answer, D91, stands). Its 3 wide banners, with their overlays, are left out. The seed now files every seed photograph in the library on each run, finding those kept before by their source. **The logo tile holds real logos** (the agent default): a logo fills the tile's padding whatever its shape, the tile always 4:3, and is multiplied into the card so a logo file's white background takes the card's colour; the seed's logo files are trimmed of their white margins. | 2026-10-31 |
 
 ## 3. Audiences and the admin
 
@@ -625,7 +626,8 @@ containers** with `object-fit: contain`, even padding and centred alignment,
 so no logo is stretched or cropped; a logo can be shown in its original colours
 or in a single tone (a constant of the design, not an admin control, D12).
 **Empty state:** the Clients section stays hidden on the public site until at
-least one logo is published (D7).
+least one logo is published (D7). The seed carries the current site's 11 logos as drafts
+(D118), published once the client confirms them.
 
 ## 12. Brochure
 
@@ -1532,6 +1534,7 @@ one commit (D27).
 | R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | DONE (2026-10-31) |
 | R6B.6 | The user's review of the redesign, the public site: the scroll that stopped short of the page's end fixed and Lenis made snappier; the footer's words in an endless loop with a pause button (D113); the current site's slide sentences as Home's headings, and a simpler footer (D114); the brochure in the header (D116); the phone menu opening smoothly (D117) | D113, D114, D116, D117 | R6B.5 | DONE (2026-10-31) |
 | R6B.7 | The user's review of the admin (D115): the Dashboard, the menu's marks and ruled groups, the profile (name, password), log out asked first, the sign-in page's panel, the professional wording, the menu's own scroll | D115 | R6B.6 | DONE (2026-10-31) |
+| R6B.8 | The current site's images in the seed (D118): its 11 client logos as client-logo drafts, its 15 photographs in the media library | D118 | R6B.7 | DONE (2026-10-31) |
 
 ### Phase 7 — Performance, accessibility and the finish
 

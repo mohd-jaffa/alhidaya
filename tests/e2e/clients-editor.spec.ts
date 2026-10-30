@@ -5,6 +5,7 @@ import { eq, like } from "drizzle-orm";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_API_ROUTES, ADMIN_ROUTES } from "@/constants/admin-routes";
 import { ROUTES } from "@/constants/routes";
+import { SEED_CLIENTS } from "@/db/seed/clients";
 import { closeDb, getDb } from "@/db/client";
 import { authUser, records } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";
@@ -12,10 +13,10 @@ import { createAdmin } from "@/features/auth/createAdmin";
 import { E2E_ORIGIN } from "@tests/support/e2e-app";
 
 /**
- * The client logos through the built app (R6.5, D92): the empty list and a
- * new logo's editor, axe at both widths; and, once, a logo added with an
- * image from the library, published to the home page's row of clients, and
- * archived, the row gone with it.
+ * The client logos through the built app (R6.5, D92): the current site's
+ * logos as published at launch (D118) and a new logo's editor, axe at both
+ * widths; and, once, a logo added with an image from the library, published
+ * to the home page's row of clients, and archived, its logo gone with it.
  */
 const PASSWORD = "a long clients password";
 const RUN = crypto.randomUUID().slice(0, 8);
@@ -41,11 +42,11 @@ async function signIn(page: Page) {
 
 const axe = async (page: Page) => expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
-test("Clients says there are none yet, and a new logo's editor passes axe", async ({ page }) => {
+test("Clients lists the current site's logos, and a new logo's editor passes axe", async ({ page }) => {
   await signIn(page);
   await page.goto(ADMIN_ROUTES.clients);
   await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.clients })).toBeVisible();
-  await expect(page.getByText(ADMIN_TEXT.noClients)).toBeVisible();
+  for (const client of SEED_CLIENTS) await expect(page.getByText(client.name, { exact: true }).first()).toBeVisible();
   await axe(page);
   await page.getByRole("link", { name: ADMIN_TEXT.newClient }).click();
   await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.newClient })).toBeVisible();
@@ -59,7 +60,7 @@ test("a logo is added, published to the home page and archived off it (D92)", as
   const visitor = await browser.newPage();
   try {
     await visitor.goto(ROUTES.home);
-    await expect(visitor.getByRole("heading", { name: "Our clients" })).toHaveCount(0);
+    await expect(visitor.getByRole("img", { name })).toHaveCount(0);
 
     await page.goto(ADMIN_ROUTES.newClient);
     await page.getByRole("textbox", { name: ADMIN_TEXT.organisation }).fill(name);
@@ -95,7 +96,9 @@ test("a logo is added, published to the home page and archived off it (D92)", as
       .click();
     await expect(site.getByText(ADMIN_TEXT.isArchived)).toBeVisible();
     await visitor.reload();
-    await expect(visitor.getByRole("heading", { name: "Our clients" })).toHaveCount(0);
+    await visitor.locator("#clients").scrollIntoViewIfNeeded();
+    await expect(visitor.getByRole("img", { name })).toHaveCount(0);
+    await expect(visitor.getByRole("img", { name: SEED_CLIENTS[0].name })).toBeVisible();
   } finally {
     await visitor.close();
   }

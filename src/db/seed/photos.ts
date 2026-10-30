@@ -1,9 +1,18 @@
 import type { ImageSource } from "@/features/media/api";
 
+/** Where an image from the client's current site came from (D118): its address there. */
+export const currentSite = (url: string) =>
+  ({
+    provider: "Al Hidaya's current site (alhidaya.qa)",
+    url,
+    licence: "As used on the client's current site",
+  }) satisfies ImageSource;
+
 /**
- * The launch's stock photographs (plan D8, D75): each file in
- * `src/db/seed/photos/`, what it shows (its alt text, never naming anyone as
- * Al Hidaya's staff), and where it came from, kept with the image.
+ * The launch's stock photographs (plan D8, D75), and the client's
+ * current site's (D118): each file in `src/db/seed/photos/`, what it shows
+ * (its alt text, never naming anyone as Al Hidaya's staff), and where it came
+ * from, kept with the image.
  */
 export const SEED_PHOTOS = {
   careAtHome: {
@@ -186,6 +195,83 @@ export const SEED_PHOTOS = {
       url: "https://unsplash.com/photos/a-woman-in-a-white-lab-coat-sitting-on-a-couch-with-a-little-girl-Kru-gp6dgS0",
       licence: "Unsplash License",
     },
+  },
+  // The client's current site's photographs (alhidaya.qa, D118), in the library only: its slides
+  // (cropped to the photograph), its About pictures and its eight service photographs.
+  currentHomeVisit: {
+    file: "current-site/home-visit.jpg",
+    alt: "A nurse kneeling to talk with an older woman on a sofa, her crutches beside her",
+    source: currentSite("https://alhidaya.qa/application/public/images/main-slider/1.jpg"),
+  },
+  currentThumbsUp: {
+    file: "current-site/thumbs-up.jpg",
+    alt: "A smiling nurse beside an older man in a wheelchair giving a thumbs up",
+    source: currentSite("https://alhidaya.qa/application/public/images/main-slider/2.jpg"),
+  },
+  currentHoldingHands: {
+    file: "current-site/holding-hands.jpg",
+    alt: "A nurse in teal scrubs holding a patient's hand",
+    source: currentSite("https://alhidaya.qa/application/public/images/main-slider/3.jpg"),
+  },
+  currentWardRound: {
+    file: "current-site/ward-round.jpg",
+    alt: "A doctor with a clipboard talking with a patient and her family on a ward",
+    source: currentSite("https://alhidaya.qa/application/public/images/main-slider/4.jpg"),
+  },
+  currentBloodPressure: {
+    file: "current-site/blood-pressure-at-home.jpg",
+    alt: "A nurse checking an older woman's blood pressure on a sofa",
+    source: currentSite("https://alhidaya.qa/application/public/images/main-slider/5.jpg"),
+  },
+  currentNurseOk: {
+    file: "current-site/nurse-ok-sign.jpg",
+    alt: "A smiling nurse in navy scrubs making an OK sign",
+    source: currentSite("https://alhidaya.qa/application/public/images/resource/image-4.jpg"),
+  },
+  currentHandsHeld: {
+    file: "current-site/hands-held.jpg",
+    alt: "A younger person's hands holding an older person's hands",
+    source: currentSite("https://alhidaya.qa/application/public/images/resource/image-5.jpg"),
+  },
+  currentStaffingTeam: {
+    file: "current-site/staffing-team.jpg",
+    alt: "A team of nurses and doctors standing with their arms folded",
+    source: currentSite("https://alhidaya.qa/upload/Services/brjyWOTssjkuYaF1vrL7uoLdtsoQNCYaEH38B6Fb.jpg"),
+  },
+  currentSchoolNurse: {
+    file: "current-site/school-nurse-girl.jpg",
+    alt: "A smiling nurse in blue scrubs talking with a girl",
+    source: currentSite("https://alhidaya.qa/upload/Services/S22ad3nMAUKtmcaGNoXJI3FXw4DALCjciGYchCFm.jpg"),
+  },
+  currentHomeCare: {
+    file: "current-site/home-care-visit.jpg",
+    alt: "A nurse helping an older man with a walking stick beside his bed",
+    source: currentSite("https://alhidaya.qa/upload/Services/hJq1EJLBiX4YNdToNjwW7C1Na3Oka7Wik6ZlzSYL.jpg"),
+  },
+  currentBedsideCare: {
+    file: "current-site/bedside-care.jpg",
+    alt: "A nurse sitting beside an older man resting in bed at home",
+    source: currentSite("https://alhidaya.qa/upload/Services/KHpCYx8RG1J3RqjsFtqK32Ko8KVnjYEIyZ1QP5Mj.jpg"),
+  },
+  currentBabyCheck: {
+    file: "current-site/baby-check.jpg",
+    alt: "A doctor listening to a baby's chest with a stethoscope",
+    source: currentSite("https://alhidaya.qa/upload/Services/UF57klmKnoAqbkOqjctq0vi8c1Q6hM9IyqOLzfDP.jpg"),
+  },
+  currentMaternityWard: {
+    file: "current-site/maternity-ward.jpg",
+    alt: "A nurse holding a newborn beside the mother's bed on a maternity ward",
+    source: currentSite("https://alhidaya.qa/upload/Services/lHA33nRpLVUMeUMYaGVVpyJWGNOCVYYGV0qaSxNg.jpg"),
+  },
+  currentComfortingHands: {
+    file: "current-site/comforting-hands.jpg",
+    alt: "Hands holding an older person's hand on a blue blanket",
+    source: currentSite("https://alhidaya.qa/upload/Services/1tI55Kp6lyhfYRfReazZeZmsYcz38fMH4dpebWe0.jpg"),
+  },
+  currentHelpingUp: {
+    file: "current-site/helping-up.jpg",
+    alt: "A nurse helping an older man up from a sofa, a wheelchair beside them",
+    source: currentSite("https://alhidaya.qa/upload/Services/GzNHfjKCBD422q67yF4PxwhSOQujxenFxRI4uWFQ.jpg"),
   },
 } as const satisfies Record<string, { file: string; alt: string; source: ImageSource }>;
 

@@ -335,6 +335,7 @@ A thin-line pictogram (24-unit grid, 2 px stroke, round caps) in a circle.
 - **Service card:** a mist card holding a photo (4:3 at 20 px, scaling to 104% over 640 ms on hover), the name in title with a forest arrow, the summary in small ink-2. The whole card is the link. On a phone it becomes a row: 96 px square photo beside the words.
 - **Accent card:** forest with white words, at most one per group (the green card in the highlights), with a faint thin-line globe low in its corner (on-forest at 25%) behind the faces' pill.
 - **Photo card:** a photo filling a 28 px card, its words on a white pill at its foot, or on a navy scrim from the bottom.
+- **Logo tile:** a 4:3 mist card; the client's logo fitted inside 24 px of even padding by `object-contain`, whatever its shape, never stretched or cropped, the tile keeping its shape; the logo multiplied into the card (`mix-blend-multiply`), so the white a logo file is drawn on takes the card's mist (D118). Two per row on a phone, three from 640 px, six from 1024 px.
 - **Floating cards on the hero photo:** white, 28 px or round, Float shadow, at most two, bottom end; word chips at the top start (white at 75%, small medium words, a pale check chip; a check, never a plus).
 
 ### Forms (the site's)

@@ -3350,3 +3350,62 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None.
+
+## 2026-10-31 — R6B.8: the current site's images in the seed
+
+### Added
+- **The current site's client logos** (D118, the user's request and
+  choice): the 11 logos alhidaya.qa shows (The View Hospital, Hamad Medical
+  Corporation, Military Medical City Hospital, Estithmar Holding, Royal
+  Dental Centre, and six nurseries, kindergartens and clinics), in its order,
+  in `src/db/seed/clients/` with their names and sources (`SEED_CLIENTS`,
+  `clients.ts`). The seed writes each as a client-logo draft named by its
+  organisation, its image in the media library, and the clients' order, when
+  there are no client logos yet. They are published only once the client
+  confirms each may still be named (D7). The journeys' launch state
+  publishes them.
+- **The current site's photographs** (D118): its 5 slides (cropped to the
+  photograph, without the white fade the slider's words sat on), its 2 About
+  pictures and its 8 service photographs, in
+  `src/db/seed/photos/current-site/`, each with what it shows and where it
+  came from. They go into the media library only; no page uses one as
+  seeded, the pages keeping their photographs (the current site's are
+  smaller than the site draws them). Its 3 wide banners are left out.
+
+### Changed
+- **The seed files every photograph in the library on each run**, finding
+  those kept before by their source, so a database seeded earlier gains the
+  new ones; `importSeedImage` serves both the photographs and the logos.
+  `npm run db:seed` reports the client logos and the images stored.
+- **The logo tile holds real logos** (`LogoTile`, D118): the logo is fitted
+  inside the tile's padding whatever its shape, so a tall logo no longer
+  stretches its tile past 4:3, and is multiplied into the mist card, so the
+  white background a logo file carries takes the card's colour. The seed's
+  logo files are trimmed of their white margins and carry no metadata.
+- Plan: D118; §11 notes the seeded logos; tracker R6B.8 DONE (2026-10-31).
+  `DESIGN.md`: the logo tile. READMEs for both folders record each image's
+  source.
+- The journeys: Home shows the 11 logos in order; Clients lists them; the
+  added logo's own image comes and goes with publish and archive.
+
+### Local development (no repository change)
+- The local database's six sample client logos (and their images) are
+  replaced by the current site's 11, published, and the 15 photographs are
+  in its media library; its content rows were backed up first.
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed (1,187, in one run with R6B.6 and
+  R6B.7), coverage 100%. The seed's integration test stores the 15
+  photographs and the 11 logos once each, with their words and sources;
+  writes the logos as drafts in the current site's order, none published;
+  writes nothing the second time; and writes the logos again once there
+  are none, finding their images in the library.
+- E2E passed (phone, desktop, axe on every page): Home shows the 11 logos
+  in order; Clients lists them; a new logo's image comes with Publish and
+  goes with Archive.
+- Seen on the local site: every logo tile 4:3 at 390 and 1440 px, the
+  logos' white backgrounds taking the tile's colour.
+
+### Blockers
+- None. Before launch the client confirms the logos may be shown (D7).
