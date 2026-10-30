@@ -1,8 +1,8 @@
 import { and, asc, count, desc, eq, inArray, isNotNull, isNull, max } from "drizzle-orm";
 import type { Metadata } from "next";
 
-import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, TEXT_LIMITS } from "@/constants/limits";
-import { PAGE_NAMES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
+import { CV_SAVE_RETRIES, FORM_RATE_LIMIT, INBOX_PAGE_SIZE, TEXT_LIMITS } from "@/constants/limits";
+import { ERROR_MESSAGES, PAGE_NAMES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import {
   AUDIT_ENTITIES,
@@ -22,6 +22,7 @@ import { newId } from "@/db/schema/columns";
 import { logActionSafe } from "@/lib/audit/auditLog";
 import { captureError } from "@/lib/audit/errorLog";
 import { needsAttention } from "@/lib/inbox/arrivals";
+import { type RetryRun, retryUnsentMail } from "@/lib/inbox/mail-retry";
 import { displayPhone } from "@/lib/contact";
 import type { Actor } from "@/lib/content/actor";
 import { publishedTags, revalidateContent } from "@/lib/content/cache";
@@ -46,6 +47,8 @@ import { dohaDay } from "@/lib/dates";
 import {
   businessRuleError,
   fromDatabaseError,
+  internalError,
+  isAppError,
   notFoundError,
   rateLimitError,
   referencesMissingRow,
@@ -54,7 +57,7 @@ import {
 import { createConfiguredMailService } from "@/lib/mail/nodemailer.provider";
 import { consumeRateLimit } from "@/lib/rate-limit/rate-limit";
 import { renderShareImage } from "@/lib/seo/share-image";
-import { cvKey as newCvKey, deleteCv, readCv, saveCv } from "@/lib/storage/cvs";
+import { type CvToStore, cvKey as newCvKey, deleteCv, readCv, saveCv } from "@/lib/storage/cvs";
 import { detectFileType } from "@/lib/storage/file-type";
 import { normaliseLine } from "@/lib/text/normalise";
 import { matchingPerson } from "@/lib/text/search";
@@ -312,52 +315,66 @@ export interface ApplicationSubmission {
  * Stores an application (plan §9.3, steps 1 – 2) in one transaction with its
  * rate limit: past the limit nothing is stored, and neither is an application
  * to a job that is not published and open in Doha today (plan §6.6). The
- * job's title is taken from the published job, as applied for. Answers the
- * application's id and that title; the CV is saved and the HR email sent
- * after it (R5.4).
+ * job's title is taken from the published job, as applied for. `keepCv`
+ * saves the CV inside the same transaction once that title is known (D84):
+ * a CV that cannot be saved stores nothing and counts nothing against the
+ * limit, and a CV saved for an application that is then not stored is
+ * deleted. Answers the application's id and the job's title.
  */
 export async function submitApplication(
   submission: ApplicationSubmission,
   visitorIp: string,
   at: Date = new Date(),
+  keepCv?: (jobTitle: string | null) => Promise<string>,
 ): Promise<{ id: string; jobTitle: string | null }> {
   const id = newId();
   const { cv, ...applicant } = submission;
-  const jobTitle = await getDb().transaction(async (tx) => {
-    if (!(await consumeRateLimit({ scope: "application", key: visitorIp, ...FORM_RATE_LIMIT }, at, tx)))
-      throw rateLimitError("RATE_LIMITED");
+  let kept: string | null = null;
+  try {
+    return { id, jobTitle: await storeApplication() };
+  } catch (error) {
+    if (kept) await deleteCv(kept);
+    throw error;
+  }
 
-    let title: string | null = null;
-    if (submission.jobId !== null) {
-      const [job] = await tx
-        .select({ published: records.published })
-        .from(records)
-        .where(
-          and(
-            eq(records.id, submission.jobId),
-            eq(records.collection, "JOBS"),
-            isNotNull(records.published),
-            isNull(records.archivedAt),
-          ),
-        );
-      const published = job?.published as JobDocument | undefined;
-      if (!published || !isOpen(published, dohaDay(at))) throw businessRuleError("JOB_CLOSED");
-      title = published.title.en;
-    }
+  async function storeApplication() {
+    return getDb().transaction(async (tx) => {
+      if (!(await consumeRateLimit({ scope: "application", key: visitorIp, ...FORM_RATE_LIMIT }, at, tx)))
+        throw rateLimitError("RATE_LIMITED");
 
-    await tx.insert(applications).values({
-      id,
-      ...applicant,
-      jobTitle: title,
-      cvName: cv.name,
-      cvType: cv.type,
-      cvBytes: cv.bytes,
-      createdAt: at,
-      updatedAt: at,
+      let title: string | null = null;
+      if (submission.jobId !== null) {
+        const [job] = await tx
+          .select({ published: records.published })
+          .from(records)
+          .where(
+            and(
+              eq(records.id, submission.jobId),
+              eq(records.collection, "JOBS"),
+              isNotNull(records.published),
+              isNull(records.archivedAt),
+            ),
+          );
+        const published = job?.published as JobDocument | undefined;
+        if (!published || !isOpen(published, dohaDay(at))) throw businessRuleError("JOB_CLOSED");
+        title = published.title.en;
+      }
+
+      kept = keepCv ? await keepCv(title) : null;
+      await tx.insert(applications).values({
+        id,
+        ...applicant,
+        jobTitle: title,
+        cvName: cv.name,
+        cvType: cv.type,
+        cvBytes: cv.bytes,
+        ...(kept ? { cvKey: kept, cvStatus: "STORED" } : {}),
+        createdAt: at,
+        updatedAt: at,
+      });
+      return title;
     });
-    return title;
-  });
-  return { id, jobTitle };
+  }
 }
 
 /**
@@ -387,25 +404,44 @@ const uploadedName = (name: string) =>
   normaliseLine(name.replace(/^.*[\\/]/, "")).slice(0, TEXT_LIMITS.fileName) || "cv";
 
 /**
+ * Saves a CV while the applicant waits (D84): tried again after a pause, 3
+ * tries in all, and a folder past its budget not tried again. Then the
+ * applicant is asked to send it again, beside the CV and above the send
+ * action, with nothing lost from the form; the cause goes to the error log.
+ */
+async function saveCvTrying(cv: CvToStore): Promise<string> {
+  for (let tried = 1; ; tried++) {
+    try {
+      return await saveCv(cv);
+    } catch (error) {
+      const full = isAppError(error) && error.code === "STORAGE_FULL";
+      if (full || tried === CV_SAVE_RETRIES.tries) {
+        throw internalError("CV_NOT_SAVED", [{ path: "cv", message: ERROR_MESSAGES.CV_NOT_SAVED }], error);
+      }
+      await new Promise((resolve) => setTimeout(resolve, CV_SAVE_RETRIES.pauseMs * tried));
+    }
+  }
+}
+
+/**
  * An application as the route received it (plan §9.3): the CV must be a PDF
- * or Word file by its first bytes; then the row is stored (steps 1 – 2) and
- * the CV saved in the private CV folder (step 3). A CV that cannot be saved
- * leaves the application stored with its CV marked not stored, the failure
- * logged by the application's id alone; the applicant is never told. The
- * CV's bytes are answered too, for the HR email to carry (step 4).
+ * or Word file by its first bytes; then the row is stored with the CV saved
+ * in the private CV folder, in one transaction (steps 1 – 3, D84): a CV that
+ * cannot be saved keeps nothing, and the applicant sends it again. The CV's
+ * bytes are answered too, for the HR email to carry (step 4).
  */
 export async function receiveApplication(
   payload: ApplicationFormPayload,
   visitorIp: string,
   at: Date = new Date(),
-): Promise<{ id: string; cvStatus: CvStatus; cv: Uint8Array }> {
+): Promise<{ id: string; cv: Uint8Array }> {
   const bytes = new Uint8Array(await payload.cv.arrayBuffer());
   const type = detectFileType(bytes);
   if (type === null || !CV_TYPES.includes(type)) {
     throw validationError("VALIDATION_ERROR", [{ path: "cv", message: VALIDATION_MESSAGES.cvType }]);
   }
   const { jobId, name, email, phone } = payload;
-  const { id, jobTitle } = await submitApplication(
+  const { id } = await submitApplication(
     {
       jobId,
       name,
@@ -416,18 +452,9 @@ export async function receiveApplication(
     },
     visitorIp,
     at,
+    (jobTitle) => saveCvTrying({ bytes, type, jobTitle, applicantName: name, receivedAt: at }),
   );
-
-  let cvKey: string | null = null;
-  let cvStatus: CvStatus = "STORED";
-  try {
-    cvKey = await saveCv({ bytes, type, jobTitle, applicantName: name, receivedAt: at });
-  } catch (error) {
-    cvStatus = "NOT_STORED";
-    await captureError({ message: "Application CV not stored", error, context: { applicationId: id } });
-  }
-  await getDb().update(applications).set({ cvKey, cvStatus, updatedAt: new Date() }).where(eq(applications.id, id));
-  return { id, cvStatus, cv: bytes };
+  return { id, cv: bytes };
 }
 
 /** The kept CV, for a Retry: none when it was never kept or has expired, or when it cannot be read (logged). */
@@ -523,6 +550,11 @@ export async function retryApplicationAlert(id: string, actor: Actor): Promise<E
   return status;
 }
 
+/** The mail-retry cron's work for applications (D85): each HR email not sent, sent again with the kept CV. */
+export function retryApplicationAlerts(at?: Date): Promise<RetryRun> {
+  return retryUnsentMail(applications, (id) => sendApplicationAlert(id), at);
+}
+
 /** An application as the inbox lists it (plan §9.5). */
 export interface ApplicationSummary {
   id: string;
@@ -549,6 +581,8 @@ export interface ApplicationNote {
 /** An application opened in the inbox: every answer as sent, its CV as uploaded, and its notes, oldest first. */
 export interface ApplicationDetail extends ApplicationSummary {
   fields: SubmittedField[];
+  /** How often the mail-retry cron has sent its HR email again (D85). */
+  emailRetries: number;
   cvName: string;
   cvType: FileType;
   cvBytes: number;
@@ -642,6 +676,7 @@ export async function getApplication(id: string): Promise<ApplicationDetail> {
       .select({
         ...applicationSummary,
         fields: applications.fields,
+        emailRetries: applications.emailRetries,
         cvName: applications.cvName,
         cvType: applications.cvType,
         cvBytes: applications.cvBytes,

@@ -280,8 +280,11 @@ and `traceId`, built only through the factories in `src/lib/errors/kinds.ts`
 Never invent an error string at a call site. Never expose stack traces, SQL,
 database errors, secrets or tokens; a driver failure goes through
 `fromDatabaseError`. **A visitor never sees an internal error from a form**:
-a failed email or CV save after the submission is saved is logged and
-retried from the admin, and the visitor sees success.
+a failed email after the submission is saved is logged, sent again by the
+mail-retry cron and retryable from the admin, and the visitor sees success.
+The one exception (plan D84): a CV that still cannot be saved after 3 tries
+keeps nothing, and the applicant is asked to send it again
+(`CV_NOT_SAVED`, beside the CV and above the send action).
 
 ---
 
@@ -389,17 +392,19 @@ REST route handlers, wrapped in `withApiHandler`, admin routes in
   off, and every send says so.
 - Every word of every email lives in `MAIL_TEXT`.
 - Reply-To is the visitor's email.
-- A failed send never undoes what it was for; it is logged and retryable from
-  the admin.
+- A failed send never undoes what it was for; it is logged, sent again by the
+  mail-retry cron up to 3 times (plan D85), then retryable from the admin.
 
 ---
 
 # 17. Background Work
 
-**There is no worker, queue or Redis.** Work happens in the request. The one
-timed job, the daily retention purge, is a **cPanel cron entry** calling
-`POST /api/cron/retention` with `CRON_SECRET` as a bearer token; the secret
-lives in the server's environment, never in the repository.
+**There is no worker, queue or Redis.** Work happens in the request. The two
+timed jobs are **cPanel cron entries**, each calling its route through
+`withCronRoute` with `CRON_SECRET` as a bearer token (`CRON_ROUTES`): the
+daily retention purge (`POST /api/cron/retention`) and the mail retry every
+10 minutes (`POST /api/cron/mail-retry`, plan D85). The secret lives in the
+server's environment, never in the repository.
 
 ---
 

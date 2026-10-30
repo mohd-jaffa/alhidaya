@@ -53,6 +53,7 @@ function Probe({
       <label>
         File <input type="file" name="file" />
       </label>
+      <p data-testid="file-error">{errors.file}</p>
       <input aria-label="Unnamed" />
       <a href="#terms">Terms</a>
       <button type="submit">Send</button>
@@ -180,6 +181,29 @@ describe("useSchemaForm", () => {
     expect(name()).toHaveFocus();
     expect(screen.getByRole("status")).toHaveTextContent("editing");
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("says a field the server could not take both beside it and as why it was not sent, keeping the file (D84)", async () => {
+    const user = userEvent.setup();
+    const refusal = new ApiError(500, "CV_NOT_SAVED", ERROR_MESSAGES.CV_NOT_SAVED, "req_5", [
+      { path: "file", message: ERROR_MESSAGES.CV_NOT_SAVED },
+    ]);
+    render(
+      <Probe
+        send={async () => {
+          throw refusal;
+        }}
+      />,
+    );
+    await fillValid(user);
+    const file = new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" });
+    await user.upload(screen.getByLabelText("File"), file);
+    await user.click(send());
+    expect(await screen.findByRole("alert")).toHaveTextContent(`CV_NOT_SAVED: ${ERROR_MESSAGES.CV_NOT_SAVED}`);
+    expect(screen.getByRole("status")).toHaveTextContent("failed");
+    expect(screen.getByTestId("file-error")).toHaveTextContent(ERROR_MESSAGES.CV_NOT_SAVED);
+    expect(screen.getByLabelText("File")).toHaveFocus();
+    expect((screen.getByLabelText("File") as HTMLInputElement).files?.[0]).toBe(file);
   });
 
   it("says why it was not sent when the refusal names no field of the form, or is not the visitor's to fix", async () => {

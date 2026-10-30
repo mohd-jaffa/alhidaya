@@ -2,11 +2,15 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { UPLOAD_LIMITS } from "@/constants/limits";
-import { authorizationError } from "@/lib/errors";
+import { ERROR_MESSAGES } from "@/constants/messages";
+import { authorizationError, internalError } from "@/lib/errors";
 import { stubServerEnv } from "@tests/support/env";
 
 const CV = new Uint8Array([37, 80, 68, 70]);
-const receiveApplication = vi.fn(async () => ({ id: "application-id", cvStatus: "STORED", cv: CV }));
+const receiveApplication = vi.fn<() => Promise<{ id: string; cv: Uint8Array }>>(async () => ({
+  id: "application-id",
+  cv: CV,
+}));
 const sendApplicationAlert = vi.fn<(id: string, cv: Uint8Array) => Promise<string>>(async () => "SENT");
 vi.mock("@/features/careers/api", () => ({ receiveApplication, sendApplicationAlert }));
 const verifyTurnstile = vi.fn<(token: string) => Promise<void>>(async () => {});
@@ -95,6 +99,26 @@ describe("POST /api/applications", () => {
     expect(captureError).toHaveBeenCalledWith(
       expect.objectContaining({ message: "Application alert not recorded", reference: expect.stringMatching(/^req_/) }),
     );
+  });
+
+  it("asks for the CV again when it could not be saved, beside the CV, sending HR nothing (D84)", async () => {
+    stubServerEnv();
+    receiveApplication.mockRejectedValueOnce(
+      internalError("CV_NOT_SAVED", [{ path: "cv", message: ERROR_MESSAGES.CV_NOT_SAVED }], new Error("EACCES")),
+    );
+    const response = await POST(call(body(fields)));
+    expect(response.status).toBe(500);
+    expect(await response.json()).toMatchObject({
+      success: false,
+      error: {
+        code: "CV_NOT_SAVED",
+        message: ERROR_MESSAGES.CV_NOT_SAVED,
+        details: [{ path: "cv", message: ERROR_MESSAGES.CV_NOT_SAVED }],
+      },
+    });
+    expect(later).toHaveLength(0);
+    // Its cause goes to the error log, not to the applicant.
+    expect(captureError).toHaveBeenCalledWith(expect.objectContaining({ code: "CV_NOT_SAVED" }));
   });
 
   it("answers a filled trap as taken and keeps nothing, asking Cloudflare nothing (plan §10.3)", async () => {

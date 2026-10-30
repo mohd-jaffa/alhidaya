@@ -113,5 +113,8 @@ export const ADMIN_PUBLIC_ROUTES: readonly string[] = [
 
 /** The timed jobs' endpoints (plan §17): called by the cPanel cron entries with CRON_SECRET, never by a page. */
 export const CRON_ROUTES = {
+  /** Daily: what is past its keeping period (plan §18). */
   retention: "/api/cron/retention",
+  /** Every 10 minutes: the team's emails not sent, sent again (D85). */
+  mailRetry: "/api/cron/mail-retry",
 } as const;

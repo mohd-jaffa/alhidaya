@@ -5,8 +5,8 @@ import path from "node:path";
 import { and, eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, UPLOAD_LIMITS } from "@/constants/limits";
-import { MAIL_TEXT, UI_TEXT } from "@/constants/messages";
+import { CV_SAVE_RETRIES, DISK_BUDGETS, FORM_RATE_LIMIT, INBOX_PAGE_SIZE, UPLOAD_LIMITS } from "@/constants/limits";
+import { ERROR_MESSAGES, MAIL_TEXT, UI_TEXT } from "@/constants/messages";
 import { closeDb, getDb } from "@/db/client";
 import { applicationNotes, applications, auditLog, authUser, errorLog, rateLimits, records } from "@/db/schema";
 import {
@@ -18,12 +18,14 @@ import {
   listApplications,
   receiveApplication,
   retryApplicationAlert,
+  retryApplicationAlerts,
   sendApplicationAlert,
   setApplicationStatus,
   submitApplication,
 } from "@/features/careers/api";
 import { getOperations } from "@/lib/content/operations";
 import { createRecord, publishRecord, saveRecordDraft, setRecordArchived } from "@/lib/content/records";
+import { saveCv } from "@/lib/storage/cvs";
 import { applicationFormSchema } from "@/lib/validation";
 import { jobFixture, serviceFixture } from "@tests/support/fixtures/content";
 import { deleteMail, mailAttachments, mailText, searchMail, waitForMail } from "@tests/support/mailpit";
@@ -71,7 +73,6 @@ afterAll(async () => {
   await getDb().delete(rateLimits);
   await getDb().delete(records);
   await getDb().delete(auditLog).where(eq(auditLog.requestId, REQUEST));
-  await getDb().delete(errorLog).where(eq(errorLog.message, "Application CV not stored"));
   await getDb().delete(errorLog).where(eq(errorLog.message, "Application alert email not sent"));
   await getDb().delete(errorLog).where(eq(errorLog.message, "Application CV not read"));
   await deleteMail((await searchMail(`subject:"${ALERT_NAME}"`)).map((message) => message.ID));
@@ -185,8 +186,7 @@ describe("receiveApplication, against the local MySQL", () => {
   });
 
   it("keeps each answer as the applicant saw it, and the CV in the private folder under a readable name", async () => {
-    const { id, cvStatus } = await receiveApplication(received({ bytes: PDF, name: "Mariam CV.pdf" }), ip(), at);
-    expect(cvStatus).toBe("STORED");
+    const { id } = await receiveApplication(received({ bytes: PDF, name: "Mariam CV.pdf" }), ip(), at);
     const [row] = await getDb().select().from(applications).where(eq(applications.id, id));
     expect(row).toMatchObject({
       jobId: null,
@@ -246,19 +246,63 @@ describe("receiveApplication, against the local MySQL", () => {
     await expect(fs.readdir(path.join(root, "cvs"))).rejects.toThrow();
   });
 
-  it("keeps the application when its CV cannot be saved: marked not stored, logged without anything personal", async () => {
+  it("tries a CV's save again while the applicant waits, and keeps the application once it is saved (D84)", async () => {
+    // The folder cannot be made at first: a file stands where it would go, and is gone before the second try.
+    const blocker = path.join(root, "blocker");
+    await fs.writeFile(blocker, "");
+    vi.stubEnv("CV_DIR", path.join(blocker, "cvs"));
+    setTimeout(() => void fs.rm(blocker), CV_SAVE_RETRIES.pauseMs / 2);
+    const { id } = await receiveApplication(received({ bytes: PDF, name: "cv.pdf" }), ip(), at);
+    const [row] = await getDb().select().from(applications).where(eq(applications.id, id));
+    expect(row).toMatchObject({ cvStatus: "STORED", cvName: "cv.pdf" });
+    expect(await fs.readFile(path.join(blocker, "cvs", row.cvKey!), "utf8")).toBe(PDF);
+  });
+
+  it("asks for a CV it still cannot save to be sent again, keeping nothing and counting nothing against the limit (D84)", async () => {
     await fs.writeFile(path.join(root, "not-a-folder"), "");
     vi.stubEnv("CV_DIR", path.join(root, "not-a-folder", "cvs"));
-    const { id, cvStatus } = await receiveApplication(received({ bytes: PDF, name: "cv.pdf" }), ip(), at);
-    expect(cvStatus).toBe("NOT_STORED");
-    const [row] = await getDb().select().from(applications).where(eq(applications.id, id));
-    expect(row).toMatchObject({ cvKey: null, cvStatus: "NOT_STORED", cvName: "cv.pdf" });
-    const logged = await getDb()
-      .select({ context: errorLog.context, detail: errorLog.detail, stack: errorLog.stack })
-      .from(errorLog)
-      .where(eq(errorLog.message, "Application CV not stored"));
-    expect(logged.map((entry) => entry.context)).toContainEqual({ applicationId: id });
-    expect(JSON.stringify(logged)).not.toContain("mariam");
+    const visitor = ip();
+    const before = (await getDb().select({ id: applications.id }).from(applications)).length;
+    await expect(receiveApplication(received({ bytes: PDF, name: "cv.pdf" }), visitor, at)).rejects.toMatchObject({
+      code: "CV_NOT_SAVED",
+      kind: "INTERNAL",
+      details: [{ path: "cv", message: ERROR_MESSAGES.CV_NOT_SAVED }],
+    });
+    expect(await getDb().select({ id: applications.id }).from(applications)).toHaveLength(before);
+
+    // The refused try took none of the visitor's sends.
+    vi.stubEnv("CV_DIR", path.join(root, "cvs"));
+    for (let send = 0; send < FORM_RATE_LIMIT.limit; send++) {
+      await receiveApplication(received({ bytes: PDF, name: "cv.pdf" }), visitor, at);
+    }
+  });
+
+  it("refuses a CV the folder has no room for the same way, without trying again (D84)", async () => {
+    // A file as large as the folder's whole budget, which takes no real room.
+    await fs.mkdir(path.join(root, "cvs"), { recursive: true });
+    await fs.writeFile(path.join(root, "cvs", "full.pdf"), "");
+    await fs.truncate(path.join(root, "cvs", "full.pdf"), DISK_BUDGETS.cvBytes);
+    const before = (await getDb().select({ id: applications.id }).from(applications)).length;
+    await expect(receiveApplication(received({ bytes: PDF, name: "cv.pdf" }), ip(), at)).rejects.toMatchObject({
+      code: "CV_NOT_SAVED",
+      cause: expect.objectContaining({ code: "STORAGE_FULL" }),
+    });
+    expect(await getDb().select({ id: applications.id }).from(applications)).toHaveLength(before);
+    expect(await fs.readdir(path.join(root, "cvs"))).toEqual(["full.pdf"]);
+  });
+
+  it("deletes a CV it saved for an application the database then refuses", async () => {
+    const keep = (jobTitle: string | null) =>
+      saveCv({
+        bytes: new TextEncoder().encode(PDF),
+        type: "pdf",
+        jobTitle,
+        applicantName: "Mariam Ali",
+        receivedAt: at,
+      });
+    // Longer than its column: refused by the database after the CV was saved.
+    await expect(submitApplication(application({ name: "M".repeat(1000) }), ip(), at, keep)).rejects.toThrow();
+    expect(await fs.readdir(path.join(root, "cvs", "2026-10"))).toEqual([]);
   });
 });
 
@@ -311,6 +355,21 @@ describe("the HR email, through Mailpit (plan §9.3, §17)", () => {
     const [attachment] = await mailAttachments(message.ID);
     expect(attachment).toMatchObject({ FileName: cvKey!.split("/")[1], ContentType: "application/pdf" });
     expect(new TextDecoder().decode(attachment.bytes)).toBe(PDF);
+  });
+
+  it("is sent again by the mail-retry cron with the kept CV, the try recorded on its row (D85)", async () => {
+    await getDb().update(applications).set({ emailStatus: "SENT" });
+    const { id } = await apply();
+    await getDb().update(applications).set({ emailStatus: "NOT_SENT" }).where(eq(applications.id, id));
+    const now = new Date();
+    expect(await retryApplicationAlerts(now)).toEqual({ tried: 1, sent: 1 });
+    const [tried] = await getDb()
+      .select({ status: applications.emailStatus, retries: applications.emailRetries, at: applications.emailRetriedAt })
+      .from(applications)
+      .where(eq(applications.id, id));
+    expect(tried).toEqual({ status: "SENT", retries: 1, at: now });
+    const { message } = await alertFor(id);
+    expect(await mailAttachments(message.ID)).toHaveLength(1);
   });
 
   it("is sent again by the admin's Retry with the kept CV, recorded, and never twice once it went", async () => {

@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE } from "@/constants/limits";
+import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, MAIL_RETRIES } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { closeDb, getDb } from "@/db/client";
 import { auditLog, authUser, enquiries, enquiryNotes, errorLog, rateLimits, records } from "@/db/schema";
@@ -13,6 +13,7 @@ import {
   listEnquiries,
   receiveEnquiry,
   retryEnquiryAlert,
+  retryEnquiryAlerts,
   sendEnquiryAlert,
   setEnquiryStatus,
   submitEnquiry,
@@ -453,5 +454,73 @@ describe("the enquiries inbox, against the local MySQL (plan §10.5)", () => {
     await expect(getEnquiry(gone)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND", httpStatus: 404 });
     await expect(setEnquiryStatus(gone, "RESOLVED", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
     await expect(addEnquiryNote(gone, "Note", actor)).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
+  });
+});
+
+describe("the mail-retry cron, through Mailpit (D85)", () => {
+  const now = new Date("2026-10-30T10:00:00Z");
+  const minutesAgo = (minutes: number) => new Date(now.getTime() - minutes * 60_000);
+  /** An enquiry received at `at`, its alert as `status`, tried again `retries` times already. */
+  async function arrived(name: string, status: "PENDING" | "NOT_SENT" | "SENT", at: Date, retries = 0) {
+    const id = await receiveEnquiry(contactFor(name), ip(), at);
+    await getDb().update(enquiries).set({ emailStatus: status, emailRetries: retries }).where(eq(enquiries.id, id));
+    return id;
+  }
+  const retried = async (id: string) =>
+    (
+      await getDb()
+        .select({ status: enquiries.emailStatus, retries: enquiries.emailRetries, at: enquiries.emailRetriedAt })
+        .from(enquiries)
+        .where(eq(enquiries.id, id))
+    )[0];
+
+  beforeAll(async () => {
+    await getDb().delete(enquiries);
+  });
+
+  it("sends again each alert not sent, and one still sending long after it arrived, recording each try", async () => {
+    const unsent = await arrived(`${ALERT_NAME} cron unsent`, "NOT_SENT", minutesAgo(30));
+    const stuck = await arrived(
+      `${ALERT_NAME} cron stuck`,
+      "PENDING",
+      minutesAgo(MAIL_RETRIES.pendingAfterMs / 60_000 + 1),
+    );
+    const sending = await arrived(`${ALERT_NAME} cron sending`, "PENDING", minutesAgo(1));
+    const sent = await arrived(`${ALERT_NAME} cron sent`, "SENT", minutesAgo(30));
+    const spent = await arrived(`${ALERT_NAME} cron spent`, "NOT_SENT", minutesAgo(30), MAIL_RETRIES.tries);
+
+    expect(await retryEnquiryAlerts(now)).toEqual({ tried: 2, sent: 2 });
+    for (const id of [unsent, stuck]) expect(await retried(id)).toEqual({ status: "SENT", retries: 1, at: now });
+    expect(await retried(sending)).toEqual({ status: "PENDING", retries: 0, at: null });
+    expect(await retried(sent)).toEqual({ status: "SENT", retries: 0, at: null });
+    expect(await retried(spent)).toEqual({ status: "NOT_SENT", retries: MAIL_RETRIES.tries, at: null });
+    await waitForMail(`subject:"${ALERT_NAME} cron unsent"`);
+    await waitForMail(`subject:"${ALERT_NAME} cron stuck"`);
+  });
+
+  it("stops after its tries while the mail server cannot be reached, and the alert waits for the admin", async () => {
+    await getDb().delete(enquiries);
+    const id = await arrived(`${ALERT_NAME} cron down`, "NOT_SENT", minutesAgo(30));
+    vi.stubEnv("SMTP_PORT", "9");
+    try {
+      for (let run = 1; run <= MAIL_RETRIES.tries; run++) {
+        expect(await retryEnquiryAlerts(now)).toEqual({ tried: 1, sent: 0 });
+        expect(await retried(id)).toMatchObject({ status: "NOT_SENT", retries: run });
+      }
+      expect(await retryEnquiryAlerts(now)).toEqual({ tried: 0, sent: 0 });
+    } finally {
+      vi.unstubAllEnvs();
+    }
+    expect((await getEnquiry(id)).emailRetries).toBe(MAIL_RETRIES.tries);
+  });
+
+  it("never sends one alert twice when two runs meet", async () => {
+    await getDb().delete(enquiries);
+    const ids = await Promise.all(
+      [1, 2, 3].map((n) => arrived(`${ALERT_NAME} cron twice ${n}`, "NOT_SENT", minutesAgo(30 + n))),
+    );
+    const runs = await Promise.all([retryEnquiryAlerts(now), retryEnquiryAlerts(now)]);
+    expect(runs.reduce((total, run) => total + run.tried, 0)).toBe(ids.length);
+    for (const id of ids) expect(await retried(id)).toMatchObject({ status: "SENT", retries: 1 });
   });
 });

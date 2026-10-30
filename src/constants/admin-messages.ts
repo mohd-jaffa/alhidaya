@@ -97,6 +97,9 @@ export const ADMIN_TEXT = {
   alertNotSent: "Alert email not sent",
   alertNotSentBody: "The team was not told about this enquiry by email. Send the alert again.",
   retryAlert: "Send the alert again",
+  emailRetrying: (tried: number) =>
+    `The website sends it again on its own every 10 minutes, 3 times at most (${tried} of 3 so far).`,
+  emailRetriesDone: "The website sent it again 3 times on its own, without success; it now waits for you.",
   alertStillNotSent: "The alert email was not sent.",
   notes: "Notes for the team",
   noNotes: "No notes yet. Write what was agreed on a call, so the next person knows.",
@@ -412,6 +415,8 @@ export const ADMIN_TEXT = {
     `The folder of photos, logos and the brochure is ${percent}% full. Delete images nothing uses in Media to make room.`,
   diskWarningCvs: (percent: number) =>
     `The CV folder is ${percent}% full. Old CVs are deleted when their time runs out; a shorter time in Operations makes room sooner.`,
+  diskFullCvs: (percent: number) =>
+    `The CV folder is ${percent}% full: a new application's CV no longer fits, and the applicant is asked to send it again. Old CVs are deleted when their time runs out; a shorter time in Operations makes room sooner.`,
   /** Activity (plan §36, D96): the admin's changes, a day at a time; never a person's details. */
   activity: "Activity",
   activityIntro:

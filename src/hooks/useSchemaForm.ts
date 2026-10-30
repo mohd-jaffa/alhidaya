@@ -43,9 +43,9 @@ function byField(issues: readonly { path: string | readonly PropertyKey[]; messa
   return errors;
 }
 
-/** The fields the route refused, as the form names them; anything else is not the visitor's to fix. */
+/** The fields the route named in a refusal, as the form names them; anything else is not the visitor's to fix. */
 function refusedFields(failure: ApiError, form: HTMLFormElement): FieldErrors {
-  if (failure.code !== "VALIDATION_ERROR" || !Array.isArray(failure.details)) return {};
+  if (!Array.isArray(failure.details)) return {};
   const names = new Set([...form.elements].filter(isControl).map((control) => control.name));
   return Object.fromEntries(Object.entries(byField(failure.details)).filter(([name]) => names.has(name)));
 }
@@ -127,7 +127,11 @@ export function useSchemaForm({
       setStatus("sent");
     } catch (error) {
       const refused = error instanceof ApiError ? refusedFields(error, form) : {};
-      if (Object.keys(refused).length > 0) return showErrors(form, refused);
+      if (Object.keys(refused).length > 0) {
+        showErrors(form, refused);
+        // A field the server could not take (a CV not saved, D84) is said above the send action too.
+        if ((error as ApiError).code === "VALIDATION_ERROR") return;
+      }
       fail(error);
     } finally {
       setAnswered((count) => count + 1);

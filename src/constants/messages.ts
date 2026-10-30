@@ -196,6 +196,7 @@ export const ERROR_MESSAGES = {
   EMAIL_ALREADY_SENT: "This email was already sent.",
   JOB_CLOSED: "This job is no longer open. You can apply for an open job, or send a general application.",
   CV_NOT_KEPT: "This CV is not kept on the website. Look for it attached to the application's HR email.",
+  CV_NOT_SAVED: "Something went wrong with your CV upload. Please send it again.",
 
   NETWORK_OFFLINE: "You're offline. Check your connection and try again.",
   NETWORK_UNREACHABLE: "We couldn't reach the server. Please try again in a moment.",

@@ -1,10 +1,11 @@
-import { check, index, json, mysqlTable, varchar } from "drizzle-orm/mysql-core";
+import { sql } from "drizzle-orm";
+import { check, index, json, mysqlTable, tinyint, varchar } from "drizzle-orm/mysql-core";
 
-import { TEXT_LIMITS } from "@/constants/limits";
+import { MAIL_RETRIES, TEXT_LIMITS } from "@/constants/limits";
 import { EMAIL_STATUSES, ENQUIRY_STATUSES, FORM_KINDS } from "@/constants/statuses";
 
 import { authUser } from "./auth";
-import { id, idRef, oneOf, timestamps } from "./columns";
+import { id, idRef, instant, oneOf, timestamps } from "./columns";
 
 /**
  * One answer as the visitor saw and gave it: the field's label at the time,
@@ -31,13 +32,18 @@ export const enquiries = mysqlTable(
     phone: varchar("phone", { length: TEXT_LIMITS.phone }).notNull(),
     fields: json("fields").$type<SubmittedField[]>().notNull(),
     emailStatus: varchar("email_status", { length: 8 }).notNull().default("PENDING"),
+    /** How often the mail-retry cron has sent its email again, and when it last did (D85). */
+    emailRetries: tinyint("email_retries", { unsigned: true }).notNull().default(0),
+    emailRetriedAt: instant("email_retried_at"),
     ...timestamps,
   },
   (table) => [
     check("enquiries_form_check", oneOf("form", FORM_KINDS)),
     check("enquiries_status_check", oneOf("status", ENQUIRY_STATUSES)),
     check("enquiries_email_status_check", oneOf("email_status", EMAIL_STATUSES)),
+    check("enquiries_email_retries_check", sql.raw(`\`email_retries\` between 0 and ${MAIL_RETRIES.tries}`)),
     index("enquiries_created_at_idx").on(table.createdAt),
+    index("enquiries_email_status_created_at_idx").on(table.emailStatus, table.createdAt),
     index("enquiries_status_created_at_idx").on(table.status, table.createdAt),
   ],
 );

@@ -68,6 +68,7 @@ export function EnquiryOpened({ id }: { id: string }) {
           title={ADMIN_TEXT.alertNotSent}
           body={ADMIN_TEXT.alertNotSentBody}
           action={ADMIN_TEXT.retryAlert}
+          retries={data.emailRetries}
           retry={() => EnquiriesClient.retryAlert(id)}
           revalidate={stale}
         />

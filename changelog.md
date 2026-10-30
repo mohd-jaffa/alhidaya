@@ -2823,3 +2823,60 @@ appended and never rewritten (AGENTS.md §26).
 
 ### Blockers
 - None.
+
+## 2026-10-30 — R6.10: retries for a CV and for the team's emails
+
+### Added
+- A CV is saved while the applicant waits (D84): inside the application's
+  own transaction, tried 3 times with a growing pause; a folder with no
+  room is not tried again. If it still fails, nothing is kept and nothing
+  counts against the applicant's limit, and the form says "Something went
+  wrong with your CV upload. Please send it again." beside the CV and
+  above the send action, with everything typed and the file still in it
+  (`CV_NOT_SAVED`, its cause in the error log). A CV saved for an
+  application the database then refuses is deleted.
+- Today's disk warning says, once a CV no longer fits in the CV folder,
+  that applicants are being asked to send theirs again.
+- The mail-retry cron (D85), `POST /api/cron/mail-retry` through
+  `withCronRoute` (`CRON_ROUTES.mailRetry`): each enquiry alert and HR
+  email not sent, or still marked as sending 10 minutes after it arrived,
+  sent again (the HR email with the kept CV), oldest first, at most 10 of
+  each a run, up to 3 more tries; each try recorded on its row before it
+  is made, so two runs never send one twice. `retryUnsentMail`
+  (`lib/inbox/mail-retry.ts`), `retryEnquiryAlerts`,
+  `retryApplicationAlerts`; `CV_SAVE_RETRIES` and `MAIL_RETRIES`
+  (`limits.ts`).
+- Migration `0006_mail_retries`: `email_retries` (0 – 3, checked) and
+  `email_retried_at` on enquiries and applications, and an index on the
+  email status and arrival for the cron's read.
+- The inbox's "not sent" notice says whether the website is still sending
+  the email again on its own (and how often it has), or has stopped after
+  its tries and waits for the admin's Retry.
+
+### Changed
+- A public form marks a field the server names in any refusal, and says
+  why above the send action when the refusal is not the visitor's mistake.
+- AGENTS.md §10 (the CV exception), §16 and §17 (two timed jobs); the
+  plan's §9.3 steps, §17, §21.2, §27 and the cron entry's command for R8.2.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,117), coverage 100%: against the
+  local MySQL, Mailpit and the CV folder, a CV saved on its second try; one
+  that never saves keeps nothing and leaves the visitor's sends untouched;
+  a full folder refused without trying again; a CV deleted when its row is
+  refused; the cron sends what was not sent and what is stuck sending,
+  leaves what is still sending, sent or out of tries, stops after 3 tries
+  while the mail server is down, and never sends one alert twice when two
+  runs meet; the HR email sent again with the kept CV. The route answers
+  the CV refusal with its field; the migration's contract.
+- E2E (phone and desktop, axe): an enquiry whose alert did not go shows the
+  website still trying; the cron refuses without its secret and sends it
+  with it; the warning is gone. The whole suite passed.
+- First paint, JavaScript (gzip, within 170 KB): the apply page 169.4 KB
+  (665 bytes left: the CV message is on every page with the others),
+  Contact 169.0 KB, Home 160.9 KB.
+
+### Blockers
+- None. Both cron entries are added on the server at R8.2, after full
+  payment (D48).

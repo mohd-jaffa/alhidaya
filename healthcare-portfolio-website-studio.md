@@ -474,29 +474,29 @@ page, which says it is closed (§6.6); a renamed job's moves on for good.
 
 1. The route checks Turnstile, the honeypot and the rate limit, then parses
    the fields and the file (type by magic bytes, size).
-2. The **application row** is written in the database (no file).
-3. **The CV is saved in the private CV folder on the server** (D41) under a
-   random file name; its original name, size and type are stored on the row.
-4. **The HR email** goes to the applications recipient (default
+2. In one transaction, the rate limit and the job are checked, **the CV is
+   saved in the private CV folder on the server** (D41) under its readable
+   name (§9.4), and the **application row** is written with it; its original
+   name, size and type are stored on the row. The save is tried 3 times, a
+   moment apart (D84); if it still fails, or the folder has no room, nothing
+   is kept and nothing counts against the limit, and the form says,
+   beside the CV and above the send action, "Something went wrong with your
+   CV upload. Please send it again.", with everything typed and the file
+   still in it. Today warns once a CV no longer fits in the folder.
+3. **The HR email** goes to the applications recipient (default
    `hr@alhidaya.qa`) with the details and **the CV attached** (D41).
-5. The applicant sees a confirmation. They never see an internal error: if
-   saving the file or sending the mail fails, the application is still
-   saved, the failure is logged, and the admin inbox shows the CV as **not
-   stored** or the email as **not sent**, with a Retry.
+4. The applicant sees a confirmation. If sending the mail fails, the
+   application is still saved, the failure is logged, the mail-retry cron
+   sends it again up to three times (D85), and the admin inbox shows the
+   email as **not sent**, with how often it was tried and a Retry.
 
 The HR email goes once the applicant has their answer (as D79 for
 enquiries), carrying the CV as received, so a CV that could not be saved
 still reaches HR. Its attachment is named as the CV is kept (§9.4), never by
-the name it was uploaded under. Retry sends the email again with the kept
-CV; without one (never kept, expired, or unreadable) the email says the CV
-is not attached. A CV that was not stored has no Retry of its own: its bytes
-lived only in the request, and the first HR email carried them.
-
-**To come (D83, D84, R6.10):** saving a CV is tried 3 times during the
-upload; if it still fails, nothing is kept and the applicant reads
-"Something went wrong with your CV upload. Please send it again.", with
-what they typed and their file still in the form. A failed HR email is sent
-again on its own by the mail-retry cron, up to three more times (D85).
+the name it was uploaded under. Retry, the admin's or the cron's, sends the
+email again with the kept CV; without one (expired, or unreadable) the email
+says the CV is not attached. Since R6.10 (D84) every stored application has
+its CV kept; *not stored* remains only for what arrived before.
 
 ### 9.4 Keeping CVs (D41, D52, D54)
 
@@ -700,10 +700,14 @@ enquiry or application, change retention.
   record (`p=none` first) is published** before launch, then verified with
   real sends to info@ and hr@ (R8.3).
 - A failed send never undoes what it was for; it is logged and retryable.
-  **To come (D83, D85, R6.10):** an enquiry alert or HR email that failed is
-  sent again by a cron job every 10 minutes (`POST /api/cron/mail-retry`),
-  up to three more tries, each recorded, before it waits for the admin's
-  Retry. The password reset is not retried.
+  **Sent again (D83, D85, R6.10):** an enquiry alert or HR email that
+  failed, or is still marked as sending 10 minutes after it arrived, is sent
+  again by a cron job every 10 minutes (`POST /api/cron/mail-retry`), oldest
+  first and at most 10 of each a run, up to three more tries, each recorded
+  on its row (`email_retries`, `email_retried_at`) before it is made, so two
+  runs never send one twice; then it waits for the admin's Retry, and the
+  inbox says which. The password reset is not retried. The cron entry
+  (R8.2): `*/10 * * * *`, `curl -fsS -X POST -H "Authorization: Bearer <CRON_SECRET>" https://alhidaya.qa/api/cron/mail-retry`.
 - **The enquiry alert** (§10.4, D79): from `noreply@`, to every enquiries
   recipient set in Operations, Reply-To the visitor; who sent it and when
   (Doha time), every answer under its label, and a button to the enquiry in
@@ -815,9 +819,8 @@ old site and its database from the server (D50), leaving about 950 MB:
 | The database, logs, mail and Next's cache | ≤ 150 MB |
 | Headroom | ≥ 50 MB |
 
-An upload that would pass its budget is refused with the reason. A CV that
-cannot be stored still reaches HR attached to the email, and the inbox marks
-it *not stored*. The admin overview shows each folder's use and warns at 80 %;
+An upload that would pass its budget is refused with the reason; a CV is
+refused as one not saved, and the applicant sends it again (D84). The admin overview shows each folder's use and warns at 80 %;
 logs rotate. The budgets are constants (`limits.ts`). Bandwidth (5 GB a month)
 is protected by long-lived caching, small made image sizes and lazy loading;
 the speed check at R8.5 decides whether the free Cloudflare proxy is added
@@ -1033,9 +1036,9 @@ MySQL 8.0 (D49): `utf8mb4` throughout (Arabic later), InnoDB, enforced `CHECK`s.
 | `documents` | keyed documents (D58, D60): `PAGE:<key>` for each page (its SEO and sections in order), `SITE` (§13 site content), `ORDER:SERVICES` and `ORDER:CLIENTS` (D59); each a `draft` and a `published` copy |
 | `records` | collections (D60): `SERVICES` (§8), `JOBS` (§9.1) and `CLIENTS` (§11), each a `draft` and a `published` copy, its published `slug` and `previous_slugs`, `archived_at` |
 | `site_operations` | §13 operations: one row: recipients, retention days, CV expiry days |
-| `enquiries` | §10: form, status, email status, fields as submitted (labels and values), name/email/phone for search |
+| `enquiries` | §10: form, status, email status (with how often the mail-retry cron sent it again and when, D85), fields as submitted (labels and values), name/email/phone for search |
 | `enquiry_notes` | internal notes |
-| `applications` | §9: job (or none), job title as published when applied for, fields, the CV's stored key, original name, size and type, CV status (`PENDING`, `STORED`, `NOT_STORED`, `EXPIRED`) and email status (`PENDING`, `SENT`, `NOT_SENT`) |
+| `applications` | §9: job (or none), job title as published when applied for, fields, the CV's stored key, original name, size and type, CV status (`PENDING`, `STORED`, `NOT_STORED`, `EXPIRED`) and email status (`PENDING`, `SENT`, `NOT_SENT`), with how often the mail-retry cron sent it again and when (D85) |
 | `application_notes` | internal notes |
 | `rate_limits` | keyed hash of scope and key, window start, count |
 | `sign_in_attempts` | hashed email/IP, count, locked until |
@@ -1471,7 +1474,7 @@ one commit (D27).
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | DONE (2026-10-30) |
 | R6.8 | Activity (audit trail) | §36 | — | DONE (2026-10-30) |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | DONE (2026-10-30) |
-| R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | TODO |
+| R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | DONE (2026-10-30) |
 
 ### Phase 7 — Performance, accessibility and the finish
 

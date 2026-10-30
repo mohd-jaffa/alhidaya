@@ -17,6 +17,7 @@ import { listPublishedServices } from "@/features/services/api";
 import { logActionSafe } from "@/lib/audit/auditLog";
 import { captureError } from "@/lib/audit/errorLog";
 import { needsAttention } from "@/lib/inbox/arrivals";
+import { type RetryRun, retryUnsentMail } from "@/lib/inbox/mail-retry";
 import { displayPhone } from "@/lib/contact";
 import type { Actor } from "@/lib/content/actor";
 import { getOperations } from "@/lib/content/operations";
@@ -201,6 +202,8 @@ export interface EnquiryNote {
 /** An enquiry opened in the inbox: every answer as sent, and its notes, oldest first. */
 export interface EnquiryDetail extends Omit<EnquirySummary, "summary"> {
   fields: SubmittedField[];
+  /** How often the mail-retry cron has sent its alert again (D85). */
+  emailRetries: number;
   updatedAt: Date;
   notes: EnquiryNote[];
 }
@@ -277,7 +280,12 @@ export async function getEnquiry(id: string): Promise<EnquiryDetail> {
   const db = getDb();
   const [[enquiry], notes] = await Promise.all([
     db
-      .select({ ...summary, fields: enquiries.fields, updatedAt: enquiries.updatedAt })
+      .select({
+        ...summary,
+        fields: enquiries.fields,
+        emailRetries: enquiries.emailRetries,
+        updatedAt: enquiries.updatedAt,
+      })
       .from(enquiries)
       .where(eq(enquiries.id, id)),
     db
@@ -294,6 +302,11 @@ export async function getEnquiry(id: string): Promise<EnquiryDetail> {
   ]);
   if (!enquiry) throw notFoundError("RECORD_NOT_FOUND");
   return { ...(enquiry as Omit<EnquiryDetail, "notes">), notes };
+}
+
+/** The mail-retry cron's work for enquiries (D85): each alert not sent, sent again while it has tries left. */
+export function retryEnquiryAlerts(at?: Date): Promise<RetryRun> {
+  return retryUnsentMail(enquiries, sendEnquiryAlert, at);
 }
 
 /** Moves an enquiry along (plan §10.5); recorded with where it was and where it went. */

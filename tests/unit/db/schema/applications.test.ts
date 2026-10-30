@@ -4,16 +4,18 @@ import { describe, expect, it } from "vitest";
 import { applicationNotes, applications } from "@/db/schema";
 
 describe("the application tables", () => {
-  it("check every vocabulary and the CV's size, and index what the inbox and the purge read", () => {
+  it("check every vocabulary and the CV's size, and index what the inbox, the purge and the mail-retry cron read", () => {
     expect(getTableConfig(applications).checks.map((entry) => entry.name)).toEqual([
       "applications_status_check",
       "applications_cv_type_check",
       "applications_cv_bytes_check",
       "applications_cv_status_check",
       "applications_email_status_check",
+      "applications_email_retries_check",
     ]);
     expect(getTableConfig(applications).indexes.map((entry) => entry.config.name)).toEqual([
       "applications_created_at_idx",
+      "applications_email_status_created_at_idx",
       "applications_status_created_at_idx",
       "applications_job_id_idx",
     ]);

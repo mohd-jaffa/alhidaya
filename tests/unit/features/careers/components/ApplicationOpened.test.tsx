@@ -30,6 +30,7 @@ const application = (overrides: Partial<Opened> = {}): Opened => ({
   jobTitle: "Registered General Nurse – Home Care",
   status: "NEW",
   emailStatus: "SENT",
+  emailRetries: 0,
   cvStatus: "STORED",
   name: "Mariam Ali",
   email: "mariam@example.com",
@@ -100,6 +101,7 @@ describe("ApplicationOpened", () => {
     open();
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(ADMIN_TEXT.hrEmailNotSentBody);
+    expect(alert).toHaveTextContent(ADMIN_TEXT.emailRetrying(0));
     expect(screen.queryByRole("button", { name: "In review" })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Shortlisted" }));
     await user.click(within(alert).getByRole("button", { name: ADMIN_TEXT.retryHrEmail }));

@@ -1,12 +1,12 @@
 import { sql } from "drizzle-orm";
-import { check, index, int, json, mysqlTable, varchar } from "drizzle-orm/mysql-core";
+import { check, index, int, json, mysqlTable, tinyint, varchar } from "drizzle-orm/mysql-core";
 
-import { TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
+import { MAIL_RETRIES, TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
 import { APPLICATION_STATUSES, CV_STATUSES, EMAIL_STATUSES } from "@/constants/statuses";
 import { CV_TYPES } from "@/constants/uploads";
 
 import { authUser } from "./auth";
-import { id, idRef, oneOf, timestamps } from "./columns";
+import { id, idRef, instant, oneOf, timestamps } from "./columns";
 import { records } from "./content";
 import type { SubmittedField } from "./enquiries";
 
@@ -34,6 +34,9 @@ export const applications = mysqlTable(
     cvBytes: int("cv_bytes", { unsigned: true }).notNull(),
     cvStatus: varchar("cv_status", { length: 16 }).notNull().default("PENDING"),
     emailStatus: varchar("email_status", { length: 8 }).notNull().default("PENDING"),
+    /** How often the mail-retry cron has sent its email again, and when it last did (D85). */
+    emailRetries: tinyint("email_retries", { unsigned: true }).notNull().default(0),
+    emailRetriedAt: instant("email_retried_at"),
     ...timestamps,
   },
   (table) => [
@@ -42,7 +45,9 @@ export const applications = mysqlTable(
     check("applications_cv_bytes_check", sql.raw(`\`cv_bytes\` between 1 and ${UPLOAD_LIMITS.cvBytes}`)),
     check("applications_cv_status_check", oneOf("cv_status", CV_STATUSES)),
     check("applications_email_status_check", oneOf("email_status", EMAIL_STATUSES)),
+    check("applications_email_retries_check", sql.raw(`\`email_retries\` between 0 and ${MAIL_RETRIES.tries}`)),
     index("applications_created_at_idx").on(table.createdAt),
+    index("applications_email_status_created_at_idx").on(table.emailStatus, table.createdAt),
     index("applications_status_created_at_idx").on(table.status, table.createdAt),
     index("applications_job_id_idx").on(table.jobId, table.createdAt),
   ],

@@ -111,6 +111,7 @@ export function ApplicationOpened({ id }: { id: string }) {
           title={ADMIN_TEXT.hrEmailNotSent}
           body={ADMIN_TEXT.hrEmailNotSentBody}
           action={ADMIN_TEXT.retryHrEmail}
+          retries={data.emailRetries}
           retry={() => ApplicationsClient.retryAlert(id)}
           revalidate={stale}
         />

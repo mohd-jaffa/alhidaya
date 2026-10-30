@@ -43,6 +43,13 @@
       "when": 1793250335748,
       "tag": "0005_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1793372867815,
+      "tag": "0006_mail_retries",
+      "breakpoints": true
     }
   ]
 }

@@ -34,6 +34,12 @@ describe("DiskWarning (D95)", () => {
     expect(screen.queryByRole("link", { name: ADMIN_TEXT.media })).toBeNull();
   });
 
+  it("says applicants are asked to send their CV again once one no longer fits (D84)", async () => {
+    stubApi(() => ({ data: view(10, 247) }));
+    render(<DiskWarning />, { wrapper: WithSWR });
+    expect(await screen.findByText(ADMIN_TEXT.diskFullCvs(99), { exact: false })).toBeVisible();
+  });
+
   it("names the media folder alone when the CVs have room", async () => {
     stubApi(() => ({ data: view(240, 10) }));
     render(<DiskWarning />, { wrapper: WithSWR });

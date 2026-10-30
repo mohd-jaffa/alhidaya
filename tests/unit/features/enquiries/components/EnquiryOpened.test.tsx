@@ -29,6 +29,7 @@ const enquiry = (overrides: Partial<Opened> = {}): Opened => ({
   form: "QUOTE",
   status: "NEW",
   emailStatus: "SENT",
+  emailRetries: 0,
   name: "Omar Haddad",
   email: "omar@school.qa",
   phone: "+97455512345",
@@ -103,6 +104,7 @@ describe("EnquiryOpened", () => {
     open();
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(ADMIN_TEXT.alertNotSentBody);
+    expect(alert).toHaveTextContent(ADMIN_TEXT.emailRetrying(0));
     await user.click(within(alert).getByRole("button", { name: ADMIN_TEXT.retryAlert }));
     await waitFor(() => expect(alert).toHaveTextContent(ERROR_MESSAGES.EXTERNAL_SERVICE_ERROR));
     expect(fetch).toHaveBeenCalledWith(

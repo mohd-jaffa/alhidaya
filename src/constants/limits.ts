@@ -97,6 +97,21 @@ export const CV_EXPIRY_DAYS = { min: 1, max: 365, default: 180 } as const;
  */
 export const MAIL_TIMEOUTS_MS = { connection: 10_000, greeting: 10_000, socket: 30_000 } as const;
 
+/**
+ * A CV's save is tried this many times while the applicant waits, the pause
+ * between tries growing each time (D84); then nothing is kept and they are
+ * asked to send it again.
+ */
+export const CV_SAVE_RETRIES = { tries: 3, pauseMs: 250 } as const;
+
+/**
+ * An enquiry alert or HR email not sent is sent again by the mail-retry cron
+ * (D85): every 10 minutes, up to 3 more tries. One still marked as sending
+ * this long after it arrived was never sent; and a run takes at most so many
+ * of each kind, so it ends well within its cron's time.
+ */
+export const MAIL_RETRIES = { tries: 3, pendingAfterMs: 10 * 60_000, perRun: 10 } as const;
+
 /** How long the server waits for Cloudflare to check a form's token (plan §10.3). */
 export const TURNSTILE_VERIFY_MS = 10_000;
 

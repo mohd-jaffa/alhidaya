@@ -8,6 +8,9 @@ export const percentUsed = ({ bytes, budget }: { bytes: number; budget: number }
 /** Whether a folder is past the point the admin is warned at (D95). */
 export const nearlyFull = (use: { bytes: number; budget: number }) => percentUsed(use) >= DISK_BUDGETS.warnAtPercent;
 
+/** Whether a folder has no room left for one more file this large: it is refused (D84). */
+export const noRoomFor = (use: { bytes: number; budget: number }, bytes: number) => use.bytes + bytes > use.budget;
+
 /**
  * One folder's room (plan §21.2, D95): its use against its budget in words
  * and as a bar, sky while there is room, the error red past the warning.
