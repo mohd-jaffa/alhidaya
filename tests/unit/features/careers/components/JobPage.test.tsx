@@ -1,13 +1,13 @@
 import { render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { UI_TEXT } from "@/constants/messages";
+import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { JobPage } from "@/features/careers/components/JobPage";
 import { jobFixture, publishedFixture } from "@tests/support/fixtures/content";
 import { mockObservers } from "@tests/support/motion";
 
-// The page's line watches the page; here it only needs to be drawn.
+// The page's cards rise in as they scroll by; here they only need to be drawn.
 vi.mock("@/components/motion/MotionProvider", () => ({ useMotion: () => ({ engine: null }) }));
 beforeEach(() => mockObservers());
 afterEach(() => vi.unstubAllGlobals());
@@ -23,7 +23,7 @@ const structuredData = (container: HTMLElement) =>
   );
 
 describe("JobPage", () => {
-  it("opens an open job on the nurses' leaf-green sign with Apply, then the job in full beside its facts", () => {
+  it("opens an open job under Careers' pill with Apply, then the job in full beside its facts, then the others", () => {
     const { container } = render(
       <JobPage
         job={job({
@@ -36,8 +36,8 @@ describe("JobPage", () => {
         others={[job({ title: en("School Nurse"), slug: "school-nurse" })]}
       />,
     );
-    expect(container.querySelector("#start section")).toHaveClass("bg-leaf");
     const sign = within(container.querySelector<HTMLElement>("#start")!);
+    expect(sign.getByText(PAGE_NAMES.CAREERS)).toBeInTheDocument();
     expect(sign.getByRole("heading", { level: 1, name: "Registered General Nurse – Home Care" })).toBeInTheDocument();
     expect(sign.getByText("Home care nursing.")).toBeInTheDocument();
     expect(sign.getByRole("link", { name: UI_TEXT.applyForJob })).toHaveAttribute(
@@ -67,11 +67,12 @@ describe("JobPage", () => {
       [UI_TEXT.closes, "30 November 2026"],
     ]);
 
-    const line = within(container.querySelector<HTMLElement>("#line")!);
-    expect(line.getByRole("heading", { level: 2, name: UI_TEXT.lineCareers })).toBeInTheDocument();
-    expect(line.getByRole("link", { name: UI_TEXT.applyForJob })).toBeInTheDocument();
-    expect(line.getByRole("link", { name: UI_TEXT.allOpenJobs })).toHaveAttribute("href", ROUTES.careers);
-    expect(line.getByRole("link", { name: "School Nurse" })).toHaveAttribute("href", ROUTES.job("school-nurse"));
+    const card = within(container.querySelector<HTMLElement>("#about .bg-mist")!);
+    expect(card.getByRole("link", { name: UI_TEXT.applyForJob })).toBeInTheDocument();
+    expect(sign.getByRole("link", { name: UI_TEXT.allOpenJobs })).toHaveAttribute("href", ROUTES.careers);
+    expect(sign.queryByRole("link", { name: UI_TEXT.generalApplication })).not.toBeInTheDocument();
+    const more = within(screen.getByRole("region", { name: UI_TEXT.otherOpenJobs }));
+    expect(more.getByRole("link", { name: "School Nurse" })).toHaveAttribute("href", ROUTES.job("school-nurse"));
     expect(structuredData(container)).toEqual(["JobPosting", "BreadcrumbList"]);
   });
 
@@ -80,9 +81,11 @@ describe("JobPage", () => {
     expect(screen.getByRole("status")).toHaveTextContent(UI_TEXT.jobClosed);
     expect(screen.getByRole("status")).toHaveTextContent(UI_TEXT.jobClosedBody);
     expect(screen.queryByRole("link", { name: UI_TEXT.applyForJob })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: UI_TEXT.generalApplication })).toHaveAttribute("href", ROUTES.applyGeneral);
+    const sign = within(container.querySelector<HTMLElement>("#start")!);
+    expect(sign.getByRole("link", { name: UI_TEXT.generalApplication })).toHaveAttribute("href", ROUTES.applyGeneral);
     expect(screen.getByText(UI_TEXT.closedOn).nextSibling).toHaveTextContent("15 October 2026");
     expect(screen.queryByRole("heading", { name: UI_TEXT.otherOpenJobs })).not.toBeInTheDocument();
+    expect(sign.getByRole("link", { name: UI_TEXT.allOpenJobs })).toHaveAttribute("href", ROUTES.careers);
     // Out of Google's jobs, still on the trail.
     expect(structuredData(container)).toEqual(["BreadcrumbList"]);
   });

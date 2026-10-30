@@ -3,19 +3,18 @@ import { notFound } from "next/navigation";
 
 import { PICTOGRAMS, type PictogramName } from "@/assets/brand/pictograms";
 import { Reveal } from "@/components/motion/Reveal";
+import { PageHero } from "@/components/sections/PageHero";
 import { ArrowLink } from "@/components/ui/arrow-link";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Checkbox, RadioGroup } from "@/components/ui/choice";
 import { ContactAction } from "@/components/ui/contact-action";
-import { Field } from "@/components/ui/field";
+import { ControlsLook, Field } from "@/components/ui/field";
 import { FileInput } from "@/components/ui/file-input";
 import { ImageFrame, LogoTile, Skeleton } from "@/components/ui/frames";
-import { LineRow } from "@/components/ui/line-row";
-import { LineStart } from "@/components/ui/line-start";
 import { Notice } from "@/components/ui/notice";
 import { Pictogram } from "@/components/ui/pictogram";
+import { Pill, PillLink } from "@/components/ui/pill";
 import { Select } from "@/components/ui/select";
-import { SignPanel } from "@/components/ui/sign-panel";
 import { TextArea, TextInput } from "@/components/ui/text-input";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
@@ -40,48 +39,40 @@ export default function KitPage() {
   return (
     <div className="mx-auto grid max-w-site gap-section px-gutter pt-16 pb-section">
       {sign.type === "SIGN" ? (
-        <SignPanel
+        <PageHero
+          anchor="start"
+          label={UI_TEXT.kitPreview}
           headline={sign.content.headline.en}
+          highlight={sign.content.highlight.en}
           lede={sign.content.lede.en}
-          media={
-            <ImageFrame ratio="landscape">
-              <Skeleton className="size-full rounded-none" />
-            </ImageFrame>
-          }
         >
-          <ContactAction kind="whatsapp" to={phone} variant="onDeep" />
-          <ContactAction kind="call" to={phone} variant="onDeepQuiet" />
-        </SignPanel>
+          <ContactAction kind="whatsapp" to={phone} size="lg" arrow />
+          <ContactAction kind="call" to={phone} variant="pale" size="lg" />
+        </PageHero>
       ) : null}
 
-      <section id="kit-lines">
-        <LineStart>
-          <LineRow tone="sky" pictogram="careAtHome" title={UI_TEXT.lineCareAtHome}>
-            <ContactAction kind="whatsapp" to={phone} variant="sky" />
-            <ContactAction kind="call" to={phone} variant="sky" />
-          </LineRow>
-          <LineRow tone="deep" pictogram="staffing" title={UI_TEXT.lineStaffing}>
-            <ButtonLink href={ROUTES.quote}>{UI_TEXT.requestQuote}</ButtonLink>
-          </LineRow>
-          <LineRow tone="leaf" pictogram="careers" title={UI_TEXT.lineCareers}>
-            <ButtonLink href={ROUTES.careers} variant="leaf">
-              {UI_TEXT.careers}
-            </ButtonLink>
-          </LineRow>
-        </LineStart>
-      </section>
-
       <section id="kit-actions" className="grid gap-6">
-        <h2 className="text-page font-bold">Actions</h2>
+        <h2 className="text-display font-normal">Actions</h2>
         <div className="flex flex-wrap items-center gap-3">
-          <Button>Send message</Button>
-          <Button variant="secondary">Choose another</Button>
-          <Button pending>Sending</Button>
-          <Button disabled>Unavailable</Button>
-          <Button size="lg" pictogram="download">
-            Brochure
+          <Pill arrow>Send message</Pill>
+          <Pill variant="pale">Choose another</Pill>
+          <Pill pending>Sending</Pill>
+          <Pill disabled>Unavailable</Pill>
+          <PillLink href={ROUTES.quote} size="lg" arrow>
+            {UI_TEXT.requestQuote}
+          </PillLink>
+          <ContactAction kind="email" to={SEED_SITE.contact.email} variant="pale" />
+        </div>
+        <div className="flex flex-wrap items-center gap-3 rounded-card bg-forest p-6">
+          <ContactAction kind="whatsapp" to={phone} variant="onForest" arrow />
+          <ContactAction kind="call" to={phone} variant="onForestQuiet" />
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button>Save draft</Button>
+          <Button variant="secondary">Preview</Button>
+          <Button variant="quiet" pictogram="download">
+            Download
           </Button>
-          <ContactAction kind="email" to={SEED_SITE.contact.email} variant="secondary" />
         </div>
         <div className="flex flex-wrap gap-6">
           <ArrowLink href={ROUTES.services}>All services</ArrowLink>
@@ -94,55 +85,57 @@ export default function KitPage() {
         </div>
       </section>
 
-      <section id="kit-fields" className="grid max-w-xl gap-6">
-        <h2 className="text-page font-bold">Fields</h2>
-        <Field label="Full name" required>
-          <TextInput name="name" autoComplete="name" defaultValue="Mariam Ali" />
-        </Field>
-        <Field
-          label="Phone"
-          hint="A Qatar number, or one with its country code."
-          error="Phone must be a Qatar number (8 digits) or start with a country code, like +44."
-          required
-        >
-          <TextInput name="phone" type="tel" autoComplete="tel" defaultValue="3130 655" />
-        </Field>
-        <Field label="Service">
-          <Select name="service" defaultValue="">
-            <option value="">Not sure yet</option>
-            {SEED_SERVICES.map((service) => (
-              <option key={service.slug} value={service.slug}>
-                {service.name.en}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <RadioGroup
-          legend="Preferred contact"
-          name="contact"
-          options={[
-            { value: "WHATSAPP", label: "WhatsApp" },
-            { value: "CALL", label: "A call" },
-            { value: "EMAIL", label: "Email" },
-          ]}
-          defaultChecked={false}
-        />
-        <Field label="Message" required>
-          <TextArea name="message" />
-        </Field>
-        <Field label="CV" hint="PDF, DOC or DOCX, up to 5 MB." required>
-          <FileInput name="cv" accept=".pdf,.doc,.docx" />
-        </Field>
-        <Checkbox name="consent" required error="Please agree to the privacy notice.">
-          I agree to the privacy notice.
-        </Checkbox>
+      <section id="kit-fields" className="grid max-w-xl gap-6 rounded-card bg-mist p-6 sm:p-8">
+        <h2 className="text-display font-normal">Fields</h2>
+        <ControlsLook look="line">
+          <Field label="Full name" required>
+            <TextInput name="name" autoComplete="name" defaultValue="Mariam Ali" />
+          </Field>
+          <Field
+            label="Phone"
+            hint="A Qatar number, or one with its country code."
+            error="Phone must be a Qatar number (8 digits) or start with a country code, like +44."
+            required
+          >
+            <TextInput name="phone" type="tel" autoComplete="tel" defaultValue="3130 655" />
+          </Field>
+          <Field label="Service">
+            <Select name="service" defaultValue="">
+              <option value="">Not sure yet</option>
+              {SEED_SERVICES.map((service) => (
+                <option key={service.slug} value={service.slug}>
+                  {service.name.en}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <RadioGroup
+            legend="Preferred contact"
+            name="contact"
+            options={[
+              { value: "WHATSAPP", label: "WhatsApp" },
+              { value: "CALL", label: "A call" },
+              { value: "EMAIL", label: "Email" },
+            ]}
+            defaultChecked={false}
+          />
+          <Field label="Message" required>
+            <TextArea name="message" />
+          </Field>
+          <Field label="CV" hint="PDF, DOC or DOCX, up to 5 MB." required>
+            <FileInput name="cv" accept=".pdf,.doc,.docx" />
+          </Field>
+          <Checkbox name="consent" required error="Please agree to the privacy notice.">
+            I agree to the privacy notice.
+          </Checkbox>
+        </ControlsLook>
         <div>
           <DialogDemo label="Open a dialog" title="Before you send" body="We reply as soon as we can." />
         </div>
       </section>
 
       <section id="kit-notices" className="grid max-w-xl gap-4">
-        <h2 className="text-page font-bold">Notices</h2>
+        <h2 className="text-display font-normal">Notices</h2>
         <Notice tone="success" title="Thank you. Your message is on its way.">
           We reply as soon as we can. WhatsApp is the fastest way to reach us.
         </Notice>
@@ -153,7 +146,7 @@ export default function KitPage() {
       </section>
 
       <section id="kit-frames" className="grid gap-6">
-        <h2 className="text-page font-bold">Frames</h2>
+        <h2 className="text-display font-normal">Frames</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <ImageFrame ratio="portrait" credit="Photo: licensed stock">
             <Skeleton className="size-full rounded-none" />
@@ -171,7 +164,7 @@ export default function KitPage() {
 
       {SEED_SERVICES.map((service) => (
         <section key={service.slug} id={service.slug} className="grid gap-4">
-          <h2 className="text-page font-bold">{service.name.en}</h2>
+          <h2 className="text-display font-normal">{service.name.en}</h2>
           <Reveal className="max-w-measure text-lead text-ink-2">
             <p>{service.summary.en}</p>
           </Reveal>

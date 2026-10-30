@@ -6,20 +6,15 @@ import { renderShareImage, SHARE_IMAGE_SIZE } from "@/lib/seo/share-image";
 const PNG = [0x89, 0x50, 0x4e, 0x47];
 
 describe("renderShareImage", () => {
-  it("draws a 1200 × 630 PNG of the page's sign, deep blue, sky or leaf green", async () => {
+  it("draws a 1200 × 630 PNG of the page's headline, under its pill or none", async () => {
     expect(SHARE_IMAGE_SIZE).toEqual({ width: 1200, height: 630 });
-    for (const tone of ["deep", "sky", "leaf"] as const) {
-      const response = await renderShareImage({ title: "Home nursing care", tone });
+    for (const label of ["For families", undefined]) {
+      const response = await renderShareImage({ title: "Home nursing care", label });
       expect(response.headers.get("content-type")).toBe("image/png");
       const bytes = new Uint8Array(await response.arrayBuffer());
       expect([...bytes.slice(0, 4)]).toEqual(PNG);
       const view = new DataView(bytes.buffer);
       expect([view.getUint32(16), view.getUint32(20)]).toEqual([1200, 630]);
     }
-  });
-
-  it("is deep blue unless told otherwise", async () => {
-    const response = await renderShareImage({ title: "Quality nursing care at your doorstep" });
-    expect(response.headers.get("content-type")).toBe("image/png");
   });
 });

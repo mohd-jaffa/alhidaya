@@ -1,12 +1,12 @@
-import { JsonLd } from "@/components/site/JsonLd";
+import { Reveal } from "@/components/motion/Reveal";
 import { JobLinks } from "@/components/sections/JobLinks";
+import { PageHero } from "@/components/sections/PageHero";
 import { SectionFrame, SectionHeading } from "@/components/sections/SectionFrame";
-import { ButtonLink } from "@/components/ui/button";
-import { LineRow } from "@/components/ui/line-row";
+import { JsonLd } from "@/components/site/JsonLd";
+import { IconChip } from "@/components/ui/icon-chip";
 import { Notice } from "@/components/ui/notice";
-import { Pictogram } from "@/components/ui/pictogram";
+import { PillLink } from "@/components/ui/pill";
 import { RichText } from "@/components/ui/rich-text";
-import { SignPanel } from "@/components/ui/sign-panel";
 import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { EMPLOYMENT_TYPE_LABELS } from "@/constants/statuses";
@@ -20,13 +20,13 @@ import type { PublishedJob } from "../api";
 function JobPoints({ title, items }: { title: string; items: readonly { en: string }[] }) {
   if (items.length === 0) return null;
   return (
-    <div className="grid gap-3">
-      <h3 className="text-title font-bold">{title}</h3>
+    <div className="grid gap-4">
+      <h3 className="text-section font-medium">{title}</h3>
       <ul className="grid max-w-measure gap-3">
         {items.map((item) => (
-          <li key={item.en} className="flex gap-3">
-            <Pictogram name="check" size="md" className="text-deep" />
-            <span>{item.en}</span>
+          <li key={item.en} className="flex items-start gap-3">
+            <IconChip name="check" size="sm" />
+            <span className="pt-0.5">{item.en}</span>
           </li>
         ))}
       </ul>
@@ -35,9 +35,9 @@ function JobPoints({ title, items }: { title: string; items: readonly { en: stri
 }
 
 /**
- * A job's page (plan §6.6): its sign on the nurses' leaf-green line with
- * Apply; the job in full beside its facts at a glance; and the line again,
- * with the other open jobs. A closed job stays reachable and says so,
+ * A job's page (plan §6.6, D109): its opening on Careers' pill with Apply and
+ * the way to every open job; the job in full beside its facts on a mist card;
+ * and the other open jobs as cards. A closed job stays reachable and says so,
  * offering the open jobs and the general application instead (Q7).
  */
 export function JobPage({ job, others }: { job: PublishedJob; others: readonly PublishedJob[] }) {
@@ -69,64 +69,69 @@ export function JobPage({ job, others }: { job: PublishedJob; others: readonly P
         )}
       />
       <div className="grid grid-cols-[minmax(0,1fr)] gap-section pt-16 pb-section xl:pt-12">
-        <div id="start" className="mx-auto grid w-full max-w-site gap-6 px-gutter">
-          <SignPanel tone="leaf" headline={published.title.en} lede={published.summary.en}>
+        <div className="grid gap-8">
+          <PageHero anchor="start" label={PAGE_NAMES.CAREERS} headline={published.title.en} lede={published.summary.en}>
             {open ? (
-              <ButtonLink href={ROUTES.applyForJob(published.slug)} size="lg" pictogram="careers">
+              <PillLink href={ROUTES.applyForJob(published.slug)} size="lg" arrow>
                 {UI_TEXT.applyForJob}
-              </ButtonLink>
-            ) : null}
-          </SignPanel>
+              </PillLink>
+            ) : (
+              <PillLink href={ROUTES.applyGeneral} size="lg" arrow>
+                {UI_TEXT.generalApplication}
+              </PillLink>
+            )}
+            <PillLink href={ROUTES.careers} variant="pale" size="lg">
+              {UI_TEXT.allOpenJobs}
+            </PillLink>
+          </PageHero>
           {open ? null : (
-            <Notice tone="info" title={UI_TEXT.jobClosed}>
-              {UI_TEXT.jobClosedBody}
-            </Notice>
+            <div className="mx-auto w-full max-w-site px-gutter">
+              <div className="max-w-measure">
+                <Notice tone="info" title={UI_TEXT.jobClosed}>
+                  {UI_TEXT.jobClosedBody}
+                </Notice>
+              </div>
+            </div>
           )}
         </div>
 
-        <SectionFrame anchor="about" className="grid gap-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-          <div className="grid content-start gap-8">
+        <SectionFrame
+          anchor="about"
+          className="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-start lg:gap-16"
+        >
+          <Reveal className="grid content-start gap-8">
             <SectionHeading anchor="about">{UI_TEXT.aboutJob}</SectionHeading>
             {published.description.length > 0 ? <RichText blocks={published.description} headingLevel="h3" /> : null}
             <JobPoints title={UI_TEXT.responsibilities} items={published.responsibilities} />
             <JobPoints title={UI_TEXT.qualifications} items={published.qualifications} />
             <JobPoints title={UI_TEXT.benefits} items={published.benefits} />
-          </div>
-          <div className="grid content-start gap-5 rounded-panel bg-mist p-sign">
-            <h3 className="text-title font-bold">{UI_TEXT.jobFacts}</h3>
+          </Reveal>
+          <Reveal order={1} className="grid content-start gap-6 rounded-card bg-mist p-6 sm:p-8">
+            <h3 className="text-title font-medium">{UI_TEXT.jobFacts}</h3>
             <dl className="grid gap-4">
               {facts.map((fact) =>
                 fact.value === null ? null : (
                   <div key={fact.term} className="grid gap-0.5">
-                    <dt className="text-small font-semibold text-ink-2">{fact.term}</dt>
-                    <dd>{fact.value}</dd>
+                    <dt className="text-small text-ink-2">{fact.term}</dt>
+                    <dd className="font-medium">{fact.value}</dd>
                   </div>
                 ),
               )}
             </dl>
-          </div>
+            {open ? (
+              <PillLink href={ROUTES.applyForJob(published.slug)} arrow className="justify-self-start">
+                {UI_TEXT.applyForJob}
+              </PillLink>
+            ) : null}
+          </Reveal>
         </SectionFrame>
 
-        <SectionFrame anchor="line" named={false} className="grid gap-8">
-          <LineRow tone="leaf" pictogram="careers" title={UI_TEXT.lineCareers}>
-            {open ? (
-              <ButtonLink href={ROUTES.applyForJob(published.slug)}>{UI_TEXT.applyForJob}</ButtonLink>
-            ) : (
-              <ButtonLink href={ROUTES.applyGeneral} variant="leaf">
-                {UI_TEXT.generalApplication}
-              </ButtonLink>
-            )}
-            <ButtonLink href={ROUTES.careers} variant="secondary">
-              {UI_TEXT.allOpenJobs}
-            </ButtonLink>
-          </LineRow>
-          {others.length > 0 ? (
-            <div className="grid gap-4">
-              <h3 className="text-title font-bold">{UI_TEXT.otherOpenJobs}</h3>
-              <JobLinks jobs={others} />
-            </div>
-          ) : null}
-        </SectionFrame>
+        {others.length > 0 ? (
+          <SectionFrame anchor="more" className="grid gap-8">
+            <SectionHeading anchor="more">{UI_TEXT.otherOpenJobs}</SectionHeading>
+            <JobLinks jobs={others} />
+          </SectionFrame>
+        ) : null}
       </div>
     </>
   );

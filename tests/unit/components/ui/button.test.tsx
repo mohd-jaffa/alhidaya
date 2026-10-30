@@ -31,10 +31,9 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Unavailable" })).toBeDisabled();
   });
 
-  it("wears its line's colour, with navy words on sky and leaf", () => {
-    expect(buttonClasses({ variant: "sky" })).toContain("bg-sky text-navy");
-    expect(buttonClasses({ variant: "leaf" })).toContain("bg-leaf text-navy");
-    expect(buttonClasses({ variant: "onDeepQuiet" }, "w-full")).toContain("text-on-deep");
+  it("is deep blue, outlined or quiet, and takes classes of its own last", () => {
+    expect(buttonClasses({})).toContain("bg-deep text-on-deep");
+    expect(buttonClasses({ variant: "secondary" })).toContain("border-navy");
     expect(buttonClasses({}, "w-full")).toMatch(/w-full$/);
     expect(buttonClasses({ variant: "quiet" })).toContain("text-deep hover:bg-mist");
   });
@@ -51,7 +50,7 @@ describe("ButtonLink", () => {
   it("opens another site in a new tab, and calls in place", () => {
     render(
       <>
-        <ButtonLink href="https://wa.me/97431306555" variant="sky" pictogram="chat">
+        <ButtonLink href="https://wa.me/97431306555" variant="secondary" pictogram="chat">
           WhatsApp
         </ButtonLink>
         <ButtonLink href="tel:+97431306555">Call</ButtonLink>

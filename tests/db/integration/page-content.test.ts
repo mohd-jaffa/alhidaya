@@ -41,7 +41,7 @@ async function image() {
   return id;
 }
 
-async function publishedPage(key: "HOME" | "CAREERS" | "PRIVACY" | "QUOTE", page: unknown) {
+async function publishedPage(key: "HOME" | "SERVICES" | "CAREERS" | "PRIVACY" | "QUOTE", page: unknown) {
   await saveDocumentDraft(`PAGE:${key}`, page, actor);
   await publishDocument(`PAGE:${key}`, actor);
 }
@@ -159,8 +159,8 @@ describe("a page with everything it shows, against the local MySQL", () => {
     expect(await getPageMetadata("HOME")).toMatchObject({ title: "Nurses at home in Doha" });
   });
 
-  it("draws a page's share picture from its sign, or its name before it is published", async () => {
-    for (const page of ["HOME", "TERMS"] as const) {
+  it("draws a page's share picture from its sign, under its name but on Home, or its name before it is published", async () => {
+    for (const page of ["HOME", "PRIVACY", "TERMS"] as const) {
       const image = await getPageShareImage(page);
       expect(image.headers.get("content-type")).toBe("image/png");
     }
@@ -184,5 +184,9 @@ describe("a page with everything it shows, against the local MySQL", () => {
 
     const content = await getPublishedPageContent("HOME");
     expect([...(content?.data.images.keys() ?? [])].toSorted()).toEqual([servicePhoto, face].toSorted());
+
+    // The services' cards on Services show their photos too (D111).
+    await publishedPage("SERVICES", pageFixture("SERVICES"));
+    expect([...((await getPublishedPageContent("SERVICES"))?.data.images.keys() ?? [])]).toEqual([servicePhoto]);
   });
 });

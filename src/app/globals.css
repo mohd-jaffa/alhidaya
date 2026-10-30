@@ -60,8 +60,8 @@
    * One family, Inter Tight (D108). Roles, not sizes. The redesign's display
    * roles: the hero's headline, a section's heading, a statement, a counter's
    * figure and the footer's running words, large, light and tight. The
-   * working roles: a page's heading, a section's in the admin, a title (a job,
-   * a service), the supporting line, body, small print, a label.
+   * working roles: a section's in the admin, a title (a job, a service), the
+   * supporting line, body, small print, a label.
    */
   --text-hero: clamp(2.625rem, 1.55rem + 4.3vw, 4.75rem);
   --text-hero--line-height: 1.02;
@@ -78,12 +78,6 @@
   --text-marquee: clamp(4rem, 1.5rem + 10vw, 11rem);
   --text-marquee--line-height: 0.9;
   --text-marquee--letter-spacing: -0.04em;
-  --text-sign: clamp(2.375rem, 1.5rem + 4.2vw, 4.25rem);
-  --text-sign--line-height: 1.04;
-  --text-sign--letter-spacing: -0.015em;
-  --text-page: clamp(2rem, 1.4rem + 2.6vw, 2.75rem);
-  --text-page--line-height: 1.08;
-  --text-page--letter-spacing: -0.015em;
   --text-section: 1.75rem;
   --text-section--line-height: 1.15;
   --text-section--letter-spacing: -0.01em;
@@ -103,7 +97,6 @@
   --spacing-gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
   --spacing-section: clamp(3.5rem, 2rem + 6vw, 7rem);
   --spacing-touch: 2.75rem;
-  --spacing-sign: clamp(1.5rem, 1rem + 3vw, 3.25rem);
   --container-site: 78rem;
   /* About 70 characters of running text. */
   --container-measure: 60ch;
@@ -140,12 +133,8 @@
   --default-font-family: var(--font-sans);
 }
 
-/* Tokens that are not utilities: the line's geometry, durations, layers. */
+/* Tokens that are not utilities: durations, layers. */
 :root {
-  --line-width: 6px;
-  --line-station: 22px;
-  /* A line row's line, centred on its station (until those sections are redesigned, Phase 6B). */
-  --line-rail-centre: calc(var(--line-station) / 2 - var(--line-width) / 2);
   /* The site header's height (R2.6): the sign bar, taller on a wide screen. */
   --header-height: 4rem;
   --duration-press: 120ms;

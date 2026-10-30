@@ -8,18 +8,18 @@ describe("ArrowLink", () => {
     render(<ArrowLink href="/services">All services</ArrowLink>);
     const link = screen.getByRole("link", { name: "All services" });
     expect(link).toHaveAttribute("href", "/services");
-    expect(link).toHaveClass("text-deep", "min-h-touch");
+    expect(link).toHaveClass("text-forest", "min-h-touch");
     expect(link.querySelector("svg")).toHaveClass("group-hover:translate-x-1", "rtl:-scale-x-100");
   });
 
-  it("goes to another address as a plain link, in white on a sign", () => {
+  it("goes to another address as a plain link", () => {
     render(
-      <ArrowLink href="https://maps.google.com/?q=Retaj" tone="onDeep" className="mt-2">
+      <ArrowLink href="https://maps.google.com/?q=Retaj" className="mt-2">
         Open in Google Maps
       </ArrowLink>,
     );
     const link = screen.getByRole("link", { name: "Open in Google Maps" });
     expect(link).toHaveAttribute("href", "https://maps.google.com/?q=Retaj");
-    expect(link).toHaveClass("text-on-deep", "mt-2");
+    expect(link).toHaveClass("text-forest", "mt-2");
   });
 });

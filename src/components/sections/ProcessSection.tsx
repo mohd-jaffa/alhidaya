@@ -4,13 +4,12 @@ import { MediaImage } from "@/components/ui/media-image";
 import type { SiteImage } from "@/features/media/types";
 import type { Section } from "@/lib/validation";
 
+import { ordinal } from "./numbered";
 import { SectionFrame, SectionOpening } from "./SectionFrame";
 
 type ProcessContent = Extract<Section, { type: "PROCESS" }>["content"];
 
 /** A step's number as the reference sets it: two figures. */
-const stepNumber = (at: number) => String(at + 1).padStart(2, "0");
-
 /**
  * How it works (plan §30.1, D97): its pill and heading, then the steps in
  * order, each numbered (the order is the point), with a round photo, its title
@@ -51,7 +50,7 @@ export function ProcessSection({
               key={step.title.en}
               className="grid w-[17.5rem] shrink-0 content-start justify-items-center gap-5 rounded-card bg-mist p-6 pb-8 text-center sm:w-[20rem]"
             >
-              <span className="justify-self-start text-title font-light text-ink-2 tabular-nums">{stepNumber(at)}</span>
+              <span className="justify-self-start text-title font-light text-ink-2 tabular-nums">{ordinal(at)}</span>
               <span className="size-36 overflow-hidden rounded-full ring-8 ring-ground">
                 {photo ? (
                   <MediaImage image={photo} sizes="144px" decorative className="size-full object-cover" />

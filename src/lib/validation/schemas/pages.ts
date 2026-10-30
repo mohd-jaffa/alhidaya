@@ -31,7 +31,6 @@ const fact = z.object({
 const pictured = z.object({ image: imageRefSchema.nullable(), text: shortText("Words on the photo") });
 /** Home's hero left empty (D97): what every other page's sign holds in its place. */
 export const NO_HERO = {
-  highlight: { en: null },
   avatars: [],
   chips: [],
   card: { title: { en: null }, tag: { en: null }, image: null },
@@ -53,8 +52,9 @@ const SECTION_CONTENT = {
     headline: localized(requiredLine("Headline", { max: TEXT_LIMITS.heading })),
     lede: shortText("Supporting line"),
     image: imageRefSchema.nullable(),
-    // Home's hero only (D97): the words on a highlight, faces, chips over the photo, its two cards and a fact.
-    highlight: localized(optionalLine("Highlighted words", TEXT_LIMITS.heading)).default(NO_HERO.highlight),
+    // Words of the headline on the pale-green highlight, on any page's sign (D97, D109).
+    highlight: localized(optionalLine("Highlighted words", TEXT_LIMITS.heading)).default({ en: null }),
+    // Home's hero only (D97): faces, chips over the photo, its two cards and a fact.
     avatars: faces(LIST_LIMITS.avatars).default(NO_HERO.avatars),
     chips: z
       .array(localized(requiredLine("Chip", { max: TEXT_LIMITS.chip })))

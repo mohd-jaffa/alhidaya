@@ -32,7 +32,7 @@ export function StaticMap({ pin, office }: { pin: { lat: number; lon: number } |
       <div
         role="img"
         aria-label={at ? UI_TEXT.mapWithOffice(office) : UI_TEXT.mapLabel}
-        className="relative aspect-[3/2] overflow-hidden rounded-panel border border-rule bg-mist"
+        className="relative aspect-[3/2] overflow-hidden rounded-card bg-mist"
       >
         <svg
           viewBox={`0 0 ${MAP.width} ${MAP.height}`}
@@ -51,7 +51,7 @@ export function StaticMap({ pin, office }: { pin: { lat: number; lon: number } |
           ))}
           <path
             d={landmark.outline}
-            className="fill-sky/25 stroke-sky"
+            className="fill-leaf/25 stroke-leaf"
             strokeWidth={2}
             vectorEffect="non-scaling-stroke"
           />
@@ -80,12 +80,12 @@ export function StaticMap({ pin, office }: { pin: { lat: number; lon: number } |
           {at ? (
             <>
               <span
-                className="absolute size-(--line-station) -translate-x-1/2 -translate-y-1/2 rounded-full border-(length:--line-width) border-navy bg-ground shadow-raised"
+                className="absolute size-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-forest ring-4 ring-ground shadow-float"
                 style={{ left: percent(at.x), top: percent(at.y) }}
               />
               <span
-                className="absolute -translate-y-1/2 rounded-tag bg-ground px-2 py-1 text-small font-semibold whitespace-nowrap text-navy shadow-raised"
-                style={{ left: `calc(${percent(at.x)} + var(--line-station))`, top: percent(at.y) }}
+                className="absolute -translate-y-1/2 rounded-pill bg-ground px-3 py-1 text-small font-medium whitespace-nowrap text-navy shadow-float"
+                style={{ left: `calc(${percent(at.x)} + 1.125rem)`, top: percent(at.y) }}
               >
                 {office}
               </span>

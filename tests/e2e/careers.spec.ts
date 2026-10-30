@@ -43,9 +43,7 @@ test.afterAll(async () => {
   await closeDb();
 });
 
-test("Careers lists the open jobs on the nurses' line, offers a general application, and passes axe", async ({
-  page,
-}) => {
+test("Careers lists the open jobs as cards, offers a general application, and passes axe", async ({ page }) => {
   await page.goto(ROUTES.careers);
   await expect(page).toHaveTitle(new RegExp(`^${PAGE_NAMES.CAREERS} · `));
   await expect(page.getByRole("heading", { level: 1, name: careersHeadline() })).toBeVisible();
@@ -60,7 +58,7 @@ test("Careers lists the open jobs on the nurses' line, offers a general applicat
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
-test("an open job shows in full on its leaf-green sign, with Apply and its posting for search engines", async ({
+test("an open job shows in full under Careers' pill, with Apply and its posting for search engines", async ({
   page,
 }) => {
   await page.goto(ROUTES.careers);
@@ -87,8 +85,9 @@ test("a closed job stays reachable, says so, takes no application and stays out 
   expect(answer?.status()).toBe(200);
   await expect(page.getByRole("status").filter({ hasText: UI_TEXT.jobClosed })).toBeVisible();
   await expect(page.getByRole("link", { name: UI_TEXT.applyForJob })).toHaveCount(0);
-  await expect(page.locator("#line").getByRole("link", { name: UI_TEXT.generalApplication })).toBeVisible();
-  await expect(page.locator("#line").getByRole("link", { name: JOB.title.en })).toBeVisible();
+  await expect(page.locator("#start").getByRole("link", { name: UI_TEXT.generalApplication })).toBeVisible();
+  const more = page.getByRole("region", { name: UI_TEXT.otherOpenJobs });
+  await expect(more.getByRole("link", { name: JOB.title.en })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   expect(await structuredData(page)).not.toContain("JobPosting");
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);

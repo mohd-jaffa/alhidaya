@@ -6,18 +6,13 @@ import type { PictogramName } from "@/assets/brand/pictograms";
 import { Pictogram } from "./pictogram";
 
 /**
- * The site's actions (plan §30.3): one primary per view; the line actions
- * wear their line's colour (sky and leaf carry navy text, D35). They look
- * like actions, never decoration, and press in by transform alone.
+ * The admin's actions (plan §30.3; the site's are pills since D97): one
+ * primary per view. They look like actions, never decoration, and press in
+ * by transform alone.
  */
 const VARIANTS = {
   primary: "bg-deep text-on-deep hover:bg-navy",
   secondary: "border-2 border-navy bg-ground text-navy hover:bg-mist",
-  sky: "bg-sky text-navy hover:ring-2 hover:ring-navy hover:ring-inset",
-  leaf: "bg-leaf text-navy hover:ring-2 hover:ring-navy hover:ring-inset",
-  /** On a deep-blue sign: the main action in white, a second one outlined. */
-  onDeep: "bg-ground text-navy hover:bg-mist focus-visible:outline-focus-on-deep",
-  onDeepQuiet: "border-2 border-on-deep text-on-deep hover:bg-on-deep/10 focus-visible:outline-focus-on-deep",
   /** The admin's lesser actions beside a main one (R6.3): words in deep blue, no frame. */
   quiet: "text-deep hover:bg-mist",
 } as const;

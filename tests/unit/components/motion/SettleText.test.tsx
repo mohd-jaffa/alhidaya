@@ -32,4 +32,12 @@ describe("SettleText (D97)", () => {
     rerender(<SettleText text="Quality nursing care at your doorstep" highlight="hospital" />);
     expect(container.querySelector(".bg-leaf-pale")).toBeNull();
   });
+
+  it("keeps a comma just after the highlight as text, so a line never breaks before it", () => {
+    const { container } = render(<SettleText text="Care at home, and nurses" highlight="Care at home" />);
+    const after = container.querySelector(".bg-leaf-pale")?.nextSibling;
+    expect(after?.nodeType).toBe(Node.TEXT_NODE);
+    expect(after?.textContent).toBe(",");
+    expect(container.querySelectorAll(".settle-letter")).toHaveLength("Careathomeandnurses".length);
+  });
 });

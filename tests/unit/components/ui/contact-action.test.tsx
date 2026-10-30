@@ -5,14 +5,15 @@ import { ContactAction } from "@/components/ui/contact-action";
 import { UI_TEXT } from "@/constants/messages";
 
 describe("ContactAction", () => {
-  it("opens WhatsApp with the first line written, under the site's chat pictogram (plan D66)", () => {
-    render(<ContactAction kind="whatsapp" to="+97431306555" variant="sky" size="lg" className="w-full" />);
+  it("opens WhatsApp with the first line written, as a round action with an arrow (D97)", () => {
+    render(<ContactAction kind="whatsapp" to="+97431306555" variant="pale" size="lg" arrow className="w-full" />);
     const link = screen.getByRole("link", { name: UI_TEXT.whatsapp });
     expect(link.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/97431306555\?text=Hello/);
-    expect(link).toHaveClass("bg-sky", "w-full", "min-h-14");
+    expect(link).toHaveClass("bg-leaf-pale", "rounded-pill", "w-full", "min-h-13");
+    expect(link.querySelector("svg")).toBeInTheDocument();
   });
 
-  it("calls and emails", () => {
+  it("calls and emails, forest unless told otherwise, with no arrow", () => {
     render(
       <>
         <ContactAction kind="call" to="+97431306555" />
@@ -20,6 +21,8 @@ describe("ContactAction", () => {
       </>,
     );
     expect(screen.getByRole("link", { name: UI_TEXT.call })).toHaveAttribute("href", "tel:+97431306555");
+    expect(screen.getByRole("link", { name: UI_TEXT.call })).toHaveClass("bg-forest");
+    expect(screen.getByRole("link", { name: UI_TEXT.call }).querySelector("svg")).toBeNull();
     expect(screen.getByRole("link", { name: UI_TEXT.email })).toHaveAttribute("href", "mailto:info@alhidaya.qa");
   });
 });

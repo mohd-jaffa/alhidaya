@@ -1,77 +1,67 @@
-import { ButtonLink } from "@/components/ui/button";
 import { ContactAction } from "@/components/ui/contact-action";
-import { ImageFrame } from "@/components/ui/frames";
-import { LineRow } from "@/components/ui/line-row";
-import { LineStart } from "@/components/ui/line-start";
-import { MediaImage } from "@/components/ui/media-image";
-import { SignPanel } from "@/components/ui/sign-panel";
-import type { SiteImage } from "@/features/media/types";
-import { UI_TEXT } from "@/constants/messages";
+import { PillLink } from "@/components/ui/pill";
+import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
+import type { PageKey } from "@/constants/sections";
+import type { SiteImage } from "@/features/media/types";
 import type { Section, SiteDocument } from "@/lib/validation";
+
+import { PageHero } from "./PageHero";
 
 type SignContent = Extract<Section, { type: "SIGN" }>["content"];
 
 /**
- * The three lines (plan §6.1, D9, D71) from where the visitor stands: care at
- * home with WhatsApp and a call, staffing with a quote, nurses with Careers.
- * Their names, actions and colours are fixed; the numbers are the site's.
+ * What a page's opening offers beside WhatsApp (D109), fixed like Home's: a
+ * quote where families and institutions read about the company, a call on
+ * Contact. Careers, the quote page and the legal pages lead on with what
+ * follows them instead.
  */
-export function HomeLines({ site }: { site: SiteDocument | null }) {
-  return (
-    <LineStart>
-      <LineRow tone="sky" pictogram="careAtHome" title={UI_TEXT.lineCareAtHome}>
-        {site ? (
-          <>
-            <ContactAction kind="whatsapp" to={site.contact.whatsapp} variant="sky" />
-            <ContactAction kind="call" to={site.contact.phone} variant="sky" />
-          </>
-        ) : null}
-      </LineRow>
-      <LineRow tone="deep" pictogram="staffing" title={UI_TEXT.lineStaffing}>
-        <ButtonLink href={ROUTES.quote}>{UI_TEXT.requestQuote}</ButtonLink>
-      </LineRow>
-      <LineRow tone="leaf" pictogram="careers" title={UI_TEXT.lineCareers}>
-        <ButtonLink href={ROUTES.careers} variant="leaf">
-          {UI_TEXT.careers}
-        </ButtonLink>
-      </LineRow>
-    </LineStart>
-  );
-}
+const SECOND_ACTION: Partial<Record<PageKey, "quote" | "call">> = {
+  ABOUT: "quote",
+  SERVICES: "quote",
+  CONTACT: "call",
+};
 
 /**
- * The sign a page opens with (plan §6, §7.2): its headline, supporting line
- * and photo, the photo fetched first as the page's largest paint. On Home the
- * three lines follow it.
+ * The sign every page but Home opens with (plan §6, §7.2, D109): the page's
+ * name on its pill, the admin's headline, highlight, supporting line and
+ * photo, and the page's ways to reach the company.
  */
 export function SignSection({
+  page,
   anchor,
   content,
   image,
   site,
-  withLines = false,
 }: {
+  page: Exclude<PageKey, "HOME">;
   anchor: string;
   content: SignContent;
   image: SiteImage | null;
   site: SiteDocument | null;
-  withLines?: boolean;
 }) {
+  const second = SECOND_ACTION[page];
   return (
-    <div id={anchor} className="mx-auto grid w-full max-w-site gap-12 px-gutter">
-      <SignPanel
-        headline={content.headline.en}
-        lede={content.lede.en}
-        media={
-          image ? (
-            <ImageFrame ratio="landscape">
-              <MediaImage image={image} sizes="(min-width: 78rem) 34rem, (min-width: 64rem) 40vw, 100vw" priority />
-            </ImageFrame>
-          ) : null
-        }
-      />
-      {withLines ? <HomeLines site={site} /> : null}
-    </div>
+    <PageHero
+      anchor={anchor}
+      label={PAGE_NAMES[page]}
+      headline={content.headline.en}
+      highlight={content.highlight.en}
+      lede={content.lede.en}
+      image={image}
+    >
+      {second && site ? (
+        <>
+          <ContactAction kind="whatsapp" to={site.contact.whatsapp} size="lg" arrow />
+          {second === "quote" ? (
+            <PillLink href={ROUTES.quote} variant="pale" size="lg">
+              {UI_TEXT.requestQuote}
+            </PillLink>
+          ) : (
+            <ContactAction kind="call" to={site.contact.phone} variant="pale" size="lg" />
+          )}
+        </>
+      ) : null}
+    </PageHero>
   );
 }

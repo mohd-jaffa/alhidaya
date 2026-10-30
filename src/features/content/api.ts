@@ -46,11 +46,10 @@ export const getPublishedPage = cache(
   },
 );
 
-/** The photos a page's sections hold. */
 /** Every photo a page's sections name, at any depth: a photo, a card's, a group of faces, a step's (D97). */
 const sectionImageIds = (document: PageDocument): string[] => [...mediaIds(document.sections)];
 
-/** The images a page's sections show: its photos, its client logos, and the services' photos for families (D102). */
+/** The images a page's sections show: its photos, its client logos, and the services' photos where they are shown (D102, D111). */
 function imageIds(
   document: PageDocument,
   clients: SectionData["clients"],
@@ -58,7 +57,10 @@ function imageIds(
 ): string[] {
   const shows = (type: SectionType) => document.sections.some((section) => section.type === type);
   const logos = shows("CLIENTS") ? clients.map((client) => client.published.logo.mediaId) : [];
-  const servicePhotos = shows("FOR_FAMILIES") ? [...mediaIds(services.map((service) => service.published.image))] : [];
+  const servicePhotos =
+    shows("FOR_FAMILIES") || shows("SERVICES_INDEX")
+      ? [...mediaIds(services.map((service) => service.published.image))]
+      : [];
   return [...sectionImageIds(document), ...logos, ...servicePhotos];
 }
 
@@ -125,10 +127,15 @@ export async function getPageMetadata(page: PageKey): Promise<Metadata> {
   };
 }
 
-/** The picture a page shows when it is shared (plan §19): its published sign's headline, or its name before it is published. */
+/**
+ * The picture a page shows when it is shared (plan §19): its published sign's
+ * headline under the page's name (Home's under none), or its name alone before
+ * it is published.
+ */
 export async function getPageShareImage(page: PageKey) {
   const sign = (await getPublishedPage(page))?.sections[0];
-  return renderShareImage({ title: sign?.type === "SIGN" ? sign.content.headline.en : PAGE_NAMES[page] });
+  if (sign?.type !== "SIGN") return renderShareImage({ title: PAGE_NAMES[page] });
+  return renderShareImage({ title: sign.content.headline.en, label: page === "HOME" ? undefined : PAGE_NAMES[page] });
 }
 
 /** The page an admin address names (D88), or a 404 for one that is not a page. */

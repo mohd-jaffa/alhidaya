@@ -14,6 +14,8 @@ const TONES = {
 const SIZES = {
   /** Set inline in a heading or a statement, as tall as its words. */
   inline: { box: "size-[1.05em] align-[-0.12em] mx-[0.12em]", icon: "inline" },
+  /** Beside a line of a list: a tick before each thing a service includes. */
+  sm: { box: "size-7", icon: "xs" },
   md: { box: "size-11", icon: "sm" },
   lg: { box: "size-14", icon: "md" },
 } as const;

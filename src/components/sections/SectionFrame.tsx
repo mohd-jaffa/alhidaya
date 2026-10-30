@@ -34,10 +34,10 @@ export function SectionFrame({
   );
 }
 
-/** A section's heading, at the size of a page's. */
+/** A section's heading (D97): large and light, as the reference sets them. */
 export function SectionHeading({ anchor, children }: { anchor: string; children: ReactNode }) {
   return (
-    <h2 id={headingId(anchor)} className="text-page font-bold">
+    <h2 id={headingId(anchor)} className="text-display font-normal text-balance">
       {children}
     </h2>
   );

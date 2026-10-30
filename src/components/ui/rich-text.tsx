@@ -17,7 +17,7 @@ export function RichText({ blocks, headingLevel = "h2" }: { blocks: RichTextBloc
         switch (block.type) {
           case "heading":
             return (
-              <Heading key={key} className="pt-4 text-section font-bold">
+              <Heading key={key} className="pt-4 text-section font-medium">
                 {block.text.en}
               </Heading>
             );
@@ -29,7 +29,7 @@ export function RichText({ blocks, headingLevel = "h2" }: { blocks: RichTextBloc
             );
           case "list":
             return (
-              <ul key={key} className="grid list-disc gap-2 ps-6 marker:text-deep">
+              <ul key={key} className="grid list-disc gap-2 ps-6 marker:text-forest">
                 {block.items.map((item, itemIndex) => (
                   <li key={`${key}-${itemIndex}`}>{item.en}</li>
                 ))}

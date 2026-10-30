@@ -173,18 +173,17 @@ export async function getJobMetadata(slug: string, at: Date = new Date()): Promi
   };
 }
 
-/** A job's share picture (plan §19): its title on the nurses' leaf-green sign; Careers' own for an address it does not have. */
+/** A job's share picture (plan §19): its title under Careers; Careers' own for an address it does not have. */
 export async function getJobShareImage(slug: string) {
   const found = await findPublishedJob(slug);
-  return renderShareImage({
-    title: found && "record" in found ? found.record.published.title.en : PAGE_NAMES.CAREERS,
-    tone: "leaf",
-  });
+  return found && "record" in found
+    ? renderShareImage({ title: found.record.published.title.en, label: PAGE_NAMES.CAREERS })
+    : renderShareImage({ title: PAGE_NAMES.CAREERS });
 }
 
-/** The general application's share picture (plan §19, Q7): its headline on the nurses' leaf-green sign. */
+/** The general application's share picture (plan §19, Q7): its headline under Careers. */
 export function getGeneralApplicationShareImage() {
-  return renderShareImage({ title: UI_TEXT.generalApplicationHeadline, tone: "leaf" });
+  return renderShareImage({ title: UI_TEXT.generalApplicationHeadline, label: PAGE_NAMES.CAREERS });
 }
 
 /** A job in the admin's list (D92): what its row says, and where it stands on the site. */

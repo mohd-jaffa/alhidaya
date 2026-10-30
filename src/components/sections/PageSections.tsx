@@ -42,17 +42,29 @@ function SectionFor({
   const image = (ref: { mediaId: string } | null) => (ref ? (data.images.get(ref.mediaId) ?? null) : null);
   switch (section.type) {
     case "SIGN":
-      // Home opens with its hero (D97); every other page with its sign, until R6B.4 redraws it.
+      // Home opens with its hero (D97); every other page with the hero's smaller sign (D109).
       return page === "HOME" ? (
         <HeroSection anchor={anchor} content={section.content} image={image} site={data.site} />
       ) : (
-        <SignSection anchor={anchor} content={section.content} image={image(section.content.image)} site={data.site} />
+        <SignSection
+          page={page}
+          anchor={anchor}
+          content={section.content}
+          image={image(section.content.image)}
+          site={data.site}
+        />
       );
     case "INTRO":
       return <IntroSection anchor={anchor} content={section.content} image={image(section.content.image)} />;
     case "SERVICES_INDEX":
       return (
-        <ServicesIndexSection anchor={anchor} content={section.content} services={data.services} site={data.site} />
+        <ServicesIndexSection
+          anchor={anchor}
+          content={section.content}
+          services={data.services}
+          site={data.site}
+          image={image}
+        />
       );
     case "VALUES":
       return <ValuesSection anchor={anchor} content={section.content} />;

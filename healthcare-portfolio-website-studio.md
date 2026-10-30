@@ -190,6 +190,10 @@ question (§41) the user may overturn.
 | D106 | **The footer's running words read "AL HIDAYA HEALTH CARE"** (the user's choice), editable in Settings. | 2026-10-30 |
 | D107 | **The header is not pinned** (the user, 2026-10-30: "no need of the bar shown during scrolling"; recommended layout): the logo, About, Services, Careers, Contact in a light row, and the forest "Request a quote" pill; it scrolls away with the page. The phone moves to the page and the floating WhatsApp button. | 2026-10-30 |
 | D108 | **Inter Tight** (the user, recommended), a grotesk like the reference's, self-hosted, replaces Atkinson Hyperlegible Next (D61). | 2026-10-30 |
+| D109 | **The other pages open like Home's hero, smaller** (the user, 2026-10-30, recommended; R6B.4): the page's name on a pale pill (left out where the headline says it), the headline settling into its words with a phrase on the pale-green highlight (now editable on every page's sign), the supporting line, the page's own actions as pills, and a tall rounded photo beside it (under it on a phone); a page with no photo shows its words alone. About and Services offer WhatsApp and a quote, Contact WhatsApp and a call; a service its audience's actions; a job Apply. | 2026-10-30 |
+| D110 | **About, Services, Careers and Contact open with a photo from the licensed stock already in the project** (the user, recommended): seeded, each replaceable in the admin; never captioned as Al Hidaya's staff (D8). | 2026-10-30 |
+| D111 | **Services sets out its services as photo cards by audience** (the user, recommended): "For families" and "For hospitals, clinics & schools", each under its pill with its actions (WhatsApp and a call; a quote), each service a mist card with its photo, name and summary, opening its page; a service's page ends on the others for its audience, the same way. | 2026-10-30 |
+| D112 | **Each page keeps its own sections** (the user, recommended): Home's new sections (statement, highlights, how it works, the audiences) stay Home's; the other pages' sections (who we are, mission, values, clients, the services, the jobs, the contact details and band, the admin's text) are redrawn in the new look and motion, with nothing new to edit. | 2026-10-30 |
 
 ## 3. Audiences and the admin
 
@@ -314,23 +318,26 @@ content from the record.
 
 ### 6.1 Home — `/`
 
-1. **The sign** (fixed, first): the headline, standing alone, the
-   supporting line, and **the three lines**, starting from a "You are here"
-   station (D68), their names and actions fixed (D71): *Care at home* (WhatsApp, Call),
-   *Staffing for hospitals, clinics and schools* (Request a Quote), and
-   *Nurses: join us* (Careers). These are the working actions, not links to
-   them (§30.1).
-2. **Who we are**: a short introduction from the About content.
-3. **Services**: every published service as a stop on its line (§8).
-4. **Why Al Hidaya**: the company's own values and promises: care at home
-   at less than a hospital stay, nurses around the clock, care plans fitted to
-   needs and budget, compassion and dignity (PRODUCT.md, Positioning).
-5. **For institutions**: the staffing offer for hospitals, clinics and
-   schools, ending on Request a Quote.
-6. **Clients**: the client logo wall (§11). Hidden until logos are supplied.
-7. **Careers**: the nurse's line, the three most recent open jobs and a link
-   to all of them (D72), Apply.
-8. **Contact**: WhatsApp, phone, email, address, the brochure.
+In the reference's order (D97, §30.1):
+
+1. **The hero** (fixed, first): nurse faces between round brackets, the
+   headline with one phrase on the highlight, the supporting line, WhatsApp
+   and Request a Quote (fixed), and a real fact (D99); beside it a tall care
+   photo with word chips and two floating cards.
+2. **The statement**: one sentence darkening word by word with the scroll.
+3. **The highlights**: four cards.
+4. **For hospitals, clinics & schools** (D105): the staffing offer, its
+   cards and real-fact counters.
+5. **For families** (D105): the services sliding in a card (D102), a photo
+   and feature cards.
+6. **How it works**: four steps, held sideways on a wide screen.
+7. **The Contact form** (D104).
+8. **Clients**: the client logo wall (§11). Hidden until logos are supplied.
+
+Home's earlier sections (who we are, the services, values, the staffing
+offer, careers with the three most recent open jobs (D72), the contact band)
+stay in its catalogue (§7.1), redrawn in the new look (D112), for the admin
+to add.
 
 ### 6.2 About — `/about`
 
@@ -339,15 +346,17 @@ clients; the contact section.
 
 ### 6.3 Services — `/services`
 
-Page sign; the full services index (§8), each service on its audience's line;
-the institutions section; the contact section.
+Page sign; the full services index (§8), each service a photo card under its
+audience's pill with that audience's actions (D111); the institutions section;
+the contact section.
 
 ### 6.4 A service — `/services/[slug]`
 
-The service's sign in its line's colour; who it is for; the description;
-**what the care includes**; related services on the same line; the line's
-actions (WhatsApp and Call for families; Request a Quote for institutions,
-with the service preselected).
+The service's opening under its audience's pill, with its photo (D109); who
+it is for; the description; **what the care includes**; the other services
+for the same audience as photo cards (D111); the audience's actions (WhatsApp
+and Call for families; Request a Quote for institutions, with the service
+preselected).
 
 ### 6.5 Careers — `/careers`
 
@@ -361,7 +370,7 @@ and offers the general application.
 
 Title, location, employment type, experience, description,
 responsibilities, qualifications, optional benefits, posted and closing dates,
-**Apply**, on the nurses' leaf-green sign. A closed job stays reachable and
+**Apply**, under Careers' pill (D109). A closed job stays reachable and
 says it is closed, offering the open jobs and the general application; it
 carries `noindex` and no `JobPosting`. Structured data `JobPosting` for an
 open job (§19).
@@ -408,7 +417,7 @@ says where the visitor is and the way back.
 
 | Type | Content | Used on |
 |---|---|---|
-| `SIGN` | headline, supporting line, photo; on Home it is the hero (D97): the highlighted words, faces, up to three word chips over the photo, a card with a photo and its tag, a note with an icon, and a real fact (D99), with WhatsApp and the quote fixed | every page (fixed, first) |
+| `SIGN` | headline, the highlighted words (D109), supporting line, photo; on Home it is the hero (D97): faces, up to three word chips over the photo, a card with a photo and its tag, a note with an icon, and a real fact (D99), with WhatsApp and the quote fixed; on every other page the hero's smaller opening (D109), the page's name and actions fixed | every page (fixed, first) |
 | `INTRO` | heading, rich text, optional photo | Home, About |
 | `SERVICES_INDEX` | heading, intro; shows every published service, in order | Home, Services |
 | `VALUES` | heading, up to six items (title, line) | Home, About |
@@ -433,7 +442,7 @@ never HTML; links must be internal routes or validated `https` URLs.
 ## 8. Services
 
 A **service** has: name; slug; **audience** (`FAMILIES` or `INSTITUTIONS`,
-which sets its line, D31); short description; full description; **what's
+which sets its actions and its group on Services, D31, D111); short description; full description; **what's
 included** (a list); who it's for (a line); photo and alt text; SEO title and
 description; status (`DRAFT`, `PUBLISHED`, `ARCHIVED`); sort order; timestamps;
 and its **previous slugs** (each answers with a 301 to the current one).
@@ -1149,6 +1158,20 @@ the footer's words run with the scroll. Nothing moves on its own (WCAG
 2.2.2): every movement follows the scroll or arrives once. Reduced motion
 shows everything in place.
 
+**The other pages (D109 – D112).** Each opens like Home's hero, smaller: the
+page's name on a pale pill, the headline settling into its words with a phrase
+on the highlight, the supporting line and the page's own actions as pills,
+beside a tall rounded photo (licensed stock until the client's own, D110).
+Their sections keep their content and take the same language: headings large
+and light; mist cards with soft radii for the values (numbered like the
+steps), the mission (on forest) and vision, the job cards, the ways to reach
+the company and the services (photo cards by audience, D111); the staffing
+offer as one card with its photo; the contact band on forest; the forms as
+lines on a mist panel with the forest send pill, as the reference draws its
+form. A service's and a job's pages and the application follow the same
+opening; the system pages say what happened in the same type, with the ways
+on as pale pills. Cards rise in one after another as they arrive.
+
 **The header** is not pinned (D107), and **no rail** runs down any page (D101).
 
 *Superseded:* "Follow the Line" (D36, 2026-10-28), the hospital wayfinding
@@ -1166,10 +1189,11 @@ system with its coloured lines, stations and "You are here", built in Phases
   on deep blue 6.1:1; navy on sky blue 5.4:1 and on leaf green 6.1:1; the
   secondary ink 8.0:1 on white; the error red 6.6:1 on white. Focus rings are deep blue on light surfaces
   and white on deep blue (each at least 3:1).
-- **Type roles** (`src/app/globals.css`): sign 38 – 68 px, page 32 – 44 px,
-  section 28 px, title and supporting line 21 px, body 17 px, small and label
-  14 px. Radii 6 px (panels, controls) and 4 px (tags); the line 6 px wide,
-  stations 22 px; durations 120, 200 and 640 ms; an exponential ease-out.
+- **Type roles** (`src/app/globals.css`): section 28 px, title and
+  supporting line 21 px, body 17 px, small and label 14 px (the sign's and the
+  page's sizes, and the line's width and stations, retired with the line in
+  R6B.4). Radii 6 px (the admin's panels and controls) and 4 px (tags);
+  durations 120, 200 and 640 ms; an exponential ease-out.
 - **The redesign's tokens (Phase 6B, D98):** forest `#3B6B24` with white
   (6.3:1) and its hover `#2F581C`; on forest, white and `#E3EED6`; the pale
   leaf `#EEF5E2` carrying forest (5.7:1) or navy text; a quiet grey `#7D8AA0`
@@ -1221,24 +1245,24 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 ### 30.5 The admin's look
 
 The same tokens, type and pictograms, quieter: Operate mode, dense where it
-helps, the line only as navigation state. Shaped with `/impeccable shape` (R6.1,
-brought forward, D80) as **the day's log** (D81): a navy rail that is the line,
-each section a station, the current one the white "You are here" station, what
-waits in a sky count; on a phone a navy bar naming the section, with the rail as
-a menu. The work area is white; a list is ruled by day with times in even
+helps. Shaped with `/impeccable shape` (R6.1, brought forward, D80) as **the
+day's log** (D81): a navy column listing its sections, the current one marked,
+what waits in a sky count (a plain list since D101, without the line and its
+stations); on a phone a navy bar naming the section, with the list as a
+menu. The work area is white; a list is ruled by day with times in even
 figures; a row opens in place on mist. Deep blue for actions and "New", sky for
 in progress, leaf for resolved, the error red only for failures. Fixed type
 sizes (28 px headings), no smooth scroll, motion only for state. The sign-in
-screens share the rail's navy beside a plain form.
+screens share the column's navy beside a plain form.
 
 ### 30.6 The static map
 
 An authored SVG of the streets around Retaj Building, Al Sadd (near Asmakh
-Mall), drawn in the line system with a "You are here" station, built from
+Mall), on a mist card with the office as a forest dot (R6B.4), built from
 OpenStreetMap data with its attribution, plus **Open in Google Maps** (D34).
 No map scripts, no cookies. `scripts/make-map.mts` makes it (a 900 × 600 m
-frame centred on Asmakh Mall, the landmark); the office is a navy station at
-the spot set in the site content (D74).
+frame centred on Asmakh Mall, the landmark); the office is marked at the spot
+set in the site content (D74).
 
 ## 31. Performance budgets
 
@@ -1494,7 +1518,7 @@ one commit (D27).
 | R6B.1 | The foundation: the new direction recorded (§30.1, the surface brief); the greens and the display type as tokens (D98); Inter Tight self-hosted (D108); the rail removed from every public page (D101); the header no longer pinned, with the four links and the forest quote pill (D107); the admin's left column a plain list, without its line and station dots (D101) | D97, D98, D101, D107, D108 | — | DONE (2026-10-30) |
 | R6B.2 | Home in the reference's sections (D97, D100): the split hero; the statement; the four highlight cards; "For Hospitals, Clinics & Schools" with its counters (D99, D105); "For Families" with the services sliding in a card (D102, D105); how it works, four steps; the Contact form (D104): each a section type in the Pages editor, seeded, with the new photographs (licensed stock, D8, D75) and their motion | D97, D99, D100, D102, D104, D105 | R6B.1 | DONE (2026-10-30) |
 | R6B.3 | The forest footer with its running words, editable in Settings (D106), and its columns | D106 | R6B.1 | DONE (2026-10-30) |
-| R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | TODO |
+| R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | DONE (2026-10-31; D109 – D112) |
 | R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | TODO |
 
 ### Phase 7 — Performance, accessibility and the finish

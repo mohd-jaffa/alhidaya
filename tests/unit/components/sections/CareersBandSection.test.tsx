@@ -10,7 +10,7 @@ const en = <T,>(value: T) => ({ en: value });
 const job = (slug: string, open = true) => ({ ...publishedFixture(jobFixture({ slug })), open });
 
 describe("CareersBandSection", () => {
-  it("shows the three most recent open jobs on the nurses' line, then the way to all of them", () => {
+  it("shows the three most recent open jobs as cards beside the way to all of them", () => {
     const jobs = [job("one"), job("two"), job("three"), job("four"), job("closed", false)];
     const content = { ...contentFixture("CAREERS_BAND"), text: en("We are looking for registered nurses.") };
     render(<CareersBandSection anchor="careers" content={content} jobs={jobs} />);

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { Audience } from "@/constants/statuses";
 import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
+import { AUDIENCE_LABELS } from "@/constants/statuses";
 import { orderingDocumentKey } from "@/constants/sections";
 import { assertImagesKept, getImages } from "@/features/media/api";
 import type { SiteImage } from "@/features/media/types";
@@ -31,6 +32,7 @@ import {
   saveRecordDraft,
   setRecordArchived,
 } from "@/lib/content/records";
+import { mediaIds } from "@/lib/content/media-ids";
 import type { ContentView } from "@/lib/content/view";
 import { renderShareImage } from "@/lib/seo/share-image";
 import {
@@ -58,8 +60,8 @@ export function findPublishedService(slug: string) {
 
 /**
  * A service's page (plan §6.4), published copies only, in two round trips:
- * the service (or where it moved to), every service for the others on its
- * line, and the site's numbers together; then its photo.
+ * the service (or where it moved to), every service for the others for the
+ * same audience, and the site's numbers together; then their photos.
  */
 export async function getPublishedServicePage(
   slug: string,
@@ -69,7 +71,8 @@ export async function getPublishedServicePage(
       service: PublishedService;
       related: PublishedService[];
       site: SiteDocument | null;
-      image: SiteImage | null;
+      /** The service's photo and its neighbours' (D111). */
+      images: ReadonlyMap<string, SiteImage>;
     }
   | { movedTo: string }
   | null
@@ -81,12 +84,11 @@ export async function getPublishedServicePage(
   ]);
   if (!found || "movedTo" in found) return found;
   const { record: service } = found;
-  const photo = service.published.image?.mediaId;
-  const image = photo ? ((await getImages([photo])).get(photo) ?? null) : null;
   const related = services.filter(
     (other) => other.id !== service.id && other.published.audience === service.published.audience,
   );
-  return { service, related, site, image };
+  const images = await getImages([...mediaIds([service, ...related].map((shown) => shown.published.image))]);
+  return { service, related, site, images };
 }
 
 /** A service page's title and description (plan §19): the admin's SEO words, or the service's own. */
@@ -105,12 +107,12 @@ export async function getServiceMetadata(slug: string): Promise<Metadata> {
   };
 }
 
-/** A service's share picture (plan §19): its name on its line's sign; the services' own for an address it does not have. */
+/** A service's share picture (plan §19): its name under who it is for; the services' own for an address it does not have. */
 export async function getServiceShareImage(slug: string) {
   const found = await findPublishedService(slug);
   if (!found || "movedTo" in found) return renderShareImage({ title: PAGE_NAMES.SERVICES });
   const { name, audience } = found.record.published;
-  return renderShareImage({ title: name.en, tone: audience === "FAMILIES" ? "sky" : "deep" });
+  return renderShareImage({ title: name.en, label: AUDIENCE_LABELS[audience] });
 }
 
 /** A service in the admin's list (D92): what its row says, and where it stands. */

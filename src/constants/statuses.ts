@@ -46,6 +46,11 @@ export type ErrorSource = (typeof ERROR_SOURCES)[number];
 /** Who a service is for, which sets its line on the site (plan §8, D31). */
 export const AUDIENCES = ["FAMILIES", "INSTITUTIONS"] as const;
 export type Audience = (typeof AUDIENCES)[number];
+/** Each audience as the site names it over its services (D105, D111). */
+export const AUDIENCE_LABELS: Record<Audience, string> = {
+  FAMILIES: "For families",
+  INSTITUTIONS: "For hospitals, clinics & schools",
+};
 
 /** A job's terms (plan §9.1). */
 export const EMPLOYMENT_TYPES = ["FULL_TIME", "PART_TIME", "CONTRACT"] as const;

@@ -5,7 +5,7 @@ interface Letter {
   index: number;
 }
 
-/** The text in its pieces: words of letters (each numbered across the whole text), the spaces between, and whether a piece is marked. */
+/** The text in its pieces: words of letters (each numbered across the whole text), the spaces and lone punctuation between, and whether a piece is marked. */
 function pieces(text: string, highlight: string | null | undefined) {
   const at = highlight ? text.indexOf(highlight) : -1;
   const segments: [string, boolean][] =
@@ -22,9 +22,10 @@ function pieces(text: string, highlight: string | null | undefined) {
     .filter(([segment]) => segment)
     .map(([segment, mark]) => ({
       mark,
-      words: segment
-        .split(/(\s+)/)
-        .map((word) => (/^\s*$/.test(word) ? word : [...word].map((letter): Letter => ({ letter, index: next++ })))),
+      words: segment.split(/(\s+)/).map((word) =>
+        // Spaces, and punctuation standing alone (a comma just after the highlight), stay text, so a line never breaks before them.
+        /^\s*$|^\p{P}+$/u.test(word) ? word : [...word].map((letter): Letter => ({ letter, index: next++ })),
+      ),
     }));
   return { total, marked };
 }

@@ -49,9 +49,11 @@ afterAll(async () => {
 });
 
 describe("a service's page, against the local MySQL", () => {
-  it("reads the service with its photo, the site's numbers and the others on its line only", async () => {
+  it("reads the service with the site's numbers, the others for its audience only, and their photos", async () => {
     const home = await published(serviceFixture({ image: { mediaId: photo } }));
-    const elderly = await published(serviceFixture({ name: en("Elderly care"), slug: "elderly-care" }));
+    const elderly = await published(
+      serviceFixture({ name: en("Elderly care"), slug: "elderly-care", image: { mediaId: photo } }),
+    );
     await published(
       serviceFixture({ name: en("School nurse staffing"), slug: "school-nurse-staffing", audience: "INSTITUTIONS" }),
     );
@@ -63,16 +65,15 @@ describe("a service's page, against the local MySQL", () => {
     expect(page.service.id).toBe(home);
     expect(page.related.map((service) => service.id)).toEqual([elderly]);
     expect(page.site?.contact.phone).toBe("+97431306555");
-    expect(page.image?.alt).toBe("A nurse at home");
+    expect(page.images.get(photo)?.alt).toBe("A nurse at home");
 
-    await published(
-      serviceFixture({ name: en("Palliative care"), slug: "palliative-care", image: { mediaId: crypto.randomUUID() } }),
-    );
+    const gone = crypto.randomUUID();
+    await published(serviceFixture({ name: en("Palliative care"), slug: "palliative-care", image: { mediaId: gone } }));
     const photoGone = await getPublishedServicePage("palliative-care");
-    expect(photoGone && "service" in photoGone ? photoGone.image : "missing").toBeNull();
+    expect(photoGone && "service" in photoGone ? photoGone.images.has(gone) : "missing").toBe(false);
 
     const staffing = await getPublishedServicePage("school-nurse-staffing");
-    expect(staffing && "service" in staffing ? [staffing.related, staffing.image] : null).toEqual([[], null]);
+    expect(staffing && "service" in staffing ? [staffing.related, staffing.images.size] : null).toEqual([[], 0]);
   });
 
   it("answers where a renamed service moved to, and nothing for an address it never had", async () => {

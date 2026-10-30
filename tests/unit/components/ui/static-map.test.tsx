@@ -37,12 +37,12 @@ describe("StaticMap", () => {
     expect(container).not.toHaveTextContent("Retaj Building");
   });
 
-  it("marks the office with a station once its spot is set, and only when the spot is on the map", () => {
+  it("marks the office with a forest dot once its spot is set, and only when the spot is on the map", () => {
     const { rerender } = render(<StaticMap pin={centre} office="Retaj Building, Bin Naifaa 80" />);
     const map = screen.getByRole("img", { name: UI_TEXT.mapWithOffice("Retaj Building, Bin Naifaa 80") });
     const office = screen.getByText("Retaj Building, Bin Naifaa 80");
     expect(office).toHaveStyle({ top: "50.00%" });
-    expect(map.querySelector(".border-navy")).toHaveStyle({ left: "50.00%", top: "50.00%" });
+    expect(map.querySelector(".bg-forest")).toHaveStyle({ left: "50.00%", top: "50.00%" });
 
     rerender(<StaticMap pin={{ lat: 25.3, lon: 51.6 }} office="Retaj Building, Bin Naifaa 80" />);
     expect(screen.getByRole("img", { name: UI_TEXT.mapLabel })).toBeInTheDocument();

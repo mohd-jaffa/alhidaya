@@ -22,7 +22,9 @@ test("About tells who the company is, its mission, vision and values, and passes
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
-test("Services lists every service on its line, and passes axe (plan §6.3)", async ({ page }) => {
+test("Services sets out every service as a card by who it is for, and passes axe (plan §6.3, D111)", async ({
+  page,
+}) => {
   await page.goto(ROUTES.services);
   await expect(page.getByRole("heading", { level: 1, name: headline("SERVICES") })).toBeVisible();
   const index = page.getByRole("region", { name: "All services" });
@@ -30,7 +32,7 @@ test("Services lists every service on its line, and passes axe (plan §6.3)", as
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
-test("a family service opens on its sky sign with WhatsApp and a call, and leads on to its line", async ({ page }) => {
+test("a family service opens with its photo, WhatsApp and a call, and leads on to the others", async ({ page }) => {
   await page.goto(ROUTES.services);
   await page.getByRole("region", { name: "All services" }).getByRole("link", { name: "Home nursing care" }).click();
   await expect(page).toHaveURL(ROUTES.service("home-nursing-care"));
@@ -40,8 +42,10 @@ test("a family service opens on its sky sign with WhatsApp and a call, and leads
   await expect(sign.getByRole("heading", { level: 1, name: "Home nursing care" })).toBeVisible();
   await expect(sign.getByRole("link", { name: UI_TEXT.call })).toHaveAttribute("href", "tel:+97431306555");
   await expect(page.getByRole("region", { name: UI_TEXT.aboutService })).toBeVisible();
-  await expect(page.locator("#line").getByRole("link", { name: "Elderly care" })).toBeVisible();
-  await expect(page.locator("#line").getByRole("link", { name: "Home nursing care" })).toHaveCount(0);
+  await expect(sign.getByRole("img")).toBeVisible();
+  const others = page.getByRole("region", { name: UI_TEXT.otherServices });
+  await expect(others.getByRole("link", { name: "Elderly care" })).toBeVisible();
+  await expect(others.getByRole("link", { name: "Home nursing care" })).toHaveCount(0);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 

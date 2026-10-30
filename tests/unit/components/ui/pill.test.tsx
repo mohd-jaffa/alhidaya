@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import { Pill, PillLink, pillClasses } from "@/components/ui/pill";
+import { Pill, PillLink } from "@/components/ui/pill";
 
 describe("the round actions (D97)", () => {
   it("press as buttons, held while pending, in the forest by default", async () => {
@@ -45,9 +45,5 @@ describe("the round actions (D97)", () => {
     expect(whatsapp).toHaveAttribute("target", "_blank");
     expect(whatsapp).toHaveAttribute("rel", "noopener noreferrer");
     expect(screen.getByRole("link", { name: "Call" })).not.toHaveAttribute("target");
-  });
-
-  it("build their classes from the variant and size, keeping a caller's own", () => {
-    expect(pillClasses({ variant: "onForest", size: "lg" }, "w-full")).toMatch(/bg-ground.*min-h-13.*w-full/);
   });
 });

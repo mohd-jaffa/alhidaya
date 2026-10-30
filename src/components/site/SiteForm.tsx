@@ -5,10 +5,11 @@ import { type ReactNode, useId } from "react";
 import type { ZodType } from "zod";
 
 import { BotCheck } from "@/components/ui/bot-check";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/choice";
 import { ContactAction } from "@/components/ui/contact-action";
+import { ControlsLook } from "@/components/ui/field";
 import { Notice } from "@/components/ui/notice";
+import { Pill } from "@/components/ui/pill";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { type FieldErrors, useSchemaForm } from "@/hooks/useSchemaForm";
@@ -23,8 +24,9 @@ function takeFocus(node: HTMLDivElement | null) {
 
 /**
  * What the site's forms share (plan §9.2, §10, §30.3): Quote, Contact and the
- * application. Their fields, the consent to the privacy notice, the trap for
- * bots and Turnstile (§10.3), one send action, and the outcome in place.
+ * application. Their fields, each a line as the reference draws them (D97),
+ * the consent to the privacy notice, the trap for bots and Turnstile (§10.3),
+ * one send action, a forest pill at the form's end, and the outcome in place.
  * Sent, the form gives way to the thanks, which takes focus, with WhatsApp as
  * the fastest follow-up when the form offers it (§10.4); not sent, the reason
  * shows above the action and everything typed stays.
@@ -69,7 +71,7 @@ export function SiteForm({
         <Notice tone="success" title={sent} titleId={sentId}>
           <p>{whatsapp ? `${sentNext} ${UI_TEXT.fasterOnWhatsApp}` : sentNext}</p>
         </Notice>
-        {whatsapp ? <ContactAction kind="whatsapp" to={whatsapp} className="justify-self-start" /> : null}
+        {whatsapp ? <ContactAction kind="whatsapp" to={whatsapp} arrow className="justify-self-start" /> : null}
       </div>
     );
   }
@@ -79,19 +81,21 @@ export function SiteForm({
       <noscript>
         <Notice tone="info" title={UI_TEXT.formNeedsScript} />
       </noscript>
-      {children(errors)}
-      <div aria-hidden="true" className="sr-only">
-        <label>
-          {UI_TEXT.honeypot}
-          <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" defaultValue="" />
-        </label>
-      </div>
-      <Checkbox name="consent" required error={errors.consent}>
-        {UI_TEXT.consent}{" "}
-        <Link href={ROUTES.privacy} target="_blank" className="font-semibold text-deep underline underline-offset-4">
-          {UI_TEXT.privacyNotice}
-        </Link>
-      </Checkbox>
+      <ControlsLook look="line">
+        {children(errors)}
+        <div aria-hidden="true" className="sr-only">
+          <label>
+            {UI_TEXT.honeypot}
+            <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" defaultValue="" />
+          </label>
+        </div>
+        <Checkbox name="consent" required error={errors.consent}>
+          {UI_TEXT.consent}{" "}
+          <Link href={ROUTES.privacy} target="_blank" className="font-medium text-forest underline underline-offset-4">
+            {UI_TEXT.privacyNotice}
+          </Link>
+        </Checkbox>
+      </ControlsLook>
       {/* The send action; Turnstile's box and a failed send's reason take room before it only when shown. */}
       <div className="grid">
         <BotCheck
@@ -114,14 +118,15 @@ export function SiteForm({
             </Notice>
           </div>
         ) : null}
-        <Button
+        <Pill
           type="submit"
           size="lg"
+          arrow
           pending={status === "sending"}
-          className="w-full sm:w-auto sm:justify-self-start"
+          className="w-full sm:w-auto sm:justify-self-end"
         >
           {status === "sending" ? UI_TEXT.sending : action}
-        </Button>
+        </Pill>
       </div>
     </form>
   );

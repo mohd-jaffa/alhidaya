@@ -9,12 +9,6 @@ export const UI_TEXT = {
     "Nursing care at home and in clinics, and nurse staffing for hospitals, clinics and schools, in Doha, Qatar.",
   /** The first line of a WhatsApp chat a visitor starts; they still press send (plan Q14). */
   whatsappPrefill: "Hello Al Hidaya, I would like to ask about nursing care.",
-  /** The line's own words (plan §30.1). */
-  youAreHere: "You are here",
-  /** The three lines' names (plan §6.1, D71): fixed, like their actions and colours. */
-  lineCareAtHome: "Care at home",
-  lineStaffing: "Staffing for hospitals, clinics and schools",
-  lineCareers: "Nurses: join us",
   /** The kit preview page, local and test only (plan D64). */
   kitPreview: "Kit preview",
   /** The ways to reach the company (plan §6.7, D9); WhatsApp keeps the site's chat pictogram (D66). */
@@ -74,6 +68,7 @@ export const UI_TEXT = {
   aboutService: "About this service",
   whoItIsFor: "Who it is for",
   whatItIncludes: "What it includes",
+  otherServices: "Other services",
   /** A job's page (plan §6.6). */
   aboutJob: "About this job",
   responsibilities: "What you will do",

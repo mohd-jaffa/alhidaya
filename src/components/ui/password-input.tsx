@@ -4,7 +4,7 @@ import { type ComponentProps, useState } from "react";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 
-import { CONTROL_CLASSES, useFieldControl } from "./field";
+import { controlClasses, useFieldControl } from "./field";
 import { Pictogram } from "./pictogram";
 
 /**
@@ -25,7 +25,7 @@ export function PasswordInput({ className, ...props }: Omit<ComponentProps<"inpu
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}
-        className={[CONTROL_CLASSES, "pe-14", className].filter(Boolean).join(" ")}
+        className={[controlClasses("box"), "pe-14", className].filter(Boolean).join(" ")}
       />
       <button
         type="button"

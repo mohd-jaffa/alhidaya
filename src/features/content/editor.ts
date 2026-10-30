@@ -76,12 +76,8 @@ const opening: SectionField[] = [
   line("headingEnd", ADMIN_TEXT.headingEnd, TEXT_LIMITS.heading, false),
 ];
 
-/** Home's hero (D97): what the top of Home holds besides a page's sign; no other page shows these. */
+/** Home's hero (D97): what the top of Home holds besides a page's sign (and its highlight, D109); no other page shows these. */
 export const HERO_FIELDS: readonly SectionField[] = [
-  {
-    ...line("highlight", ADMIN_TEXT.highlight, TEXT_LIMITS.heading, false),
-    hint: ADMIN_TEXT.highlightHint,
-  } as SectionField,
   faces(LIST_LIMITS.avatars),
   {
     kind: "list",
@@ -105,6 +101,10 @@ export const HERO_FIELDS: readonly SectionField[] = [
 export const SECTION_FIELDS: Record<SectionType, readonly SectionField[]> = {
   SIGN: [
     line("headline", ADMIN_TEXT.headline, TEXT_LIMITS.heading),
+    {
+      ...line("highlight", ADMIN_TEXT.highlight, TEXT_LIMITS.heading, false),
+      hint: ADMIN_TEXT.highlightHint,
+    } as SectionField,
     lines("lede", ADMIN_TEXT.lede, TEXT_LIMITS.lede),
     photo,
   ],

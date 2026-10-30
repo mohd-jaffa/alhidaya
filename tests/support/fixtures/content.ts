@@ -14,7 +14,13 @@ import {
 const en = <T>(value: T) => ({ en: value });
 
 const CONTENT: Record<SectionType, Section["content"]> = {
-  SIGN: { headline: en("Nursing care, at your doorstep"), lede: en(null), image: null, ...NO_HERO },
+  SIGN: {
+    headline: en("Nursing care, at your doorstep"),
+    highlight: en(null),
+    lede: en(null),
+    image: null,
+    ...NO_HERO,
+  },
   INTRO: {
     heading: en("Who we are"),
     body: [{ type: "paragraph", text: en("A nursing company in Doha.") }],

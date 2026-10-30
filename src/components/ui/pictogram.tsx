@@ -2,6 +2,8 @@ import { DIRECTIONAL_PICTOGRAMS, PICTOGRAMS, type PictogramName } from "@/assets
 
 /** The sizes a pictogram is drawn at: inline with text, beside a control, on a line, on a sign. */
 const SIZES = {
+  /** In a small chip beside a line of a list (D97). */
+  xs: "size-3.5",
   sm: "size-5",
   md: "size-6",
   lg: "size-10",

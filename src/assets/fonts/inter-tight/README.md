@@ -21,10 +21,10 @@ matched Arial. The Arabic companion is added here when Arabic arrives (plan
 
 ## For share images
 
-`share/` holds the regular (400) and bold (700) weights as WOFF, Latin
-subset, 28 KB each, for the pictures a page shows when it is shared (plan
-§19): the image renderer reads WOFF but not WOFF2. They are never sent to a
-visitor's browser.
+`share/` holds the regular (400) weight as WOFF, Latin subset, 28 KB, for
+the pictures a page shows when it is shared (plan §19, drawn light like the
+site's headings since Phase 6B): the image renderer reads WOFF but not
+WOFF2. It is never sent to a visitor's browser.
 
 - **From:** `@fontsource/inter-tight` 5.3.0 on npm (tarball SHA-256
   `827a0047a91fceff9f13dda2e7ffa4cbf20d4487179923ce6e2008ee81c207ef`), same

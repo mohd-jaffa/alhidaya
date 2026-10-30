@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/motion/Reveal";
 import { LogoTile } from "@/components/ui/frames";
 import { MediaImage } from "@/components/ui/media-image";
 import type { PublishedClient } from "@/features/clients/api";
@@ -38,7 +39,9 @@ export function ClientsSection({
 
   return (
     <SectionFrame anchor={anchor} className="grid gap-10">
-      <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
+      <Reveal>
+        <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
+      </Reveal>
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {shown.map(({ client, id, logo }) => {
           const tile = (
@@ -49,7 +52,7 @@ export function ClientsSection({
           return (
             <li key={id}>
               {client.url ? (
-                <a href={client.url} target="_blank" rel="noopener noreferrer" className="block rounded-panel">
+                <a href={client.url} target="_blank" rel="noopener noreferrer" className="block rounded-card">
                   {tile}
                 </a>
               ) : (

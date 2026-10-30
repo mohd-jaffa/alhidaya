@@ -181,8 +181,9 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
       sections: [
         sign({
           headline: en("Nursing care with compassion and dignity"),
+          highlight: en("compassion and dignity"),
           lede: en("A nursing care company in Doha, caring for patients at home and supplying nurses to institutions."),
-          image: null,
+          image: photos.careAtHome,
         }),
         section("INTRO", {
           heading: en("Who we are"),
@@ -230,8 +231,9 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
       sections: [
         sign({
           headline: en("Care at home, and nurses for institutions"),
+          highlight: en("Care at home"),
           lede: en("Nursing care for families across Doha, and nurse staffing for hospitals, clinics and schools."),
-          image: null,
+          image: photos.wardNurse,
         }),
         section("SERVICES_INDEX", { heading: en("All services"), intro: en(null) }),
         institutions(photos.hospitalCorridor),
@@ -243,8 +245,9 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
       sections: [
         sign({
           headline: en("Nursing careers in Doha"),
+          highlight: en("careers"),
           lede: en("Join a team that cares for patients at home across Doha."),
-          image: null,
+          image: photos.nursesTalking,
         }),
         section("JOBS_LIST", {
           intro: en("Each opening lists what it asks for. If none fits, you can send us a general application."),
@@ -269,8 +272,9 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
       sections: [
         sign({
           headline: en("We are here day and night"),
+          highlight: en("day and night"),
           lede: en("Message us on WhatsApp, call, email, or visit our office in Al Sadd."),
-          image: null,
+          image: photos.onThePhone,
         }),
         section("CONTACT_DETAILS", { heading: en("Reach us") }),
         section("FORM", { heading: en("Send us a message"), text: en(null), form: "CONTACT" }),
@@ -281,6 +285,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
       sections: [
         sign({
           headline: en("Tell us the care you need"),
+          highlight: en("the care you need"),
           lede: en("For families, hospitals, clinics and schools. We will reply with a quote."),
           image: null,
         }),
@@ -290,7 +295,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     PRIVACY: {
       seo: noSeo,
       sections: [
-        sign({ headline: en("Privacy notice"), lede: en(null), image: null }),
+        sign({ headline: en("Privacy notice"), highlight: en(null), lede: en(null), image: null }),
         section("RICH_TEXT", {
           heading: en(null),
           body: [
@@ -327,7 +332,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
     TERMS: {
       seo: noSeo,
       sections: [
-        sign({ headline: en("Terms of use"), lede: en(null), image: null }),
+        sign({ headline: en("Terms of use"), highlight: en(null), lede: en(null), image: null }),
         section("RICH_TEXT", {
           heading: en(null),
           body: [

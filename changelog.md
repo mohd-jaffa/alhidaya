@@ -3043,3 +3043,108 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None.
+
+## 2026-10-31 — R6B.4: every other page in the new look
+
+### Decisions
+- D109 – D112 (the user's answers, each the recommended option): the other
+  pages open like Home's hero, smaller; About, Services, Careers and Contact
+  open with a photo from the licensed stock; Services sets out its services
+  as photo cards by audience; each page keeps its own sections, redrawn.
+
+### Added
+- **The pages' opening** (`PageHero`, D109): the page's name on a pale pill
+  (left out where the headline says it), the headline settling into its
+  words with a phrase on the highlight, the supporting line, the page's own
+  actions as pills, and a tall rounded photo, the page's first paint. Every
+  page but Home opens with it (`SignSection`), as do a service, a job, an
+  application and the not-found page. About and Services offer WhatsApp and
+  a quote, Contact WhatsApp and a call.
+- **The highlighted words on every page's sign**, in the Pages editor beside
+  the headline (they were Home's only), seeded on About, Services, Careers,
+  Contact and the quote page.
+- **Service cards** (D111): each service's photo, name (opening its page)
+  and summary on a mist card (on a phone a row, its photo small beside its
+  words); on Services by audience, under its pill with its actions
+  (`AudienceActions`: WhatsApp and a call, or a quote); on a service's page,
+  the others for its audience.
+- `AUDIENCE_LABELS` ("For families", "For hospitals, clinics & schools")
+  with the audiences' vocabulary.
+- A quiet white-outlined pill for forest cards, a small icon chip for a
+  list's ticks, and the forms' lined look (`ControlsLook`).
+
+### Changed
+- Every other section in the new look (D112), with nothing new to edit:
+  headings large and light; who we are beside a tall photo; the mission on
+  forest and the vision on mist; the values as numbered mist cards; the
+  staffing offer as one card with its photo; the client logos on mist cards;
+  the jobs as mist cards with an arrow chip; the contact band on forest; the
+  ways to reach the company each on a card beside the map, its office a
+  forest dot; the admin's text in the lighter headings. Cards rise in one
+  after another.
+- **A service's page**: its opening under its audience's pill with its
+  photo and its audience's actions; what it is beside who it is for and
+  what it includes on a mist card; the other services for its audience as
+  cards (the page now loads their photos with its own).
+- **A job's page and the application**: the opening under Careers' pill,
+  with Apply (or, once the job has closed, the general application) and all
+  open jobs; the job beside its facts on a mist card (with Apply); the other
+  open jobs as cards, when there are any; the application form on a mist
+  panel beside what it is for.
+- **The forms** take the reference's form: each field a line on the mist
+  panel, labels lighter, ticks forest, the CV's box rounded, and the send
+  action a forest pill at the form's end. The admin's controls keep their
+  boxes.
+- **The phone menu** lists the pages in large light words on round rows,
+  the current one on the pale green (no station dots, D101), with WhatsApp,
+  a call and the quote as pills.
+- **The system pages**: not found opens like the other pages; a failed page
+  and the last-resort page say so in the same type, with the ways on as pale
+  pills.
+- **The share pictures**: the headline large and light on white under the
+  page's pill (a service's audience, Careers), the company's name on the
+  forest band; the bold share font is no longer shipped.
+- A comma or other punctuation just after a headline's highlighted words
+  stays with them: a line no longer breaks before it.
+- The pills' look lives apart from the components (`pill-classes.ts`), so
+  a failed page takes it without them: its retry and its ways back (plain
+  links that load the page whole, as the last-resort page's do) no longer
+  pull a second copy of the link code into the frame's script. Every public
+  page's first-paint script is smaller than before R6B.4.
+- The site's actions are pills everywhere: `ContactAction` is a pill, the
+  arrow link is forest; the admin keeps its buttons, without the line's
+  variants.
+- The plan's page specs (§6.1, §6.3, §6.4, §6.6), the service's audience
+  (§8), the map (§30.6) and the admin's look (§30.5) say what is built; §30.1
+  describes the other pages; §30.2 drops the retired sizes.
+
+### Removed
+- The line, everywhere it was left (D101): `SignPanel`, `LineRow`,
+  `LineStart`, `LineEdge`, `StationMarker` and the service line
+  (`ServiceLine`), their words ("You are here", the three lines' names) and
+  their tokens (the sign's and the page's sizes, the line's width and
+  stations).
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,160), coverage 100%: the pages
+  opening with and without its pill, photo, supporting line and actions;
+  the sign's actions on each page; the service cards, the audiences'
+  actions and the services index by audience; each redrawn section; the
+  service page with its neighbours' photos (and one gone from the library);
+  the job page open and closed, with and without other jobs; the
+  application on its panel; the forms' lined look; the comma after a
+  highlight; the share pictures under a pill or none; a page's photos on
+  Services; the highlight in every page's sign editor.
+- E2E (phone and desktop, axe): the whole suite passed (157): the pages, a service, a job open and closed, the system pages, the forms sent.
+- Screens looked at, at 1440 and 390 px: About, Services, a family and a
+  staffing service, Careers, a job, the application, Contact, the quote
+  page, Privacy, not found and the phone menu.
+- First paint, JavaScript (gzip, within 170 KB = 174,080 bytes): Home,
+  Contact and the quote page 172,025 bytes (172,847 before); the
+  application 170,642 (171,406); About, Services, Careers and Privacy
+  163,219 (164,384); a service and a job 161,646.
+
+### Blockers
+- None. The client's own photographs replace the stock (D110) through the
+  admin.

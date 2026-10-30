@@ -4,24 +4,13 @@ import type { ReactNode } from "react";
 import { Pictogram } from "./pictogram";
 
 /**
- * A way onward (plan §30.1): words and an arrow that steps forward on hover,
- * by transform alone. Pages of this site go through Next's link.
+ * A way onward (plan §30.1, D97): words in forest and an arrow that steps
+ * forward on hover, by transform alone. Pages of this site go through Next's
+ * link.
  */
-export function ArrowLink({
-  href,
-  children,
-  tone = "deep",
-  className,
-}: {
-  href: string;
-  children: ReactNode;
-  /** Deep blue on light ground; white on a deep-blue sign. */
-  tone?: "deep" | "onDeep";
-  className?: string;
-}) {
+export function ArrowLink({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
   const classes = [
-    "group inline-flex min-h-touch items-center gap-2 font-semibold underline decoration-transparent hover:decoration-current",
-    tone === "deep" ? "text-deep" : "text-on-deep focus-visible:outline-focus-on-deep",
+    "group inline-flex min-h-touch items-center gap-2 font-medium text-forest underline decoration-transparent underline-offset-4 hover:decoration-current",
     className,
   ]
     .filter(Boolean)

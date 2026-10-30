@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { PageSections } from "@/components/sections/PageSections";
 import { SECTION_TYPES } from "@/constants/sections";
-import { UI_TEXT } from "@/constants/messages";
+import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import type { SectionData } from "@/features/content/types";
 import type { Section } from "@/lib/validation";
 import {
@@ -74,7 +74,7 @@ describe("PageSections", () => {
     expect(screen.getByRole("img", { name: "A nurse at home" })).toHaveAttribute("fetchpriority", "high");
     expect(screen.getByRole("img", { name: "Doha Clinic" })).toBeInTheDocument();
     expect(screen.getByRole("form", { name: "Contact form" })).toBeInTheDocument();
-    expect(screen.queryByText(UI_TEXT.youAreHere)).not.toBeInTheDocument();
+    expect(container.querySelector("#start")).toHaveTextContent(PAGE_NAMES.ABOUT);
   });
 
   it("opens Home with its hero, gives a form the site's email, and draws no form the page did not give", () => {
@@ -86,7 +86,7 @@ describe("PageSections", () => {
         data={data}
       />,
     );
-    expect(screen.queryByText(UI_TEXT.youAreHere)).not.toBeInTheDocument();
+    expect(screen.queryByText(PAGE_NAMES.HOME)).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: UI_TEXT.whatsapp })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: siteFixture().contact.email })).toBeInTheDocument();
     expect(screen.queryByRole("img")).not.toBeInTheDocument();

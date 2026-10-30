@@ -34,9 +34,11 @@ function fields(type: SectionType, page: PageKey = "ABOUT", content: object = co
 }
 
 describe("SectionFields", () => {
-  it("lays out the sign's headline, supporting line and photo", () => {
+  it("lays out the sign's headline, its highlighted words, supporting line and photo, and no hero's (D109)", () => {
     fields("SIGN");
     expect(screen.getByRole("textbox", { name: ADMIN_TEXT.headline })).toHaveValue("Nursing care, at your doorstep");
+    expect(screen.getByRole("textbox", { name: new RegExp(ADMIN_TEXT.highlight) })).toBeVisible();
+    expect(screen.queryByRole("group", { name: ADMIN_TEXT.faces })).not.toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /Supporting line/ }).tagName).toBe("TEXTAREA");
     expect(screen.getByRole("group", { name: /Photo/ })).toBeVisible();
   });
