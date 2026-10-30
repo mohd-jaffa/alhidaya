@@ -122,6 +122,12 @@ function SettingsForm({ initial }: { initial: SiteDraftItem }) {
         <NavigationField />
       </EditorGroup>
       <EditorGroup title={ADMIN_TEXT.footer} hint={ADMIN_TEXT.footerHint}>
+        <EditorText
+          name="runningWords.en"
+          label={ADMIN_TEXT.runningWords}
+          hint={ADMIN_TEXT.runningWordsHint}
+          max={TEXT_LIMITS.heading}
+        />
         <FooterField />
       </EditorGroup>
       <SeoFields hint={ADMIN_TEXT.siteSeoHint} required />

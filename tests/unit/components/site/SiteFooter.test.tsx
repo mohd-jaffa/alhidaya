@@ -19,15 +19,34 @@ describe("SiteFooter", () => {
     expect(within(social).getByRole("link", { name: "Instagram" })).toHaveAttribute("target", "_blank");
     expect(screen.getByRole("link", { name: UI_TEXT.brochure })).toHaveAttribute("href", "/brochure");
     expect(screen.getByRole("img", { name: UI_TEXT.siteName }).getAttribute("src")).toMatch(/logo-white/);
+    expect(screen.getByRole("link", { name: UI_TEXT.requestQuote })).toHaveAttribute("href", "/request-a-quote");
+  });
+
+  it("runs the admin's words across its top for the eye alone, clipped at its edges (D106)", () => {
+    const { container } = render(<SiteFooter site={siteFixture()} />);
+    const words = screen.getAllByText("AL HIDAYA HEALTH CARE");
+    expect(words).toHaveLength(3);
+    const run = words[0].parentElement!;
+    expect(run).toHaveClass("running-words");
+    expect(run.parentElement).toHaveAttribute("aria-hidden", "true");
+    expect(run.parentElement).toHaveClass("overflow-hidden");
+    expect(container.firstElementChild).toHaveClass("bg-forest");
   });
 
   it("leaves out what the admin left empty", () => {
     render(
-      <SiteFooter site={siteFixture({ social: [], contact: { ...siteFixture().contact, hours: { en: null } } })} />,
+      <SiteFooter
+        site={siteFixture({
+          social: [],
+          contact: { ...siteFixture().contact, hours: { en: null } },
+          runningWords: { en: null },
+        })}
+      />,
     );
     expect(screen.queryByRole("list", { name: UI_TEXT.followUs })).not.toBeInTheDocument();
     expect(screen.queryByText("Available 24/7")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: UI_TEXT.brochure })).not.toBeInTheDocument();
+    expect(screen.queryByText("AL HIDAYA HEALTH CARE")).not.toBeInTheDocument();
   });
 
   it("still closes the page, with the logo and the year in Doha, before the site content is published", () => {

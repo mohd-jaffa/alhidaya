@@ -155,6 +155,7 @@ export const siteFixture = (overrides: Partial<SiteDocument> = {}): SiteDocument
   },
   social: [{ network: "INSTAGRAM", url: "https://instagram.com/alhidayanursingcompany_wll" }],
   navigation: [{ label: en("Services"), href: "/services", visible: true }],
+  runningWords: en("AL HIDAYA HEALTH CARE"),
   footer: [{ heading: en("Company"), links: [{ label: en("About"), href: "/about" }] }],
   seo: { title: en("Al Hidaya Health Care Services"), description: en("Nursing care in Doha.") },
   brochure: null,

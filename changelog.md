@@ -3009,3 +3009,37 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 - None. The client's own photographs replace the stock through the admin;
   real figures (patients, nurses) join the counters when the client gives
   them (D99).
+
+## 2026-10-30 — R6B.3: the forest footer and its running words
+
+### Added
+- **The running words** (D106): the footer opens with the site's name,
+  "AL HIDAYA HEALTH CARE", in its largest type, running sideways as the
+  page scrolls to it. The admin edits them in Settings, under the footer
+  (`runningWords` in the site content); left empty, there are none. They
+  are moved by CSS alone (a scroll-driven animation, `animation-timeline:
+  view()`), so the footer adds no script to any page; a browser without
+  scroll-driven animations, or a visitor who asked for reduced motion,
+  sees them still. They are hidden from screen readers, which read the
+  site's name in the logo.
+- A white quote pill in the contact column.
+
+### Changed
+- The footer is forest (D98) with white words, its quieter words in the
+  pale green on forest; the old three-line colour rule above it is gone.
+- On a phone the copyright line sits clear of the floating WhatsApp button.
+- The seed and the test content carry the running words.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,164), coverage 100%: the footer
+  with and without its running words, the words hidden from screen
+  readers and clipped at the page's edge, the quote pill; the site
+  schema tidying the words and defaulting them to none.
+- E2E (phone and desktop, axe): the whole suite passed (157), the footer's columns and contact details as before.
+- Screens looked at, at 1440 and 390 px.
+- First paint, JavaScript (gzip, within 170 KB): unchanged from R6B.2
+  (Home and Contact 168.8 KB, the apply page 167.4 KB).
+
+### Blockers
+- None.

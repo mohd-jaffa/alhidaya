@@ -628,7 +628,7 @@ description; contact details (phone, WhatsApp, email, address lines, map
 link, the office's spot on the map (D74), "available 24/7" line); social links (Instagram today); the floating
 WhatsApp button, on or off (D67); header navigation
 (labels, order, visibility, from a fixed set of destinations: pages, services,
-approved external URLs); footer columns; SEO defaults; the brochure.
+approved external URLs); footer columns and the footer's running words (D106); SEO defaults; the brochure.
 
 **Operations** (take effect on save, audited): the enquiries recipient(s),
 the applications recipient(s), **retention days (1 – 365, D24)** for enquiries
@@ -924,7 +924,7 @@ As clinicdesk's (`AGENTS.md` §5): feature-based, thin routes.
 ```text
 src/
 ├── app/                      # routes only: composition, no business logic
-│   ├── (site)/               # the public site: header, footer, smooth scroll, the line
+│   ├── (site)/               # the public site: header, footer, smooth scroll
 │   │   ├── page.tsx          # /
 │   │   ├── about/  services/[slug]/  careers/[slug]/apply/  careers/apply/
 │   │   ├── contact/  request-a-quote/  privacy/  terms/
@@ -1493,7 +1493,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R6B.1 | The foundation: the new direction recorded (§30.1, the surface brief); the greens and the display type as tokens (D98); Inter Tight self-hosted (D108); the rail removed from every public page (D101); the header no longer pinned, with the four links and the forest quote pill (D107); the admin's left column a plain list, without its line and station dots (D101) | D97, D98, D101, D107, D108 | — | DONE (2026-10-30) |
 | R6B.2 | Home in the reference's sections (D97, D100): the split hero; the statement; the four highlight cards; "For Hospitals, Clinics & Schools" with its counters (D99, D105); "For Families" with the services sliding in a card (D102, D105); how it works, four steps; the Contact form (D104): each a section type in the Pages editor, seeded, with the new photographs (licensed stock, D8, D75) and their motion | D97, D99, D100, D102, D104, D105 | R6B.1 | DONE (2026-10-30) |
-| R6B.3 | The forest footer with its running words, editable in Settings (D106), and its columns | D106 | R6B.1 | TODO |
+| R6B.3 | The forest footer with its running words, editable in Settings (D106), and its columns | D106 | R6B.1 | DONE (2026-10-30) |
 | R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | TODO |
 | R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | TODO |
 

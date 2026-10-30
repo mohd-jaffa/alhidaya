@@ -189,6 +189,27 @@
   }
 }
 
+/*
+ * The footer's running words (D106) cross it as it scrolls into view, by
+ * CSS alone: a scroll-driven animation where the browser has one; the words
+ * stand still where it has none, and with motion reduced.
+ */
+@keyframes run {
+  to {
+    transform: translateX(-40%);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .running-words {
+      animation: run linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
 @layer base {
   html {
     color-scheme: light;

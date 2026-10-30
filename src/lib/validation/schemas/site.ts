@@ -44,6 +44,8 @@ export const siteDocumentSchema = z.object({
   navigation: z
     .array(link.extend({ visible: z.boolean() }))
     .max(LIST_LIMITS.navigation, VALIDATION_MESSAGES.atMost("The navigation", LIST_LIMITS.navigation)),
+  /** The footer's large words running with the scroll (D106); left empty, none. */
+  runningWords: localized(optionalLine("Running words", TEXT_LIMITS.heading)).default({ en: null }),
   footer: z
     .array(
       z.object({

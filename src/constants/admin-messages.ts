@@ -421,6 +421,9 @@ export const ADMIN_TEXT = {
   shownInMenu: "Shown in the menu",
   footer: "Footer",
   footerHint: "The footer's columns of links, beside the contact details.",
+  runningWords: "Running words",
+  runningWordsHint:
+    "The large words that run across the top of the footer as the page scrolls. Left empty, there are none.",
   footerColumn: "Column",
   columnHeading: "Column heading",
   footerLink: "Link",

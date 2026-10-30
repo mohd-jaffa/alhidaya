@@ -528,6 +528,7 @@ export const SEED_SITE: SiteDocument = {
     { label: en("Careers"), href: ROUTES.careers, visible: true },
     { label: en("Contact"), href: ROUTES.contact, visible: true },
   ],
+  runningWords: en("AL HIDAYA HEALTH CARE"),
   footer: [
     {
       heading: en("Company"),

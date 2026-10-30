@@ -12,6 +12,17 @@ describe("the site's content", () => {
     expect(parsed.contact.phone).toBe("+97431306555");
   });
 
+  it("keeps the footer's running words, tidied, or none when they were never given (D106)", () => {
+    expect(
+      siteDocumentSchema.parse(siteFixture({ runningWords: { en: "  AL HIDAYA   HEALTH CARE " } })).runningWords,
+    ).toEqual({
+      en: "AL HIDAYA HEALTH CARE",
+    });
+    const { runningWords: _left, ...older } = siteFixture();
+    void _left;
+    expect(siteDocumentSchema.parse(older).runningWords).toEqual({ en: null });
+  });
+
   it("refuses a network twice, and links that are not safe", () => {
     const twice = siteFixture().social.concat(siteFixture().social);
     expect(first(siteDocumentSchema.safeParse(siteFixture({ social: twice })))).toBe(
