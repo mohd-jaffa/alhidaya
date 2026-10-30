@@ -35,6 +35,10 @@ export const ADMIN_ROUTES = {
   activity: "/admin/activity",
 } as const;
 
+/** What Activity's address can narrow it to (`?kind=`, D96); kept here, off the public pages, as the routes are. */
+export const ACTIVITY_KINDS = ["CONTENT", "INBOX", "SETTINGS", "SIGN_INS"] as const;
+export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
+
 /** Every endpoint the admin's screens call (AGENTS.md §14). */
 export const ADMIN_API_ROUTES = {
   adminSession: "/api/admin/session",
@@ -93,6 +97,8 @@ export const ADMIN_API_ROUTES = {
   adminSiteBrochure: "/api/admin/site/brochure",
   /** How the site runs (D95): recipients, keeping periods, the folders' use. */
   adminOperations: "/api/admin/operations",
+  /** Activity: the admin's changes, newest first (D96). */
+  adminActivity: "/api/admin/activity",
   /** The media library's images (D89, D93): listed and uploaded; one's words changed, or it deleted. */
   adminMedia: "/api/admin/media",
   adminMediaItem: (id: string) => `/api/admin/media/${id}`,

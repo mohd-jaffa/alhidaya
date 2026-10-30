@@ -115,6 +115,10 @@ describe("AdminShell", () => {
     const clients = within(rail).getByRole("link", { name: /Clients/ });
     await waitFor(() => expect(clients).toHaveAccessibleName(`${ADMIN_TEXT.clients}${ADMIN_TEXT.waitingCount(1)}`));
     expect(within(rail).getByRole("link", { name: ADMIN_TEXT.media })).toHaveAttribute("href", ADMIN_ROUTES.media);
+    expect(within(rail).getByRole("link", { name: ADMIN_TEXT.activity })).toHaveAttribute(
+      "href",
+      ADMIN_ROUTES.activity,
+    );
     const settings = within(rail).getByRole("link", { name: /Settings/ });
     await waitFor(() => expect(settings).toHaveAccessibleName(`${ADMIN_TEXT.settings}${ADMIN_TEXT.waitingCount(1)}`));
     expect(screen.getByText(ADMIN_TEXT.signedInAs("Fatima"), { selector: "aside p" })).toBeVisible();

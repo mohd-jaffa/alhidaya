@@ -5,7 +5,7 @@ import { ADMIN_ROUTES } from "@/constants/admin-routes";
 import { UPLOAD_LIMITS } from "@/constants/limits";
 import { PAGE_NAMES } from "@/constants/messages";
 import { PAGE_KEYS, type PageKey } from "@/constants/sections";
-import type { RecordCollection } from "@/constants/statuses";
+import { AUDIT_ENTITIES, type RecordCollection } from "@/constants/statuses";
 import { BROCHURE_TYPES, FILE_TYPES, IMAGE_TYPES } from "@/constants/uploads";
 import { getDb } from "@/db/client";
 import { documents, media, type MediaVariant, records } from "@/db/schema";
@@ -189,7 +189,7 @@ export async function uploadImage(
   await logActionSafe({
     actorId: actor.adminId,
     action: "CREATE",
-    entityType: "media",
+    entityType: AUDIT_ENTITIES.media,
     entityId: id,
     requestId: actor.requestId,
   });
@@ -216,7 +216,7 @@ export async function updateImageDetails(
   await logActionSafe({
     actorId: actor.adminId,
     action: "UPDATE",
-    entityType: "media",
+    entityType: AUDIT_ENTITIES.media,
     entityId: id,
     requestId: actor.requestId,
   });
@@ -246,7 +246,7 @@ export async function deleteImage(id: string, actor: Actor): Promise<{ deleted: 
   await logActionSafe({
     actorId: actor.adminId,
     action: "DELETE",
-    entityType: "media",
+    entityType: AUDIT_ENTITIES.media,
     entityId: id,
     requestId: actor.requestId,
   });
@@ -378,7 +378,7 @@ export async function storeBrochure(bytes: Uint8Array, actor: Actor, at: Date = 
   await logActionSafe({
     actorId: actor.adminId,
     action: "CREATE",
-    entityType: "media",
+    entityType: AUDIT_ENTITIES.media,
     entityId: id,
     requestId: actor.requestId,
   });
@@ -418,7 +418,7 @@ export async function deleteOtherPdfs(keep: readonly string[], actor: Actor): Pr
     await logActionSafe({
       actorId: actor.adminId,
       action: "DELETE",
-      entityType: "media",
+      entityType: AUDIT_ENTITIES.media,
       entityId: row.id,
       requestId: actor.requestId,
     });

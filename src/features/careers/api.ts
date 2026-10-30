@@ -5,6 +5,7 @@ import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, TEXT_LIMITS } from "@/constants/limit
 import { PAGE_NAMES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import {
+  AUDIT_ENTITIES,
   type ApplicationStatus,
   type CvStatus,
   DATAFLOW_LABELS,
@@ -514,7 +515,7 @@ export async function retryApplicationAlert(id: string, actor: Actor): Promise<E
   await logActionSafe({
     actorId: actor.adminId,
     action: "UPDATE",
-    entityType: "application",
+    entityType: AUDIT_ENTITIES.application,
     entityId: id,
     changes: { emailStatus: { from: application.emailStatus, to: status } },
     requestId: actor.requestId,
@@ -677,7 +678,7 @@ export async function setApplicationStatus(id: string, status: ApplicationStatus
   await logActionSafe({
     actorId: actor.adminId,
     action: "STATUS_CHANGE",
-    entityType: "application",
+    entityType: AUDIT_ENTITIES.application,
     entityId: id,
     changes: { status: { from: application.status, to: status } },
     requestId: actor.requestId,
@@ -704,7 +705,7 @@ export async function addApplicationNote(id: string, body: string, actor: Actor)
   await logActionSafe({
     actorId: actor.adminId,
     action: "NOTE_ADD",
-    entityType: "application",
+    entityType: AUDIT_ENTITIES.application,
     entityId: id,
     requestId: actor.requestId,
   });
@@ -732,7 +733,7 @@ export async function downloadApplicationCv(
   await logActionSafe({
     actorId: actor.adminId,
     action: "CV_DOWNLOAD",
-    entityType: "application",
+    entityType: AUDIT_ENTITIES.application,
     entityId: id,
     requestId: actor.requestId,
   });
@@ -761,7 +762,7 @@ export async function deleteApplication(id: string, actor: Actor): Promise<void>
   await logActionSafe({
     actorId: actor.adminId,
     action: "DELETE",
-    entityType: "application",
+    entityType: AUDIT_ENTITIES.application,
     entityId: id,
     requestId: actor.requestId,
   });

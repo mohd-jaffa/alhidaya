@@ -213,7 +213,10 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
     },
     {
       label: ADMIN_TEXT.runningTheSite,
-      stations: [{ label: ADMIN_TEXT.operations, href: ADMIN_ROUTES.operations }],
+      stations: [
+        { label: ADMIN_TEXT.operations, href: ADMIN_ROUTES.operations },
+        { label: ADMIN_TEXT.activity, href: ADMIN_ROUTES.activity },
+      ],
     },
   ];
   const current = currentStation(

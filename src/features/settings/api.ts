@@ -3,6 +3,7 @@ import { cache } from "react";
 
 import { DISK_BUDGETS } from "@/constants/limits";
 import { SITE_DOCUMENT_KEY } from "@/constants/sections";
+import { AUDIT_ENTITIES } from "@/constants/statuses";
 import { getDb } from "@/db/client";
 import { applications, auditLog, enquiries, rateLimits } from "@/db/schema";
 import { deleteOtherPdfs, getPdfFile, type PdfFile, publishedPdfUrl, storeBrochure } from "@/features/media/api";
@@ -164,7 +165,7 @@ export async function purgeExpired(at: Date = new Date()): Promise<PurgeResult> 
   await logActionSafe({
     actorId: null,
     action: "RETENTION_PURGE",
-    entityType: "site_operations",
+    entityType: AUDIT_ENTITIES.operations,
     entityId: null,
     changes: { ...result },
     requestId: null,

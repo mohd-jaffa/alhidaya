@@ -3,6 +3,7 @@ import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, INBOX_SUMMARY_LENGTH } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import {
+  AUDIT_ENTITIES,
   CARE_FOR_LABELS,
   CONTACT_METHOD_LABELS,
   type EmailStatus,
@@ -168,7 +169,7 @@ export async function retryEnquiryAlert(id: string, actor: Actor): Promise<Email
   await logActionSafe({
     actorId: actor.adminId,
     action: "UPDATE",
-    entityType: "enquiry",
+    entityType: AUDIT_ENTITIES.enquiry,
     entityId: id,
     changes: { emailStatus: { from: enquiry.emailStatus, to: status } },
     requestId: actor.requestId,
@@ -305,7 +306,7 @@ export async function setEnquiryStatus(id: string, status: EnquiryStatus, actor:
   await logActionSafe({
     actorId: actor.adminId,
     action: "STATUS_CHANGE",
-    entityType: "enquiry",
+    entityType: AUDIT_ENTITIES.enquiry,
     entityId: id,
     changes: { status: { from: enquiry.status, to: status } },
     requestId: actor.requestId,
@@ -332,7 +333,7 @@ export async function addEnquiryNote(id: string, body: string, actor: Actor): Pr
   await logActionSafe({
     actorId: actor.adminId,
     action: "NOTE_ADD",
-    entityType: "enquiry",
+    entityType: AUDIT_ENTITIES.enquiry,
     entityId: id,
     requestId: actor.requestId,
   });
@@ -349,7 +350,7 @@ export async function deleteEnquiry(id: string, actor: Actor): Promise<void> {
   await logActionSafe({
     actorId: actor.adminId,
     action: "DELETE",
-    entityType: "enquiry",
+    entityType: AUDIT_ENTITIES.enquiry,
     entityId: id,
     requestId: actor.requestId,
   });

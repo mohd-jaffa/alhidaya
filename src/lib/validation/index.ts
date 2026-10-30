@@ -16,6 +16,8 @@ export {
   requiredPhone,
 } from "./primitives";
 
+export { activityQuerySchema, type ActivityQueryInput, type ActivityQueryPayload } from "./schemas/activity";
+
 export {
   applicationFormSchema,
   applicationListQuerySchema,

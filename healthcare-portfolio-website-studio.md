@@ -1086,7 +1086,7 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 | `/api/admin/enquiries` (+ `[id]`, `/notes`, `/retry-mail`) | the inbox |
 | `/api/admin/applications` (+ `[id]`, `/notes`, `/cv`, `/retry`) | the inbox; `/cv` downloads the CV (§9.4) |
 | `/api/admin/site` (GET, PUT; + `/publish`, `/discard`, `/brochure`), `/api/admin/operations` (GET, PUT) | settings: the site's content as one draft, a new brochure uploaded into it (D94); operations: the recipients and keeping periods, saved at once, with each folder's use and the last clean-up (D95) |
-| `/api/admin/activity` | the audit trail |
+| `GET /api/admin/activity` (`?kind=CONTENT\|INBOX\|SETTINGS\|SIGN_INS`, `?page=`) | the audit trail (D96): the admin's changes newest first, 50 a page, each with who made it and what it was made to by name; an enquiry or an application never by a person's details |
 
 ## 30. Design system and motion
 
@@ -1348,6 +1348,10 @@ order; a pre-push hook runs it (as clinicdesk, from Phase 7).
 - The `error_log` table takes the server's own failures (`captureError`),
   without personal data, kept 30 days.
 - The `audit_log` keeps every admin change (who, what, when), kept a year.
+  Activity (`/admin/activity`, R6.8, D96) reads it as a day's log: what
+  each change was made to by its name (a page, a service, an image's
+  words), an enquiry or an application only as "an enquiry", the fields a
+  setting changed by name and never their values.
 - A failed mail, CV save or purge, and disk use near the quota (§21.2), are
   visible in the admin, not only in logs.
 
@@ -1464,7 +1468,7 @@ one commit (D27).
 | R6.5 | Clients and media library (upload pipeline, sizes, alt text, usage, delete) | §11, §15 | — | DONE (2026-10-30; D92, D93; the sizing step and `storeImage` came forward with D75) |
 | R6.6 | Settings: site content, navigation, footer, SEO, brochure | §12, §13 | — | DONE (2026-10-30; D94) |
 | R6.7 | Operations: recipients, retention (1 – 365), CV expiry (1 – 365), disk use; the daily purge job (cPanel cron) | §13, §18, §21.2, D52 | Q8 | DONE (2026-10-30) |
-| R6.8 | Activity (audit trail) | §36 | — | TODO |
+| R6.8 | Activity (audit trail) | §36 | — | DONE (2026-10-30) |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | TODO |
 | R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | TODO |
 

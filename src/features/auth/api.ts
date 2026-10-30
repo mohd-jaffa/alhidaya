@@ -1,6 +1,7 @@
 import { APIError } from "better-auth/api";
 
 import { RESET_RATE_LIMITS, SIGN_IN_FAILURE_MIN_MS } from "@/constants/limits";
+import { AUDIT_ENTITIES } from "@/constants/statuses";
 import { logActionSafe } from "@/lib/audit/auditLog";
 import { getAuth } from "@/lib/auth/auth";
 import { authenticationError, rateLimitError, validationError } from "@/lib/errors";
@@ -54,7 +55,7 @@ export async function signIn(input: { email: string; password: string }, asker: 
     await logActionSafe({
       actorId: response.user.id,
       action: "SIGN_IN",
-      entityType: "auth_user",
+      entityType: AUDIT_ENTITIES.account,
       entityId: response.user.id,
       requestId: asker.requestId,
     });
@@ -70,7 +71,13 @@ export async function signIn(input: { email: string; password: string }, asker: 
 /** Signs the admin out: the session is deleted, and the answer clears its cookie. */
 export async function signOut(headers: Headers, adminId: string, requestId: string): Promise<Headers> {
   const result = await getAuth().api.signOut({ headers, returnHeaders: true });
-  await logActionSafe({ actorId: adminId, action: "SIGN_OUT", entityType: "auth_user", entityId: adminId, requestId });
+  await logActionSafe({
+    actorId: adminId,
+    action: "SIGN_OUT",
+    entityType: AUDIT_ENTITIES.account,
+    entityId: adminId,
+    requestId,
+  });
   return result.headers;
 }
 
@@ -90,7 +97,7 @@ export async function requestPasswordReset(email: string, asker: Asker): Promise
   await logActionSafe({
     actorId: null,
     action: "PASSWORD_RESET_REQUESTED",
-    entityType: "auth_user",
+    entityType: AUDIT_ENTITIES.account,
     requestId: asker.requestId,
   });
 }
@@ -103,5 +110,5 @@ export async function resetPassword(token: string, password: string, requestId: 
     if (refusedWith(error, "INVALID_TOKEN")) throw validationError("AUTH_RESET_INVALID");
     throw error;
   }
-  await logActionSafe({ actorId: null, action: "PASSWORD_CHANGED", entityType: "auth_user", requestId });
+  await logActionSafe({ actorId: null, action: "PASSWORD_CHANGED", entityType: AUDIT_ENTITIES.account, requestId });
 }

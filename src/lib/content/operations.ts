@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 
 import { CV_EXPIRY_DAYS, RETENTION_DAYS } from "@/constants/limits";
 import { SITE } from "@/constants/site";
+import { AUDIT_ENTITIES } from "@/constants/statuses";
 import { getDb } from "@/db/client";
 import { OPERATIONS_ID, siteOperations } from "@/db/schema";
 import { logActionSafe } from "@/lib/audit/auditLog";
@@ -46,7 +47,7 @@ export async function updateOperations(next: OperationsPayload, actor: Actor): P
   await logActionSafe({
     actorId: actor.adminId,
     action: "SETTINGS_CHANGE",
-    entityType: "site_operations",
+    entityType: AUDIT_ENTITIES.operations,
     entityId: OPERATIONS_ID,
     changes,
     requestId: actor.requestId,

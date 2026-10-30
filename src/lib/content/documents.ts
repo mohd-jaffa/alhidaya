@@ -1,6 +1,7 @@
 import { and, eq, inArray, isNotNull, sql } from "drizzle-orm";
 
 import type { DocumentKey } from "@/constants/sections";
+import { AUDIT_ENTITIES } from "@/constants/statuses";
 import { getDb } from "@/db/client";
 import { documents } from "@/db/schema";
 import { logActionSafe } from "@/lib/audit/auditLog";
@@ -97,7 +98,7 @@ export async function saveDocumentDraft(key: DocumentKey, draft: unknown, actor:
   await logActionSafe({
     actorId: actor.adminId,
     action: "UPDATE",
-    entityType: "documents",
+    entityType: AUDIT_ENTITIES.documents,
     entityId: key,
     requestId: actor.requestId,
   });
@@ -127,7 +128,7 @@ export async function publishDocument(key: DocumentKey, actor: Actor, check?: (d
   await logActionSafe({
     actorId: actor.adminId,
     action: "PUBLISH",
-    entityType: "documents",
+    entityType: AUDIT_ENTITIES.documents,
     entityId: key,
     requestId: actor.requestId,
   });
@@ -144,7 +145,7 @@ export async function discardDocumentDraft(key: DocumentKey, actor: Actor): Prom
   await logActionSafe({
     actorId: actor.adminId,
     action: "DISCARD_DRAFT",
-    entityType: "documents",
+    entityType: AUDIT_ENTITIES.documents,
     entityId: key,
     requestId: actor.requestId,
   });

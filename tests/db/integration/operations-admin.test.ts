@@ -72,10 +72,13 @@ const cvExists = (key: string) =>
     () => true,
     () => false,
   );
+// What other suites leave in the shared test database: their rate-limit windows, and the journeys' clean-up runs.
 const clear = async () => {
   await getDb().delete(enquiries);
   await getDb().delete(applications);
   await getDb().delete(siteOperations);
+  await getDb().delete(rateLimits);
+  await getDb().delete(auditLog).where(eq(auditLog.action, "RETENTION_PURGE"));
 };
 
 beforeAll(clear);

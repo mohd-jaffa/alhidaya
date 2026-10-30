@@ -25,6 +25,20 @@ export const AUDIT_ACTIONS = [
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
+/**
+ * What an audit row is about (plan §36): its table, or for a service, a job
+ * or a client logo its collection (RECORD_COLLECTIONS). Activity sorts the
+ * rows into kinds by it (D96).
+ */
+export const AUDIT_ENTITIES = {
+  documents: "documents",
+  media: "media",
+  enquiry: "enquiry",
+  application: "application",
+  operations: "site_operations",
+  account: "auth_user",
+} as const;
+
 /** Where a failure was met (plan §36). */
 export const ERROR_SOURCES = ["SERVER", "API", "SCREEN", "CRON"] as const;
 export type ErrorSource = (typeof ERROR_SOURCES)[number];

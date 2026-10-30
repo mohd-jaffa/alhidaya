@@ -2746,3 +2746,53 @@ appended and never rewritten (AGENTS.md §26).
 ### Blockers
 - None. The cron entry is added on the server at R8.2, after full payment
   (D48).
+
+## 2026-10-30 — R6.8: Activity
+
+### Added
+- `/admin/activity` (plan §36, D96), on the rail under "Running the site":
+  every change made in the admin, newest first in the day's log, 50 a
+  page, narrowed to content, the inbox, settings or sign-ins. Each row
+  says when, what was done in plain words ("Published the Home page",
+  "Closed the job “Registered nurse”", "Moved an enquiry to Resolved") and
+  who: the admin by name, the website itself for the nightly clean-up, the
+  sign-in page for a reset, or "an admin account since removed" (an audit
+  row outlives its admin's account). What a change was made to opens from
+  its line while it is still there.
+- Nothing personal reaches the screen: an enquiry or an application is
+  only "an enquiry" or "an application"; a setting's change names its
+  fields, never their values (a recipient's address stays on the
+  server); only a status, or whether a job closed, is shown as a value.
+- `listActivity` (`features/activity/api.ts`): the page and its count,
+  then the names of what it touched (a service's, a job's, a client's, an
+  image's words) and which inbox items are still there: two round trips.
+- `GET /api/admin/activity` (`?kind=`, `?page=`), `activityQuerySchema`,
+  `ACTIVITY_PAGE_SIZE`; `ACTIVITY_KINDS` beside the admin's routes, so the
+  public pages never carry it.
+- `AUDIT_ENTITIES` (`constants/statuses.ts`): what an audit row is about,
+  named once; every audit write uses it, and Activity sorts by it.
+
+### Changed
+- Operations' integration test clears what other suites leave in the
+  shared test database (rate-limit windows, the journeys' clean-up runs)
+  before it starts.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,101), coverage 100%: against the
+  local MySQL, every kind of change listed newest first with who made it
+  and what it was made to, a renamed or deleted record, image or inbox
+  item said without its name or link, no recipient's address, visitor's
+  name or email anywhere in the answer; each kind's filter; 50 a page.
+  Each kind of change's line, and its link while the thing is there.
+- E2E (phone and desktop, axe): Activity lists the sign-in just made by
+  its admin's name, narrows to sign-ins and to the inbox, the rail on
+  Activity; its endpoint refuses without the admin's session (401,
+  `no-store`). The whole suite passed.
+- Screens looked at, at 1440 and 390 px.
+- First paint, JavaScript (gzip, within 170 KB): Contact 168.9 KB and the
+  apply page 169.3 KB, byte for byte as before (724 bytes left); Home
+  160.8 KB with what the test database now publishes on it.
+
+### Blockers
+- None.

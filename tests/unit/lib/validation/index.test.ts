@@ -7,6 +7,7 @@ describe("the validation module", () => {
     expect(Object.keys(validation).sort()).toEqual([
       "EMAIL",
       "GENERAL_APPLICATIONS",
+      "activityQuerySchema",
       "applicationFormSchema",
       "applicationListQuerySchema",
       "applicationNoteSchema",
