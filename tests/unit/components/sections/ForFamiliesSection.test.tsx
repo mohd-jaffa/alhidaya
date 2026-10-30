@@ -20,10 +20,13 @@ const services = [
     serviceFixture({ name: { en: "Home nursing care" }, slug: "home-nursing-care", image: { mediaId: "home" } }),
   ),
   publishedFixture(serviceFixture({ name: { en: "Elderly care" }, slug: "elderly-care", image: null })),
+  publishedFixture(
+    serviceFixture({ name: { en: "School nurse staffing" }, slug: "school-nurse-staffing", audience: "INSTITUTIONS" }),
+  ),
 ];
 
 describe("ForFamiliesSection (D97, D102, D105)", () => {
-  it("opens with its pill and heading, slides the services through its card, each opening its page", () => {
+  it("opens with its pill and heading, slides the family services through its card, each opening its page", () => {
     const content: Families = {
       ...contentFixture("FOR_FAMILIES"),
       photo: { image: { mediaId: "family" }, text: { en: "A nurse comes to your home." } },
@@ -37,7 +40,8 @@ describe("ForFamiliesSection (D97, D102, D105)", () => {
         .getAllByRole("link")
         .map((link) => link.getAttribute("href")),
     ).toEqual([ROUTES.service("home-nursing-care"), ROUTES.service("elderly-care")]);
-    expect(screen.getByText(UI_TEXT.services)).toBeVisible();
+    expect(screen.queryByRole("link", { name: "School nurse staffing" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: UI_TEXT.allServices })).toHaveAttribute("href", ROUTES.services);
     expect(screen.getByText("A nurse comes to your home.")).toBeVisible();
     expect(screen.queryByRole("img", { name: "A carer with a couple" })).toBeNull();
     expect(screen.getByRole("heading", { level: 3, name: "Day and night" })).toBeVisible();

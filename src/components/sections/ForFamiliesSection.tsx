@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Reveal } from "@/components/motion/Reveal";
 import { ScrollTrack } from "@/components/motion/ScrollTrack";
+import { ArrowLink } from "@/components/ui/arrow-link";
 import { IconChip } from "@/components/ui/icon-chip";
 import { MediaImage } from "@/components/ui/media-image";
 import { Pictogram } from "@/components/ui/pictogram";
@@ -17,8 +18,9 @@ type FamiliesContent = Extract<Section, { type: "FOR_FAMILIES" }>["content"];
 
 /**
  * For families (plan §30.1, D97, D102, D105): its pill and heading, then the
- * services sliding through a large card as the section scrolls by, each
- * opening its page; beside it a photo with its words, and small feature cards.
+ * family services sliding through a large card as the section scrolls by, each
+ * opening its page, the row fading at the card's edge, with the way to every
+ * service below; beside it a photo with its words, and small feature cards.
  */
 export function ForFamiliesSection({
   anchor,
@@ -32,8 +34,9 @@ export function ForFamiliesSection({
   image: (ref: { mediaId: string } | null) => SiteImage | null;
 }) {
   const photo = image(content.photo.image);
+  const theirs = services.filter((service) => service.published.audience === "FAMILIES");
   return (
-    <SectionFrame anchor={anchor} className="grid gap-12 py-section">
+    <SectionFrame anchor={anchor} className="grid gap-12">
       <Reveal>
         <SectionOpening
           anchor={anchor}
@@ -45,16 +48,20 @@ export function ForFamiliesSection({
       </Reveal>
       <div className="grid gap-4 lg:grid-cols-[1.35fr_1fr]">
         <Reveal className="flex min-h-[26rem] flex-col justify-between gap-6 overflow-hidden rounded-card bg-mist py-6">
-          <ScrollTrack as="ul" className="px-6" trackClassName="gap-3 pe-6">
-            {services.map((service) => {
+          <ScrollTrack
+            as="ul"
+            className="px-6 [mask-image:linear-gradient(to_right,black_85%,transparent)] rtl:[mask-image:linear-gradient(to_left,black_85%,transparent)]"
+            trackClassName="gap-3 pe-6"
+          >
+            {theirs.map((service) => {
               const servicePhoto = image(service.published.image);
               return (
                 <li key={service.id} className="shrink-0">
                   <Link
                     href={ROUTES.service(service.published.slug)}
-                    className="group grid w-44 gap-3 rounded-[1.25rem] bg-ground p-2 pb-4 sm:w-52"
+                    className="group grid w-44 gap-3 rounded-inset bg-ground p-2 pb-4 sm:w-52"
                   >
-                    <span className="relative block aspect-[4/5] overflow-hidden rounded-[1rem] bg-leaf-pale">
+                    <span className="relative block aspect-[4/5] overflow-hidden rounded-thumb bg-leaf-pale">
                       {servicePhoto ? (
                         <MediaImage
                           image={servicePhoto}
@@ -77,7 +84,9 @@ export function ForFamiliesSection({
               );
             })}
           </ScrollTrack>
-          <p className="px-6 text-small font-medium text-ink-2">{UI_TEXT.services}</p>
+          <ArrowLink href={ROUTES.services} className="mx-6 self-start">
+            {UI_TEXT.allServices}
+          </ArrowLink>
         </Reveal>
         <div className="grid gap-4">
           <Reveal order={1} className="relative min-h-64 overflow-hidden rounded-card bg-mist">

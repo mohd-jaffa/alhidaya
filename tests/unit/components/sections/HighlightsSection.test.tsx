@@ -55,7 +55,8 @@ describe("HighlightsSection (D97)", () => {
     };
     const { container } = render(<HighlightsSection anchor="highlights" content={content} image={image} />);
     expect(container.querySelector("img")).toBeNull();
-    expect(container.querySelector("svg")).toBeNull();
+    // Only the green card's globe, drawn as decoration.
+    expect([...container.querySelectorAll("svg")].map((svg) => svg.getAttribute("aria-hidden"))).toEqual(["true"]);
     expect(screen.getByRole("heading", { name: "Two businesses" })).toBeVisible();
   });
 

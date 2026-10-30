@@ -38,7 +38,7 @@ export function InstitutionsSection({
           </PillLink>
         </div>
         {image ? (
-          <div className="relative min-h-72 overflow-hidden rounded-[1.25rem] lg:min-h-[30rem]">
+          <div className="relative min-h-72 overflow-hidden rounded-inset lg:min-h-[30rem]">
             <MediaImage
               image={image}
               sizes="(min-width: 78rem) 38rem, (min-width: 64rem) 48vw, 100vw"

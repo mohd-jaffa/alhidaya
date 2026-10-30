@@ -39,7 +39,7 @@ export function ApplyPage({ job }: { job: PublishedJob | null }) {
       </PageHero>
 
       <SectionFrame anchor="apply" className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
-        <div className="grid content-start gap-6">
+        <div className="grid content-start gap-6 lg:sticky lg:top-8 lg:self-start">
           <SectionHeading anchor="apply">{UI_TEXT.yourApplication}</SectionHeading>
           <p className="text-lead text-ink-2">
             {job ? (

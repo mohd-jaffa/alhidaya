@@ -37,9 +37,9 @@ export function HeroSection({
   const { fact, note, card } = content;
 
   return (
-    <section id={anchor} className="mx-auto w-full max-w-site px-gutter pt-2 pb-16 lg:pb-24">
+    <section id={anchor} className="mx-auto w-full max-w-site px-gutter pt-2">
       <div className="grid gap-8 lg:grid-cols-[1fr_1.04fr] lg:gap-14">
-        <div className="flex flex-col justify-between gap-12 lg:py-12">
+        <div className="flex flex-col justify-between gap-12 lg:py-6">
           <div className="grid gap-7 lg:gap-9">
             {faces.length > 0 ? (
               <div aria-hidden="true" className="flex items-center gap-2 text-figure font-extralight text-navy">
@@ -48,7 +48,7 @@ export function HeroSection({
                 <span>)</span>
               </div>
             ) : null}
-            <h1 className="max-w-[13ch] text-hero font-normal">
+            <h1 className="max-w-[18ch] text-hero font-normal">
               <SettleText text={content.headline.en} highlight={content.highlight.en} />
             </h1>
             {content.lede.en ? (
@@ -76,7 +76,7 @@ export function HeroSection({
           ) : null}
         </div>
 
-        <div className="relative min-h-[30rem] overflow-hidden rounded-frame bg-mist sm:min-h-[36rem] lg:min-h-[42rem]">
+        <div className="relative min-h-[30rem] overflow-hidden rounded-frame bg-mist sm:min-h-[36rem] lg:min-h-[40rem]">
           {photo ? (
             <MediaImage
               image={photo}
@@ -90,7 +90,7 @@ export function HeroSection({
               {content.chips.map((chip, at) => (
                 <li
                   key={chip.en}
-                  className={`flex items-center gap-1.5 rounded-pill bg-ground/90 py-1.5 ps-4 pe-1.5 text-small font-medium text-navy ${at % 2 === 1 ? "ms-6" : ""}`}
+                  className={`flex items-center gap-1.5 rounded-pill bg-ground/75 py-1.5 ps-4 pe-1.5 text-small font-medium text-navy ${at % 2 === 1 ? "ms-6" : ""}`}
                 >
                   {chip.en}
                   <span
@@ -108,7 +108,7 @@ export function HeroSection({
               {card.title.en ? (
                 <div className="flex w-full max-w-[19rem] items-center gap-3 rounded-card bg-ground p-2.5 shadow-float">
                   {cardPhoto ? (
-                    <div className="size-16 shrink-0 overflow-hidden rounded-[1rem]">
+                    <div className="size-16 shrink-0 overflow-hidden rounded-thumb">
                       <MediaImage image={cardPhoto} sizes="64px" decorative className="size-full object-cover" />
                     </div>
                   ) : null}

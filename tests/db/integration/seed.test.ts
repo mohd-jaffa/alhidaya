@@ -85,7 +85,7 @@ describe("seedContent, against the local MySQL", () => {
       expect(photos.every((row) => row.source?.licence === "Unsplash License" && row.variants.length > 0)).toBe(true);
       const home = (await readDocumentDraft<PageDocument>("PAGE:HOME"))?.draft;
       const sign = home?.sections[0];
-      const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.heroNurse.source.url);
+      const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.avatarBraids.source.url);
       expect(sign?.type === "SIGN" ? sign.content.image : null).toEqual({ mediaId: hero?.id });
       // Each service shows its own photograph (D102).
       const elderly = photos.find((row) => row.source?.url === SEED_PHOTOS.elderlyCare.source.url);

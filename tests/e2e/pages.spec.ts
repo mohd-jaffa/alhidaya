@@ -89,10 +89,12 @@ test("Contact lists every way to reach the company and the way to the office, an
 });
 
 test("Request a Quote opens on its sign above the form's place, and passes axe (plan §6.8)", async ({ page }) => {
+  const form = seedPages().QUOTE.sections[1];
+  if (form.type !== "FORM") throw new Error("the quote page holds its form");
   await page.goto(ROUTES.quote);
   await expect(page).toHaveTitle(new RegExp(`^${PAGE_NAMES.QUOTE} · `));
   await expect(page.getByRole("heading", { level: 1, name: "Tell us the care you need" })).toBeVisible();
-  await expect(page.getByRole("region", { name: UI_TEXT.requestQuote })).toBeVisible();
+  await expect(page.getByRole("region", { name: form.content.heading.en })).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 

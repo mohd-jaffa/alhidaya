@@ -499,9 +499,10 @@ Impeccable is a design-quality tool. It must not change product scope.
 direction is **the user's reference** (plan §30.1, D97, Phase 6B; "Follow
 the Line", D36, is superseded), and its contract lives in
 `.impeccable/surfaces/src-app-site-page-tsx.md`; every public screen is built
-in that world and never invents its own colour, shape or motion. `DESIGN.md`
-is written from the built world when Phase 6B ends and is then the design
-system's authority.
+in that world and never invents its own colour, shape or motion.
+`DESIGN.md`, recorded from the built world when Phase 6B ended (R6B.5), is
+the design system's authority: read it before any UI change, and keep it
+true in the same commit.
 
 ```text
 /impeccable shape <screen>      before building a screen the plan has not shaped (the admin: R6.1)

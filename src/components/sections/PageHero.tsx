@@ -35,7 +35,7 @@ export function PageHero({
     <section id={anchor} className="mx-auto w-full max-w-site px-gutter pt-2">
       <div className={image ? "grid gap-8 lg:grid-cols-[1fr_1.04fr] lg:items-center lg:gap-14" : "grid"}>
         <div className="grid content-start justify-items-start gap-6 lg:gap-8">
-          {label.toLowerCase() === headline.toLowerCase() ? null : <PillLabel>{label}</PillLabel>}
+          {headline.toLowerCase().includes(label.toLowerCase()) ? null : <PillLabel>{label}</PillLabel>}
           <h1 className="max-w-[15ch] text-hero font-normal">
             <SettleText text={headline} highlight={highlight} />
           </h1>

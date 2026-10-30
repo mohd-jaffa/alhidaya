@@ -205,7 +205,7 @@ export const ADMIN_TEXT = {
     JOBS_LIST: "Shows every open job.",
     CONTACT_BAND: "Shows the phone, WhatsApp and email from Settings.",
     CONTACT_DETAILS: "Shows the contact details and the map from Settings.",
-    FOR_FAMILIES: "Its card shows every published service, sliding past, each opening its page.",
+    FOR_FAMILIES: "Its card shows every published service for families, sliding past, each opening its page.",
     FORM: "Beside the form it shows the email from Settings.",
   } as Partial<Record<SectionType, string>>,
   /** A section's fields, named as their checks name them (src/lib/validation/schemas/pages.ts). */
@@ -224,7 +224,8 @@ export const ADMIN_TEXT = {
   addValue: "Add a value",
   /** The redesign's sections (D97, D100): their parts, named as their checks name them. */
   highlight: "Highlighted words",
-  highlightHint: "Words of the headline, written as they are there, set on a pale-green highlight.",
+  highlightHint:
+    "Words of the headline, written as they are there, set on a pale-green highlight. A word or two: they stay on one line.",
   faces: "Faces",
   face: "Face",
   addFace: "Add a face",

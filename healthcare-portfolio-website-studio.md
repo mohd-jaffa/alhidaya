@@ -1125,9 +1125,10 @@ Pinned by the user (2026-10-30): the telehealth landing language of Dribbble
 shot 24320685 (Eloqwnt for DocInPoc), followed section by section in Al
 Hidaya's words, photos and the logo's colours. The direction contract lives in
 the public site's surface brief (`.impeccable/surfaces/`) and is the authority
-for every public screen; `DESIGN.md` is written from the built world when
-Phase 6B ends. The reference's frames are the composition the build matches
-(code-led: no image generation).
+for every public screen; `DESIGN.md`, recorded from the built world at the
+end of Phase 6B (R6B.5, after the finish review's "ship after fixes" and
+its fixes), is the design system's authority. The reference's frames are
+the composition the build matches (code-led: no image generation).
 
 **The world.** A white page; pale mist cards with large soft radii; the logo's
 leaf green deepened to forest for the primary pills, the accent card and the
@@ -1519,7 +1520,7 @@ one commit (D27).
 | R6B.2 | Home in the reference's sections (D97, D100): the split hero; the statement; the four highlight cards; "For Hospitals, Clinics & Schools" with its counters (D99, D105); "For Families" with the services sliding in a card (D102, D105); how it works, four steps; the Contact form (D104): each a section type in the Pages editor, seeded, with the new photographs (licensed stock, D8, D75) and their motion | D97, D99, D100, D102, D104, D105 | R6B.1 | DONE (2026-10-30) |
 | R6B.3 | The forest footer with its running words, editable in Settings (D106), and its columns | D106 | R6B.1 | DONE (2026-10-30) |
 | R6B.4 | Every other public page in the new look and motion (D103): About, Services, each service, Careers, each job, Apply, Contact, Request a quote, Privacy, Terms, the system pages and the share pictures; the old line components retired | D103 | R6B.2 | DONE (2026-10-31; D109 – D112) |
-| R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | TODO |
+| R6B.5 | The finish: budgets (§31), axe and keyboard at every width, reduced motion, the journeys updated, the finish review against the reference, `DESIGN.md` | §31, §32, §34 | R6B.2 – R6B.4 | DONE (2026-10-31) |
 
 ### Phase 7 — Performance, accessibility and the finish
 

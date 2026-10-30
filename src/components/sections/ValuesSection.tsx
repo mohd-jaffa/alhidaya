@@ -1,15 +1,14 @@
 import { Reveal } from "@/components/motion/Reveal";
 import type { Section } from "@/lib/validation";
 
-import { ordinal } from "./numbered";
 import { SectionFrame, SectionHeading } from "./SectionFrame";
 
 type ValuesContent = Extract<Section, { type: "VALUES" }>["content"];
 
 /**
- * What the company stands for (plan §6.1, §6.2, D97): each value a mist card
- * numbered at its top, its title and its line at its foot, as many across as
- * fit; they rise in one after another.
+ * What the company stands for (plan §6.1, §6.2, D97): each value a mist card,
+ * its title and its line, as many across as fit; they rise in one after
+ * another.
  */
 export function ValuesSection({ anchor, content }: { anchor: string; content: ValuesContent }) {
   return (
@@ -20,17 +19,9 @@ export function ValuesSection({ anchor, content }: { anchor: string; content: Va
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(16rem,1fr))]">
         {content.items.map((item, at) => (
           <li key={item.title.en}>
-            <Reveal
-              order={at}
-              className="flex h-full min-h-64 flex-col justify-between gap-10 rounded-card bg-mist p-6"
-            >
-              <span aria-hidden="true" className="text-title font-light text-ink-2 tabular-nums">
-                {ordinal(at)}
-              </span>
-              <div className="grid gap-2">
-                <h3 className="text-title font-medium">{item.title.en}</h3>
-                {item.text.en ? <p className="text-small text-ink-2">{item.text.en}</p> : null}
-              </div>
+            <Reveal order={at} className="grid h-full content-start gap-2 rounded-card bg-mist p-6 sm:p-8">
+              <h3 className="text-title font-medium">{item.title.en}</h3>
+              {item.text.en ? <p className="text-ink-2">{item.text.en}</p> : null}
             </Reveal>
           </li>
         ))}

@@ -26,8 +26,8 @@ test("Home opens on its hero: the headline, its words, WhatsApp and the quote, a
     "href",
     /^https:\/\/wa\.me\/97431306555\?text=/,
   );
-  // The hero's photograph (D75), served in its made sizes and loaded first.
-  const photo = hero.getByRole("img", { name: SEED_PHOTOS.heroNurse.alt });
+  // The hero's photograph (D75), a nurse against a light wall, served in its made sizes and loaded first.
+  const photo = hero.getByRole("img", { name: SEED_PHOTOS.avatarBraids.alt });
   await expect(photo).toHaveAttribute("fetchpriority", "high");
   await expect
     .poll(() => photo.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth))
@@ -36,7 +36,7 @@ test("Home opens on its hero: the headline, its words, WhatsApp and the quote, a
   await expect(page).toHaveURL(ROUTES.quote);
 });
 
-test("Home follows the reference's sections, its services in the families' card and the Contact form (D97)", async ({
+test("Home follows the reference's sections, the family services in their card and the Contact form (D97)", async ({
   page,
 }) => {
   await page.goto("/");
@@ -44,10 +44,12 @@ test("Home follows the reference's sections, its services in the families' card 
     await expect(page.getByRole("region", { name })).toBeVisible();
   const families = page.getByRole("region", { name: /Care for the people you love/ });
   for (const service of SEED_SERVICES)
-    await expect(families.getByRole("link", { name: service.name.en })).toHaveAttribute(
-      "href",
-      ROUTES.service(service.slug),
-    );
+    if (service.audience === "FAMILIES")
+      await expect(families.getByRole("link", { name: service.name.en })).toHaveAttribute(
+        "href",
+        ROUTES.service(service.slug),
+      );
+    else await expect(families.getByRole("link", { name: service.name.en })).toHaveCount(0);
   const steps = page.getByRole("region", { name: /Care arranged/ }).getByRole("listitem");
   await expect(steps).toHaveCount(4);
   const form = page.getByRole("region", { name: "Talk to us about the care you need" });
@@ -68,6 +70,28 @@ test("the statement darkens with the scroll, and every word stays readable befor
   await page.locator("#statement").scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 400);
   await expect.poll(() => ink.evaluate((element) => Number(getComputedStyle(element).opacity))).toBeGreaterThan(0);
+});
+
+test.describe("with reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("everything is in place: the headline, the statement inked, the cards, the footer's words still", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.waitForLoadState("load");
+    await page.waitForTimeout(1500);
+    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+    const style = (selector: string, property: "opacity" | "animationName") =>
+      page
+        .locator(selector)
+        .first()
+        .evaluate((element, name) => getComputedStyle(element)[name], property);
+    expect(await style(".settle-letter", "animationName")).toBe("none");
+    expect(await style("#statement [data-ink]", "opacity")).toBe("1");
+    expect(await style("#highlights li > div", "opacity")).toBe("1");
+    expect(await style(".running-words", "animationName")).toBe("none");
+  });
 });
 
 test("no rail runs down the page, and the header scrolls away with it (D101, D107)", async ({ page }) => {

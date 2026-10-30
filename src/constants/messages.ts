@@ -69,6 +69,7 @@ export const UI_TEXT = {
   whoItIsFor: "Who it is for",
   whatItIncludes: "What it includes",
   otherServices: "Other services",
+  allServices: "All services",
   /** A job's page (plan §6.6). */
   aboutJob: "About this job",
   responsibilities: "What you will do",

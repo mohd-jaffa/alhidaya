@@ -83,6 +83,8 @@ test("a logo is added, published to the home page and archived off it (D92)", as
 
     await visitor.reload();
     await expect(visitor.getByRole("heading", { name: "Our clients" })).toBeVisible();
+    // The logo loads as the visitor reaches it, like every image below the fold.
+    await visitor.locator("#clients").scrollIntoViewIfNeeded();
     await expect(visitor.getByRole("img", { name })).toBeVisible();
 
     const site = page.getByRole("region", { name: ADMIN_TEXT.onTheSite });

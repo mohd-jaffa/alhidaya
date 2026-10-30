@@ -27,9 +27,9 @@ describe("PageHero", () => {
     expect(container.querySelector(".lg\\:grid-cols-\\[1fr_1\\.04fr\\]")).toBeInTheDocument();
   });
 
-  it("stands its words alone without a photo, and leaves out a pill that would repeat the headline", () => {
-    const { container } = render(<PageHero anchor="start" label="Privacy" headline="privacy" />);
-    expect(screen.getByRole("heading", { level: 1, name: "privacy" })).toBeInTheDocument();
+  it("stands its words alone without a photo, and leaves out a pill the headline already says", () => {
+    const { container } = render(<PageHero anchor="start" label="Careers" headline="Nursing careers in Doha" />);
+    expect(screen.getByRole("heading", { level: 1, name: "Nursing careers in Doha" })).toBeInTheDocument();
     expect(container.querySelector(".bg-leaf-pale")).not.toBeInTheDocument();
     expect(container.querySelector(".text-lead")).not.toBeInTheDocument();
     expect(container.querySelector(".flex-wrap")).not.toBeInTheDocument();

@@ -29,6 +29,8 @@ describe("SettleText (D97)", () => {
     const marked = container.querySelector(".bg-leaf-pale");
     expect(marked).toHaveTextContent("nursing care");
     expect(marked?.textContent).toBe("nursing care");
+    // Kept on one line.
+    expect(marked).toHaveClass("whitespace-nowrap");
     rerender(<SettleText text="Quality nursing care at your doorstep" highlight="hospital" />);
     expect(container.querySelector(".bg-leaf-pale")).toBeNull();
   });

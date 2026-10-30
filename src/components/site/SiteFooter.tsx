@@ -43,7 +43,7 @@ export function SiteFooter({ site }: { site: SiteDocument | null }) {
         </div>
         {site?.footer.map((column) => (
           <nav key={column.heading.en} aria-label={column.heading.en} className="grid content-start gap-4">
-            <h2 className="text-label font-semibold uppercase text-on-forest-2">{column.heading.en}</h2>
+            <h2 className="text-small font-medium text-on-forest-2">{column.heading.en}</h2>
             <ul className="grid gap-3">
               {column.links.map((link) => (
                 <li key={link.href}>
@@ -57,7 +57,7 @@ export function SiteFooter({ site }: { site: SiteDocument | null }) {
         ))}
         {site ? (
           <div className="grid content-start gap-4">
-            <h2 className="text-label font-semibold uppercase text-on-forest-2">{UI_TEXT.contactHeading}</h2>
+            <h2 className="text-small font-medium text-on-forest-2">{UI_TEXT.contactHeading}</h2>
             <address className="grid gap-1 not-italic text-on-forest-2">
               {site.contact.address.map((line) => (
                 <span key={line.en}>{line.en}</span>

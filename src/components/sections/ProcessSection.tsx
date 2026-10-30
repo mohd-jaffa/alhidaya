@@ -26,7 +26,7 @@ export function ProcessSection({
   image: (ref: { mediaId: string } | null) => SiteImage | null;
 }) {
   return (
-    <SectionFrame anchor={anchor} className="grid gap-12 py-section">
+    <SectionFrame anchor={anchor} className="grid gap-12">
       <Reveal>
         <SectionOpening
           anchor={anchor}

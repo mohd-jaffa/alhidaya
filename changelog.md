@@ -3148,3 +3148,83 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 ### Blockers
 - None. The client's own photographs replace the stock (D110) through the
   admin.
+
+## 2026-10-31 — R6B.5: the redesign's finish
+
+### Added
+- **Every public page at every width** (`tests/e2e/widths.spec.ts`): at
+  320, 768 and 1024 px (the journeys already run at 390 and 1440), nothing
+  scrolls sideways and axe finds nothing, on Home, About, Services, a
+  service, Careers, a job, the application, Contact, the quote page,
+  Privacy and Terms.
+- **The keyboard's way through the pages** (`tests/e2e/keyboard.spec.ts`):
+  on Home, Services, a service, Careers and Contact, at both widths, every
+  stop the Tab key reaches is drawn and shows its focus ring.
+- **Home with reduced motion** (`home.spec.ts`): the headline in place, the
+  statement fully inked, the cards shown and the footer's words still.
+
+### Changed
+- The green highlight card's small figure label is white on its translucent
+  pill (4.2:1 in the pale green, now 5.0:1).
+- **The finish review** (Impeccable's finish reviewer, against the contract
+  and the reference's frames, twice): "ship after fixes", then the fixes
+  below. Its findings and verdict are kept with the review's captures.
+- **Headlines**: the hero size is capped at 60 px on a wide screen (the
+  reference's scale), so Home's headline runs in two lines there; tracking
+  loosened (hero -0.02em, display -0.018em) and leading raised (1.06, 1.1);
+  each settling letter is drawn above the highlight, so the highlight never
+  covers the line above's descenders; a highlight stays on one line (the
+  editor's hint says "a word or two"), and the seeded highlights are short
+  (About's "compassion", the quote page's "the care").
+- **Home**: its hero photo is a nurse against a light wall (from the
+  licensed stock), and the hero fits the first screen; the space between
+  sections is the one section gap (five sections, the hero and the
+  statement no longer add their own); the facts take as many columns as
+  there are (one under another on a phone); the families' card shows the
+  family services only, its row fading at the card's edge, with "All
+  services" below it; the green card carries the reference's thin-line
+  globe, low behind its faces; its small figure label is white on its pill
+  (5.0:1, from 4.2:1); the hero's chips are translucent.
+- **The page's pill** is left out wherever the headline already says the
+  page's name (Careers, Privacy).
+- **Forms**: the words beside a form stay in view as it scrolls by on a
+  wide screen (Contact, the quote page, the application); the quote page's
+  form is headed "Your request", no longer repeating the page's name.
+- About's values carry no numbers; the footer's column labels are in
+  sentence case; the staffing band on Services shows a photograph no service
+  card does.
+- The seed photographs' README says where each is used now.
+- The contract (`.impeccable/surfaces/src-app-site-page-tsx.md`) names the
+  hero chips' checks, and why they replace the reference's plus buttons.
+- "How it works" keeps its pill: the reference sets a pill above its
+  process heading too ("For Doctors" over "Experience the process"), pinned
+  by D97.
+- **`DESIGN.md`** and its sidecar (`.impeccable/design.json`), recorded
+  from the built site (Impeccable's documenter): from now on the design
+  system's authority (AGENTS.md §22).
+- The corners of a photo set in a card are tokens now (`inset` 20 px,
+  `thumb` 16 px, and the highlight's `0.18em`), where three were typed by
+  hand; the unused label size is gone.
+
+### Validation
+- Typecheck, lint, format check and the test-path check passed.
+- Unit and integration tests passed (1,160), coverage 100%.
+- E2E (phone and desktop, axe): the whole suite passed (172), with the new
+  journeys: every page at 320, 768 and 1024 px, the keyboard's way through
+  five pages, Home with reduced motion; Home's hero photo and family
+  services; the logo journey now scrolls to the logos, as a visitor does,
+  before looking at one (it loads as it is reached).
+- Impeccable's detector on the running pages at 1440 and 390 px: the card
+  in a card on Home is the reference's app card (D102); the low-contrast
+  label is fixed.
+- Every image on every page loads, at both widths (checked with each lazy
+  image loaded for the captures).
+- Speed, locally (median of three, a phone at 4x CPU and 9 Mbps): LCP
+  about 0.3 s and CLS 0.000 on Home, About, Services and Contact; desktop
+  LCP under 0.06 s.
+- First paint, JavaScript (gzip, within 174,080 bytes): Home, Contact and
+  the quote page 172,042; the application 170,659; About, Services,
+  Careers and Privacy 163,236; a service and a job 161,663.
+
+### Blockers
+- None.

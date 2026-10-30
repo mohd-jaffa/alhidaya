@@ -12,7 +12,7 @@ type StatementContent = Extract<Section, { type: "STATEMENT" }>["content"];
  */
 export function StatementSection({ anchor, content }: { anchor: string; content: StatementContent }) {
   return (
-    <SectionFrame anchor={anchor} named={false} className="py-16 lg:py-24">
+    <SectionFrame anchor={anchor} named={false} className="py-6 lg:py-10">
       <StatementWords
         parts={content.parts.map((part) => ({ text: part.text.en, strong: part.strong, pictogram: part.pictogram }))}
         className="mx-auto max-w-[30ch] text-center text-statement font-normal text-balance"

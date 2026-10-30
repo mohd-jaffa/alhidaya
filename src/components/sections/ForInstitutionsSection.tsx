@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { CountUp } from "@/components/motion/CountUp";
 import { Reveal } from "@/components/motion/Reveal";
 import { MediaImage } from "@/components/ui/media-image";
@@ -37,7 +39,7 @@ export function ForInstitutionsSection({
   const reach = faces(content.reach.avatars);
   const photo = image(content.photo.image);
   return (
-    <SectionFrame anchor={anchor} className="grid gap-12 py-section">
+    <SectionFrame anchor={anchor} className="grid gap-12">
       <Reveal>
         <SectionOpening
           anchor={anchor}
@@ -70,7 +72,7 @@ export function ForInstitutionsSection({
         </li>
         <li>
           <Reveal order={1} className="flex h-full min-h-[21rem] flex-col gap-5 rounded-card bg-mist p-4">
-            <div className="relative min-h-48 grow overflow-hidden rounded-[1.25rem] bg-ground">
+            <div className="relative min-h-48 grow overflow-hidden rounded-inset bg-ground">
               {photo ? (
                 <MediaImage
                   image={photo}
@@ -103,7 +105,10 @@ export function ForInstitutionsSection({
         </li>
       </ul>
       {content.facts.length > 0 ? (
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+        <dl
+          className="grid gap-x-6 gap-y-8 sm:grid-cols-[repeat(var(--facts),minmax(0,1fr))]"
+          style={{ "--facts": content.facts.length } as CSSProperties}
+        >
           {content.facts.map((fact, at) => (
             <Reveal key={fact.label.en} order={at} className="grid gap-2">
               <dt className="order-2 text-small text-ink-2">{fact.label.en}</dt>

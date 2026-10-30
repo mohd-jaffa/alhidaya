@@ -33,7 +33,7 @@ export function ServiceCards({
               order={at % ROW}
               className="group relative grid h-full grid-cols-[6rem_minmax(0,1fr)] items-center gap-4 rounded-card bg-mist p-2 sm:grid-cols-1 sm:content-start sm:items-stretch sm:pb-6"
             >
-              <span className="relative block aspect-square overflow-hidden rounded-[1.25rem] bg-leaf-pale sm:aspect-[4/3]">
+              <span className="relative block aspect-square overflow-hidden rounded-inset bg-leaf-pale sm:aspect-[4/3]">
                 {photo ? (
                   <MediaImage
                     image={photo}

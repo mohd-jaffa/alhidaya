@@ -68,8 +68,8 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           lede: en(
             "Nursing care at home and in clinics across Doha, and nurse staffing for hospitals, clinics and schools.",
           ),
-          image: photos.heroNurse,
-          avatars: faces(photos.avatarNavy, photos.avatarBraids, photos.avatarGreen, photos.avatarTurban),
+          image: photos.avatarBraids,
+          avatars: faces(photos.avatarNavy, photos.heroNurse, photos.avatarGreen, photos.avatarTurban),
           chips: [en("At home"), en("Day and night"), en("Across Doha")],
           card: { title: en("Home nursing care"), tag: en("Our services"), image: photos.homeNursing },
           note: { pictogram: "clock", text: en("Nurses around the clock") },
@@ -181,7 +181,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
       sections: [
         sign({
           headline: en("Nursing care with compassion and dignity"),
-          highlight: en("compassion and dignity"),
+          highlight: en("compassion"),
           lede: en("A nursing care company in Doha, caring for patients at home and supplying nurses to institutions."),
           image: photos.careAtHome,
         }),
@@ -236,7 +236,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           image: photos.wardNurse,
         }),
         section("SERVICES_INDEX", { heading: en("All services"), intro: en(null) }),
-        institutions(photos.hospitalCorridor),
+        institutions(photos.consultation),
         contactBand(),
       ],
     },
@@ -285,11 +285,11 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
       sections: [
         sign({
           headline: en("Tell us the care you need"),
-          highlight: en("the care you need"),
+          highlight: en("the care"),
           lede: en("For families, hospitals, clinics and schools. We will reply with a quote."),
           image: null,
         }),
-        section("FORM", { heading: en("Request a quote"), text: en(null), form: "QUOTE" }),
+        section("FORM", { heading: en("Your request"), text: en(null), form: "QUOTE" }),
       ],
     },
     PRIVACY: {
