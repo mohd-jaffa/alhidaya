@@ -12,8 +12,8 @@ export const SHARE_IMAGE_SIZE = { width: 1200, height: 630 } as const;
 const COLOURS = {
   ground: "#ffffff",
   navy: "#0b2440",
-  forest: "#3b6b24",
-  onForest: "#ffffff",
+  forest: "#5b7628",
+  leaf: "#86ae3c",
   leafPale: "#eef5e2",
 } as const;
 
@@ -22,7 +22,7 @@ const FONT = "src/assets/fonts/inter-tight/share/inter-tight-latin-400-normal.wo
 /**
  * The picture a page shows when it is shared (plan §19, D97): on white, what
  * the page is on a pale-green pill and its headline, large and light, in the
- * site's typeface; across its foot, the company's name on the forest band,
+ * site's typeface; across its foot, the company's name on the leaf band,
  * as the footer carries it.
  */
 export async function renderShareImage({ title, label }: { title: string; label?: string }): Promise<ImageResponse> {
@@ -82,8 +82,8 @@ export async function renderShareImage({ title, label }: { title: string; label?
           alignItems: "center",
           height: 132,
           padding: "0 80px",
-          background: COLOURS.forest,
-          color: COLOURS.onForest,
+          background: COLOURS.leaf,
+          color: COLOURS.navy,
           fontSize: 40,
           letterSpacing: -1,
         }}

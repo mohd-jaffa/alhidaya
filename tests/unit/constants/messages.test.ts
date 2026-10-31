@@ -10,7 +10,7 @@ import {
 
 describe("UI_TEXT", () => {
   it("names the company as the user decided (plan D5)", () => {
-    expect(UI_TEXT.siteName).toBe("Al Hidaya Health Care Services");
+    expect(UI_TEXT.siteName).toBe("Al Hidaya Health Care Service");
   });
 
   it("holds no empty wording", () => {

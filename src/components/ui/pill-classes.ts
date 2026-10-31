@@ -1,17 +1,18 @@
 /**
- * The site's round actions (D97): the forest pill is the one main action in a
- * view, with an arrow that steps forward under the pointer; the pale pill is
+ * The site's round actions (D97): the leaf pill, the logo's green with navy
+ * words (D122), is the one main action in a view, with an arrow that steps
+ * forward under the pointer; the pale pill is
  * the action beside it. They press in by transform alone. Their look alone,
  * apart from the components, for a page that takes it without them (a failed
  * page, which reloads in full).
  */
 const VARIANTS = {
-  forest: "bg-forest text-on-forest hover:bg-forest-2",
-  pale: "bg-leaf-pale text-forest hover:bg-forest hover:text-on-forest",
-  /** On the forest footer or an accent card: white, its words forest. */
-  onForest: "bg-ground text-forest hover:bg-leaf-pale focus-visible:outline-focus-on-deep",
-  /** Beside it on forest: outlined in white. */
-  onForestQuiet: "border border-on-forest text-on-forest hover:bg-on-forest/10 focus-visible:outline-focus-on-deep",
+  leaf: "bg-leaf text-on-leaf hover:bg-leaf-2",
+  pale: "bg-leaf-pale text-forest hover:bg-leaf hover:text-on-leaf",
+  /** On the leaf footer or a green card: white, its words navy. */
+  onLeaf: "bg-ground text-navy hover:bg-leaf-pale focus-visible:outline-focus-on-leaf",
+  /** Beside it on the leaf: outlined in navy. */
+  onLeafQuiet: "border border-on-leaf text-on-leaf hover:bg-on-leaf/10 focus-visible:outline-focus-on-leaf",
 } as const;
 
 export type PillVariant = keyof typeof VARIANTS;
@@ -24,7 +25,7 @@ const SIZES = {
 export type PillSize = keyof typeof SIZES;
 
 export function pillClasses(
-  { variant = "forest", size = "md" }: { variant?: PillVariant; size?: PillSize },
+  { variant = "leaf", size = "md" }: { variant?: PillVariant; size?: PillSize },
   className?: string,
 ): string {
   return [

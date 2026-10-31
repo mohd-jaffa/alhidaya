@@ -137,15 +137,10 @@ const SECTION_CONTENT = {
     reach: z.object({ title: label("Title"), avatars: faces(4) }),
     facts: z.array(fact).max(LIST_LIMITS.facts, VALIDATION_MESSAGES.atMost("Figures", LIST_LIMITS.facts)),
   }),
+  // How it works runs through the families' card (D124): its label, then its steps in order.
   FOR_FAMILIES: z.object({
     ...opening,
-    photo: pictured,
-    features: z
-      .array(z.object({ pictogram: chipIcon, title: label("Title") }))
-      .max(LIST_LIMITS.features, VALIDATION_MESSAGES.atMost("Features", LIST_LIMITS.features)),
-  }),
-  PROCESS: z.object({
-    ...opening,
+    stepsLabel: optionalLabel("The steps' label"),
     steps: z
       .array(
         z.object({
@@ -154,9 +149,14 @@ const SECTION_CONTENT = {
           text: shortText("Text"),
         }),
       )
-      .min(2, VALIDATION_MESSAGES.atLeastOne("The steps"))
       .max(LIST_LIMITS.steps, VALIDATION_MESSAGES.atMost("The steps", LIST_LIMITS.steps)),
+    photo: pictured,
+    features: z
+      .array(z.object({ pictogram: chipIcon, title: label("Title") }))
+      .max(LIST_LIMITS.features, VALIDATION_MESSAGES.atMost("Features", LIST_LIMITS.features)),
   }),
+  // Every published service running past, under its opening (D124).
+  SERVICES_ROW: z.object({ ...opening }),
 } satisfies Record<SectionType, z.ZodType>;
 
 const sectionOf = <T extends SectionType>(type: T) =>
@@ -180,7 +180,7 @@ export const sectionSchema = z.discriminatedUnion("type", [
   sectionOf("HIGHLIGHTS"),
   sectionOf("FOR_INSTITUTIONS"),
   sectionOf("FOR_FAMILIES"),
-  sectionOf("PROCESS"),
+  sectionOf("SERVICES_ROW"),
 ]);
 export type Section = z.output<typeof sectionSchema>;
 export type SectionInput = z.input<typeof sectionSchema>;

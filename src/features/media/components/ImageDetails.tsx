@@ -105,6 +105,7 @@ export function ImageDetails({ image, onDeleted }: { image: LibraryImageItem; on
           <p className="text-small text-ink-2">{ADMIN_TEXT.inUseNote}</p>
         ) : (
           <AskedAction
+            danger
             label={ADMIN_TEXT.delete}
             pendingLabel={ADMIN_TEXT.deleting}
             title={ADMIN_TEXT.deleteImageTitle}

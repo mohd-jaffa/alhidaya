@@ -10,12 +10,12 @@ type MissionContent = Extract<Section, { type: "MISSION" }>["content"];
 
 /**
  * The mission and the vision (plan §6.2, D97), side by side: the mission on
- * the forest card, the vision on mist, each named by its heading beside its
+ * the leaf card, the vision on mist, each named by its heading beside its
  * icon, the statement below.
  */
 export function MissionSection({ anchor, content }: { anchor: string; content: MissionContent }) {
   const statements: { heading: string; text: string; pictogram: PictogramName; card: string }[] = [
-    { heading: UI_TEXT.mission, text: content.mission.en, pictogram: "heart", card: "bg-forest text-on-forest" },
+    { heading: UI_TEXT.mission, text: content.mission.en, pictogram: "heart", card: "bg-leaf text-on-leaf" },
     { heading: UI_TEXT.vision, text: content.vision.en, pictogram: "globe", card: "bg-mist" },
   ];
   return (
@@ -28,7 +28,7 @@ export function MissionSection({ anchor, content }: { anchor: string; content: M
             className={`flex min-h-80 flex-col justify-between gap-10 rounded-card p-6 sm:p-8 lg:p-10 ${statement.card}`}
           >
             <div className="flex items-center gap-3">
-              <IconChip name={statement.pictogram} tone={at === 0 ? "ground" : "forest"} />
+              <IconChip name={statement.pictogram} tone={at === 0 ? "ground" : "leaf"} />
               <h2 className="text-title font-medium">{statement.heading}</h2>
             </div>
             <p className="text-lead whitespace-pre-line">{statement.text}</p>

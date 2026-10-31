@@ -178,7 +178,7 @@ describe("SectionFields", () => {
   });
 
   it("names an error on a list as a whole", async () => {
-    fields("PROCESS", "HOME", { ...contentFixture("PROCESS"), steps: [] });
+    fields("FOR_FAMILIES", "HOME", { ...contentFixture("FOR_FAMILIES"), steps: [] });
     form.setError("sections.0.content.steps", { type: "server", message: "Two steps at least." });
     expect(await screen.findByText("Two steps at least.")).toBeVisible();
   });

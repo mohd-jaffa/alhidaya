@@ -25,7 +25,7 @@ arrived, newest first and ruled by day, each row handled where it is. It refuses
 the dashboard of KPI tiles and charts, the public site's signs and motion, and
 page-per-click inbox work.
 
-OWN-WORLD: quiet and firm. A navy column of links in groups (since D101 a
+OWN-WORLD: quiet and firm. A column of links in the logo's deep blue (D123) in groups (since D101 a
 plain list: no line, no station dots), the current one marked, new counts in
 sky pills. A white work area; mist for an opened row; deep blue for actions
 and "New", sky for in progress, leaf for resolved; error red only for

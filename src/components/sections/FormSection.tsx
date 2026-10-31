@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { Reveal } from "@/components/motion/Reveal";
 import { IconChip } from "@/components/ui/icon-chip";
 import { mailtoHref } from "@/lib/contact";
 import type { Section } from "@/lib/validation";
@@ -13,7 +14,7 @@ type FormContent = Extract<Section, { type: "FORM" }>["content"];
  * (D97, D104): beside the form, the email as a chip, the admin's heading,
  * large and light, and their words, staying in view beside a long form on a
  * wide screen; the form itself, fixed in code and given by the page, on a
- * mist panel.
+ * mist panel. Each rises into place as it scrolls into view (D125).
  */
 export function FormSection({
   anchor,
@@ -30,7 +31,7 @@ export function FormSection({
   return (
     <SectionFrame anchor={anchor}>
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
-        <div className="grid content-start gap-6 lg:sticky lg:top-8 lg:self-start">
+        <Reveal className="grid content-start gap-6 lg:sticky lg:top-8 lg:self-start">
           {email ? (
             <a
               href={mailtoHref(email)}
@@ -44,8 +45,10 @@ export function FormSection({
             {content.heading.en}
           </h2>
           {content.text.en ? <p className="text-lead whitespace-pre-line text-ink-2">{content.text.en}</p> : null}
-        </div>
-        <div className="rounded-card bg-mist p-5 sm:p-8 lg:p-10">{form}</div>
+        </Reveal>
+        <Reveal order={1} className="rounded-card bg-mist p-5 sm:p-8 lg:p-10">
+          {form}
+        </Reveal>
       </div>
     </SectionFrame>
   );

@@ -66,7 +66,7 @@ describe("a page with everything it shows, against the local MySQL", () => {
 
   it("titles a page that is not published yet with its name and the site's description", async () => {
     expect(await getPageMetadata("HOME")).toMatchObject({
-      title: { absolute: "Al Hidaya Health Care Services" },
+      title: { absolute: "Al Hidaya Health Care Service" },
       description: expect.stringContaining("Nursing care at home"),
       alternates: { canonical: "/" },
     });
@@ -138,9 +138,9 @@ describe("a page with everything it shows, against the local MySQL", () => {
 
   it("titles a page with the admin's SEO words, else its name; Home with the site's own title", async () => {
     expect(await getPageMetadata("HOME")).toMatchObject({
-      title: { absolute: "Al Hidaya Health Care Services" },
+      title: { absolute: "Al Hidaya Health Care Service" },
       description: "Nursing care in Doha.",
-      openGraph: { title: "Al Hidaya Health Care Services", url: "/" },
+      openGraph: { title: "Al Hidaya Health Care Service", url: "/" },
     });
     const privacy = pageFixture("PRIVACY");
     await publishedPage("PRIVACY", {

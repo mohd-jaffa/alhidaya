@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { RichTextSection } from "@/components/sections/RichTextSection";
+import { RichTextSection, textParts } from "@/components/sections/RichTextSection";
 import { contentFixture } from "@tests/support/fixtures/content";
 
 const en = <T,>(value: T) => ({ en: value });
@@ -22,5 +22,16 @@ describe("RichTextSection", () => {
     const { container } = render(<RichTextSection anchor="text" content={{ ...contentFixture("RICH_TEXT"), body }} />);
     expect(screen.getByRole("heading", { level: 2, name: "What we collect" })).toBeInTheDocument();
     expect(container.querySelector("section")).not.toHaveAttribute("aria-labelledby");
+  });
+
+  it("rises in parts, each heading with the words under it, the words before the first a part of their own (D125)", () => {
+    const paragraph = (text: string) => ({ type: "paragraph" as const, text: { en: text } });
+    const heading = (text: string) => ({ type: "heading" as const, text: { en: text } });
+    expect(
+      textParts([paragraph("Before"), heading("One"), paragraph("A"), paragraph("B"), heading("Two")]).map((part) =>
+        part.map((block) => ("text" in block ? block.text.en : null)),
+      ),
+    ).toEqual([["Before"], ["One", "A", "B"], ["Two"]]);
+    expect(textParts([])).toEqual([]);
   });
 });

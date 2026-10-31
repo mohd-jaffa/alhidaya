@@ -42,12 +42,12 @@ export function ServicesIndexSection({
         if (theirs.length === 0) return null;
         return (
           <div key={audience} className="grid gap-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+            <Reveal className="flex flex-wrap items-center justify-between gap-4">
               <PillLabel as="h3">{AUDIENCE_LABELS[audience]}</PillLabel>
               <div className="flex flex-wrap gap-3">
                 <AudienceActions audience={audience} site={site} />
               </div>
-            </div>
+            </Reveal>
             <ServiceCards services={theirs} image={image} />
           </div>
         );

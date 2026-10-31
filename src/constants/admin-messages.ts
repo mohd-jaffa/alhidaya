@@ -229,7 +229,8 @@ export const ADMIN_TEXT = {
     JOBS_LIST: "Shows every open job.",
     CONTACT_BAND: "Shows the phone, WhatsApp and email from Settings.",
     CONTACT_DETAILS: "Shows the contact details and the map from Settings.",
-    FOR_FAMILIES: "Its card shows every published service for families, sliding past, each opening its page.",
+    SERVICES_ROW:
+      "Shows every published service, in their order, running past, each opening its page, with a link to all of them.",
     FORM: "Beside the form it shows the email from Settings.",
   } as Partial<Record<SectionType, string>>,
   /** A section's fields, named as their checks name them (src/lib/validation/schemas/pages.ts). */
@@ -287,6 +288,7 @@ export const ADMIN_TEXT = {
   features: "Features",
   feature: "Feature",
   addFeature: "Add a feature",
+  stepsLabel: "Label above the steps",
   steps: "The steps",
   step: "Step",
   addStep: "Add a step",
@@ -674,6 +676,6 @@ export const SECTION_NAMES = {
   STATEMENT: "Statement",
   HIGHLIGHTS: "Highlights",
   FOR_INSTITUTIONS: "For hospitals, clinics and schools",
-  FOR_FAMILIES: "For families",
-  PROCESS: "How it works",
+  FOR_FAMILIES: "For families, with how it works",
+  SERVICES_ROW: "Our services",
 } as const satisfies Record<SectionType, string>;

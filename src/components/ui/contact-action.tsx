@@ -18,7 +18,7 @@ const KINDS = {
 export function ContactAction({
   kind,
   to,
-  variant = "forest",
+  variant = "leaf",
   size,
   arrow = false,
   className,

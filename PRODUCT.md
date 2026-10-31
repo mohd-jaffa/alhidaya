@@ -49,7 +49,7 @@ applications, the brochure, contact details and SEO.
 
 ## Product Purpose
 
-The public website of **Al Hidaya Health Care Services**, a Doha nursing
+The public website of **Al Hidaya Health Care Service**, a Doha nursing
 care company: it presents what they do, earns trust, and turns visits into
 care requests, staffing quotes and job applications. The admin panel lets
 the company keep it current without a developer, while the design stays
@@ -119,8 +119,9 @@ Confirmed by the user (2026-10-28); the plan holds the full decision log.
 
 ## Brand Commitments
 
-- **Name:** Al Hidaya Health Care Services (the user, 2026-10-28). The logo
-  reads "Al Hidaya Health Care Service WLL" and
+- **Name:** Al Hidaya Health Care Service, as the logo reads (the user,
+  2026-10-31, D121; the footer's copyright adds W.L.L.). The logo reads
+  "Al Hidaya Health Care Service WLL" and
   "الهداية للخدمات الطبية التمريضية ذ.م.م".
 - **Logo:** `New Al Hidaya LH-01 (2).jpg` — a blue swoosh holding two
   crosses, a figure and a green leaf, with a bilingual wordmark.

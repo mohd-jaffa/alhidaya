@@ -3464,3 +3464,86 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None. At deploy (R8.2), confirm Passenger runs the app as one process.
+
+## 2026-10-31 — R6B.10: the user's review of the look
+
+### Changed
+- **The company is named as its logo reads** (D121, supersedes D5): "Al
+  Hidaya Health Care Service" in every title, email, share card, search
+  result and the brochure's file name; the footer's copyright gives the
+  registered name, "© 2026 Al Hidaya Health Care Service W.L.L. All rights
+  reserved." (`UI_TEXT.legalName`). The seed's About, Privacy and Terms
+  words follow.
+- **The primary green is the logo's** (D122, the user's choice): the
+  leaf `#86AE3C` fills the primary pills, the green cards (the highlight's,
+  the mission's, the contact band), icon chips and the footer, with navy
+  words (6.1:1; white on it would fail at 2.6:1), a hover `#7A9F37`, quieter
+  words `#1D393F`, navy focus rings, and a navy logo in the footer
+  (`logo-navy.svg`, the white logo recoloured). Green words and marks on
+  white or pale take forest `#5B7628`, the leaf deepened only as far as
+  reading needs (lighter than the old `#3B6B24`). Pill variants `leaf`,
+  `onLeaf`, `onLeafQuiet`; icon chip tone `leaf`; the share picture's band.
+- **The admin's blue is the logo's** (D123, the user's choice): the
+  admin's column, its phone bar and menu, and the sign-in page's panel take
+  the deep blue `#0F64AC` in place of the navy; their softer words are no
+  longer faded, so they keep 5.0:1.
+- **How it works runs in the families' card; Our services takes its
+  place** (D124, the user's request and choices): For families keeps its
+  heading, photo and features, and its card runs a "How it works" label and
+  the steps as compact numbered cards (edited in For families: `stepsLabel`,
+  `steps`); the How it works section type gives way to **Our services**
+  (`SERVICES_ROW`): an "Our services" pill and "Nursing care … for every
+  need", then every published service as a photo card, with a small **All
+  services** pill. Both rows run on their own in an endless loop by CSS
+  alone (`LoopRow`), in place of the scroll-driven sideways tracks
+  (`ScrollTrack` and its script are gone): each stops under the pointer,
+  while anything in it has focus, and by its own pause button (WCAG 2.2.2,
+  a `PauseToggle` the footer now shares); the repeats are hidden from screen
+  readers and the keyboard; with motion reduced they stand still, wrapped.
+- **Every block reveals as it scrolls into view** (D125, the user's
+  choice): besides the cards and openings that already did, the form and
+  its words, each part of the admin's text (a heading with its words),
+  each client logo (in rows of six), the contact details and the map, and
+  each audience's heading on Services. Nothing above the fold is hidden;
+  nothing moves with motion reduced.
+- **Deleting an image is red** (D126, the user's request): the media
+  library's Delete, and the Delete in the question it asks first, are white
+  on the error red (a `danger` button; `AskedAction` takes `danger`).
+- Plan: D121 – D126 (D5 superseded); §7's Home order and catalogue, §30.1's
+  motion, §30.2's tokens and §30.5's admin say how they were built; tracker
+  R6B.10 DONE (2026-10-31). AGENTS.md (the loops), PRODUCT.md (the name),
+  DESIGN.md (the greens, the admin's blue, the loops, the reveals, the red
+  Delete) and both surface briefs follow. The brand README names the logo's
+  files and the name.
+
+### Local development (no repository change)
+- The local database's Home has its steps in For families and Our services
+  after it, and its content names the company as the logo does; its rows
+  were backed up first. Written straight to the database, so the dev server
+  shows them after one hard reload (the cache does not see such a write).
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed (1,197), coverage 100%: the loop (read
+  once, its repeats hidden and inert, its timing, its pause), the pause
+  button in both tones, For families with its steps, Our services, the
+  text in parts, the red Delete and its question, the new greens' pairings
+  and focus rings in the token contract.
+- E2E passed (phone, desktop, axe on every page): 178 in the full run; the
+  5 that met this round's changes passed once updated, re-run with their
+  files (36): the Contact form's axe now waits for its panel to rise in;
+  the page editor picks the photo card's photo among the steps'; the loop
+  journey hovers the row's still frame (a running row never stands still
+  for the pointer). Repeated: the Contact form 8 of 8, the loops 16 of 16.
+  New: How it works and the services run, stop under the pointer and by
+  their buttons, and stand still with motion reduced.
+- Seen on the local site at 390 and 1440 px: the leaf pills, cards and
+  footer with navy words, the admin's deep blue, both loops, nothing
+  scrolling sideways.
+- First paint, JavaScript (gzip, within 174,080 bytes): Home, Contact and
+  the quote page 173,525 (−332: the sideways track's script is gone); the
+  application 172,580; About, Services, Careers, Privacy and Terms 164,666;
+  a service and a job 163,584. The loops are CSS.
+
+### Blockers
+- None.

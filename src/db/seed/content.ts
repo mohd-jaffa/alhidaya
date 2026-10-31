@@ -134,18 +134,8 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           headingStart: en("Compassionate nursing care"),
           pictogram: "heart",
           headingEnd: en("for your loved ones"),
-          photo: { image: photos.elderlyCare, text: en("A nurse comes to your home, so care fits your family's day.") },
-          features: [
-            { pictogram: "clock", title: en("Day and night") },
-            { pictogram: "chat", title: en("On WhatsApp") },
-            { pictogram: "careAtHome", title: en("At your doorstep") },
-          ],
-        }),
-        section("PROCESS", {
-          label: en("How it works"),
-          headingStart: en("Care arranged"),
-          pictogram: "check",
-          headingEnd: en("in four steps"),
+          // How it works runs through the families' card (D124).
+          stepsLabel: en("How it works"),
           steps: [
             {
               image: photos.onThePhone,
@@ -168,6 +158,18 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
               text: en("At home, in the clinic, or on your ward."),
             },
           ],
+          photo: { image: photos.elderlyCare, text: en("A nurse comes to your home, so care fits your family's day.") },
+          features: [
+            { pictogram: "clock", title: en("Day and night") },
+            { pictogram: "chat", title: en("On WhatsApp") },
+            { pictogram: "careAtHome", title: en("At your doorstep") },
+          ],
+        }),
+        section("SERVICES_ROW", {
+          label: en("Our services"),
+          headingStart: en("Nursing care"),
+          pictogram: "stethoscope",
+          headingEnd: en("for every need"),
         }),
         section("FORM", {
           heading: en("Experience the difference with Al Hidaya"),
@@ -190,7 +192,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           heading: en("Who we are"),
           body: [
             paragraph(
-              "Al Hidaya Health Care Services is a growing nursing care company in Doha, Qatar. We provide nursing care at home and in clinics, and supply nurses to hospitals, clinics and schools.",
+              "Al Hidaya Health Care Service is a growing nursing care company in Doha, Qatar. We provide nursing care at home and in clinics, and supply nurses to hospitals, clinics and schools.",
             ),
             paragraph(
               "Our knowledgeable, compassionate nurses work with each patient and family on a care plan that fits their needs and their budget, and they are available around the clock.",
@@ -301,7 +303,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           heading: en(null),
           body: [
             paragraph(
-              "This notice explains what Al Hidaya Health Care Services collects through this website, why, where it is kept and for how long.",
+              "This notice explains what Al Hidaya Health Care Service collects through this website, why, where it is kept and for how long.",
             ),
             heading("What we collect"),
             list(
@@ -338,7 +340,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
           heading: en(null),
           body: [
             paragraph(
-              "These terms apply to your use of this website, run by Al Hidaya Health Care Services in Doha, Qatar.",
+              "These terms apply to your use of this website, run by Al Hidaya Health Care Service in Doha, Qatar.",
             ),
             heading("Information on this site"),
             paragraph(
@@ -508,7 +510,7 @@ export function seedJob(postedOn: string): JobDocument {
 
 /** The site's content (plan §13), from the current site's contact details. */
 export const SEED_SITE: SiteDocument = {
-  name: en("Al Hidaya Health Care Services"),
+  name: en("Al Hidaya Health Care Service"),
   description: en(
     "Nursing care at home and in clinics, and nurse staffing for hospitals, clinics and schools, in Doha, Qatar.",
   ),
@@ -555,7 +557,7 @@ export const SEED_SITE: SiteDocument = {
     },
   ],
   seo: {
-    title: en("Al Hidaya Health Care Services | Nursing care in Doha"),
+    title: en("Al Hidaya Health Care Service | Nursing care in Doha"),
     description: en(
       "Nursing care at home in Doha, and nurse staffing for hospitals, clinics and schools. Our nurses are available 24/7.",
     ),

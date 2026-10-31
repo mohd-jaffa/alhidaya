@@ -12,8 +12,8 @@ describe("HeaderAction (D116)", () => {
     render(<HeaderAction site={siteFixture({ brochure: { mediaId: crypto.randomUUID() } })} onNavigate={onNavigate} />);
     const brochure = screen.getByRole("link", { name: UI_TEXT.brochureButton });
     expect(brochure).toHaveAttribute("href", "/brochure");
-    expect(brochure).toHaveAttribute("download", "Al-Hidaya-Health-Care-Services-Brochure.pdf");
-    expect(brochure).toHaveClass("bg-forest", "rounded-pill");
+    expect(brochure).toHaveAttribute("download", "Al-Hidaya-Health-Care-Service-Brochure.pdf");
+    expect(brochure).toHaveClass("bg-leaf", "rounded-pill");
     expect(screen.queryByRole("link", { name: UI_TEXT.requestQuote })).not.toBeInTheDocument();
     await userEvent.click(brochure);
     expect(onNavigate).toHaveBeenCalled();

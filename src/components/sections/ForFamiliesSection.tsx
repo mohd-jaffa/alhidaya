@@ -1,40 +1,34 @@
-import Link from "next/link";
-
+import { LoopRow } from "@/components/motion/LoopRow";
 import { Reveal } from "@/components/motion/Reveal";
-import { ScrollTrack } from "@/components/motion/ScrollTrack";
-import { ArrowLink } from "@/components/ui/arrow-link";
 import { IconChip } from "@/components/ui/icon-chip";
 import { MediaImage } from "@/components/ui/media-image";
-import { Pictogram } from "@/components/ui/pictogram";
+import { PillLabel } from "@/components/ui/pill-label";
 import { UI_TEXT } from "@/constants/messages";
-import { ROUTES } from "@/constants/routes";
 import type { SiteImage } from "@/features/media/types";
-import type { PublishedService } from "@/features/services/api";
 import type { Section } from "@/lib/validation";
 
+import { ordinal } from "./numbered";
 import { SectionFrame, SectionOpening } from "./SectionFrame";
 
 type FamiliesContent = Extract<Section, { type: "FOR_FAMILIES" }>["content"];
 
 /**
- * For families (plan §30.1, D97, D102, D105): its pill and heading, then the
- * family services sliding through a large card as the section scrolls by, each
- * opening its page, the row fading at the card's edge, with the way to every
- * service below; beside it a photo with its words, and small feature cards.
+ * For families (plan §30.1, D97, D105, D124): its pill and heading, then how
+ * it works in a large card: its label on a white pill, then the steps in
+ * order, each numbered with its photo, title and words, running past in an
+ * endless loop that fades at the card's edges, with its pause button below;
+ * beside it a photo with its words, and small feature cards.
  */
 export function ForFamiliesSection({
   anchor,
   content,
-  services,
   image,
 }: {
   anchor: string;
   content: FamiliesContent;
-  services: readonly PublishedService[];
   image: (ref: { mediaId: string } | null) => SiteImage | null;
 }) {
   const photo = image(content.photo.image);
-  const theirs = services.filter((service) => service.published.audience === "FAMILIES");
   return (
     <SectionFrame anchor={anchor} className="grid gap-12">
       <Reveal>
@@ -47,46 +41,45 @@ export function ForFamiliesSection({
         />
       </Reveal>
       <div className="grid gap-4 lg:grid-cols-[1.35fr_1fr]">
-        <Reveal className="flex min-h-[26rem] flex-col justify-between gap-6 overflow-hidden rounded-card bg-mist py-6">
-          <ScrollTrack
-            as="ul"
-            className="px-6 [mask-image:linear-gradient(to_right,black_85%,transparent)] rtl:[mask-image:linear-gradient(to_left,black_85%,transparent)]"
-            trackClassName="gap-3 pe-6"
-          >
-            {theirs.map((service) => {
-              const servicePhoto = image(service.published.image);
+        <Reveal className="flex min-h-[26rem] flex-col justify-center gap-6 overflow-hidden rounded-card bg-mist py-6">
+          {content.stepsLabel.en ? (
+            <div className="mx-6">
+              <PillLabel as="h3">{content.stepsLabel.en}</PillLabel>
+            </div>
+          ) : null}
+          <LoopRow
+            as="ol"
+            secondsPerItem={8}
+            pauseLabel={UI_TEXT.pauseSteps}
+            className="gap-6"
+            listClassName="gap-3"
+            barClassName="px-6"
+            items={content.steps.map((step, at) => {
+              const photo = image(step.image);
               return (
-                <li key={service.id} className="shrink-0">
-                  <Link
-                    href={ROUTES.service(service.published.slug)}
-                    className="group grid w-44 gap-3 rounded-inset bg-ground p-2 pb-4 sm:w-52"
-                  >
-                    <span className="relative block aspect-[4/5] overflow-hidden rounded-thumb bg-leaf-pale">
-                      {servicePhoto ? (
-                        <MediaImage
-                          image={servicePhoto}
-                          sizes="208px"
-                          decorative
-                          className="absolute inset-0 size-full object-cover transition-transform duration-(--duration-reveal) ease-out group-hover:scale-[1.04]"
-                        />
-                      ) : null}
-                    </span>
-                    <span className="flex items-start justify-between gap-2 px-1.5 font-medium">
-                      {service.published.name.en}
-                      <Pictogram
-                        name="arrow"
-                        size="sm"
-                        className="mt-0.5 text-forest transition-transform duration-(--duration-state) group-hover:translate-x-1"
+                <li
+                  key={step.title.en}
+                  className="grid w-52 shrink-0 content-start gap-3 rounded-inset bg-ground p-2 pb-4 sm:w-60"
+                >
+                  <span className="relative block aspect-[4/3] overflow-hidden rounded-thumb bg-leaf-pale">
+                    {photo ? (
+                      <MediaImage
+                        image={photo}
+                        sizes="240px"
+                        decorative
+                        className="absolute inset-0 size-full object-cover"
                       />
-                    </span>
-                  </Link>
+                    ) : null}
+                  </span>
+                  <span className="grid gap-1 px-1.5">
+                    <span className="text-small font-light text-ink-2 tabular-nums">{ordinal(at)}</span>
+                    <h4 className="font-medium text-balance">{step.title.en}</h4>
+                    {step.text.en ? <p className="text-small whitespace-pre-line text-ink-2">{step.text.en}</p> : null}
+                  </span>
                 </li>
               );
             })}
-          </ScrollTrack>
-          <ArrowLink href={ROUTES.services} className="mx-6 self-start">
-            {UI_TEXT.allServices}
-          </ArrowLink>
+          />
         </Reveal>
         <div className="grid gap-4">
           <Reveal order={1} className="relative min-h-64 overflow-hidden rounded-card bg-mist">

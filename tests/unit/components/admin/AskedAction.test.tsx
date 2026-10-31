@@ -65,4 +65,22 @@ describe("AskedAction (plan §16)", () => {
     await userEvent.click(screen.getByRole("button", { name: "Archive" }));
     expect(screen.queryByText("It was not archived.")).toBeNull();
   });
+
+  it("is red, and so is its answer in the question, for what cannot be undone (D126)", async () => {
+    render(
+      <AskedAction
+        danger
+        label="Delete"
+        title="Delete this image?"
+        body="It cannot be undone."
+        keep="Keep"
+        failed="It was not deleted."
+        act={async () => "deleted"}
+      />,
+      { wrapper: WithSWR },
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+    for (const button of screen.getAllByRole("button", { name: "Delete" })) expect(button).toHaveClass("bg-error");
+    expect(screen.getByRole("button", { name: "Keep" })).not.toHaveClass("bg-error");
+  });
 });

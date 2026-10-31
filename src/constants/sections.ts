@@ -29,12 +29,13 @@ export const SECTION_TYPES = [
   "CONTACT_DETAILS",
   "FORM",
   "RICH_TEXT",
-  // The redesign's Home (D97, D100): the statement, the highlights, the two audiences and how it works.
+  // The redesign's Home (D97, D100): the statement, the highlights, the two audiences (the families'
+  // with how it works, D124) and the services running past.
   "STATEMENT",
   "HIGHLIGHTS",
   "FOR_INSTITUTIONS",
   "FOR_FAMILIES",
-  "PROCESS",
+  "SERVICES_ROW",
 ] as const;
 export type SectionType = (typeof SECTION_TYPES)[number];
 
@@ -77,7 +78,7 @@ export const PAGE_RULES: Record<PageKey, PageRule> = {
       "HIGHLIGHTS",
       "FOR_INSTITUTIONS",
       "FOR_FAMILIES",
-      "PROCESS",
+      "SERVICES_ROW",
       "FORM",
       "INTRO",
       "SERVICES_INDEX",

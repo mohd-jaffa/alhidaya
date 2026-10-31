@@ -38,23 +38,26 @@
   --color-on-deep: #ffffff;
   --color-on-deep-2: #dce9f6;
   /*
-   * The redesign's greens (D98): the logo's leaf deepened to forest, which
-   * carries white text (6.3:1) on primary pills, the accent card and the
-   * footer, and lightened to a pale tint for audience pills, icon chips and
-   * the highlight behind a headline word. The quiet grey is for large type
-   * only (3.5:1): a statement's softer words.
+   * The greens (D98, D122): the logo's leaf is the primary fill (primary
+   * pills, the green cards, the footer) and carries navy words (6.1:1),
+   * leaf-2 its hover (5.1:1), on-leaf-2 its quieter words (4.8:1). Forest is
+   * the same green deepened only as far as words and marks on white, mist and
+   * the pale tint need (4.6:1 and more). The pale tint is for audience pills,
+   * icon chips and the highlight behind a headline word. The quiet grey is for
+   * large type only (3.5:1): a statement's softer words.
    */
-  --color-forest: #3b6b24;
-  --color-forest-2: #2f581c;
-  --color-on-forest: #ffffff;
-  --color-on-forest-2: #e3eed6;
+  --color-leaf-2: #7a9f37;
+  --color-on-leaf: #0b2440;
+  --color-on-leaf-2: #1d393f;
+  --color-forest: #5b7628;
   --color-leaf-pale: #eef5e2;
   --color-ink-soft: #7d8aa0;
   /* Errors only (D63): the one colour outside the logo's, always with an icon and words. */
   --color-error: #b42318;
-  /* Focus rings: deep blue on light ground, white on a deep-blue or navy panel. */
+  /* Focus rings: deep blue on light ground, white on a deep-blue or navy panel, navy on the leaf. */
   --color-focus: #0f64ac;
   --color-focus-on-deep: #ffffff;
+  --color-focus-on-leaf: #0b2440;
 
   /*
    * One family, Inter Tight (D108). Roles, not sizes. The redesign's display
@@ -209,6 +212,34 @@
 
 [dir="rtl"] .running-words {
   animation-direction: reverse;
+}
+
+/*
+ * Rows that run on their own (D124): How it works and the family services,
+ * each moved by half its repeated track, as the footer's words are. They stop
+ * under the pointer, while anything in them has focus, and by their pause
+ * button; with motion reduced they stand still, their repeats hidden.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .loop-track {
+    animation: run var(--loop-duration) linear infinite;
+  }
+}
+
+.loop-band:hover .loop-track,
+.loop-band:focus-within .loop-track,
+.loop-band:has(.loop-pause:checked) .loop-track {
+  animation-play-state: paused;
+}
+
+[dir="rtl"] .loop-track {
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loop-copy {
+    display: none;
+  }
 }
 
 /*

@@ -15,6 +15,8 @@ const VARIANTS = {
   secondary: "border-2 border-navy bg-ground text-navy hover:bg-mist",
   /** The admin's lesser actions beside a main one (R6.3): words in deep blue, no frame. */
   quiet: "text-deep hover:bg-mist",
+  /** What cannot be undone, deleting an image (D126): white on the error red, asked first. */
+  danger: "bg-error text-on-deep hover:bg-error/90",
 } as const;
 
 const SIZES = {

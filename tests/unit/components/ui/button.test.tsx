@@ -31,11 +31,13 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Unavailable" })).toBeDisabled();
   });
 
-  it("is deep blue, outlined or quiet, and takes classes of its own last", () => {
+  it("is deep blue, outlined, quiet or red, and takes classes of its own last", () => {
     expect(buttonClasses({})).toContain("bg-deep text-on-deep");
     expect(buttonClasses({ variant: "secondary" })).toContain("border-navy");
     expect(buttonClasses({}, "w-full")).toMatch(/w-full$/);
     expect(buttonClasses({ variant: "quiet" })).toContain("text-deep hover:bg-mist");
+    // Red for what cannot be undone (D126).
+    expect(buttonClasses({ variant: "danger" })).toContain("bg-error text-on-deep");
   });
 });
 

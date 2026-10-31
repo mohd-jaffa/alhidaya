@@ -49,45 +49,49 @@ export function ContactDetailsSection({
       </Reveal>
       {site ? (
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-start">
-          <dl className="grid gap-4 sm:grid-cols-2">
-            <Detail pictogram="chat" term={UI_TEXT.whatsapp}>
-              <a
-                href={whatsappHref(site.contact.whatsapp, UI_TEXT.whatsappPrefill)}
-                className={`${LINK} whitespace-nowrap tabular-nums`}
-              >
-                {displayPhone(site.contact.whatsapp)}
-              </a>
-            </Detail>
-            <Detail pictogram="phone" term={UI_TEXT.phone}>
-              <a href={telHref(site.contact.phone)} className={`${LINK} whitespace-nowrap tabular-nums`}>
-                {displayPhone(site.contact.phone)}
-              </a>
-            </Detail>
-            <Detail pictogram="mail" term={UI_TEXT.email}>
-              <a href={mailtoHref(site.contact.email)} className={LINK}>
-                {site.contact.email}
-              </a>
-            </Detail>
-            <Detail pictogram="location" term={UI_TEXT.address}>
-              <address className="grid not-italic">
-                {site.contact.address.map((line) => (
-                  <span key={line.en}>{line.en}</span>
-                ))}
-              </address>
-              <ArrowLink href={site.contact.mapUrl}>{UI_TEXT.openInMaps}</ArrowLink>
-            </Detail>
-            {site.contact.hours.en ? (
-              <Detail pictogram="clock" term={UI_TEXT.hours}>
-                <span>{site.contact.hours.en}</span>
+          <Reveal>
+            <dl className="grid gap-4 sm:grid-cols-2">
+              <Detail pictogram="chat" term={UI_TEXT.whatsapp}>
+                <a
+                  href={whatsappHref(site.contact.whatsapp, UI_TEXT.whatsappPrefill)}
+                  className={`${LINK} whitespace-nowrap tabular-nums`}
+                >
+                  {displayPhone(site.contact.whatsapp)}
+                </a>
               </Detail>
-            ) : null}
-            {site.brochure ? (
-              <Detail pictogram="download" term={UI_TEXT.brochure}>
-                <ArrowLink href={ROUTES.brochure}>{UI_TEXT.downloadBrochure}</ArrowLink>
+              <Detail pictogram="phone" term={UI_TEXT.phone}>
+                <a href={telHref(site.contact.phone)} className={`${LINK} whitespace-nowrap tabular-nums`}>
+                  {displayPhone(site.contact.phone)}
+                </a>
               </Detail>
-            ) : null}
-          </dl>
-          <StaticMap pin={site.contact.mapPin} office={site.contact.address[0].en} />
+              <Detail pictogram="mail" term={UI_TEXT.email}>
+                <a href={mailtoHref(site.contact.email)} className={LINK}>
+                  {site.contact.email}
+                </a>
+              </Detail>
+              <Detail pictogram="location" term={UI_TEXT.address}>
+                <address className="grid not-italic">
+                  {site.contact.address.map((line) => (
+                    <span key={line.en}>{line.en}</span>
+                  ))}
+                </address>
+                <ArrowLink href={site.contact.mapUrl}>{UI_TEXT.openInMaps}</ArrowLink>
+              </Detail>
+              {site.contact.hours.en ? (
+                <Detail pictogram="clock" term={UI_TEXT.hours}>
+                  <span>{site.contact.hours.en}</span>
+                </Detail>
+              ) : null}
+              {site.brochure ? (
+                <Detail pictogram="download" term={UI_TEXT.brochure}>
+                  <ArrowLink href={ROUTES.brochure}>{UI_TEXT.downloadBrochure}</ArrowLink>
+                </Detail>
+              ) : null}
+            </dl>
+          </Reveal>
+          <Reveal order={1}>
+            <StaticMap pin={site.contact.mapPin} office={site.contact.address[0].en} />
+          </Reveal>
         </div>
       ) : null}
     </SectionFrame>

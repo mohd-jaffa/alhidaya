@@ -22,7 +22,7 @@ function Globe() {
       fill="none"
       stroke="currentColor"
       strokeWidth="1"
-      className="pointer-events-none absolute -end-12 -bottom-14 size-52 text-on-forest/25"
+      className="pointer-events-none absolute -end-12 -bottom-14 size-52 text-on-leaf/15"
     >
       <circle cx="60" cy="60" r="56" />
       <ellipse cx="60" cy="60" rx="22" ry="56" />
@@ -72,7 +72,7 @@ export function HighlightsSection({
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <li>
           <Reveal className="flex h-full min-h-[22rem] flex-col justify-between gap-10 rounded-card bg-mist p-6">
-            {note.pictogram ? <IconChip name={note.pictogram} tone="forest" size="lg" /> : <span />}
+            {note.pictogram ? <IconChip name={note.pictogram} tone="leaf" size="lg" /> : <span />}
             <div className="grid gap-3">
               <h2 className="text-title font-medium">{note.title.en}</h2>
               {note.text.en ? <p className="text-small whitespace-pre-line text-ink-2">{note.text.en}</p> : null}
@@ -87,22 +87,22 @@ export function HighlightsSection({
         <li>
           <Reveal
             order={2}
-            className="relative flex h-full min-h-[22rem] flex-col justify-between gap-10 overflow-hidden rounded-card bg-forest p-6 text-on-forest"
+            className="relative flex h-full min-h-[22rem] flex-col justify-between gap-10 overflow-hidden rounded-card bg-leaf p-6 text-on-leaf"
           >
             <Globe />
             <div className="relative grid gap-3">
               <h2 className="text-title font-medium">{accent.title.en}</h2>
               {accent.text.en ? (
-                <p className="text-small whitespace-pre-line text-on-forest-2">{accent.text.en}</p>
+                <p className="text-small whitespace-pre-line text-on-leaf-2">{accent.text.en}</p>
               ) : null}
             </div>
-            <div className="relative flex items-center gap-3 rounded-pill bg-on-forest/10 p-2 pe-5">
+            <div className="relative flex items-center gap-3 rounded-pill bg-on-leaf/10 p-2 pe-5">
               <Avatars images={faces} size="sm" />
               {accent.fact.value.en ? (
                 <p className="ms-auto grid text-end">
                   <CountUp value={accent.fact.value.en} className="text-title font-medium" />
                   {accent.fact.label.en ? (
-                    <span className="text-small text-on-forest">{accent.fact.label.en}</span>
+                    <span className="text-small text-on-leaf">{accent.fact.label.en}</span>
                   ) : null}
                 </p>
               ) : null}

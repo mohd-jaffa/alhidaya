@@ -46,14 +46,14 @@ describe("the seed content", () => {
     expect(seedServices({ ...NO_PHOTOS }).map((service) => service.slug)).toEqual(SEED_SERVICES.map((s) => s.slug));
   });
 
-  it("opens Home in the reference's sections, in its order (D97)", () => {
+  it("opens Home in the reference's sections, how it works in the families' card, then the services (D97, D124)", () => {
     expect(seedPages().HOME.sections.map((section) => section.type)).toEqual([
       "SIGN",
       "STATEMENT",
       "HIGHLIGHTS",
       "FOR_INSTITUTIONS",
       "FOR_FAMILIES",
-      "PROCESS",
+      "SERVICES_ROW",
       "FORM",
       "CLIENTS",
     ]);

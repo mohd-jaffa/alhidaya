@@ -5,12 +5,12 @@ import { describe, expect, it, vi } from "vitest";
 import { Pill, PillLink } from "@/components/ui/pill";
 
 describe("the round actions (D97)", () => {
-  it("press as buttons, held while pending, in the forest by default", async () => {
+  it("press as buttons, held while pending, in the leaf by default", async () => {
     const pressed = vi.fn();
     const { rerender } = render(<Pill onClick={pressed}>Send</Pill>);
     const button = screen.getByRole("button", { name: "Send" });
     expect(button).toHaveAttribute("type", "button");
-    expect(button.className).toContain("bg-forest");
+    expect(button.className).toContain("bg-leaf");
     await userEvent.click(button);
     expect(pressed).toHaveBeenCalledOnce();
 
@@ -30,7 +30,7 @@ describe("the round actions (D97)", () => {
         <PillLink href="/request-a-quote" arrow>
           Request a quote
         </PillLink>
-        <PillLink href="https://wa.me/97431306555" variant="onForest">
+        <PillLink href="https://wa.me/97431306555" variant="onLeaf">
           WhatsApp us
         </PillLink>
         <PillLink href="tel:+97431306555" size="lg">

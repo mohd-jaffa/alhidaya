@@ -13,7 +13,7 @@ describe("ContactAction", () => {
     expect(link.querySelector("svg")).toBeInTheDocument();
   });
 
-  it("calls and emails, forest unless told otherwise, with no arrow", () => {
+  it("calls and emails, in the leaf unless told otherwise, with no arrow", () => {
     render(
       <>
         <ContactAction kind="call" to="+97431306555" />
@@ -21,7 +21,7 @@ describe("ContactAction", () => {
       </>,
     );
     expect(screen.getByRole("link", { name: UI_TEXT.call })).toHaveAttribute("href", "tel:+97431306555");
-    expect(screen.getByRole("link", { name: UI_TEXT.call })).toHaveClass("bg-forest");
+    expect(screen.getByRole("link", { name: UI_TEXT.call })).toHaveClass("bg-leaf");
     expect(screen.getByRole("link", { name: UI_TEXT.call }).querySelector("svg")).toBeNull();
     expect(screen.getByRole("link", { name: UI_TEXT.email })).toHaveAttribute("href", "mailto:info@alhidaya.qa");
   });

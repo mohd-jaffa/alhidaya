@@ -12,9 +12,9 @@ describe("IconChip (D97)", () => {
     expect(chip.querySelector("svg")).toHaveClass("size-5");
   });
 
-  it("sits among words at their size, or in forest or white where it must stand out", () => {
-    const { container, rerender } = render(<IconChip name="globe" tone="forest" size="inline" className="ms-1" />);
-    expect(container.firstElementChild).toHaveClass("bg-forest", "size-[1.05em]", "ms-1");
+  it("sits among words at their size, or in the leaf or white where it must stand out", () => {
+    const { container, rerender } = render(<IconChip name="globe" tone="leaf" size="inline" className="ms-1" />);
+    expect(container.firstElementChild).toHaveClass("bg-leaf", "size-[1.05em]", "ms-1");
     expect(container.querySelector("svg")).toHaveClass("size-[0.62em]");
     rerender(<IconChip name="clock" tone="ground" size="lg" />);
     expect(container.firstElementChild).toHaveClass("bg-ground", "size-14");

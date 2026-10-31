@@ -17,11 +17,12 @@ const LOOKS_AFTER: { pictogram: PictogramName; label: string }[] = [
 ];
 
 /**
- * The frame of the admin's way in (R6.1, D101, D115). On a wide screen a navy
- * panel: the logo at its top; the panel's name, what it is for and the three
- * things it looks after, each with its mark; the way back to the website and
- * the year at its foot. On a phone a navy band with the logo. The form sits on
- * white beside it, alone, with one way elsewhere under it.
+ * The frame of the admin's way in (R6.1, D101, D115, D123). On a wide screen
+ * a panel in the logo's deep blue: the logo at its top; the panel's name,
+ * what it is for and the three things it looks after, each with its mark;
+ * the way back to the website and the year at its foot. On a phone a
+ * deep-blue band with the logo. The form sits on white beside it, alone, with
+ * one way elsewhere under it.
  */
 export function AuthScene({
   title,
@@ -37,7 +38,7 @@ export function AuthScene({
 }) {
   return (
     <div className="grid min-h-dvh md:grid-cols-[minmax(18rem,26rem)_1fr]">
-      <header className="flex flex-col gap-10 bg-navy px-gutter py-6 text-on-deep-2 md:justify-between md:px-10 md:py-12">
+      <header className="flex flex-col gap-10 bg-deep px-gutter py-6 text-on-deep-2 md:justify-between md:px-10 md:py-12">
         <Logo variant="white" priority className="h-10 w-auto self-start md:h-12" />
         <div className="hidden gap-8 md:grid">
           <div className="grid gap-3">
@@ -66,7 +67,7 @@ export function AuthScene({
             {ADMIN_TEXT.backToWebsite}
             <Pictogram name="arrow" size="sm" />
           </a>
-          <p className="text-on-deep-2/80">
+          <p className="text-on-deep-2">
             © {dohaDay().slice(0, 4)} {UI_TEXT.siteName}
           </p>
         </div>

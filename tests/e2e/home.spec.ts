@@ -42,18 +42,20 @@ test("Home follows the reference's sections, the family services in their card a
 }) => {
   await page.goto("/");
   // The current site's slides carried into Home's headings (2026-10-31).
-  for (const name of [/Trained nurses who deliver/, /Compassionate nursing care/, /Care arranged/])
+  for (const name of [/Trained nurses who deliver/, /Compassionate nursing care/, /for every need/])
     await expect(page.getByRole("region", { name })).toBeVisible();
+  // How it works runs through the families' card; every service runs past in its own section (D124).
   const families = page.getByRole("region", { name: /Compassionate nursing care/ });
-  for (const service of SEED_SERVICES)
-    if (service.audience === "FAMILIES")
-      await expect(families.getByRole("link", { name: service.name.en })).toHaveAttribute(
-        "href",
-        ROUTES.service(service.slug),
-      );
-    else await expect(families.getByRole("link", { name: service.name.en })).toHaveCount(0);
-  const steps = page.getByRole("region", { name: /Care arranged/ }).getByRole("listitem");
+  await expect(families.getByRole("heading", { name: "How it works" })).toBeVisible();
+  const steps = families.locator("ol").first().getByRole("listitem");
   await expect(steps).toHaveCount(4);
+  const services = page.getByRole("region", { name: /for every need/ });
+  for (const service of SEED_SERVICES)
+    await expect(services.getByRole("link", { name: service.name.en })).toHaveAttribute(
+      "href",
+      ROUTES.service(service.slug),
+    );
+  await expect(services.getByRole("link", { name: UI_TEXT.allServices })).toHaveAttribute("href", ROUTES.services);
   const form = page.getByRole("region", { name: "Experience the difference with Al Hidaya" });
   await expect(form.getByRole("button", { name: UI_TEXT.sendMessage })).toBeVisible();
   await expect(form.getByRole("link", { name: SEED_SITE.contact.email })).toHaveAttribute(
@@ -109,6 +111,40 @@ test("the footer's words run on their own, and their button pauses them (D113)",
   expect(await offset()).toBe(paused);
 });
 
+test("How it works and the services run on their own, and their buttons stop them (D124)", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/");
+  for (const [anchor, label] of [
+    ["families", UI_TEXT.pauseSteps],
+    ["our-services", UI_TEXT.pauseServices],
+  ] as const) {
+    const section = page.locator(`#${anchor}`);
+    await section.scrollIntoViewIfNeeded();
+    const track = section.locator(".loop-track");
+    const offset = () => track.evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41);
+    const state = () => track.evaluate((element) => getComputedStyle(element).animationPlayState);
+    await page.mouse.move(0, 0);
+    const before = await offset();
+    await expect.poll(offset).not.toBe(before);
+    // Read once: the repeats are hidden from screen readers.
+    expect(await section.locator(".loop-copy").first().getAttribute("aria-hidden")).toBe("true");
+
+    if (testInfo.project.name === "desktop") {
+      // It stops under the pointer, and runs again when the pointer leaves: the pointer goes to the
+      // row's frame, which stands still while the row runs.
+      await track.locator("xpath=..").hover();
+      await expect.poll(state).toBe("paused");
+      await page.mouse.move(0, 0);
+      await expect.poll(state).toBe("running");
+    }
+    await section.locator("label:has(.loop-pause)").click();
+    await page.mouse.move(0, 0);
+    await expect(section.getByRole("checkbox", { name: label })).toBeChecked();
+    await expect.poll(state).toBe("paused");
+  }
+});
+
 test.describe("with reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 
@@ -128,6 +164,10 @@ test.describe("with reduced motion", () => {
     expect(await style("#statement [data-ink]", "opacity")).toBe("1");
     expect(await style("#highlights li > div", "opacity")).toBe("1");
     expect(await style(".running-words", "animationName")).toBe("none");
+    // The loops stand still, their repeats gone and their buttons hidden (D124).
+    expect(await style(".loop-track", "animationName")).toBe("none");
+    await expect(page.locator(".loop-copy").first()).toBeHidden();
+    await expect(page.getByRole("checkbox", { name: UI_TEXT.pauseSteps })).toBeHidden();
   });
 });
 

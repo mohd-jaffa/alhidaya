@@ -63,9 +63,9 @@ export default function KitPage() {
           </PillLink>
           <ContactAction kind="email" to={SEED_SITE.contact.email} variant="pale" />
         </div>
-        <div className="flex flex-wrap items-center gap-3 rounded-card bg-forest p-6">
-          <ContactAction kind="whatsapp" to={phone} variant="onForest" arrow />
-          <ContactAction kind="call" to={phone} variant="onForestQuiet" />
+        <div className="flex flex-wrap items-center gap-3 rounded-card bg-leaf p-6">
+          <ContactAction kind="whatsapp" to={phone} variant="onLeaf" arrow />
+          <ContactAction kind="call" to={phone} variant="onLeafQuiet" />
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Button>Save draft</Button>

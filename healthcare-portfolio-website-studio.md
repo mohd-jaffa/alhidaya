@@ -1,6 +1,6 @@
-# Al Hidaya Health Care Services — Website Product, Architecture & Delivery Plan
+# Al Hidaya Health Care Service — Website Product, Architecture & Delivery Plan
 
-> The public website and admin panel of **Al Hidaya Health Care Services**
+> The public website and admin panel of **Al Hidaya Health Care Service**
 > (alhidaya.qa), a nursing care company in Doha, Qatar. A premium,
 > very smooth public site, plus a Content CMS the company runs without a
 > developer.
@@ -51,7 +51,7 @@ supplied (licence numbers, statistics, testimonials) is absent, not made up.
 
 ## 1. Overview
 
-Al Hidaya Health Care Services provides **nursing care at home and in
+Al Hidaya Health Care Service provides **nursing care at home and in
 clinics**, and **nurse staffing for hospitals, clinics and schools**, in Doha.
 Its current site (alhidaya.qa, © 2022) lists eight services, one job, a phone
 number, two email addresses, an address and an Instagram account. Its copy has
@@ -86,7 +86,7 @@ question (§41) the user may overturn.
 | D2 | **Four audiences:** families arranging care, hospitals and clinics needing staff, schools needing nurses, and nurses seeking jobs. | 2026-10-28 |
 | D3 | **English at launch, Arabic later**, built ready for Arabic (§33). | 2026-10-28 |
 | D4 | **English at the root, Arabic later under `/ar`** (`/services` now, `/ar/services` later). No English URL ever changes. | 2026-10-28 |
-| D5 | **The name is "Al Hidaya Health Care Services".** (The logo reads "Al Hidaya Health Care Service WLL".) | 2026-10-28 |
+| D5 | *(Superseded by D121, 2026-10-31.)* **The name is "Al Hidaya Health Care Services".** (The logo reads "Al Hidaya Health Care Service WLL".) | 2026-10-28 |
 | D6 | **Copy is rewritten** in polished professional English from the company's real facts; the client approves it before launch. | 2026-10-28 |
 | D7 | **Proof on hand: named client logos only.** The client supplies names and permission. No licence number, statistics or testimonials are shown, and none are invented. | 2026-10-28 |
 | D8 | **Imagery: licensed stock at launch, the client's own photos later** through the admin. Stock is never presented as Al Hidaya's staff. | 2026-10-28 |
@@ -202,6 +202,12 @@ question (§41) the user may overturn.
 | D118 | **The current site's images are seeded** (the user, 2026-10-31: "there are some images used in the old website, add them to the media library along with other seeded images"; the three choices below are the user's): **its 11 client logos** (The View Hospital, Hamad Medical Corporation, Military Medical City Hospital, Estithmar Holding and seven nurseries, kindergartens and clinics) become the seed's client logos, as drafts with their names in the current site's order, replacing the sample logos on the local database; each is published only once the client confirms it may still be named (D7). **Its 15 photographs** (the 5 slides, the 2 About pictures and the 8 service photographs) go into the media library only, the slides **cropped** to the photograph from the white fade the slider's words sat on; the pages keep their photographs, the current site's being smaller than the site draws them (Q28's answer, D91, stands). Its 3 wide banners, with their overlays, are left out. The seed now files every seed photograph in the library on each run, finding those kept before by their source. **The logo tile holds real logos** (the agent default): a logo fills the tile's padding whatever its shape, the tile always 4:3, and is multiplied into the card so a logo file's white background takes the card's colour; the seed's logo files are trimmed of their white margins. | 2026-10-31 |
 | D119 | **Published content is cached in memory only** (the user, 2026-10-31, choosing the recommended option): Next remembers a publish's revalidated tags in memory alone, while its cache keeps reads on disk, so after a restart (Passenger stops an idle app and starts it on the next visit; a deploy restarts it) a page not visited since its publish came back as it was before, and stayed so until published again. Reproduced on `next dev` and on the standalone build. `experimental.isrFlushToDisk: false` keeps the cache in the app's memory (within Next's 50 MB), so a restart starts empty and reads the database afresh. This holds for one app process, the setup for this 1-core server; the release checks Passenger runs one (R8.2). A shared tag store in MySQL (a custom cache handler) was the alternative for several processes. | 2026-10-31 |
 | D120 | **Preview saves unsaved changes first** (the user, 2026-10-31, choosing the recommended option; supersedes D88's "showing the saved draft"): as Publish does, Preview saves the draft, then shows it; its tab opens at the click and goes to the preview once saved, and closes if the draft fails its checks or is refused, said in the editor as on saving. The hint "Save draft first" goes. | 2026-10-31 |
+| D121 | **The company is named as its logo reads** (the user, 2026-10-31: "in footer copyright, it says services, follow logo that is put service, not services"; everywhere, the user's choice; supersedes D5): "Al Hidaya Health Care Service" in every title, email, share card, search result and the brochure's file name (`Al-Hidaya-Health-Care-Service-Brochure.pdf`); the footer's copyright gives the registered name, "© 2026 Al Hidaya Health Care Service W.L.L. All rights reserved." | 2026-10-31 |
+| D122 | **The primary green is the logo's** (the user, 2026-10-31: "make the primary green color to match the green color of the logo, current one feels too dark for the client"; the user's choice of the options): the logo's leaf `#86AE3C` fills the primary pills, the green cards (the highlight's, the mission's, the contact band), icon chips and the footer, with **navy words** (6.1:1; white on it would be 2.6:1), a navy logo in the footer and navy focus rings on it. Green words and marks on white or pale (links, arrows, the pill label, ticks) take forest `#5B7628`, the same green deepened only as far as reading needs, lighter than the old `#3B6B24`. Supersedes D98's forest fill. | 2026-10-31 |
+| D123 | **The admin's blue is the logo's** (the user, 2026-10-31: "the blue color in the admin panel, follow the color of the logos blue color"; the user's choice): the admin's column, its phone bar and menu, and the sign-in page's panel take the logo's deep blue `#0F64AC` (the swoosh's blue, already the admin's buttons) in place of the navy, white words at 6.1:1 and the softer words at 5.0:1 (no longer faded to 80%). | 2026-10-31 |
+| D124 | **How it works runs in the families' card; the services get a section of their own, both looping** (the user, 2026-10-31: "swap services and how it works … instead of horizontal scroll keep animated scroll in loop … keep services also a small all services button", then "in the place of how it works … i need services, along with for families section where currently the services are being scrolled, keep the how it works"; the choices below the user's): **For families** keeps its heading, photo and features, and its card now runs **How it works**: a "How it works" label, then the steps as compact numbered cards (photo, title, words), edited in the For families section (`stepsLabel`, `steps`). The **How it works** section type gives way to **Our services** (`SERVICES_ROW`, after For families on Home): an "Our services" pill and "Nursing care … for every need", then **every published service** as a photo card opening its page, with a small **All services** pill. Both rows run on their own in an endless loop by CSS alone (`LoopRow`), in place of the sideways tracks (`ScrollTrack` goes, and its script with it): each stops under the pointer, while anything in it has focus, and by its own round pause button (WCAG 2.2.2), like the footer's words; the repeats are hidden from screen readers and the keyboard; with motion reduced they stand still, wrapped. A second exception to "nothing moves on its own" (D113). | 2026-10-31 |
+| D125 | **Every block reveals as it scrolls into view** (the user, 2026-10-31: "add in transition animation to the contents of the page"; reveal as you scroll, the user's choice): every page's blocks rise into place once, in order, as before for most: now also the form and its words, each part of the admin's text (a heading with its words), each client logo (in rows of six), the contact details and the map, and each audience's heading on Services. Nothing above the fold is hidden, and nothing moves with motion reduced. | 2026-10-31 |
+| D126 | **Deleting an image is red** (the user, 2026-10-31: "just make that delete button red … make sure a confirm will be asked before delete"): the media library's Delete, and the Delete in the question it asks first, are white on the error red (6.6:1; a `danger` button). The error red, otherwise for errors only (D63), also marks this one action that cannot be undone. Delete is still offered only for an image no longer in use. | 2026-10-31 |
 
 ## 3. Audiences and the admin
 
@@ -336,9 +342,10 @@ In the reference's order (D97, §30.1):
 3. **The highlights**: four cards.
 4. **For hospitals, clinics & schools** (D105): the staffing offer, its
    cards and real-fact counters.
-5. **For families** (D105): the services sliding in a card (D102), a photo
-   and feature cards.
-6. **How it works**: four steps, held sideways on a wide screen.
+5. **For families** (D105): how it works running in a loop through a card
+   (its steps, D124), a photo and feature cards.
+6. **Our services** (D124): every service running past in a loop, with a
+   small All services button.
 7. **The Contact form** (D104).
 8. **Clients**: the client logo wall (§11). Hidden until logos are supplied.
 
@@ -441,8 +448,8 @@ says where the visitor is and the way back.
 | `STATEMENT` | the statement, phrase by phrase: its words, darker or not, an optional icon after it (D97) | Home |
 | `HIGHLIGHTS` | four cards: a note (icon, title, text); a photo with its words; the green card (title, text, faces, a figure); a photo with its words (D97) | Home |
 | `FOR_INSTITUTIONS` | its pill, its heading in two parts with an icon between; a team card (title, text, faces), a photo card, a reach card (title, faces); up to four real figures (D99, D105) | Home |
-| `FOR_FAMILIES` | its pill and heading; a photo card with its words; up to three features (icon, title); shows every published service, sliding through its card, each with its photo (D102, D105) | Home |
-| `PROCESS` | its pill and heading; two to six steps, each a round photo, a title and words, numbered in order (D97) | Home |
+| `FOR_FAMILIES` | its pill and heading; how it works in its card: a label and up to six steps, each a photo, a title and words, numbered in order, running past in a loop (D124); a photo card with its words; up to three features (icon, title) (D105) | Home |
+| `SERVICES_ROW` | its pill and heading; every published service running past in a loop, each opening its page, and a small All services pill (D124) | Home |
 
 Rich text is stored as structured blocks (heading, paragraph, list, link),
 never HTML; links must be internal routes or validated `https` URLs.
@@ -1168,13 +1175,14 @@ four steps with round photos, moving sideways while held. The Contact form
 (D106) above its columns.
 
 **Motion.** A headline's letters settle from wide spacing into the word; a
-statement's words turn from grey to ink with the scroll; cards rise in;
-counters count; the process steps travel sideways while the section is held;
-the footer's words run in an endless slow loop (D113); the phone menu fades
-in with its rows rising one after another (D117). Nothing else moves on
-its own (WCAG 2.2.2): every other movement follows the scroll or arrives
-once, and the footer's loop has its pause button. Reduced motion shows
-everything in place.
+statement's words turn from grey to ink with the scroll; every block rises in
+as it scrolls into view (D125); counters count; the process steps and the
+family services run in endless loops (D124), and the footer's words in an
+endless slow loop (D113); the phone menu fades in with its rows rising one
+after another (D117). Nothing else moves on its own (WCAG 2.2.2): every
+other movement follows the scroll or arrives once, and each loop stops by
+its own pause button (and, for the two rows, under the pointer or focus).
+Reduced motion shows everything in place.
 
 **The other pages (D109 – D112).** Each opens like Home's hero, smaller: the
 page's name on a pale pill, the headline settling into its words with a phrase
@@ -1212,9 +1220,12 @@ system with its coloured lines, stations and "You are here", built in Phases
   page's sizes, and the line's width and stations, retired with the line in
   R6B.4). Radii 6 px (the admin's panels and controls) and 4 px (tags);
   durations 120, 200 and 640 ms; an exponential ease-out.
-- **The redesign's tokens (Phase 6B, D98):** forest `#3B6B24` with white
-  (6.3:1) and its hover `#2F581C`; on forest, white and `#E3EED6`; the pale
-  leaf `#EEF5E2` carrying forest (5.7:1) or navy text; a quiet grey `#7D8AA0`
+- **The redesign's tokens (Phase 6B, D98; the greens as D122 set them):**
+  the logo's leaf `#86AE3C` is the primary fill with navy words (6.1:1), its
+  hover `#7A9F37` (5.1:1) and its quieter words `#1D393F` (4.8:1); forest
+  `#5B7628`, the leaf deepened only as far as words and marks on white
+  (5.2:1), mist (4.8:1) and the pale leaf (4.6:1) need; focus rings navy on
+  the leaf; the pale leaf `#EEF5E2` carrying forest or navy text; a quiet grey `#7D8AA0`
   for large type only (3.5:1 on white). Display roles: hero 42 – 76 px,
   display 32 – 52 px, statement 26 – 46 px, figure 40 – 60 px, the footer's
   running words 64 – 176 px, light and tight; cards 28 px radius, photo
@@ -1264,16 +1275,17 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 
 The same tokens, type and pictograms, quieter: Operate mode, dense where it
 helps. Shaped with `/impeccable shape` (R6.1, brought forward, D80) as **the
-day's log** (D81): a navy column listing its sections, each with its mark, in
+day's log** (D81): a column in the logo's deep blue (D123) listing its
+sections, each with its mark, in
 groups under bold headings parted by a light rule, the current one marked by
 its highlight, what waits in a sky count (a plain list since D101, without the
 line and its stations; D115); at its foot the admin's name, Profile and Log
-out (asked first); on a phone a navy bar naming the section, with the list
+out (asked first); on a phone a deep-blue bar naming the section, with the list
 as a menu. The work area is white; a list is ruled by day with times in even
 figures; a row opens in place on mist. Deep blue for actions and "New", sky for
 in progress, leaf for resolved, the error red only for failures. Fixed type
 sizes (28 px headings), no smooth scroll, motion only for state. The sign-in
-screens share the column's navy beside a plain form.
+screens share the column's deep blue beside a plain form.
 
 ### 30.6 The static map
 
@@ -1547,6 +1559,7 @@ one commit (D27).
 | R6B.7 | The user's review of the admin (D115): the Dashboard, the menu's marks and ruled groups, the profile (name, password), log out asked first, the sign-in page's panel, the professional wording, the menu's own scroll | D115 | R6B.6 | DONE (2026-10-31) |
 | R6B.8 | The current site's images in the seed (D118): its 11 client logos as client-logo drafts, its 15 photographs in the media library | D118 | R6B.7 | DONE (2026-10-31) |
 | R6B.9 | The user's review of publishing: a publish never lost when the app restarts (D119); Preview saves first (D120); the admin column's logo loaded first | D119, D120 | R6B.8 | DONE (2026-10-31) |
+| R6B.10 | The user's review of the look: the company named as its logo reads (D121); the logo's green as the primary, with navy words (D122); the admin in the logo's blue (D123); how it works in the families' card and Our services in its place, both looping (D124); every block revealed as it scrolls in (D125); deleting an image in red (D126) | D121 – D126 | R6B.9 | DONE (2026-10-31) |
 
 ### Phase 7 — Performance, accessibility and the finish
 

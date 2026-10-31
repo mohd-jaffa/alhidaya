@@ -24,16 +24,16 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe("the design tokens (plan §30.2)", () => {
-  it("are the logo's colours, their navy ink, the leaf deepened and lightened (D98) and the error red, and nothing else", () => {
+  it("are the logo's colours, their navy ink, the leaf deepened and lightened (D98, D122) and the error red, and nothing else", () => {
     expect(Object.keys(colours).sort()).toEqual(
       [
         "deep",
         "sky",
         "leaf",
+        "leaf-2",
+        "on-leaf",
+        "on-leaf-2",
         "forest",
-        "forest-2",
-        "on-forest",
-        "on-forest-2",
         "leaf-pale",
         "ink-soft",
         "navy",
@@ -45,6 +45,7 @@ describe("the design tokens (plan §30.2)", () => {
         "on-deep-2",
         "focus",
         "focus-on-deep",
+        "focus-on-leaf",
         "error",
       ].sort(),
     );
@@ -75,9 +76,9 @@ describe("the design tokens (plan §30.2)", () => {
       ["forest", "ground"],
       ["forest", "mist"],
       ["forest", "leaf-pale"],
-      ["on-forest", "forest"],
-      ["on-forest-2", "forest"],
-      ["on-forest", "forest-2"],
+      ["on-leaf", "leaf"],
+      ["on-leaf-2", "leaf"],
+      ["on-leaf", "leaf-2"],
       ["navy", "leaf-pale"],
       ["ink-2", "leaf-pale"],
     ]) {
@@ -100,6 +101,7 @@ describe("the design tokens (plan §30.2)", () => {
     expect(contrast("focus", "ground")).toBeGreaterThanOrEqual(3);
     expect(contrast("focus", "mist")).toBeGreaterThanOrEqual(3);
     expect(contrast("focus-on-deep", "deep")).toBeGreaterThanOrEqual(3);
+    expect(contrast("focus-on-leaf", "leaf")).toBeGreaterThanOrEqual(3);
     expect(contrast("ink-2", "ground")).toBeGreaterThanOrEqual(3);
     expect(contrast("error", "ground")).toBeGreaterThanOrEqual(3);
   });

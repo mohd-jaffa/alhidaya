@@ -60,7 +60,8 @@ test("Pages lists the eight pages with their state, and a page's editor passes a
   await expect(page.getByRole("combobox", { name: new RegExp(`^${ADMIN_TEXT.icon}`) }).first()).toBeVisible();
   await axe(page);
 
-  await page.getByRole("button", { name: ADMIN_TEXT.changePhoto }).click();
+  // The steps' photos come first (D124); the photo card's is the last.
+  await page.getByRole("button", { name: ADMIN_TEXT.changePhoto }).last().click();
   const library = page.getByRole("dialog", { name: ADMIN_TEXT.choosePhoto });
   await expect(library.getByRole("button").nth(1)).toBeVisible();
   await axe(page);

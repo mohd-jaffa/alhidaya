@@ -69,7 +69,7 @@ export function SectionOpening({
         {pictogram ? (
           <>
             {" "}
-            <IconChip name={pictogram} tone="forest" size="inline" />
+            <IconChip name={pictogram} tone="leaf" size="inline" />
           </>
         ) : null}
         {end ? ` ${end}` : null}

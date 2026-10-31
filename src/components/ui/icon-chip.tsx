@@ -5,8 +5,8 @@ import { Pictogram } from "./pictogram";
 const TONES = {
   /** Beside words on white or mist: the pale leaf, its icon forest. */
   pale: "bg-leaf-pale text-forest",
-  /** On a card's corner, or where it must stand out: forest, its icon white. */
-  forest: "bg-forest text-on-forest",
+  /** On a card's corner, or where it must stand out: the logo's leaf, its icon navy (D122). */
+  leaf: "bg-leaf text-on-leaf",
   /** On a photo: white, its icon forest. */
   ground: "bg-ground text-forest",
 } as const;

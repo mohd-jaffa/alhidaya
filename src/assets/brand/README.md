@@ -29,5 +29,6 @@ approve (plan D62, R2.2, R7.5).
 - Known difference: the hairline tip at the top of the swoosh ends a few
   units sooner than in the JPG, where it fades into JPEG noise.
 
-The logo reads *Service WLL*; the site's name is *Al Hidaya Health Care
-Services*. The logo is kept as drawn.
+The site names the company as the logo does (D121): *Al Hidaya Health Care
+Service*, and *Al Hidaya Health Care Service W.L.L.* in the footer's
+copyright.

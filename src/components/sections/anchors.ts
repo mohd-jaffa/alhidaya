@@ -19,7 +19,7 @@ const ANCHORS: Record<SectionType, string> = {
   HIGHLIGHTS: "highlights",
   FOR_INSTITUTIONS: "for-institutions",
   FOR_FAMILIES: "families",
-  PROCESS: "how-it-works",
+  SERVICES_ROW: "our-services",
 };
 
 /**

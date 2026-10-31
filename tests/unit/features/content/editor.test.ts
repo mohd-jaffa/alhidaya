@@ -49,7 +49,14 @@ describe("the editor's fields", () => {
     expect(blankSection("HOME", "STATEMENT").content).toEqual({
       parts: [{ text: { en: "" }, strong: false, pictogram: null }],
     });
-    expect(blankSection("HOME", "PROCESS").content).toMatchObject({ steps: [{ image: null }, { image: null }] });
+    // How it works runs in the families' card, its steps added one by one (D124).
+    expect(blankSection("HOME", "FOR_FAMILIES").content).toMatchObject({ stepsLabel: { en: "" }, steps: [] });
+    expect(blankSection("HOME", "SERVICES_ROW").content).toEqual({
+      label: { en: "" },
+      headingStart: { en: "" },
+      pictogram: null,
+      headingEnd: { en: "" },
+    });
     expect(blankSection("HOME", "SIGN").content).toMatchObject({
       avatars: [],
       chips: [],
@@ -75,7 +82,7 @@ describe("the editor's fields", () => {
       "HIGHLIGHTS",
       "FOR_INSTITUTIONS",
       "FOR_FAMILIES",
-      "PROCESS",
+      "SERVICES_ROW",
       "FORM",
       "VALUES",
       "INSTITUTIONS",

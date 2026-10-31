@@ -69,18 +69,19 @@ const CONTENT: Record<SectionType, Section["content"]> = {
     headingStart: en("Care for the people you love,"),
     pictogram: "heart",
     headingEnd: en("at home."),
-    photo: { image: null, text: en(null) },
-    features: [{ pictogram: "clock", title: en("Day and night") }],
-  },
-  PROCESS: {
-    label: en("How it works"),
-    headingStart: en("Care arranged"),
-    pictogram: null,
-    headingEnd: en(null),
+    stepsLabel: en("How it works"),
     steps: [
       { image: null, title: en("Tell us what you need"), text: en(null) },
       { image: null, title: en("Care begins"), text: en(null) },
     ],
+    photo: { image: null, text: en(null) },
+    features: [{ pictogram: "clock", title: en("Day and night") }],
+  },
+  SERVICES_ROW: {
+    label: en("Our services"),
+    headingStart: en("Nursing care"),
+    pictogram: null,
+    headingEnd: en(null),
   },
 };
 
@@ -148,7 +149,7 @@ export const clientFixture = (overrides: Partial<ClientDocument> = {}): ClientDo
 });
 
 export const siteFixture = (overrides: Partial<SiteDocument> = {}): SiteDocument => ({
-  name: en("Al Hidaya Health Care Services"),
+  name: en("Al Hidaya Health Care Service"),
   description: en("Nursing care at home and in clinics."),
   contact: {
     phone: "+97431306555",
@@ -163,7 +164,7 @@ export const siteFixture = (overrides: Partial<SiteDocument> = {}): SiteDocument
   navigation: [{ label: en("Services"), href: "/services", visible: true }],
   runningWords: en("AL HIDAYA HEALTH CARE"),
   footer: [{ heading: en("Company"), links: [{ label: en("About"), href: "/about" }] }],
-  seo: { title: en("Al Hidaya Health Care Services"), description: en("Nursing care in Doha.") },
+  seo: { title: en("Al Hidaya Health Care Service"), description: en("Nursing care in Doha.") },
   brochure: null,
   whatsappButton: true,
   ...overrides,

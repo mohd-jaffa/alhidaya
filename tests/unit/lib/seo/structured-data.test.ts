@@ -16,7 +16,7 @@ describe("medicalBusiness", () => {
       "@context": "https://schema.org",
       "@type": "MedicalBusiness",
       "@id": "https://alhidaya.qa/#business",
-      name: "Al Hidaya Health Care Services",
+      name: "Al Hidaya Health Care Service",
       description: "Nursing care at home and in clinics.",
       url: SITE,
       logo: "https://alhidaya.qa/apple-icon.png",
@@ -96,7 +96,7 @@ describe("jobPosting", () => {
       employmentType: "FULL_TIME",
       hiringOrganization: {
         "@type": "Organization",
-        name: "Al Hidaya Health Care Services",
+        name: "Al Hidaya Health Care Service",
         sameAs: SITE,
         logo: "https://alhidaya.qa/apple-icon.png",
       },

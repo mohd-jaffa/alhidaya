@@ -27,7 +27,7 @@ describe("mail through SMTP", () => {
       requireTLS: false,
     });
     await provider.send({
-      from: "Al Hidaya Health Care Services <noreply@alhidaya.qa>",
+      from: "Al Hidaya Health Care Service <noreply@alhidaya.qa>",
       to: "hr@alhidaya.qa",
       replyTo: "applicant@example.com",
       subject: SUBJECT,

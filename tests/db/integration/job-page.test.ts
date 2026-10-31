@@ -82,7 +82,7 @@ describe("a job's page, against the local MySQL", () => {
         description: "Home care nursing.",
         url: "/careers/registered-general-nurse-home-care",
         type: "website",
-        siteName: "Al Hidaya Health Care Services",
+        siteName: "Al Hidaya Health Care Service",
       },
     });
     await saveRecordDraft(
@@ -127,7 +127,7 @@ describe("a job's page, against the local MySQL", () => {
         description: "Tell us where you are with your licence, and send your CV. It takes a few minutes.",
         url: "/careers/nurse-for-schools/apply",
         type: "website",
-        siteName: "Al Hidaya Health Care Services",
+        siteName: "Al Hidaya Health Care Service",
       },
     });
     expect(await getApplyMetadata(null)).toMatchObject({

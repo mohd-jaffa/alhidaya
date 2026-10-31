@@ -112,7 +112,7 @@ function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: ()
   const { submit, submitting } = useApiMutation(AuthClient.signOut, { onSuccess: leave, onError: leave });
   return (
     <div className="grid gap-1 border-t border-on-deep/15 pt-4">
-      <p className="px-3 pb-1 text-small text-on-deep-2/80">{ADMIN_TEXT.signedInAs(adminName)}</p>
+      <p className="px-3 pb-1 text-small text-on-deep-2">{ADMIN_TEXT.signedInAs(adminName)}</p>
       <Link
         href={ADMIN_ROUTES.profile}
         aria-current={here ? "page" : undefined}
@@ -144,10 +144,10 @@ function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: ()
 }
 
 /**
- * The admin's frame (plan §16, R6.1): the navy column of links on a wide
- * screen; on a phone a navy bar naming the section, with the links in a menu. The page
- * beside it is white and quiet. No smooth scroll, no motion of the public
- * site's.
+ * The admin's frame (plan §16, R6.1): a column of links in the logo's deep
+ * blue (D123) on a wide screen; on a phone a deep-blue bar naming the
+ * section, with the links in a menu. The page beside it is white and quiet.
+ * No smooth scroll, no motion of the public site's.
  */
 export function AdminShell({ adminName, children }: { adminName: string; children: ReactNode }) {
   const pathname = usePathname();
@@ -254,10 +254,10 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
     <div className="min-h-dvh bg-ground lg:grid lg:grid-cols-[15.5rem_1fr]">
       <SkipLink />
       {/* The column scrolls on its own; reaching its end never carries on into the page (D115). */}
-      <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto overscroll-contain bg-navy px-5 py-6 lg:flex">
+      <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto overscroll-contain bg-deep px-5 py-6 lg:flex">
         <Link href={ADMIN_ROUTES.overview} className="grid gap-1 text-on-deep">
           <Logo variant="white" priority className="h-9 w-auto" />
-          <span className="text-small text-on-deep-2/80">{ADMIN_TEXT.admin}</span>
+          <span className="text-small text-on-deep-2">{ADMIN_TEXT.admin}</span>
         </Link>
         <Stations groups={groups} />
         <div className="mt-auto">
@@ -265,7 +265,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         </div>
       </aside>
 
-      <header className="sticky top-0 z-10 flex items-center gap-3 bg-navy px-gutter py-2 text-on-deep lg:hidden">
+      <header className="sticky top-0 z-10 flex items-center gap-3 bg-deep px-gutter py-2 text-on-deep lg:hidden">
         <Link href={ADMIN_ROUTES.overview} aria-label={ADMIN_TEXT.dashboard} className="shrink-0">
           <Logo variant="white" priority className="h-8 w-auto" />
         </Link>
@@ -280,7 +280,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         </button>
       </header>
       <Dialog open={menu} onClose={() => setMenu(false)} title={ADMIN_TEXT.menu}>
-        <div className="grid gap-6 rounded-panel bg-navy p-5">
+        <div className="grid gap-6 rounded-panel bg-deep p-5">
           <Stations groups={groups} onNavigate={() => setMenu(false)} />
           <Account adminName={adminName} onNavigate={() => setMenu(false)} />
         </div>

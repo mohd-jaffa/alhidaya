@@ -27,7 +27,7 @@ describe("SiteFooter", () => {
     expect(instagram.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
     // The brochure is the header's to offer (D116), not the footer's.
     expect(screen.queryByRole("link", { name: UI_TEXT.brochure })).not.toBeInTheDocument();
-    expect(screen.getByRole("img", { name: UI_TEXT.siteName }).getAttribute("src")).toMatch(/logo-white/);
+    expect(screen.getByRole("img", { name: UI_TEXT.siteName }).getAttribute("src")).toMatch(/logo-navy/);
     expect(screen.queryByRole("link", { name: UI_TEXT.requestQuote })).not.toBeInTheDocument();
   });
 
@@ -42,7 +42,7 @@ describe("SiteFooter", () => {
     expect(run.parentElement!.parentElement).toHaveClass("running-band");
     expect(run.parentElement).toHaveAttribute("aria-hidden", "true");
     expect(run.parentElement).toHaveClass("overflow-hidden");
-    expect(container.firstElementChild).toHaveClass("bg-forest");
+    expect(container.firstElementChild).toHaveClass("bg-leaf");
 
     const pause = screen.getByRole("checkbox", { name: UI_TEXT.pauseRunningWords });
     expect(pause).not.toBeChecked();
@@ -70,7 +70,9 @@ describe("SiteFooter", () => {
 
   it("still closes the page, with the logo and the year in Doha, before the site content is published", () => {
     render(<SiteFooter site={null} />);
-    expect(screen.getByText(new RegExp(`© ${dohaDay().slice(0, 4)} ${UI_TEXT.siteName}`))).toBeInTheDocument();
+    expect(
+      screen.getByText(`© ${dohaDay().slice(0, 4)} ${UI_TEXT.legalName} ${UI_TEXT.copyright}`),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
   });
 });

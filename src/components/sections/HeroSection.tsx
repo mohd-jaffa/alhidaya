@@ -124,7 +124,7 @@ export function HeroSection({
               ) : null}
               {note.text.en ? (
                 <p className="flex w-full max-w-[19rem] items-center gap-3 rounded-pill bg-ground p-1.5 pe-5 shadow-float">
-                  {note.pictogram ? <IconChip name={note.pictogram} tone="forest" /> : null}
+                  {note.pictogram ? <IconChip name={note.pictogram} tone="leaf" /> : null}
                   <span className="font-medium">{note.text.en}</span>
                 </p>
               ) : null}

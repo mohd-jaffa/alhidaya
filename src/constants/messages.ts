@@ -4,7 +4,9 @@
  * catalogue sits beside it later (plan §33).
  */
 export const UI_TEXT = {
-  siteName: "Al Hidaya Health Care Services",
+  siteName: "Al Hidaya Health Care Service",
+  // The company's registered name, as its logo reads (D121): the footer's copyright.
+  legalName: "Al Hidaya Health Care Service W.L.L.",
   siteDescription:
     "Nursing care at home and in clinics, and nurse staffing for hospitals, clinics and schools, in Doha, Qatar.",
   /** The first line of a WhatsApp chat a visitor starts; they still press send (plan Q14). */
@@ -23,6 +25,8 @@ export const UI_TEXT = {
   contactHeading: "Contact",
   followUs: "Follow us",
   pauseRunningWords: "Pause the moving words",
+  pauseSteps: "Pause the moving steps",
+  pauseServices: "Pause the moving services",
   brochure: "Brochure",
   requestQuote: "Request a quote",
   brochureButton: "Download brochure",

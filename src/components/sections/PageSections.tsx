@@ -19,9 +19,9 @@ import { InstitutionsSection } from "./InstitutionsSection";
 import { IntroSection } from "./IntroSection";
 import { JobsListSection } from "./JobsListSection";
 import { MissionSection } from "./MissionSection";
-import { ProcessSection } from "./ProcessSection";
 import { RichTextSection } from "./RichTextSection";
 import { ServicesIndexSection } from "./ServicesIndexSection";
+import { ServicesRowSection } from "./ServicesRowSection";
 import { SignSection } from "./SignSection";
 import { StatementSection } from "./StatementSection";
 import { ValuesSection } from "./ValuesSection";
@@ -100,9 +100,9 @@ function SectionFor({
     case "FOR_INSTITUTIONS":
       return <ForInstitutionsSection anchor={anchor} content={section.content} image={image} />;
     case "FOR_FAMILIES":
-      return <ForFamiliesSection anchor={anchor} content={section.content} services={data.services} image={image} />;
-    case "PROCESS":
-      return <ProcessSection anchor={anchor} content={section.content} image={image} />;
+      return <ForFamiliesSection anchor={anchor} content={section.content} image={image} />;
+    case "SERVICES_ROW":
+      return <ServicesRowSection anchor={anchor} content={section.content} services={data.services} image={image} />;
   }
 }
 

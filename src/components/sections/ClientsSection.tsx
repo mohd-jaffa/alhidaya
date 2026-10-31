@@ -43,7 +43,7 @@ export function ClientsSection({
         <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
       </Reveal>
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        {shown.map(({ client, id, logo }) => {
+        {shown.map(({ client, id, logo }, at) => {
           const tile = (
             <LogoTile>
               <MediaImage image={logo} sizes="(min-width: 64rem) 12rem, (min-width: 40rem) 30vw, 45vw" />
@@ -51,13 +51,16 @@ export function ClientsSection({
           );
           return (
             <li key={id}>
-              {client.url ? (
-                <a href={client.url} target="_blank" rel="noopener noreferrer" className="block rounded-card">
-                  {tile}
-                </a>
-              ) : (
-                tile
-              )}
+              {/* A row of six arrives together, each a moment after the one before (D125). */}
+              <Reveal order={at % 6}>
+                {client.url ? (
+                  <a href={client.url} target="_blank" rel="noopener noreferrer" className="block rounded-card">
+                    {tile}
+                  </a>
+                ) : (
+                  tile
+                )}
+              </Reveal>
             </li>
           );
         })}

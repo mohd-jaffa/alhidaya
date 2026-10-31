@@ -25,6 +25,7 @@ export function AskedAction<T>({
   revalidate = [],
   afterwards,
   primary = false,
+  danger = false,
 }: {
   label: string;
   title: string;
@@ -38,6 +39,8 @@ export function AskedAction<T>({
   afterwards?: (result: T) => void;
   /** The screen's main action (Publish the order), in the deep blue. */
   primary?: boolean;
+  /** What cannot be undone (deleting an image, D126): in the error red, here and in the question. */
+  danger?: boolean;
 }) {
   const [asking, setAsking] = useState(false);
   const [failure, setFailure] = useState<string | null>(null);
@@ -52,7 +55,7 @@ export function AskedAction<T>({
   return (
     <>
       <Button
-        variant={primary ? "primary" : "secondary"}
+        variant={danger ? "danger" : primary ? "primary" : "secondary"}
         onClick={() => {
           setFailure(null);
           setAsking(true);
@@ -70,7 +73,7 @@ export function AskedAction<T>({
             </Notice>
           ) : null}
           <div className="flex flex-wrap gap-3">
-            <Button pending={submitting} onClick={() => submit(undefined)}>
+            <Button variant={danger ? "danger" : "primary"} pending={submitting} onClick={() => submit(undefined)}>
               {submitting ? pendingLabel : label}
             </Button>
             <Button variant="secondary" onClick={() => setAsking(false)}>

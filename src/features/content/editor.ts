@@ -175,6 +175,17 @@ export const SECTION_FIELDS: Record<SectionType, readonly SectionField[]> = {
   ],
   FOR_FAMILIES: [
     ...opening,
+    line("stepsLabel", ADMIN_TEXT.stepsLabel, TEXT_LIMITS.label, false),
+    {
+      kind: "list",
+      name: "steps",
+      label: ADMIN_TEXT.steps,
+      item: ADMIN_TEXT.step,
+      add: ADMIN_TEXT.addStep,
+      min: 0,
+      max: LIST_LIMITS.steps,
+      fields: [photo, line("title", ADMIN_TEXT.step, TEXT_LIMITS.valueTitle), shortText],
+    },
     pictured("photo", ADMIN_TEXT.photoCard),
     {
       kind: "list",
@@ -187,19 +198,7 @@ export const SECTION_FIELDS: Record<SectionType, readonly SectionField[]> = {
       fields: [icon(), title],
     },
   ],
-  PROCESS: [
-    ...opening,
-    {
-      kind: "list",
-      name: "steps",
-      label: ADMIN_TEXT.steps,
-      item: ADMIN_TEXT.step,
-      add: ADMIN_TEXT.addStep,
-      min: 2,
-      max: LIST_LIMITS.steps,
-      fields: [photo, line("title", ADMIN_TEXT.step, TEXT_LIMITS.valueTitle), shortText],
-    },
-  ],
+  SERVICES_ROW: [...opening],
 };
 
 /** A section's fields on its page: Home's sign is its hero, with the hero's own besides (D97). */

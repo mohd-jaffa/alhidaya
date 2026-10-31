@@ -1,13 +1,13 @@
 ---
-name: Al Hidaya Health Care Services
+name: Al Hidaya Health Care Service
 description: A calm white page where care is shown in people and soft cards, and words arrive as you read.
 colors:
-  forest: "#3b6b24"
-  forest-2: "#2f581c"
-  on-forest: "#ffffff"
-  on-forest-2: "#e3eed6"
-  leaf-pale: "#eef5e2"
   leaf: "#86ae3c"
+  leaf-2: "#7a9f37"
+  on-leaf: "#0b2440"
+  on-leaf-2: "#1d393f"
+  forest: "#5b7628"
+  leaf-pale: "#eef5e2"
   deep: "#0f64ac"
   sky: "#33a0da"
   on-deep: "#ffffff"
@@ -20,6 +20,7 @@ colors:
   rule: "#d5e1ed"
   focus: "#0f64ac"
   focus-on-deep: "#ffffff"
+  focus-on-leaf: "#0b2440"
   error: "#b42318"
 typography:
   hero:
@@ -95,18 +96,18 @@ spacing:
   site: "78rem"
   measure: "60ch"
 components:
-  pill-forest:
-    backgroundColor: "{colors.forest}"
-    textColor: "{colors.on-forest}"
+  pill-leaf:
+    backgroundColor: "{colors.leaf}"
+    textColor: "{colors.on-leaf}"
     rounded: "{rounded.pill}"
     padding: "0 20px"
     height: "44px"
     typography: "{typography.body}"
-  pill-forest-hover:
-    backgroundColor: "{colors.forest-2}"
-  pill-forest-lg:
-    backgroundColor: "{colors.forest}"
-    textColor: "{colors.on-forest}"
+  pill-leaf-hover:
+    backgroundColor: "{colors.leaf-2}"
+  pill-leaf-lg:
+    backgroundColor: "{colors.leaf}"
+    textColor: "{colors.on-leaf}"
     rounded: "{rounded.pill}"
     padding: "0 28px"
     height: "56px"
@@ -118,15 +119,15 @@ components:
     padding: "0 20px"
     height: "44px"
   pill-pale-hover:
-    backgroundColor: "{colors.forest}"
-    textColor: "{colors.on-forest}"
-  pill-on-forest:
+    backgroundColor: "{colors.leaf}"
+    textColor: "{colors.on-leaf}"
+  pill-on-leaf:
     backgroundColor: "{colors.ground}"
-    textColor: "{colors.forest}"
+    textColor: "{colors.navy}"
     rounded: "{rounded.pill}"
     padding: "0 20px"
     height: "44px"
-  pill-on-forest-hover:
+  pill-on-leaf-hover:
     backgroundColor: "{colors.leaf-pale}"
   pill-label:
     backgroundColor: "{colors.leaf-pale}"
@@ -140,9 +141,9 @@ components:
     textColor: "{colors.forest}"
     rounded: "{rounded.pill}"
     size: "44px"
-  icon-chip-forest:
-    backgroundColor: "{colors.forest}"
-    textColor: "{colors.on-forest}"
+  icon-chip-leaf:
+    backgroundColor: "{colors.leaf}"
+    textColor: "{colors.on-leaf}"
     rounded: "{rounded.pill}"
     size: "44px"
   card-mist:
@@ -151,8 +152,8 @@ components:
     rounded: "{rounded.card}"
     padding: "24px"
   card-accent:
-    backgroundColor: "{colors.forest}"
-    textColor: "{colors.on-forest}"
+    backgroundColor: "{colors.leaf}"
+    textColor: "{colors.on-leaf}"
     rounded: "{rounded.card}"
     padding: "24px"
   photo-frame:
@@ -168,8 +169,8 @@ components:
     height: "48px"
     typography: "{typography.body}"
   footer:
-    backgroundColor: "{colors.forest}"
-    textColor: "{colors.on-forest}"
+    backgroundColor: "{colors.leaf}"
+    textColor: "{colors.on-leaf}"
   nav-link-current:
     backgroundColor: "{colors.mist}"
     textColor: "{colors.navy}"
@@ -190,6 +191,9 @@ components:
     rounded: "{rounded.control}"
     padding: "0 20px"
     height: "44px"
+  admin-column:
+    backgroundColor: "{colors.deep}"
+    textColor: "{colors.on-deep}"
   admin-field-box:
     backgroundColor: "{colors.ground}"
     textColor: "{colors.navy}"
@@ -198,7 +202,7 @@ components:
     height: "48px"
 ---
 
-# Design System: Al Hidaya Health Care Services
+# Design System: Al Hidaya Health Care Service
 
 <!-- Written from the built world at the end of Phase 6B (2026-10-31). Source of truth: src/app/globals.css, src/lib/motion/tokens.ts, src/components/{ui,sections,site,motion}. Where this file and the code disagree, the code was right on the day this was written; fix the file. -->
 
@@ -206,49 +210,50 @@ components:
 
 **Creative North Star: "Care, Shown in People"**
 
-The public site is the telehealth landing language of Dribbble shot 24320685 (Eloqwnt for DocInPoc), pinned by the user (plan D97) and translated into the logo's colours and Al Hidaya's own facts. It is a calm white page in **Persuade** mode: care is shown in photographs of people and in soft, deeply rounded mist cards; the logo's leaf green, deepened to forest, carries every main action, the one accent card and the footer; words are large, light and tight, and they arrive as you read: a headline's letters settle into place, a statement darkens with the scroll, cards rise one after another, steps travel sideways, the footer's words run.
+The public site is the telehealth landing language of Dribbble shot 24320685 (Eloqwnt for DocInPoc), pinned by the user (plan D97) and translated into the logo's colours and Al Hidaya's own facts. It is a calm white page in **Persuade** mode: care is shown in photographs of people and in soft, deeply rounded mist cards; the logo's own leaf green carries every main action, the green cards and the footer, with navy words on it (D122); words are large, light and tight, and they arrive as you read: a headline's letters settle into place, a statement darkens with the scroll, every block rises in as it scrolls into view (D125), how it works and the services run in loops (D124), the footer's words run.
 
 It is not signage and not a dashboard. The old wayfinding line (D36) and its station dots are gone, the header is not pinned (D107), and nothing is decorated for its own sake. Density is low on the public site: one idea per section, separated by one generous section gap. The admin panel is a separate **Operate** surface that shares the tokens and type but keeps its own firm, boxed look (see the Admin note under Components).
 
 **Key Characteristics:**
 - White ground, mist cards at 28 px radius, photographs in 24 px frames, everything actionable round.
 - One family, Inter Tight, at light-to-regular weights for anything large; medium for titles.
-- Forest is the action colour on the site; deep blue is the action colour in the admin.
-- Motion follows the scroll or arrives once; it never runs on its own and always has a still path.
+- The logo's leaf is the action colour on the site, with navy words; deep blue is the action colour in the admin, and its column's colour.
+- Motion follows the scroll or arrives once, except three loops (the footer's words, how it works, the services), each with its own pause; everything has a still path.
 - Only real facts and licensed stock: no invented proof, no staff captions on stock.
 
 ## Colors
 
-The logo's four colours and two greens derived from its leaf, on white; one red for errors and nothing else.
+The logo's four colours, its leaf with a hover and a deepened green for words, on white; one red for errors and nothing else.
 
 ### Primary
-- **Forest** (forest): the logo's leaf deepened. The site's action colour: every primary pill, the accent card in the highlights, the footer, the filled tick of a site checkbox or radio, link words beside an arrow. Carries white text (about 6.3:1).
-- **Forest Pressed** (forest-2): the forest pill's hover.
+- **Leaf** (leaf): the logo's green as drawn (D122). The site's action colour: every primary pill, the green cards (the highlights' accent, the mission, the contact band), icon chips that must stand out, the footer; the admin's "resolved" status. Carries navy words (6.1:1); white on it fails AA.
+- **Leaf Pressed** (leaf-2): the leaf pill's hover (navy at 5.1:1).
+- **On Leaf / On Leaf Two** (on-leaf, on-leaf-2): navy words on the leaf, and its quieter words (4.8:1): the footer's description and copyright, a card's supporting line.
+- **Forest** (forest): the leaf deepened only as far as reading needs. Green words and marks on white, mist and the pale leaf: link words beside an arrow, arrows, the pill label's words, the filled tick of a site checkbox or radio, the map's pin.
 - **Leaf Pale** (leaf-pale): the leaf lightened. The pale pill, the pill label, icon chips beside words, the highlight behind a headline phrase, the current row of the phone menu, the empty fill behind a photo that has not arrived. Carries forest, navy or ink-2 text.
 
 ### Secondary
-- **Deep Blue** (deep): the logo's blue. The admin's action colour, the floating WhatsApp button, the info and success notice icons, the focus ring on light ground. Carries white text.
+- **Deep Blue** (deep): the logo's blue. The admin's action colour and its column, phone bar and sign-in panel (D123), the floating WhatsApp button, the info and success notice icons, the focus ring on light ground. Carries white text.
 - **Sky Blue** (sky): the logo's light blue. Text selection, the admin's in-progress and new-count pills. A line and fill colour: carries navy text only; white on it fails AA.
-- **Leaf** (leaf): the logo's green as drawn. The admin's "resolved" status. Navy text only; white on it fails AA.
 
 ### Neutral
-- **Navy Ink** (navy): all primary text, the deep blue darkened. The admin's side column. The dark half of a statement's words; the scrim under words on a photo (at 85% opacity).
+- **Navy Ink** (navy): all primary text, the deep blue darkened. The dark half of a statement's words; the scrim under words on a photo (at 85% opacity).
 - **Ink Two** (ink-2): supporting lines, hints, summaries, credits, inactive header links, field borders (3:1 against ground).
 - **Quiet Grey** (ink-soft): a statement's softer words only. About 3.5:1: large type only.
 - **Ground** (ground): the page.
 - **Mist** (mist): cards, the form panel, photo placeholders, the current header link, an opened admin row.
 - **Rule** (rule): hairlines (the phone menu's bar, admin dividers).
-- **On Deep Two / On Forest Two** (on-deep-2, on-forest-2): quieter text on a deep-blue or forest surface (footer descriptions, column headings, copyright).
+- **On Deep Two** (on-deep-2): quieter text on a deep-blue surface (the admin column's labels, the sign-in panel's words).
 
 ### Error
-- **Error Red** (error): the one colour outside the logo's (D63). Field errors, error notices, invalid borders; always with the error pictogram and words.
+- **Error Red** (error): the one colour outside the logo's (D63). Field errors, error notices, invalid borders; always with the error pictogram and words. And the one action that cannot be undone in the media library: Delete, white on red, asked first (D126).
 
 ### Named Rules
-**The White-Only-On-Dark Rule.** White text sits only on deep blue, navy or forest (and forest-2, error). Sky and leaf carry navy text. tests/contract/tokens.test.ts holds every pairing the design uses to 4.5:1 and fails the build if one slips.
+**The White-Only-On-Dark Rule.** White text sits only on deep blue, navy, forest or error red. Sky and leaf carry navy text, and so does every leaf surface. tests/contract/tokens.test.ts holds every pairing the design uses to 4.5:1 and fails the build if one slips.
 
 **The Large-Grey Rule.** The quiet grey is for large type only (the statement role and up); the test asserts it stays under 4.5:1 so no one mistakes it for a body colour.
 
-**The Red-Means-Wrong Rule.** The error red appears only for errors, always with an icon and words, never colour alone.
+**The Red-Means-Wrong Rule.** The error red appears only for errors, always with an icon and words, never colour alone; the one exception is deleting an image (D126), a red button in words that asks first.
 
 **The Logo-Only Rule.** No colour outside the tokens above (D35, D98), and light theme only (D28). Tailwind's own palette is removed in globals.css (`--color-*: initial`), so an off-token colour does not compile to anything.
 
@@ -283,7 +288,7 @@ The logo's four colours and two greens derived from its leaf, on white; one red 
 - **Rhythm:** the section gap (`section`, 56–112 px) is the only space between a page's sections; sections never add their own outer margin. Inside a section, the heading block and its content sit 48 px apart (gap-12); cards in a grid sit 16 px apart (gap-4).
 - **Openings:** Home's hero and every PageHero are two columns from 1024 px (copy at 1fr, photo at 1.04fr, 56 px apart); on a phone the photo follows the words, full width. The header is 64 px tall, 80 px from 1024 px, and scrolls away.
 - **Grids:** service cards 4 / 2 / 1 across (desktop / tablet / phone; on a phone each becomes a row with a small square photo beside its words); highlights 4 / 2 / 1; a facts row spreads its figures evenly from 640 px and stacks in one column on a phone; a form sits on the right at 1.2fr beside its sticky heading at 0.8fr.
-- **Tracks:** the process steps (280–320 px cards) run to the window's edges and travel sideways while the section is held, from 1024 px; narrower, the row is swiped.
+- **Looping rows:** the services run to the window's edges from 1024 px; how it works runs inside the families' card (D124). Nothing on the page scrolls sideways.
 - **Breakpoints:** Tailwind's defaults are the ones in use: 640 (sm), 768 (md), 1024 (lg), 1280 (xl). Phone first: 360, 390, 414 px are checked before anything wider.
 - **Direction:** logical properties throughout (`ms`, `pe`, `start`, `end`); directional pictograms mirror in RTL.
 
@@ -314,11 +319,11 @@ Soft and round on the site, firm in the admin.
 
 ### Pills (the site's actions)
 Round, medium-weight words, an optional arrow that steps 4 px forward on hover. They press in to 98% by transform alone; colour changes over 200 ms. Look in `src/components/ui/pill-classes.ts`, kept apart from the components so a page can take the look without the component's JavaScript.
-- **Forest** (default): the one main action in a view (WhatsApp in the hero, the form's send, the header's "Request a quote"). Hover forest-2.
-- **Pale**: the action beside it (Request a quote beside WhatsApp; WhatsApp and Call in the phone menu). Hover fills forest with white words.
-- **On forest**: white with forest words, on the footer or the accent card. **On forest quiet**: white outline and white words beside it.
+- **Leaf** (default): the logo's green with navy words (D122), the one main action in a view (WhatsApp in the hero, the form's send, the header's "Download brochure"). Hover leaf-2.
+- **Pale**: the action beside it (Request a quote beside WhatsApp; WhatsApp and Call in the phone menu; All services under the family services). Hover fills the leaf with navy words.
+- **On leaf**: white with navy words, on the contact band or a green card. **On leaf quiet**: a navy outline and navy words beside it. Focus rings navy on the leaf.
 - **Sizes:** md 44 px tall, 20 px sides, body; lg 52 px (56 px from 640 px), 24–28 px sides, lead from 640 px.
-- **Do** keep one forest pill per view and add the arrow only for an action that moves the visitor on. **Don't** restyle a pill in a screen, and don't use the admin's Button on the site.
+- **Do** keep one leaf pill per view and add the arrow only for an action that moves the visitor on. **Don't** restyle a pill in a screen, and don't use the admin's Button on the site.
 
 ### Pill label
 A 36 px pale-green pill with forest medium words, above a heading: who a section speaks to, or what a page is. It is the reference's own device (D97, D105), not decoration.
@@ -326,14 +331,15 @@ A 36 px pale-green pill with forest medium words, above a heading: who a section
 
 ### Icon chips
 A thin-line pictogram (24-unit grid, 2 px stroke, round caps) in a circle.
-- **Tones:** pale (leaf-pale, forest icon) beside words; forest (white icon) on a card's corner or set in a heading; ground (white, forest icon) on a photo.
+- **Tones:** pale (leaf-pale, forest icon) beside words; leaf (navy icon) on a card's corner or set in a heading; ground (white, forest icon) on a photo.
 - **Sizes:** inline (1.05em, set among the words of a heading or statement), sm 28 px (a tick before a list line), md 44 px, lg 56 px.
 - Always decoration, hidden from screen readers; the words beside it carry the meaning.
 
 ### Cards
 - **Mist card:** mist, 28 px, 20–24 px padding, no shadow, no border. Highlights, features, process steps, family services.
+- **Looping row** (`LoopRow`, D124): How it works's steps in the families' card (a white "How it works" pill label above them; each step a white 208–240 px card: a 4:3 photo, its number, title and words) and Our services (each service a mist 208–240 px card: a 4:5 photo, its name and a forest arrow), running in an endless loop, faded at both edges, with a 44 px round pause button (rule-coloured ring, navy marks) at the end of the bar under them; Our services puts a small pale All services pill at its start.
 - **Service card:** a mist card holding a photo (4:3 at 20 px, scaling to 104% over 640 ms on hover), the name in title with a forest arrow, the summary in small ink-2. The whole card is the link. On a phone it becomes a row: 96 px square photo beside the words.
-- **Accent card:** forest with white words, at most one per group (the green card in the highlights), with a faint thin-line globe low in its corner (on-forest at 25%) behind the faces' pill.
+- **Accent card:** the leaf with navy words (D122), at most one per group (the green card in the highlights; the mission card on About), with a faint thin-line globe low in its corner (navy at 15%) behind the faces' pill.
 - **Photo card:** a photo filling a 28 px card, its words on a white pill at its foot, or on a navy scrim from the bottom.
 - **Logo tile:** a 4:3 mist card; the client's logo fitted inside 24 px of even padding by `object-contain`, whatever its shape, never stretched or cropped, the tile keeping its shape; the logo multiplied into the card (`mix-blend-multiply`), so the white a logo file is drawn on takes the card's mist (D118). Two per row on a phone, three from 640 px, six from 1024 px.
 - **Floating cards on the hero photo:** white, 28 px or round, Float shadow, at most two, bottom end; word chips at the top start (white at 75%, small medium words, a pale check chip; a check, never a plus).
@@ -342,24 +348,24 @@ A thin-line pictogram (24-unit grid, 2 px stroke, round caps) in a circle.
 - **Panel:** the form sits on a mist card (28 px; 20 / 32 / 40 px padding by width), its heading and words beside it, sticky on a wide screen.
 - **Fields, "line" look:** no box, a 1.5 px ink-2 line under the control (2 px and error red when invalid), transparent fill, 48 px tall, 16 px+ text, label above in medium, hint under it in small ink-2, error below with the error pictogram. "(optional)" in ink-2 for what may be left empty.
 - **Choices:** 24 px boxes and rounds with a 2 px ink-2 border, filled forest when ticked; each a 44 px tall row.
-- **Send:** the forest pill, large, with an arrow, full width on a phone, at the form's end from 640 px. A failed send's reason shows above it; a sent form gives way to a success notice that takes focus.
+- **Send:** the leaf pill, large, with an arrow, full width on a phone, at the form's end from 640 px. A failed send's reason shows above it; a sent form gives way to a success notice that takes focus.
 
 ### Notices
 Info and success on mist with a deep-blue icon; error on white with a red border and red icon, announced as an alert. A title in semibold, words in ink-2. Always icon plus words.
 
 ### Navigation
-- **Header:** ground, not pinned. Logo, then the pages as 44 px round links in ink-2 (navy on hover; the current one navy on mist), then the forest "Download brochure" pill with its download mark (D116), saving the published PDF under the company's name; until a brochure is published, the forest quote pill with an arrow. Below 1024 px a 44 px menu button replaces links and pill.
-- **Phone menu:** the browser's modal dialog, full screen, white, with no backdrop tint; it fades in and its rows rise in order (D117). A bar with the logo and close; each page a 64 px round row in display type with a forest arrow, the current one on leaf-pale with forest words; below, WhatsApp and Call as pale pills side by side and the forest quote pill.
+- **Header:** ground, not pinned. Logo, then the pages as 44 px round links in ink-2 (navy on hover; the current one navy on mist), then the leaf "Download brochure" pill with its download mark (D116), saving the published PDF under the company's name; until a brochure is published, the leaf quote pill with an arrow. Below 1024 px a 44 px menu button replaces links and pill.
+- **Phone menu:** the browser's modal dialog, full screen, white, with no backdrop tint; it fades in and its rows rise in order (D117). A bar with the logo and close; each page a 64 px round row in display type with a forest arrow, the current one on leaf-pale with forest words; below, WhatsApp and Call as pale pills side by side and the leaf brochure pill.
 - **Floating WhatsApp:** a 56 px deep-blue circle with the chat pictogram, Raised shadow, inside the safe area at the bottom end.
 
 ### Footer
-Forest with white words. Across its top the running words, the marquee role in uppercase, four copies in a row, in an endless slow loop by CSS alone (D113), with a 44 px round pause button (a checkbox drawn as a pause, then a play) at the top end. Below, the white logo and the company's line in on-forest-2, the admin's link columns under title-size semibold white headings with their links in on-forest-2, and a plain contact column: the phone, the email and the hours, then each social network as its line mark in a 40 px ringed circle beside its name, (D114). No quote pill, and no brochure link: the header offers it (D116). Links show their underline on hover; focus rings turn white. A 20% white hairline above the copyright.
+The logo's leaf with navy words (D122). Across its top the running words, the marquee role in uppercase, four copies in a row, in an endless slow loop by CSS alone (D113), with a 44 px round pause button (a checkbox drawn as a pause, then a play) at the top end. Below, the navy logo and the company's line in on-leaf-2, the admin's link columns under title-size semibold navy headings with their links in on-leaf-2, and a plain contact column: the phone, the email and the hours, then each social network as its line mark in a 40 px ringed circle beside its name, (D114). No quote pill, and no brochure link: the header offers it (D116). Links show their underline on hover; focus rings turn navy. A 20% navy hairline above the copyright, which gives the registered name, "Al Hidaya Health Care Service W.L.L." (D121).
 
 ### Signature: the opening
-Home's hero: faces between thin round brackets, the hero headline settling with one highlighted phrase, the supporting line, the forest WhatsApp pill with an arrow and the pale quote pill, a mist fact card with an avatar stack and a real fact; beside it a tall photo frame (480–640 px) with word chips and two floating cards. Every other page opens with PageHero, the same thing smaller: a pill label (unless the headline names the page), the headline, the lead, the page's own pills, and a photo frame 544 px tall on a desktop.
+Home's hero: faces between thin round brackets, the hero headline settling with one highlighted phrase, the supporting line, the leaf WhatsApp pill with an arrow and the pale quote pill, a mist fact card with an avatar stack and a real fact; beside it a tall photo frame (480–640 px) with word chips and two floating cards. Every other page opens with PageHero, the same thing smaller: a pill label (unless the headline names the page), the headline, the lead, the page's own pills, and a photo frame 544 px tall on a desktop.
 
 ### Admin (a separate Operate surface)
-The admin shares the tokens, type and pictograms but keeps its own look (plan §30.5): a navy column of links (a plain list since D101, no line or station dots) with sky counts, a white work area, rows ruled by day that open in place on mist, fixed rem sizes (28 px headings at 700), times in tabular figures, 6 px corners and hairlines. Its controls are the **box** look: white, 1.5 px ink-2 border, 6 px radius, 48 px tall, semibold labels, ticks in deep blue. Its actions are `Button` (`src/components/ui/button.tsx`): primary deep blue with white words (hover navy), secondary a 2 px navy outline on white, quiet deep-blue words with no frame; one primary per view. No smooth scroll and no reveals; motion only for state (120–200 ms). The admin never loads the site's motion or pills. Its column (D115): each section with its line mark, in groups ("Inbox", "Website content", "Administration") under body-size bold white headings parted by a 15% white rule; the current row marked by its highlight alone (never bold); the column scrolls on its own (`overscroll-contain`). At its foot the admin's name, Profile and Log out, each with its mark; Log out asks first in a dialog. The sign-in page's navy panel names the panel, says what it is for, lists what it looks after (each in a ringed mark) and ends on the way back to the website. The admin's words are plain and professional ("Action required", "could not be saved", "Data retention"), never chatty.
+The admin shares the tokens, type and pictograms but keeps its own look (plan §30.5): a column of links in the logo's deep blue (D123; a plain list since D101, no line or station dots) with sky counts, a white work area, rows ruled by day that open in place on mist, fixed rem sizes (28 px headings at 700), times in tabular figures, 6 px corners and hairlines. Its controls are the **box** look: white, 1.5 px ink-2 border, 6 px radius, 48 px tall, semibold labels, ticks in deep blue. Its actions are `Button` (`src/components/ui/button.tsx`): primary deep blue with white words (hover navy), secondary a 2 px navy outline on white, quiet deep-blue words with no frame, danger white on the error red (deleting an image, D126); one primary per view. No smooth scroll and no reveals; motion only for state (120–200 ms). The admin never loads the site's motion or pills. Its column (D115): each section with its line mark, in groups ("Inbox", "Website content", "Administration") under body-size bold white headings parted by a 15% white rule; the current row marked by its highlight alone (never bold); the column scrolls on its own (`overscroll-contain`). At its foot the admin's name, Profile and Log out, each with its mark; Log out asks first in a dialog. The sign-in page's deep-blue panel names the panel, says what it is for, lists what it looks after (each in a ringed mark) and ends on the way back to the website. The admin's words are plain and professional ("Action required", "could not be saved", "Data retention"), never chatty.
 
 ### Motion (the site's grammar)
 
@@ -367,36 +373,36 @@ One grammar on the public site, from `globals.css` and `src/lib/motion/tokens.ts
 
 - **Letters settling** (CSS only, 1100 ms, ease-out, each letter 12 ms after the one before, from 80 ms): a headline's letters slide in from wide spacing and fade up, once, as the page opens.
 - **The statement darkening** (scrubbed to the scroll from 85% to 50% of the viewport): each strong word's navy copy fades in over its quiet-grey self, so every word meets its contrast at every moment.
-- **Cards rising in order** (640 ms, ease-out, 24 px rise, 80 ms stagger): a block below the fold when motion loads rises once into place; anything already on screen is left alone.
+- **Blocks rising in order** (640 ms, ease-out, 24 px rise, 80 ms stagger; D125): every block of every page (headings and their words, cards, photos, the form and its words, each part of the admin's text, each client logo in rows of six, the contact details and the map) rises once into place as it scrolls into view; anything already on screen when motion loads is left alone.
 - **Counters** (1400 ms, ease-out): a whole-number figure counts up once on first view; "24/7" stands as written. Screen readers hear the figure once.
-- **Sideways tracks** (scrub 0.4 s, from 1024 px): the process steps travel while their section is held; the families' service row drifts as the section passes.
+- **Looping rows** (CSS animation, linear, endless; D124): How it works's steps in the families' card (8 s an item) and Our services (5 s an item), each repeated until a half of its track is at least eight items wide and moved by half its width, so no seam shows; about 45 px a second. They stop under the pointer, while anything in them has focus, and by their pause button.
 - **The phone menu opening** (CSS only, D117): the sheet fades in over 200 ms with no backdrop tint, its bar where the header was; its rows, then the actions, rise 1.25 rem into place (640 ms, ease-out, 45 ms apart, from 60 ms); closing fades it out over 200 ms where the browser can keep a closing dialog on top (`overlay`), and it simply closes elsewhere.
 - **Running words** (CSS animation, linear, an endless loop of 48 s, `--duration-run`, moving by half a row of four copies; D113): the footer's words; their pause button stops them, and with motion reduced they stand still.
 - **State:** press 120 ms, colour and arrow 200 ms, photo hover zoom 640 ms. Eases: out `cubic-bezier(0.16, 1, 0.3, 1)` (expo.out), in-out `cubic-bezier(0.65, 0, 0.35, 1)`.
 
 **The Transform-And-Opacity Rule.** Only transform and opacity move. Never layout properties, filter, box-shadow or large clip-path.
 
-**The Still-Page Rule.** Nothing moves on its own (WCAG 2.2.2): motion follows the scroll or arrives once. The one exception is the footer's running words (D113), an endless slow loop with its own pause button, still with motion reduced. Content is visible by default; a reveal only hides what is still below the fold, and only with opacity. The one loop is a loading skeleton's slow fade (1.6 s).
+**The Still-Page Rule.** Nothing moves on its own (WCAG 2.2.2): motion follows the scroll or arrives once. The exceptions are the footer's running words (D113) and the two looping rows (D124), each an endless loop with its own pause button (the rows also stop under the pointer and focus), still with motion reduced. Content is visible by default; a reveal only hides what is still below the fold, and only with opacity. The one loop is a loading skeleton's slow fade (1.6 s).
 
-**The Reduced-Motion Path.** With reduced motion the engine never loads: no Lenis, no reveals, no scrub, no counting; settling letters, running words and the phone menu's motion are off in CSS (the running words' pause button is hidden then); every animation and transition is cut to 0.01 ms. Tracks become plain sideways-scrolling rows.
+**The Reduced-Motion Path.** With reduced motion the engine never loads: no Lenis, no reveals, no scrub, no counting; settling letters, running words, the looping rows and the phone menu's motion are off in CSS (the pause buttons are hidden then); every animation and transition is cut to 0.01 ms. The looping rows stand still, their repeats gone and their items wrapped in rows.
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** take every colour, size, radius, shadow, duration and ease from the tokens; Tailwind's own sets are removed so nothing else compiles.
-- **Do** keep white text to deep blue, navy and forest, navy text on sky and leaf, and the quiet grey to the statement role and larger.
-- **Do** use one forest pill per view for the main action, the pale pill beside it, and the arrow only for an action that moves the visitor on.
+- **Do** keep white text to deep blue, navy and forest, navy text on sky and every leaf surface, and the quiet grey to the statement role and larger.
+- **Do** use one leaf pill per view for the main action, the pale pill beside it, and the arrow only for an action that moves the visitor on.
 - **Do** put photographs in 24 px frames and cards at 28 px; nest a photo in a card at a smaller radius.
-- **Do** give every interactive thing a 44 px target, every input 16 px text and a 48 px height, and keep the 3 px focus ring (deep blue, 3 px offset; white on deep, navy or forest).
+- **Do** give every interactive thing a 44 px target, every input 16 px text and a 48 px height, and keep the 3 px focus ring (deep blue, 3 px offset; white on deep or navy; navy on the leaf).
 - **Do** use licensed stock with its provenance recorded in `src/db/seed/photos/README.md`, and show only real facts in counters and fact cards (D7, D99).
 - **Do** run axe at phone and desktop on every page, and test every new colour pairing in `tests/contract/tokens.test.ts`.
-- **Do** keep each public route within 174,080 bytes of gzip JavaScript at first paint (Home and Contact: 172,042 at Phase 6B's end). Client JavaScript is the scarcest resource: prefer CSS (as the settling letters, running words and phone menu do) and server components; keep looks that a server page needs out of client components (as `pill-classes.ts` does).
+- **Do** keep each public route within 174,080 bytes of gzip JavaScript at first paint (Home and Contact: 172,042 at Phase 6B's end). Client JavaScript is the scarcest resource: prefer CSS (as the settling letters, running words, looping rows and phone menu do) and server components; keep looks that a server page needs out of client components (as `pill-classes.ts` does).
 
 ### Don't:
 - **Don't** use a colour outside the logo's, a dark theme, or the error red for anything that is not an error.
 - **Don't** set a headline heavier than 400 to make it louder, or highlight more than one phrase in it.
 - **Don't** put a shadow on a card in the page's flow, or use a hard or offset shadow anywhere.
-- **Don't** pin the header, bring back the wayfinding line or station dots, or add anything that moves on its own.
+- **Don't** pin the header, bring back the wayfinding line or station dots, or add anything else that moves on its own (the footer's words and the two looping rows are the only loops, each with its pause).
 - **Don't** caption a stock photograph as Al Hidaya staff, or show statistics, testimonials, ratings, awards or licence numbers the client has not supplied.
 - **Don't** use cartoons, mascots, clip-art, emoji or playful decoration; pictograms are thin-line, in chips or beside words.
 - **Don't** use the admin's Button or boxed fields on the public site, or the site's pills, motion or line fields in the admin.

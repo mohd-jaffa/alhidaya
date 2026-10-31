@@ -69,7 +69,7 @@ describe("PageSections", () => {
       "highlights",
       "for-institutions",
       "families",
-      "how-it-works",
+      "our-services",
     ]);
     expect(screen.getByRole("img", { name: "A nurse at home" })).toHaveAttribute("fetchpriority", "high");
     expect(screen.getByRole("img", { name: "Doha Clinic" })).toBeInTheDocument();

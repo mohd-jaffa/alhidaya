@@ -21,7 +21,7 @@ const interTight = localFont({
 });
 
 export const metadata: Metadata = {
-  // A page names itself before the site: "Careers · Al Hidaya Health Care Services".
+  // A page names itself before the site: "Careers · Al Hidaya Health Care Service".
   title: { default: UI_TEXT.siteName, template: `%s · ${UI_TEXT.siteName}` },
   description: UI_TEXT.siteDescription,
   applicationName: UI_TEXT.siteName,
