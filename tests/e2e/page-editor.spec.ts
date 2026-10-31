@@ -85,14 +85,13 @@ test("an edit is saved, previewed, published and seen by a visitor (plan §14, D
     await page.getByRole("textbox", { name: ADMIN_TEXT.headline }).fill(headline);
     await expect(bar.getByText(ADMIN_TEXT.unsavedChanges)).toBeVisible();
 
-    await bar.getByRole("button", { name: ADMIN_TEXT.saveDraft }).click();
-    await expect(bar.getByText(ADMIN_TEXT.changesNotPublished)).toBeVisible();
-    await expect(page.getByRole("link", { name: /Pages/ }).first()).toContainText(/waiting to be published/);
-
+    // Preview saves the change first, then shows it (D120).
     const [preview] = await Promise.all([
       page.waitForEvent("popup"),
       bar.getByRole("link", { name: ADMIN_TEXT.preview }).click(),
     ]);
+    await expect(bar.getByText(ADMIN_TEXT.changesNotPublished)).toBeVisible();
+    await expect(page.getByRole("link", { name: /Pages/ }).first()).toContainText(/waiting to be published/);
     await expect(preview).toHaveURL(ROUTES.privacy);
     await expect(preview.getByRole("heading", { level: 1, name: headline })).toBeVisible();
     await expect(preview.getByRole("status").filter({ hasText: UI_TEXT.previewBar })).toBeVisible();

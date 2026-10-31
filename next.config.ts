@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
   // Built once on GitHub and served by Passenger on the client's cPanel (plan §35.3):
   // the standalone folder runs without installing node_modules on the server.
   output: "standalone",
+  experimental: {
+    // Published content is cached in memory only (D119): Next remembers a publish's revalidated tags in
+    // memory alone, so a read kept on disk would come back stale after a restart (Passenger restarts an
+    // idle app); in memory, a restart starts empty and reads the database afresh.
+    isrFlushToDisk: false,
+  },
   // Every error report can name the build it came from.
   env: { NEXT_PUBLIC_APP_VERSION: version },
   // The share pictures read the typeface from disk (plan §19), so the standalone folder carries it.

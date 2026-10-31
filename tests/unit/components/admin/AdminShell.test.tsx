@@ -5,6 +5,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_ROUTES, ADMIN_API_ROUTES } from "@/constants/admin-routes";
+import { UI_TEXT } from "@/constants/messages";
 import { type Answer, stubApi, stubDialogs, WithSWR } from "@tests/support/api";
 
 const navigation = vi.hoisted(() => ({ pathname: "/admin", replace: vi.fn() }));
@@ -176,6 +177,13 @@ describe("AdminShell", () => {
     await user.click(screen.getByRole("button", { name: ADMIN_TEXT.menu }));
     await user.click(within(menu).getByRole("link", { name: ADMIN_TEXT.profile }));
     expect(menu).not.toHaveAttribute("open");
+  });
+
+  it("loads the column's logo first: on a short page it is the largest thing drawn", () => {
+    stubApi(counts);
+    shell();
+    const logo = within(screen.getByRole("complementary")).getByRole("img", { name: UI_TEXT.siteName });
+    expect(logo).not.toHaveAttribute("loading", "lazy");
   });
 
   it("marks the profile as where the admin is on its page, and names it in the phone's bar", () => {

@@ -176,7 +176,6 @@ export const ADMIN_TEXT = {
   publishFailed: "Publish failed",
   saveDraft: "Save draft",
   preview: "Preview",
-  previewHint: "Preview shows what is saved. Save draft first to see your latest changes.",
   publish: "Publish",
   discardDraft: "Discard draft",
   publishTitle: (page: string) => `Publish ${page}?`,

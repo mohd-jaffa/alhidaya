@@ -3409,3 +3409,58 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None. Before launch the client confirms the logos may be shown (D7).
+
+## 2026-10-31 — R6B.9: the user's review of publishing
+
+### Fixed
+- **A publish is never lost when the app restarts** (D119, the user's
+  choice). The user published a new photo on Home and kept seeing the old
+  one on a normal reload; a hard reload showed the new. Cause: Next keeps
+  its cached reads on disk but remembers which tags a publish revalidated
+  only in memory, so after a restart a page not visited since its publish
+  came back as before, and stayed so until published again (a hard reload
+  skips the cache only in development). Reproduced against the test
+  database on `next dev` and on the standalone build: publish a new Home
+  photo, restart without visiting Home, and Home showed the old photo on
+  every normal request. On the server, Passenger restarts an idle app, so
+  the client would have met it. `experimental.isrFlushToDisk: false` keeps
+  the cache in the app's memory only: a restart starts empty and reads the
+  database afresh. This assumes one app process; the release checks it
+  (§35.3, R8.2).
+- **The admin column's logo loads first**: on a short admin page it is the
+  largest thing drawn, and Next warned that it loaded lazily.
+- **The footer's pause journey** measured the words a frame before the
+  pause landed, and failed once; it now waits for that frame.
+
+### Changed
+- **Preview saves unsaved changes first** (D120, the user's choice), as
+  Publish does: the user had changed a photo, pressed Preview, and seen the
+  old one, since Preview showed the last saved draft. Its tab opens at the
+  click and goes to the preview once the draft is saved; it closes if the
+  draft fails its checks or is refused, said in the editor as on saving. A
+  click while a save is under way waits for it. The "Save draft first" hint
+  is gone.
+- Plan: D119, D120; §14 and §22.1 say how Preview and the cache work; §35.3
+  and R8.2 keep the app to one Passenger process; tracker R6B.9 DONE
+  (2026-10-31).
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed (1,195), coverage 100%: Preview with
+  nothing unsaved is a plain link; with unsaved changes it saves first,
+  sends its tab to the preview, waits for a save under way, closes the tab
+  on a refusal or a failed check, and still saves when the tab is blocked;
+  the column's logo is not lazy; the configuration keeps the cache in
+  memory.
+- E2E passed (phone, desktop, axe on every page): 180 in the full run, the
+  page editor now previewing without saving first and seeing its change;
+  the footer's pause journey, once fixed, passed 32 times in a row.
+- The restart, against the test database on the standalone build: before
+  the fix, a Home photo published and not visited was lost after a restart;
+  after it, the new photo shows, nothing is written to the cache's folder
+  on disk, and a publish while the app runs still shows at once.
+- No public page's script changed (the editor and the column are the
+  admin's).
+
+### Blockers
+- None. At deploy (R8.2), confirm Passenger runs the app as one process.

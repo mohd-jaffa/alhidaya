@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import {
   type FieldErrors,
   type FieldPath,
@@ -54,9 +54,10 @@ export interface DraftEditorProps<TInput extends FieldValues, TOutput> {
 /**
  * The editor every piece of content opens in (D88, D92): the bar kept in view
  * with its name, where it stands and Save draft, Preview, Publish and Discard
- * draft; its fields below. Publish and Discard ask first, and Publish saves
- * first; what fails its checks is marked at its field and counted, and the
- * first takes focus; leaving with unsaved changes asks first.
+ * draft; its fields below. Publish and Discard ask first; Preview and Publish
+ * save unsaved changes first (D120); what fails its checks is marked at its
+ * field and counted, and the first takes focus; leaving with unsaved changes
+ * asks first.
  */
 export function DraftEditor<TInput extends FieldValues, TOutput>({
   form,
@@ -123,6 +124,34 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
     } finally {
       setPhase("idle");
     }
+  };
+
+  /**
+   * Preview with unsaved changes saves them first (D120), so it shows what was
+   * just changed: its tab opens at once, while the click still allows a new
+   * tab, and goes to the preview once the draft is saved; it closes if the
+   * draft fails its checks or is refused, which are said here as on saving.
+   */
+  const previewSaved = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!isDirty) return;
+    event.preventDefault();
+    // A save already under way finishes first; the click after it previews.
+    if (phase !== "idle") return;
+    const preview = event.currentTarget.href;
+    const tab = window.open("", "_blank");
+    if (tab) tab.opener = null;
+    void form.handleSubmit(
+      async (document) => {
+        const saved = await runSave(document);
+        if (!tab) return;
+        if (saved) tab.location.href = preview;
+        else tab.close();
+      },
+      (found) => {
+        tab?.close();
+        invalid(found);
+      },
+    )();
   };
 
   const runPublish = async () => {
@@ -206,7 +235,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
                   href={`${API_ROUTES.preview}?path=${encodeURIComponent(path)}`}
                   target="_blank"
                   rel="noopener"
-                  title={isDirty ? ADMIN_TEXT.previewHint : undefined}
+                  onClick={previewSaved}
                   className={buttonClasses({ variant: "quiet" })}
                 >
                   <span>{ADMIN_TEXT.preview}</span>
@@ -228,7 +257,6 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
               </Button>
             </div>
           </div>
-          {isDirty && path ? <p className="text-small text-ink-2">{ADMIN_TEXT.previewHint}</p> : null}
         </div>
       </form>
 

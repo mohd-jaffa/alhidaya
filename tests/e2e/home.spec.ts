@@ -102,6 +102,8 @@ test("the footer's words run on their own, and their button pauses them (D113)",
   await page.locator("footer label").click();
   await expect(page.getByRole("checkbox", { name: UI_TEXT.pauseRunningWords })).toBeChecked();
   await expect.poll(() => words.evaluate((element) => getComputedStyle(element).animationPlayState)).toBe("paused");
+  // The pause lands on the next frame drawn: measure from there.
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
   const paused = await offset();
   await page.waitForTimeout(500);
   expect(await offset()).toBe(paused);

@@ -200,6 +200,8 @@ question (§41) the user may overturn.
 | D116 | **The header offers the brochure** (the user, 2026-10-31): "Download brochure", in the header and the phone menu, in place of Request a quote, downloading the PDF published in Settings (the old site's `profile.pdf` at launch, D91) under the company's name, `Al-Hidaya-Health-Care-Services-Brochure.pdf`; until a brochure is published the header keeps Request a quote. The footer no longer links the brochure. | 2026-10-31 |
 | D117 | **The phone menu opens smoothly** (the user, 2026-10-31: "in small screens the menu opening there is no animation, add something smooth"; the motion itself is the agent default): the sheet fades in over the page (200 ms, its logo and close button where the header's logo and menu button were), its rows rise into place one after another (640 ms, ease-out, 45 ms apart), and closing it fades away; CSS only, so no script is added, and with motion reduced it simply appears. The navy backdrop is dropped: the sheet covers the screen, so it only showed as a grey flash while fading. | 2026-10-31 |
 | D118 | **The current site's images are seeded** (the user, 2026-10-31: "there are some images used in the old website, add them to the media library along with other seeded images"; the three choices below are the user's): **its 11 client logos** (The View Hospital, Hamad Medical Corporation, Military Medical City Hospital, Estithmar Holding and seven nurseries, kindergartens and clinics) become the seed's client logos, as drafts with their names in the current site's order, replacing the sample logos on the local database; each is published only once the client confirms it may still be named (D7). **Its 15 photographs** (the 5 slides, the 2 About pictures and the 8 service photographs) go into the media library only, the slides **cropped** to the photograph from the white fade the slider's words sat on; the pages keep their photographs, the current site's being smaller than the site draws them (Q28's answer, D91, stands). Its 3 wide banners, with their overlays, are left out. The seed now files every seed photograph in the library on each run, finding those kept before by their source. **The logo tile holds real logos** (the agent default): a logo fills the tile's padding whatever its shape, the tile always 4:3, and is multiplied into the card so a logo file's white background takes the card's colour; the seed's logo files are trimmed of their white margins. | 2026-10-31 |
+| D119 | **Published content is cached in memory only** (the user, 2026-10-31, choosing the recommended option): Next remembers a publish's revalidated tags in memory alone, while its cache keeps reads on disk, so after a restart (Passenger stops an idle app and starts it on the next visit; a deploy restarts it) a page not visited since its publish came back as it was before, and stayed so until published again. Reproduced on `next dev` and on the standalone build. `experimental.isrFlushToDisk: false` keeps the cache in the app's memory (within Next's 50 MB), so a restart starts empty and reads the database afresh. This holds for one app process, the setup for this 1-core server; the release checks Passenger runs one (R8.2). A shared tag store in MySQL (a custom cache handler) was the alternative for several processes. | 2026-10-31 |
+| D120 | **Preview saves unsaved changes first** (the user, 2026-10-31, choosing the recommended option; supersedes D88's "showing the saved draft"): as Publish does, Preview saves the draft, then shows it; its tab opens at the click and goes to the preview once saved, and closes if the draft fails its checks or is refused, said in the editor as on saving. The hint "Save draft first" goes. | 2026-10-31 |
 
 ## 3. Audiences and the admin
 
@@ -656,7 +658,8 @@ and applications, and **CV expiry days (1 – 365, D52)**.
   logo, site content) keeps a **draft** and a **published** copy.
 - **Save draft** writes only the draft. **Preview** opens the real public
   page in Next.js draft mode, showing drafts, with a fixed "Preview" bar and
-  **Exit preview**; only a signed-in admin can enter it.
+  **Exit preview**; only a signed-in admin can enter it. Unsaved changes are
+  saved first (D120).
 - **Publish** copies the draft to published in one database transaction,
   writes an audit row, and **revalidates exactly the cached pages that show
   it** (§22). **Discard draft** resets the draft to the published copy.
@@ -885,6 +888,11 @@ never served by Apache (§9.4).
   revalidates exactly its tags (`revalidateContent(publishedTags(…))`, called
   by the admin's publish route, R6); stale content is never served, and the
   next visitor gets fresh HTML.
+- **The cache lives in the app's memory only** (D119,
+  `experimental.isrFlushToDisk: false`): Next keeps the record of revalidated
+  tags in memory, so reads kept on disk would outlive it and come back stale
+  after a restart. In memory, a restart starts empty. It assumes one app
+  process (§35.3).
 - Draft mode (preview) reads the drafts, uncached, for the admin only: draft
   mode on **and** the admin's session still valid (`contentView`).
 
@@ -1378,6 +1386,9 @@ From Phase 7 also the performance budgets (§31).
   server's database as the migration user, switches the app to the new
   folder, and restarts Passenger. The previous release folder stays for an
   instant rollback.
+- **The app runs as one Passenger process** (D119): the published-content
+  cache lives in its memory, so a second process would not hear of a
+  publish. The release workflow and `docs/RELEASE.md` check it (R8.2).
 - **The media folder and the CV folder live outside the release folders**,
   so no deploy or rollback ever touches them.
 - **Before the first deploy, the user backs up the old site** (its files, its
@@ -1535,6 +1546,7 @@ one commit (D27).
 | R6B.6 | The user's review of the redesign, the public site: the scroll that stopped short of the page's end fixed and Lenis made snappier; the footer's words in an endless loop with a pause button (D113); the current site's slide sentences as Home's headings, and a simpler footer (D114); the brochure in the header (D116); the phone menu opening smoothly (D117) | D113, D114, D116, D117 | R6B.5 | DONE (2026-10-31) |
 | R6B.7 | The user's review of the admin (D115): the Dashboard, the menu's marks and ruled groups, the profile (name, password), log out asked first, the sign-in page's panel, the professional wording, the menu's own scroll | D115 | R6B.6 | DONE (2026-10-31) |
 | R6B.8 | The current site's images in the seed (D118): its 11 client logos as client-logo drafts, its 15 photographs in the media library | D118 | R6B.7 | DONE (2026-10-31) |
+| R6B.9 | The user's review of publishing: a publish never lost when the app restarts (D119); Preview saves first (D120); the admin column's logo loaded first | D119, D120 | R6B.8 | DONE (2026-10-31) |
 
 ### Phase 7 — Performance, accessibility and the finish
 
@@ -1551,7 +1563,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R8.1 | The production MySQL database, created after the old one is cleared (D50), with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media folder (with its `.htaccess`) and the CV folder (`700`) | D39, D49, D54, §21.1 | Full payment (D48), R0.9 | TODO |
-| R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron and the mail-retry cron (every 10 minutes, D85); `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
+| R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron and the mail-retry cron (every 10 minutes, D85); the app kept to one Passenger process (D119); `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
 | R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM added in cPanel; DMARC `p=none` published; verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
 | R8.4 | Turnstile keys for alhidaya.qa (replacing the test keys, which always pass; checked before go-live); Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
 | R8.5 | Pre-switch check on the server; speed from Qatar; the Cloudflare-proxy decision | D25 | Q22 | TODO |

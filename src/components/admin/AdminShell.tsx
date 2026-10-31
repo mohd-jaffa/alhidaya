@@ -256,7 +256,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
       {/* The column scrolls on its own; reaching its end never carries on into the page (D115). */}
       <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto overscroll-contain bg-navy px-5 py-6 lg:flex">
         <Link href={ADMIN_ROUTES.overview} className="grid gap-1 text-on-deep">
-          <Logo variant="white" className="h-9 w-auto" />
+          <Logo variant="white" priority className="h-9 w-auto" />
           <span className="text-small text-on-deep-2/80">{ADMIN_TEXT.admin}</span>
         </Link>
         <Stations groups={groups} />
@@ -267,7 +267,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
 
       <header className="sticky top-0 z-10 flex items-center gap-3 bg-navy px-gutter py-2 text-on-deep lg:hidden">
         <Link href={ADMIN_ROUTES.overview} aria-label={ADMIN_TEXT.dashboard} className="shrink-0">
-          <Logo variant="white" className="h-8 w-auto" />
+          <Logo variant="white" priority className="h-8 w-auto" />
         </Link>
         <span className="ms-auto truncate font-semibold">{current?.label}</span>
         <button

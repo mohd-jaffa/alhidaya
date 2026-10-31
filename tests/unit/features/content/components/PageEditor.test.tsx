@@ -105,7 +105,6 @@ describe("PageEditor", () => {
     await userEvent.clear(screen.getByRole("textbox", { name: ADMIN_TEXT.heading }));
     await userEvent.type(screen.getByRole("textbox", { name: ADMIN_TEXT.heading }), "  Who   we are, today ");
     expect(within(bar()).getByText(ADMIN_TEXT.unsavedChanges)).toBeVisible();
-    expect(within(bar()).getByText(ADMIN_TEXT.previewHint)).toBeVisible();
     await userEvent.click(within(bar()).getByRole("button", { name: ADMIN_TEXT.saveDraft }));
     expect(await within(bar()).findByText(ADMIN_TEXT.changesNotPublished)).toBeVisible();
     const [, put] = fetch.mock.calls.find(([, init]) => init?.method === "PUT")!;

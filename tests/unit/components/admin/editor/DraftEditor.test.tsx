@@ -59,7 +59,6 @@ describe("DraftEditor (D88, D92)", () => {
     expect(screen.queryByRole("link", { name: ADMIN_TEXT.preview })).toBeNull();
     expect(screen.getByText(ADMIN_TEXT.notPublishedYet)).toBeVisible();
     await userEvent.type(screen.getByRole("textbox", { name: "Name" }), " at home");
-    expect(screen.queryByText(ADMIN_TEXT.previewHint)).toBeNull();
     expect(screen.getByRole("button", { name: ADMIN_TEXT.publish })).toBeEnabled();
     expect(screen.queryByRole("button", { name: ADMIN_TEXT.discardDraft })).toBeNull();
   });
@@ -83,6 +82,112 @@ describe("DraftEditor (D88, D92)", () => {
     expect(await screen.findByText(ADMIN_TEXT.isPublished("Elderly care"))).toBeVisible();
     expect(publish).toHaveBeenCalledOnce();
     expect(screen.queryByRole("link", { name: ADMIN_TEXT.seeOnSite })).toBeNull();
+  });
+
+  it("previews what is saved straight away, with nothing unsaved", async () => {
+    const save = vi.fn(async () => {});
+    const open = vi.spyOn(window, "open");
+    render(
+      <Thing
+        state={{ publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false }}
+        path="/services/elderly-care"
+        save={save}
+      />,
+    );
+    const preview = screen.getByRole("link", { name: ADMIN_TEXT.preview });
+    preview.addEventListener("click", (event) => event.preventDefault());
+    await userEvent.click(preview);
+    expect(open).not.toHaveBeenCalled();
+    expect(save).not.toHaveBeenCalled();
+    open.mockRestore();
+  });
+
+  it("saves unsaved changes before it previews, its tab sent to the preview once saved (D120)", async () => {
+    let finish = () => {};
+    const save = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
+    const tab = { opener: {}, location: { href: "" }, close: vi.fn() };
+    const open = vi.spyOn(window, "open").mockReturnValue(tab as unknown as Window);
+    render(
+      <Thing
+        state={{ publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false }}
+        path="/services/elderly-care"
+        save={save}
+      />,
+    );
+    await userEvent.type(screen.getByRole("textbox", { name: "Name" }), " at home");
+    const preview = screen.getByRole("link", { name: ADMIN_TEXT.preview });
+    await userEvent.click(preview);
+    expect(open).toHaveBeenCalledWith("", "_blank");
+    expect(tab.opener).toBeNull();
+    await waitFor(() => expect(save).toHaveBeenCalledWith({ name: "Elderly care at home" }));
+    // A second click while it saves waits for the first.
+    await userEvent.click(preview);
+    expect(open).toHaveBeenCalledOnce();
+    finish();
+    await waitFor(() =>
+      expect(tab.location.href).toBe(
+        `http://localhost:3000${API_ROUTES.preview}?path=${encodeURIComponent("/services/elderly-care")}`,
+      ),
+    );
+    expect(tab.close).not.toHaveBeenCalled();
+    open.mockRestore();
+  });
+
+  it("closes the preview's tab when the draft is refused or fails its checks, and says why", async () => {
+    const save = vi.fn(async () => {
+      throw new ApiError(500, "INTERNAL_ERROR", "Something went wrong.");
+    });
+    const tab = { opener: {}, location: { href: "" }, close: vi.fn() };
+    const open = vi.spyOn(window, "open").mockReturnValue(tab as unknown as Window);
+    render(
+      <Thing
+        state={{ publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false }}
+        path="/services/elderly-care"
+        save={save}
+      />,
+    );
+    const name = screen.getByRole("textbox", { name: "Name" });
+    await userEvent.type(name, "!");
+    await userEvent.click(screen.getByRole("link", { name: ADMIN_TEXT.preview }));
+    expect(await screen.findByText("Something went wrong.")).toBeVisible();
+    expect(tab.close).toHaveBeenCalledOnce();
+
+    await userEvent.clear(name);
+    await userEvent.click(screen.getByRole("link", { name: ADMIN_TEXT.preview }));
+    expect(await screen.findByText("Name is required.")).toBeVisible();
+    expect(tab.close).toHaveBeenCalledTimes(2);
+    expect(tab.location.href).toBe("");
+    open.mockRestore();
+  });
+
+  it("still saves when the browser blocks the preview's tab, and Preview then opens it as a link", async () => {
+    const save = vi.fn(async () => {});
+    const open = vi.spyOn(window, "open").mockReturnValue(null);
+    render(
+      <Thing
+        state={{ publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false }}
+        path="/services/elderly-care"
+        save={save}
+      />,
+    );
+    await userEvent.type(screen.getByRole("textbox", { name: "Name" }), "!");
+    await userEvent.click(screen.getByRole("link", { name: ADMIN_TEXT.preview }));
+    await waitFor(() => expect(save).toHaveBeenCalledOnce());
+    open.mockRestore();
+  });
+
+  it("closes no tab it could not open when the draft fails its checks", async () => {
+    const open = vi.spyOn(window, "open").mockReturnValue(null);
+    render(
+      <Thing
+        state={{ publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: false }}
+        path="/services/elderly-care"
+      />,
+    );
+    await userEvent.clear(screen.getByRole("textbox", { name: "Name" }));
+    await userEvent.click(screen.getByRole("link", { name: ADMIN_TEXT.preview }));
+    expect(await screen.findByText("Name is required.")).toBeVisible();
+    open.mockRestore();
   });
 
   it("marks a refused field where the server names it, and says a refusal that names none", async () => {
