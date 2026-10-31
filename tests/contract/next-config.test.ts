@@ -9,6 +9,12 @@ describe("the Next configuration", () => {
     expect(config).toMatch(/experimental:\s*{[^}]*isrFlushToDisk:\s*false/);
   });
 
+  it("lets the dev server serve its own files to the site's address, such as a testers' tunnel (D127)", () => {
+    expect(config).toMatch(
+      /allowedDevOrigins:\s*process\.env\.NEXT_PUBLIC_SITE_URL\s*\?\s*\[new URL\(process\.env\.NEXT_PUBLIC_SITE_URL\)\.hostname\]/,
+    );
+  });
+
   it("builds the standalone folder Passenger serves (plan §35.3)", () => {
     expect(config).toMatch(/output:\s*"standalone"/);
   });

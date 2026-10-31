@@ -3547,3 +3547,33 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None.
+
+## 2026-10-31 — Testers sign in through a tunnel (D127)
+
+### Changed
+- `next.config.ts`: the dev server serves its own files to the host of
+  `NEXT_PUBLIC_SITE_URL` as well as localhost (`allowedDevOrigins`). With
+  the site's address set to a cloudflared tunnel for testers, Next refused
+  the tunnel's live-reload connection, the page kept reloading itself and
+  the sign-in form was wiped. The production build ignores the setting;
+  the same-origin check and Better Auth still trust the site's address
+  alone (the user chose to set the address, not widen the check).
+- Plan: D127.
+
+### Local development (no repository change)
+- `.env.local`'s `NEXT_PUBLIC_SITE_URL` set to the testers' tunnel (that
+  line only, at the user's request); set it back to
+  `http://localhost:3000` when testing ends.
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed, coverage 100%; the config contract
+  checks the setting.
+- Through the tunnel: the sign-in page loads once and stays (it reloaded
+  itself before), its form answers (an empty send names both fields), and
+  a write from the tunnel's address passes the same-origin check.
+- E2E not re-run: the setting exists only on the dev server; the E2E run
+  serves the production build, which ignores it.
+
+### Blockers
+- None.

@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
     // idle app); in memory, a restart starts empty and reads the database afresh.
     isrFlushToDisk: false,
   },
+  // The dev server serves its own files to the site's address too, not only localhost: a tunnel set as
+  // NEXT_PUBLIC_SITE_URL for testers (D127). The production build ignores it.
+  allowedDevOrigins: process.env.NEXT_PUBLIC_SITE_URL ? [new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname] : [],
   // Every error report can name the build it came from.
   env: { NEXT_PUBLIC_APP_VERSION: version },
   // The share pictures read the typeface from disk (plan §19), so the standalone folder carries it.
