@@ -19,8 +19,9 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * The public site's frame (plan R2.6): the skip link, the preview bar for the
- * admin, the sign bar, the page, the footer and the floating WhatsApp button,
+ * The public site's frame (plan R2.6): on its soft-white ground (D132), the
+ * skip link, the preview bar for the admin, the header, the page, the footer
+ * and the floating WhatsApp button,
  * from the published site content. Its motion lives here, so the admin never
  * loads it (plan §30.4). Rendered per request from cached reads (plan D76);
  * in the admin's preview, from the drafts.
@@ -31,15 +32,17 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
   const site = await getPublishedSite(view);
   return (
     <MotionProvider>
-      <SkipLink />
-      <PreviewBar active={view === "preview"} />
-      <SiteHeader site={site} />
-      <main id="main" tabIndex={-1} className="overflow-x-clip focus:outline-none">
-        {children}
-      </main>
-      <SiteFooter site={site} />
-      <FloatingWhatsApp site={site} />
-      {site ? <JsonLd data={medicalBusiness(site, publicSiteUrl())} /> : null}
+      <div className="site-world min-h-dvh">
+        <SkipLink />
+        <PreviewBar active={view === "preview"} />
+        <SiteHeader site={site} />
+        <main id="main" tabIndex={-1} className="overflow-x-clip focus:outline-none">
+          {children}
+        </main>
+        <SiteFooter site={site} />
+        <FloatingWhatsApp site={site} />
+        {site ? <JsonLd data={medicalBusiness(site, publicSiteUrl())} /> : null}
+      </div>
     </MotionProvider>
   );
 }

@@ -60,7 +60,7 @@ test("a logo is added, published to the home page and archived off it (D92)", as
   const visitor = await browser.newPage();
   try {
     await visitor.goto(ROUTES.home);
-    await expect(visitor.getByRole("img", { name })).toHaveCount(0);
+    await expect(visitor.getByRole("button", { name })).toHaveCount(0);
 
     await page.goto(ADMIN_ROUTES.newClient);
     await page.getByRole("textbox", { name: ADMIN_TEXT.organisation }).fill(name);
@@ -86,7 +86,12 @@ test("a logo is added, published to the home page and archived off it (D92)", as
     await expect(visitor.getByRole("heading", { name: "Our clients" })).toBeVisible();
     // The logo loads as the visitor reaches it, like every image below the fold.
     await visitor.locator("#clients").scrollIntoViewIfNeeded();
-    await expect(visitor.getByRole("img", { name })).toBeVisible();
+    // In the running rows the logo is named once, by its button (D133).
+    const logo = visitor.getByRole("button", { name });
+    await expect(logo).toBeVisible();
+    await expect
+      .poll(() => logo.locator("img").evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth))
+      .toBeGreaterThan(0);
 
     const site = page.getByRole("region", { name: ADMIN_TEXT.onTheSite });
     await site.getByRole("button", { name: ADMIN_TEXT.archive }).click();
@@ -97,8 +102,8 @@ test("a logo is added, published to the home page and archived off it (D92)", as
     await expect(site.getByText(ADMIN_TEXT.isArchived)).toBeVisible();
     await visitor.reload();
     await visitor.locator("#clients").scrollIntoViewIfNeeded();
-    await expect(visitor.getByRole("img", { name })).toHaveCount(0);
-    await expect(visitor.getByRole("img", { name: SEED_CLIENTS[0].name })).toBeVisible();
+    await expect(visitor.getByRole("button", { name })).toHaveCount(0);
+    await expect(visitor.getByRole("button", { name: SEED_CLIENTS[0].name })).toHaveCount(1);
   } finally {
     await visitor.close();
   }

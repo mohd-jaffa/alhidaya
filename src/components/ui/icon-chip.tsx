@@ -9,6 +9,8 @@ const TONES = {
   leaf: "bg-leaf text-on-leaf",
   /** On a photo: white, its icon forest. */
   ground: "bg-ground text-forest",
+  /** On the pale-green band (D130): white, its icon deep blue. */
+  blue: "bg-ground text-deep",
 } as const;
 
 const SIZES = {

@@ -23,7 +23,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
               {UI_TEXT.tryAgain}
             </button>
             {/* A full load on purpose: the site's own frame failed, so its router is not trusted. */}
-            <a href={ROUTES.home} className={pillClasses({ variant: "pale" })}>
+            <a href={ROUTES.home} className={pillClasses({ variant: "line" })}>
               {UI_TEXT.home}
             </a>
           </div>

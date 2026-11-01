@@ -15,7 +15,8 @@ describe("UI_TEXT", () => {
 
   it("holds no empty wording", () => {
     for (const [key, value] of Object.entries(UI_TEXT)) {
-      const words = typeof value === "function" ? value("Retaj Building") : value;
+      const words =
+        typeof value === "function" ? (value as (...args: unknown[]) => string)("Retaj Building", 2) : value;
       expect(words.trim(), key).not.toBe("");
     }
   });

@@ -6,14 +6,14 @@
  * 0.35, 1), the cubic in-out).
  */
 export const MOTION = {
-  duration: { press: 0.12, state: 0.2, reveal: 0.64, count: 1.4 },
+  duration: { press: 0.12, state: 0.2, reveal: 0.64 },
   ease: { out: "expo.out", inOut: "power2.inOut" },
   /** How far a block rises as it is revealed, in pixels. */
   revealDistance: 24,
-  /** How long a scroll-linked movement takes to catch up with the scroll, in seconds: smooth, never floaty. */
-  scrub: 0.4,
   /** How far apart the cards of a group arrive, in seconds (D97). */
   stagger: 0.08,
+  /** How far apart a heading's words rise into place, in seconds (D129). */
+  wordStagger: 0.055,
   /** Lenis's smoothing per frame: a short glide that follows the hand closely, never dragging behind it. */
   lerp: 0.16,
 } as const;

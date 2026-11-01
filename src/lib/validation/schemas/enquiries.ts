@@ -15,7 +15,7 @@ import {
 } from "../primitives";
 
 /**
- * The Quote and Contact forms (plan §10.1, §10.2), each field named by the
+ * The Quote, Contact and short quote forms (plan §10.1, §10.2, D130), each field named by the
  * label the visitor sees. The browser checks a form with its own schema; the
  * route reads either through `enquirySchema`, which the form's kind decides.
  */
@@ -44,10 +44,24 @@ export const quoteFormSchema = z.object({
 export type QuoteFormInput = z.input<typeof quoteFormSchema>;
 export type QuoteFormPayload = z.output<typeof quoteFormSchema>;
 
-/** What `POST /api/enquiries` accepts: either form, named by its kind. */
+/** Home's short quote (D130): the Quote form's name, service, phone, email and message alone. */
+export const shortQuoteFormSchema = z.object({
+  name,
+  service: quoteFormSchema.shape.service,
+  phone,
+  email,
+  message,
+  consent,
+  ...botCheck,
+});
+export type ShortQuoteFormInput = z.input<typeof shortQuoteFormSchema>;
+export type ShortQuoteFormPayload = z.output<typeof shortQuoteFormSchema>;
+
+/** What `POST /api/enquiries` accepts: any of the three forms, named by its kind. */
 export const enquirySchema = z.discriminatedUnion("form", [
   contactFormSchema.extend({ form: z.literal("CONTACT") }),
   quoteFormSchema.extend({ form: z.literal("QUOTE") }),
+  shortQuoteFormSchema.extend({ form: z.literal("SHORT_QUOTE") }),
 ]);
 export type EnquiryInput = z.input<typeof enquirySchema>;
 export type EnquiryPayload = z.output<typeof enquirySchema>;

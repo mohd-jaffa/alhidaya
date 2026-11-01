@@ -33,6 +33,9 @@
   --color-navy: #0b2440;
   --color-ink-2: #3a5272;
   --color-ground: #ffffff;
+  /* The public site's grounds (D132): soft white, never a pure white, and a card's a touch lighter. */
+  --color-page: #f7f9fc;
+  --color-card: #fcfdfe;
   --color-mist: #f1f6fb;
   --color-rule: #d5e1ed;
   --color-on-deep: #ffffff;
@@ -108,6 +111,8 @@
   --radius-card: 1.75rem;
   --radius-frame: 1.5rem;
   --radius-pill: 999px;
+  /* The public site's buttons (D132): rounded corners, not a pill. */
+  --radius-button: 0.75rem;
   /* A photo or tile set inside a card steps its corner down: inset in a card, thumb in a small one; the highlight's, by its words. */
   --radius-inset: 1.25rem;
   --radius-thumb: 1rem;
@@ -144,12 +149,10 @@
   --duration-press: 120ms;
   --duration-state: 200ms;
   --duration-reveal: 640ms;
-  /* A counter counting up once (D97). */
-  --duration-count: 1400ms;
   /* A headline's letters settling into their words (D97). */
   --duration-settle: 1100ms;
-  /* One loop of the footer's running words: slow enough to read, never hurried (D113). */
-  --duration-run: 48s;
+  /* How long each of Home's slides shows (D128), and one loop of the clients' rows (D133). */
+  --duration-slide: 6s;
   --z-header: 40;
   --z-overlay: 50;
 }
@@ -188,56 +191,210 @@
 }
 
 /*
- * The footer's running words (D106, D113) run in an endless, slow loop,
- * by CSS alone: four copies of the words, moved by the width of two, so the
- * loop never shows a seam. Their button pauses them, and with motion reduced
- * they stand still. A page read right to left runs them the other way.
+ * The public site (D132): soft white wherever white would be. The admin keeps
+ * its own white.
  */
-@keyframes run {
+.site-world {
+  --color-ground: var(--color-page);
+  background: var(--color-page);
+}
+
+/* The header slides away as the page goes down and comes back as it goes up (D132). */
+@media (prefers-reduced-motion: no-preference) {
+  .site-header {
+    transition:
+      transform var(--duration-reveal) var(--ease-out),
+      box-shadow var(--duration-state) var(--ease-out);
+  }
+
+  /* The menu's deep-blue pill slides to the page just opened, from the last one's link (D134). */
+  .nav-pill {
+    transform-origin: 0 50%;
+    transition: transform var(--duration-reveal) var(--ease-out);
+  }
+
+  .nav-link {
+    transition:
+      color var(--duration-reveal) var(--ease-out),
+      background-color var(--duration-state) var(--ease-out);
+  }
+}
+
+.site-header[data-hidden] {
+  transform: translateY(-100%);
+}
+
+/*
+ * Home's slides (D128): each new photo wipes across the last from the end
+ * side and settles from a slow zoom (the first only settles); its headline's words rise from behind
+ * their line, then its words fade up. With motion reduced, a slide simply
+ * replaces the last.
+ */
+@keyframes wipe {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes word-rise {
+  from {
+    transform: translateY(110%);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+}
+
+/* A word that rises from behind its own line: clipped just below its descenders. */
+.rise-word {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.rise-word > span {
+  display: inline-block;
+}
+
+.slide-photo {
+  visibility: hidden;
+}
+
+.slide-photo[data-current],
+.slide-photo[data-was] {
+  visibility: visible;
+}
+
+.slide-photo[data-current] {
+  z-index: 2;
+}
+
+.slide-photo[data-was] {
+  z-index: 1;
+}
+
+.slide-text:not([data-current]) {
+  visibility: hidden;
+}
+
+.slide-fill {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.slide-bar[data-done] .slide-fill {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The first photo is the page's first paint: it only settles; every later one wipes in. */
+  .slide-photo[data-current] {
+    animation: drift var(--duration-slide) linear both;
+  }
+
+  .slides-band[data-moved] .slide-photo[data-current] {
+    animation:
+      wipe 1.3s var(--ease-out) both,
+      drift var(--duration-slide) linear both;
+  }
+
+  .slide-text[data-current] .rise-word > span {
+    animation: word-rise 1s var(--ease-out) both;
+    animation-delay: calc(var(--i) * 60ms + 120ms);
+  }
+
+  .slide-text[data-current] .slide-line {
+    animation: rise-in var(--duration-reveal) 0.45s var(--ease-out) both;
+  }
+
+  .slide-bar[data-current] .slide-fill {
+    animation: run-bar var(--duration-slide) linear both;
+  }
+
+  .slides-band[data-paused] .slide-bar[data-current] .slide-fill,
+  .slides-band[data-paused] .slide-photo[data-current] {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-bar[data-current] .slide-fill {
+    transform: none;
+  }
+}
+
+@keyframes run-bar {
+  to {
+    transform: none;
+  }
+}
+
+[dir="rtl"] .slide-fill {
+  transform-origin: right;
+}
+
+/*
+ * The clients' rows (D133, as nahrdev.com): two rows running in opposite
+ * directions, faded at their ends, each logo grey until the pointer is on it
+ * or it is chosen, when it turns to its colours and grows, and its row
+ * stops. With motion reduced the rows stand still and wrap.
+ */
+@keyframes marquee {
   to {
     transform: translateX(-50%);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .running-words {
-    animation: run var(--duration-run) linear infinite;
+  .logo-track {
+    animation: marquee var(--loop-duration) linear infinite;
   }
 }
 
-/* Paused by their button: a checkbox in the same band (it outranks a utility, as the loop does). */
-.running-band:has(:checked) .running-words {
-  animation-play-state: paused;
-}
-
-[dir="rtl"] .running-words {
+.logo-track[data-reverse] {
   animation-direction: reverse;
 }
 
-/*
- * Rows that run on their own (D124): How it works and the family services,
- * each moved by half its repeated track, as the footer's words are. They stop
- * under the pointer, while anything in them has focus, and by their pause
- * button; with motion reduced they stand still, their repeats hidden.
- */
-@media (prefers-reduced-motion: no-preference) {
-  .loop-track {
-    animation: run var(--loop-duration) linear infinite;
-  }
-}
-
-.loop-band:hover .loop-track,
-.loop-band:focus-within .loop-track,
-.loop-band:has(.loop-pause:checked) .loop-track {
+.logo-track:hover,
+.logo-track:has([aria-pressed="true"]),
+.logo-track:has(:focus-visible) {
   animation-play-state: paused;
 }
 
-[dir="rtl"] .loop-track {
+[dir="rtl"] .logo-track {
   animation-direction: reverse;
+}
+
+[dir="rtl"] .logo-track[data-reverse] {
+  animation-direction: normal;
+}
+
+.logo-item img {
+  mix-blend-mode: multiply;
+  filter: grayscale(1) opacity(0.45) contrast(1.1);
+  transition: filter 0.4s var(--ease-out);
+}
+
+.logo-item:hover img,
+.logo-item[aria-pressed="true"] img,
+.logo-item:focus-visible img {
+  filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .loop-copy {
+  .logo-copy {
     display: none;
   }
 }

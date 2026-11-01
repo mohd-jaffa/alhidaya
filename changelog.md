@@ -3577,3 +3577,90 @@ Their answers are decisions D97 – D108; Phase 6B builds it.
 
 ### Blockers
 - None.
+
+## 2026-11-01 — R6C.1: Home as Theme 6, the client's simpler look (D128 – D134)
+
+The client found the Phase 6B site too busy and asked for something like the
+current alhidaya.qa, new and improved. Of five themes the client chose a
+sixth, mixed from them (Theme 6); the user asked for Home first, the other
+pages following its look until each is reviewed (R6C.2).
+
+### Added
+- Home's slides (D128): one to eight, edited as one list (photo, headline,
+  highlighted words, words, an optional button whose wording and link go
+  together), five at launch from the current site, none with a button. They
+  move on every six seconds by a filling bar, with Previous, Next, the
+  count and a small pause; each later photo wipes in, each headline's words
+  rise; the first photo only settles (it is the first paint). With motion
+  reduced nothing moves on its own (`HeroSlides`, `Words`).
+- The short quote (D130): Home's form, with fixed fields (name, mobile,
+  email, service, message), beside the ways to reach the company. It is
+  stored, emailed and listed as a quote (`SHORT_QUOTE` → `QUOTE`, no
+  database change; agent default).
+- The services row (D131): rounded cards in a straight band, scrolled by
+  two arrows from a small tablet up, swiped on a phone, with All services
+  centred under it (`ServicesTrack`).
+- The clients' rows (D133): two rows running opposite ways, stopping under
+  the pointer, on focus and on a chosen logo until let go (`ClientsRows`).
+- Headings' words rise from behind their line as they arrive (`RiseWords`,
+  D129).
+- The menu's sliding pill (D134, the user's ask): the header's deep-blue
+  pill slides from the last page's link to the new one's (a transform from
+  where it was, its CSS transition; with motion reduced it simply appears).
+- The admin's switches (D134, the user's ask): the floating WhatsApp button
+  and a link shown in the menu are switches, a pill with a knob and a small
+  Enabled or Disabled beside it, instead of a box to tick (`Switch`, read
+  out as a switch). Decorative photos and the forms' consent stay boxes.
+
+### Changed
+- About on Home (D129): "About" over the company's name in blue, the photo
+  beside, three points and Read more about us, as Theme 5 sets it.
+- The header (D132): the logo, the pill menu and the action in one row; it
+  slides away going down and comes back going up or on focus.
+- The footer (D132): soft white, the colour logo, the admin's columns, the
+  contact column with icons and the social links.
+- The look (D132): the site on a soft white page (`--color-page`,
+  `--color-card`, scoped to the public site), buttons with softer corners
+  (`--radius-button`), deep and outline buttons (`deep`, `line`), boxed
+  fields everywhere (the underline look is gone from the field kit).
+- The section catalogue: Home holds the slides, About, the services row,
+  the clients and the form; Statement, Highlights, For institutions and For
+  families are removed with their components, the running words and the
+  navy logo. The other pages keep their sections in the new look.
+- The slides move on when the current photo's drift ends (the same six
+  seconds as its bar): the bars are hidden on a phone, so a phone's slides
+  never moved on by themselves while the bar drove them.
+- The public site's heavier client parts (the slides, the services row,
+  the clients' rows, the header, the forms and their fields, the bot
+  check) opt out of the React Compiler's memoising (`"use no memo"`, its
+  reason beside it): they are rarely redrawn, and the memoising cost Home
+  about 3.5 KB of first-paint JavaScript, over the budget.
+- Seed: Home as Theme 6, Home first in the menu, the services' photos from
+  the current site.
+- Plan: §6.1, §7.2, D128 – D134, §30.1's note, R6C.1 and R6C.2. AGENTS.md
+  §19 and §22, DESIGN.md and the site's surface brief rewritten for Theme 6.
+
+### Local development (no repository change)
+- The local database's Home set to the seed's Theme 6 content, Home put in
+  the menu and the services' photos changed, after a backup in the
+  scratchpad.
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed (1204), coverage 100%.
+- E2E passed (phone, desktop): 185 passed, 41 skipped (one-width
+  journeys). New or rewritten: Home's slides (arrows, bars, pause, moving
+  on by themselves at both widths), the Theme 6 sections, the services'
+  arrows, the clients' rows, the header hiding and returning, the menu's
+  pill sliding; the page editor opens Home's slides; a client logo is
+  found by its button; the menu link is hidden by its switch.
+- The menu's pill seen sliding in the built app (its transform easing to
+  none over 640 ms; the minifier had dropped the first version's layout
+  read, now a call); the admin's switch seen on, off and focused.
+- First paint, JavaScript (gzip, within 174,080 bytes): Home, Contact and
+  the quote page 173,307 (176,769 before the memoising opt-out); the
+  application 170,960; About, Services, Careers, Privacy and Terms
+  166,939; a service 164,157.
+
+### Blockers
+- None.

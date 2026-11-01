@@ -1,4 +1,5 @@
 "use client";
+"use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
 import { createContext, type ReactNode, use, useId } from "react";
 
@@ -14,22 +15,6 @@ interface FieldControl {
 }
 
 const FieldContext = createContext<FieldControl | null>(null);
-
-/**
- * How the controls of a form look (D97): boxed in the admin; on the site's
- * forms, a line under each on the form's panel, as the reference draws them.
- */
-export type ControlLook = "box" | "line";
-
-const LookContext = createContext<ControlLook>("box");
-
-/** Sets the look of every control inside it. */
-export function ControlsLook({ look, children }: { look: ControlLook; children: ReactNode }) {
-  return <LookContext value={look}>{children}</LookContext>;
-}
-
-/** The look of the controls around: boxed, unless their form says otherwise. */
-export const useControlLook = (): ControlLook => use(LookContext);
 
 /** What a control inside a `Field` takes: its id, what describes it, whether it is wrong. */
 export function useFieldControl(): FieldControl {
@@ -79,10 +64,9 @@ export function Field({
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
   const control: FieldControl = { id, "aria-describedby": describedBy, required };
   if (error) control["aria-invalid"] = true;
-  const look = useControlLook();
   return (
     <div className="grid gap-2">
-      <label htmlFor={id} className={hideLabel ? "sr-only" : look === "line" ? "font-medium" : "font-semibold"}>
+      <label htmlFor={id} className={hideLabel ? "sr-only" : "font-semibold"}>
         {label}
         {required || !markOptional ? null : (
           <>
@@ -102,11 +86,6 @@ export function Field({
   );
 }
 
-const CONTROL_LOOKS: Record<ControlLook, string> = {
-  box: "rounded-control border-[1.5px] bg-ground px-4 aria-invalid:border-2",
-  line: "border-b-[1.5px] bg-transparent aria-invalid:border-b-2",
-};
-
-/** The look every text-like control shares: 16 px and up, a 48 px target, a firm edge, boxed or a line under it. */
-export const controlClasses = (look: ControlLook) =>
-  `w-full min-h-12 border-ink-2 text-body text-navy placeholder:text-ink-2 aria-invalid:border-error ${CONTROL_LOOKS[look]}`;
+/** The look every text-like control shares (D130): boxed, 16 px and up, a 48 px target, a firm edge. */
+export const controlClasses = () =>
+  "w-full min-h-12 rounded-control border-[1.5px] border-ink-2 bg-ground px-4 text-body text-navy placeholder:text-ink-2 aria-invalid:border-2 aria-invalid:border-error";

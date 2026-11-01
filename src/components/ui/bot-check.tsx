@@ -1,4 +1,5 @@
 "use client";
+"use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
 import { useEffect, useRef, useState } from "react";
 

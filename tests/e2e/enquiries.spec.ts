@@ -61,7 +61,7 @@ test("the Contact form shows each mistake beside its field, then takes the messa
   );
   await expect(form.getByText(VALIDATION_MESSAGES.consent)).toBeVisible();
   // The form's panel rises into place as it is reached (D125): axe reads it once it has.
-  await expect.poll(() => form.evaluate((element) => getComputedStyle(element.closest(".bg-mist")!).opacity)).toBe("1");
+  await expect.poll(() => form.evaluate((element) => getComputedStyle(element.closest(".bg-card")!).opacity)).toBe("1");
   expect((await new AxeBuilder({ page }).include("form").analyze()).violations).toEqual([]);
 
   await fillContact(page, email);

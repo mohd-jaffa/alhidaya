@@ -38,12 +38,13 @@ describe("NavigationField (D94)", () => {
   it("edits each menu link's words, where it goes and whether it shows; moves, removes and adds them", async () => {
     const navigation = menu(SEED_SITE.navigation);
     const first = ADMIN_TEXT.numbered(ADMIN_TEXT.menuLink, 1);
-    expect(screen.getAllByRole("checkbox", { name: ADMIN_TEXT.shownInMenu })[0]).toBeChecked();
-    await userEvent.click(screen.getAllByRole("checkbox", { name: ADMIN_TEXT.shownInMenu })[0]);
+    expect(screen.getAllByRole("switch", { name: ADMIN_TEXT.shownInMenu })[0]).toBeChecked();
+    await userEvent.click(screen.getAllByRole("switch", { name: ADMIN_TEXT.shownInMenu })[0]);
     await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.moveDown, first) }));
     expect(navigation().map((link: { href: string; visible: boolean }) => [link.href, link.visible])).toEqual([
+      [ROUTES.about, true],
+      [ROUTES.home, false],
       [ROUTES.services, true],
-      [ROUTES.about, false],
       [ROUTES.careers, true],
       [ROUTES.contact, true],
     ]);

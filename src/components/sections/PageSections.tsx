@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
+import { ROUTES } from "@/constants/routes";
 import type { PageKey } from "@/constants/sections";
-import type { FormKind } from "@/constants/statuses";
+import type { SectionForm } from "@/constants/statuses";
 import type { SectionData } from "@/features/content/types";
 import type { Section } from "@/lib/validation";
 
@@ -11,10 +12,7 @@ import { ClientsSection } from "./ClientsSection";
 import { ContactBandSection } from "./ContactBandSection";
 import { ContactDetailsSection } from "./ContactDetailsSection";
 import { FormSection } from "./FormSection";
-import { ForFamiliesSection } from "./ForFamiliesSection";
-import { ForInstitutionsSection } from "./ForInstitutionsSection";
 import { HeroSection } from "./HeroSection";
-import { HighlightsSection } from "./HighlightsSection";
 import { InstitutionsSection } from "./InstitutionsSection";
 import { IntroSection } from "./IntroSection";
 import { JobsListSection } from "./JobsListSection";
@@ -23,7 +21,6 @@ import { RichTextSection } from "./RichTextSection";
 import { ServicesIndexSection } from "./ServicesIndexSection";
 import { ServicesRowSection } from "./ServicesRowSection";
 import { SignSection } from "./SignSection";
-import { StatementSection } from "./StatementSection";
 import { ValuesSection } from "./ValuesSection";
 
 function SectionFor({
@@ -37,14 +34,14 @@ function SectionFor({
   section: Section;
   anchor: string;
   data: SectionData;
-  forms: Partial<Record<FormKind, ReactNode>>;
+  forms: Partial<Record<SectionForm, ReactNode>>;
 }) {
   const image = (ref: { mediaId: string } | null) => (ref ? (data.images.get(ref.mediaId) ?? null) : null);
   switch (section.type) {
     case "SIGN":
-      // Home opens with its hero (D97); every other page with the hero's smaller sign (D109).
+      // Home opens with its slides (D128); every other page with its sign (D109).
       return page === "HOME" ? (
-        <HeroSection anchor={anchor} content={section.content} image={image} site={data.site} />
+        <HeroSection anchor={anchor} content={section.content} image={image} />
       ) : (
         <SignSection
           page={page}
@@ -55,7 +52,14 @@ function SectionFor({
         />
       );
     case "INTRO":
-      return <IntroSection anchor={anchor} content={section.content} image={image(section.content.image)} />;
+      return (
+        <IntroSection
+          anchor={anchor}
+          content={section.content}
+          image={image(section.content.image)}
+          more={page === "HOME" ? ROUTES.about : null}
+        />
+      );
     case "SERVICES_INDEX":
       return (
         <ServicesIndexSection
@@ -88,19 +92,12 @@ function SectionFor({
           anchor={anchor}
           content={section.content}
           form={forms[section.content.form]}
-          email={data.site?.contact.email ?? null}
+          kind={section.content.form}
+          site={data.site}
         />
       );
     case "RICH_TEXT":
       return <RichTextSection anchor={anchor} content={section.content} />;
-    case "STATEMENT":
-      return <StatementSection anchor={anchor} content={section.content} />;
-    case "HIGHLIGHTS":
-      return <HighlightsSection anchor={anchor} content={section.content} image={image} />;
-    case "FOR_INSTITUTIONS":
-      return <ForInstitutionsSection anchor={anchor} content={section.content} image={image} />;
-    case "FOR_FAMILIES":
-      return <ForFamiliesSection anchor={anchor} content={section.content} image={image} />;
     case "SERVICES_ROW":
       return <ServicesRowSection anchor={anchor} content={section.content} services={data.services} image={image} />;
   }
@@ -120,11 +117,14 @@ export function PageSections({
   page: PageKey;
   sections: readonly Section[];
   data: SectionData;
-  forms?: Partial<Record<FormKind, ReactNode>>;
+  forms?: Partial<Record<SectionForm, ReactNode>>;
 }) {
   const anchors = sectionAnchors(sections);
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-section pt-16 pb-section xl:pt-12">
+    <div
+      // Home opens on its slides and ends on its quote's band, both edge to edge (D128, D130).
+      className={`grid grid-cols-[minmax(0,1fr)] gap-section ${page === "HOME" ? "" : "pt-16 pb-section xl:pt-12"}`}
+    >
       {sections.map((section, index) => (
         <SectionFor key={section.id} page={page} section={section} anchor={anchors[index]} data={data} forms={forms} />
       ))}

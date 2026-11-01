@@ -62,7 +62,7 @@ describe("SettingsEditor (D94)", () => {
       "href",
       `${API_ROUTES.preview}?path=${encodeURIComponent(ROUTES.home)}`,
     );
-    expect(screen.getByRole("checkbox", { name: ADMIN_TEXT.whatsappButtonLabel })).toBeChecked();
+    expect(screen.getByRole("switch", { name: ADMIN_TEXT.whatsappButtonLabel })).toBeChecked();
     expect(screen.getByRole("textbox", { name: `${ADMIN_TEXT.addressLine} 1` })).toHaveValue(
       "Retaj Building, Bin Naifaa 80",
     );

@@ -13,6 +13,7 @@ import {
   section,
   serviceFixture,
   siteFixture,
+  slideFixture,
 } from "@tests/support/fixtures/content";
 
 const REQUEST = `req_page_content_${crypto.randomUUID()}`;
@@ -165,25 +166,21 @@ describe("a page with everything it shows, against the local MySQL", () => {
       expect(image.headers.get("content-type")).toBe("image/png");
     }
   });
-  it("reads the services' photos and every face Home's sections name, at any depth (D97, D102)", async () => {
+  it("reads the services' photos and every slide's photo Home's sections name, at any depth (D102, D128)", async () => {
     await clearContent();
     const servicePhoto = await image();
-    const face = await image();
+    const slidePhoto = await image();
     await published("SERVICES", serviceFixture({ image: { mediaId: servicePhoto } }), "home-nursing-care");
     const home = pageFixture("HOME");
-    const families = section("FOR_FAMILIES");
-    const institutions = section("FOR_INSTITUTIONS");
-    const withFace = {
-      ...institutions,
-      content: {
-        ...institutions.content,
-        team: { title: { en: "Team" }, text: { en: null }, avatars: [{ mediaId: face }] },
-      },
-    } as typeof institutions;
-    await publishedPage("HOME", { ...home, sections: [home.sections[0], withFace, families] });
+    const sign = home.sections[0];
+    const withSlide = {
+      ...sign,
+      content: { ...sign.content, slides: [slideFixture({ image: { mediaId: slidePhoto } })] },
+    } as typeof sign;
+    await publishedPage("HOME", { ...home, sections: [withSlide, section("SERVICES_ROW")] });
 
     const content = await getPublishedPageContent("HOME");
-    expect([...(content?.data.images.keys() ?? [])].toSorted()).toEqual([servicePhoto, face].toSorted());
+    expect([...(content?.data.images.keys() ?? [])].toSorted()).toEqual([servicePhoto, slidePhoto].toSorted());
 
     // The services' cards on Services show their photos too (D111).
     await publishedPage("SERVICES", pageFixture("SERVICES"));

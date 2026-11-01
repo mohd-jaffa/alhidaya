@@ -24,7 +24,7 @@ function contrast(foreground: string, background: string): number {
 }
 
 describe("the design tokens (plan §30.2)", () => {
-  it("are the logo's colours, their navy ink, the leaf deepened and lightened (D98, D122) and the error red, and nothing else", () => {
+  it("are the logo's colours, their navy ink, the leaf deepened and lightened (D98, D122), the soft whites (D132) and the error red, and nothing else", () => {
     expect(Object.keys(colours).sort()).toEqual(
       [
         "deep",
@@ -39,6 +39,8 @@ describe("the design tokens (plan §30.2)", () => {
         "navy",
         "ink-2",
         "ground",
+        "page",
+        "card",
         "mist",
         "rule",
         "on-deep",
@@ -61,6 +63,14 @@ describe("the design tokens (plan §30.2)", () => {
   it("pass WCAG AA for every text pairing the design uses", () => {
     for (const [text, surface] of [
       ["navy", "ground"],
+      ["navy", "page"],
+      ["navy", "card"],
+      ["ink-2", "page"],
+      ["ink-2", "card"],
+      ["deep", "page"],
+      ["deep", "card"],
+      ["deep", "leaf-pale"],
+      ["ink-2", "leaf-pale"],
       ["navy", "mist"],
       ["ink-2", "ground"],
       ["ink-2", "mist"],

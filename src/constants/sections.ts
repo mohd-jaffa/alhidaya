@@ -29,12 +29,7 @@ export const SECTION_TYPES = [
   "CONTACT_DETAILS",
   "FORM",
   "RICH_TEXT",
-  // The redesign's Home (D97, D100): the statement, the highlights, the two audiences (the families'
-  // with how it works, D124) and the services running past.
-  "STATEMENT",
-  "HIGHLIGHTS",
-  "FOR_INSTITUTIONS",
-  "FOR_FAMILIES",
+  // Home's services as cards in a row to scroll (D131).
   "SERVICES_ROW",
 ] as const;
 export type SectionType = (typeof SECTION_TYPES)[number];
@@ -74,13 +69,9 @@ export const PAGE_RULES: Record<PageKey, PageRule> = {
   HOME: {
     allowed: [
       "SIGN",
-      "STATEMENT",
-      "HIGHLIGHTS",
-      "FOR_INSTITUTIONS",
-      "FOR_FAMILIES",
+      "INTRO",
       "SERVICES_ROW",
       "FORM",
-      "INTRO",
       "SERVICES_INDEX",
       "VALUES",
       "INSTITUTIONS",

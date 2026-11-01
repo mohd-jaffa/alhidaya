@@ -1,25 +1,27 @@
 import Link from "next/link";
 
-import { LoopRow } from "@/components/motion/LoopRow";
 import { Reveal } from "@/components/motion/Reveal";
+import { RiseWords } from "@/components/motion/RiseWords";
 import { MediaImage } from "@/components/ui/media-image";
 import { Pictogram } from "@/components/ui/pictogram";
-import { PillLink } from "@/components/ui/pill";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
+import { AUDIENCE_LABELS } from "@/constants/statuses";
 import type { SiteImage } from "@/features/media/types";
 import type { PublishedService } from "@/features/services/api";
 import type { Section } from "@/lib/validation";
 
-import { SectionFrame, SectionOpening } from "./SectionFrame";
+import { headingId } from "./SectionFrame";
+import { ServicesTrack } from "./ServicesTrack";
 
 type ServicesRowContent = Extract<Section, { type: "SERVICES_ROW" }>["content"];
 
 /**
- * Our services (D124): its pill and heading, then every published service in
- * its order, each a photo card opening its page, running past in an endless
- * loop that reaches the window's edges on a wide screen; under it, a small
- * All services pill and the loop's pause button.
+ * What we do (D131, from Theme 2 in straight lines): on a mist band edge to
+ * edge, the admin's heading and words beside two arrows, then every published
+ * service in its order as a rounded photo card, its audience and name on a
+ * soft-white label with an arrow, opening its page; under the row, the way to
+ * all of them, centred as a plain link.
  */
 export function ServicesRowSection({
   anchor,
@@ -32,58 +34,65 @@ export function ServicesRowSection({
   services: readonly PublishedService[];
   image: (ref: { mediaId: string } | null) => SiteImage | null;
 }) {
+  const opening = (
+    <div className="grid max-w-[36rem] gap-3">
+      <h2 id={headingId(anchor)} className="text-display font-semibold">
+        <RiseWords text={content.heading.en} />
+      </h2>
+      {content.text.en ? <p className="text-lead text-ink-2">{content.text.en}</p> : null}
+    </div>
+  );
+  const cards = services.map((service) => {
+    const photo = image(service.published.image);
+    const institutions = service.published.audience === "INSTITUTIONS";
+    return (
+      <li key={service.id} className="w-[min(18.5rem,78vw)] shrink-0 snap-start">
+        <Link
+          href={ROUTES.service(service.published.slug)}
+          className="group relative block aspect-[3/4] overflow-hidden rounded-card bg-leaf-pale shadow-raised"
+        >
+          {photo ? (
+            <MediaImage
+              image={photo}
+              sizes="296px"
+              decorative
+              className="absolute inset-0 size-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.06]"
+            />
+          ) : null}
+          <span className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-inset bg-card p-3.5">
+            <span className="grid gap-0.5">
+              <span className={`text-small font-semibold ${institutions ? "text-deep" : "text-forest"}`}>
+                {AUDIENCE_LABELS[service.published.audience]}
+              </span>
+              <span className="font-semibold leading-snug text-navy">{service.published.name.en}</span>
+            </span>
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-deep text-on-deep transition-transform duration-(--duration-state) group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5">
+              <Pictogram name="arrow" size="sm" className="rtl:rotate-180" />
+            </span>
+          </span>
+        </Link>
+      </li>
+    );
+  });
+
   return (
-    <SectionFrame anchor={anchor} className="grid gap-12">
+    <section id={anchor} aria-labelledby={headingId(anchor)} className="grid scroll-mt-8 gap-8 bg-mist py-section">
       <Reveal>
-        <SectionOpening
-          anchor={anchor}
-          label={content.label.en}
-          start={content.headingStart.en}
-          pictogram={content.pictogram}
-          end={content.headingEnd.en}
-        />
+        <ServicesTrack opening={opening} cards={cards} />
       </Reveal>
-      <LoopRow
-        secondsPerItem={5}
-        pauseLabel={UI_TEXT.pauseServices}
-        viewClassName="-mx-gutter lg:mx-[calc(50%_-_50vw)]"
-        listClassName="gap-4"
-        footer={
-          <PillLink href={ROUTES.services} variant="pale" arrow>
-            {UI_TEXT.allServices}
-          </PillLink>
-        }
-        items={services.map((service) => {
-          const photo = image(service.published.image);
-          return (
-            <li key={service.id} className="shrink-0">
-              <Link
-                href={ROUTES.service(service.published.slug)}
-                className="group grid w-52 gap-3 rounded-card bg-mist p-2 pb-4 sm:w-60"
-              >
-                <span className="relative block aspect-[4/5] overflow-hidden rounded-inset bg-leaf-pale">
-                  {photo ? (
-                    <MediaImage
-                      image={photo}
-                      sizes="240px"
-                      decorative
-                      className="absolute inset-0 size-full object-cover transition-transform duration-(--duration-reveal) ease-out group-hover:scale-[1.04]"
-                    />
-                  ) : null}
-                </span>
-                <span className="flex items-start justify-between gap-2 px-2 font-medium">
-                  {service.published.name.en}
-                  <Pictogram
-                    name="arrow"
-                    size="sm"
-                    className="mt-0.5 shrink-0 text-forest transition-transform duration-(--duration-state) group-hover:translate-x-1 rtl:group-hover:-translate-x-1"
-                  />
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      />
-    </SectionFrame>
+      <p className="text-center">
+        <Link
+          href={ROUTES.services}
+          className="group inline-flex items-center gap-2 border-b-2 border-current pb-1 font-semibold text-deep"
+        >
+          {UI_TEXT.allServices}
+          <Pictogram
+            name="arrow"
+            size="sm"
+            className="transition-transform duration-(--duration-state) group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+          />
+        </Link>
+      </p>
+    </section>
   );
 }

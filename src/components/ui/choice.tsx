@@ -1,16 +1,15 @@
 "use client";
+"use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
 import { type ComponentProps, type ReactNode, useId } from "react";
 
 import { UI_TEXT } from "@/constants/messages";
 
-import { type ControlLook, FieldError, useControlLook } from "./field";
+import { FieldError } from "./field";
 
-/** A box or a round to tick, filled when ticked: deep blue in the admin, forest on the site's forms (D97). */
-const mark = (look: ControlLook) =>
-  `mt-0.5 size-6 shrink-0 appearance-none border-2 border-ink-2 bg-ground bg-center bg-no-repeat aria-invalid:border-error data-invalid:border-error ${
-    look === "line" ? "checked:border-forest checked:bg-forest" : "checked:border-deep checked:bg-deep"
-  }`;
+/** A box or a round to tick, filled deep blue when ticked (D130). */
+const MARK =
+  "mt-0.5 size-6 shrink-0 appearance-none border-2 border-ink-2 bg-ground bg-center bg-no-repeat checked:border-deep checked:bg-deep aria-invalid:border-error data-invalid:border-error";
 
 /** A check mark drawn in the ground colour, for a ticked box. */
 const TICK =
@@ -40,7 +39,6 @@ export function RadioGroup({
   required?: boolean;
 } & Omit<ComponentProps<"input">, "type" | "id" | "value">) {
   const id = useId();
-  const look = useControlLook();
   const errorId = error ? `${id}-error` : undefined;
   return (
     <fieldset aria-describedby={errorId} className="grid gap-2">
@@ -62,7 +60,7 @@ export function RadioGroup({
             required={required}
             data-invalid={error ? "" : undefined}
             {...props}
-            className={`${mark(look)} rounded-full checked:shadow-[inset_0_0_0_4px_var(--color-ground)]`}
+            className={`${MARK} rounded-full checked:shadow-[inset_0_0_0_4px_var(--color-ground)]`}
           />
           <span>{option.label}</span>
         </label>
@@ -79,7 +77,6 @@ export function Checkbox({
   ...props
 }: { children: ReactNode; error?: string } & Omit<ComponentProps<"input">, "type" | "id">) {
   const id = useId();
-  const look = useControlLook();
   const errorId = error ? `${id}-error` : undefined;
   return (
     <div className="grid gap-2">
@@ -90,7 +87,7 @@ export function Checkbox({
           aria-invalid={error ? true : undefined}
           aria-describedby={errorId}
           {...props}
-          className={`${mark(look)} ${TICK} rounded-tag`}
+          className={`${MARK} ${TICK} rounded-tag`}
         />
         <span>{children}</span>
       </label>

@@ -8,6 +8,7 @@ import {
   enquirySchema,
   enquiryStatusSchema,
   quoteFormSchema,
+  shortQuoteFormSchema,
 } from "@/lib/validation";
 
 const contact = {
@@ -95,6 +96,31 @@ describe("Turnstile's token (plan §10.3)", () => {
       });
       expect(schema.safeParse({ ...form, turnstileToken: "x".repeat(2049) }).success).toBe(false);
     }
+  });
+});
+
+describe("the short quote (D130)", () => {
+  const short = {
+    name: "Aisha",
+    service: "",
+    phone: "5551 2345",
+    email: "aisha@example.com",
+    message: "A nurse at night.",
+    consent: true,
+    turnstileToken: "token-from-cloudflare",
+  };
+
+  it("asks the name, the phone, the email and the message, the service left out when it is left empty", () => {
+    expect(shortQuoteFormSchema.parse(short)).toMatchObject({ phone: "+97455512345", service: null });
+    expect(Object.keys(problems(shortQuoteFormSchema.safeParse({ ...short, name: "", message: "" })))).toEqual([
+      "name",
+      "message",
+    ]);
+  });
+
+  it("is read by the route as its own kind, and never with the full quote's questions missing as a full quote", () => {
+    expect(enquirySchema.parse({ ...short, form: "SHORT_QUOTE" }).form).toBe("SHORT_QUOTE");
+    expect(enquirySchema.safeParse({ ...short, form: "QUOTE" }).success).toBe(false);
   });
 });
 

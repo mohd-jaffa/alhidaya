@@ -13,7 +13,7 @@ describe("HeaderAction (D116)", () => {
     const brochure = screen.getByRole("link", { name: UI_TEXT.brochureButton });
     expect(brochure).toHaveAttribute("href", "/brochure");
     expect(brochure).toHaveAttribute("download", "Al-Hidaya-Health-Care-Service-Brochure.pdf");
-    expect(brochure).toHaveClass("bg-leaf", "rounded-pill");
+    expect(brochure).toHaveClass("bg-deep", "rounded-button");
     expect(screen.queryByRole("link", { name: UI_TEXT.requestQuote })).not.toBeInTheDocument();
     await userEvent.click(brochure);
     expect(onNavigate).toHaveBeenCalled();

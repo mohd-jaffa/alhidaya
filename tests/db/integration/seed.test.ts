@@ -88,10 +88,11 @@ describe("seedContent, against the local MySQL", () => {
       expect(photos.every((row) => row.variants.length > 0)).toBe(true);
       const home = (await readDocumentDraft<PageDocument>("PAGE:HOME"))?.draft;
       const sign = home?.sections[0];
-      const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.avatarBraids.source.url);
-      expect(sign?.type === "SIGN" ? sign.content.image : null).toEqual({ mediaId: hero?.id });
-      // Each service shows its own photograph (D102).
-      const elderly = photos.find((row) => row.source?.url === SEED_PHOTOS.elderlyCare.source.url);
+      // Home's first slide shows the current site's first slide photograph (D128).
+      const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.currentHomeVisit.source.url);
+      expect(sign?.type === "SIGN" ? sign.content.slides[0].image : null).toEqual({ mediaId: hero?.id });
+      // Each service shows the current site's own photograph (D102, D118).
+      const elderly = photos.find((row) => row.source?.url === SEED_PHOTOS.currentHelpingUp.source.url);
       expect(services.find((service) => service.draft.slug === "elderly-care")?.draft.image).toEqual({
         mediaId: elderly?.id,
       });

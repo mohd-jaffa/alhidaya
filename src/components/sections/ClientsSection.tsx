@@ -1,11 +1,11 @@
-import { Reveal } from "@/components/motion/Reveal";
-import { LogoTile } from "@/components/ui/frames";
+import { RiseWords } from "@/components/motion/RiseWords";
 import { MediaImage } from "@/components/ui/media-image";
 import type { PublishedClient } from "@/features/clients/api";
 import type { SiteImage } from "@/features/media/types";
 import type { Section } from "@/lib/validation";
 
-import { SectionFrame, SectionHeading } from "./SectionFrame";
+import { ClientsRows } from "./ClientsRows";
+import { headingId, SectionFrame } from "./SectionFrame";
 
 type ClientsContent = Extract<Section, { type: "CLIENTS" }>["content"];
 
@@ -18,10 +18,10 @@ export function shownClients(clients: readonly PublishedClient[], images: Readon
 }
 
 /**
- * The organisations Al Hidaya works with (plan §11, D7): each logo on its own
- * tile, named by the organisation, linked to its site when the admin gave
- * one. With no logos (until the client supplies them and their permission),
- * the section is not shown at all.
+ * The organisations Al Hidaya works with (plan §11, D7, D133): the heading
+ * centred over the short blue and green line, then their logos in two
+ * running rows, each named by the organisation. With no logos (until the
+ * client supplies them and their permission), the section is not shown.
  */
 export function ClientsSection({
   anchor,
@@ -38,33 +38,33 @@ export function ClientsSection({
   if (shown.length === 0) return null;
 
   return (
-    <SectionFrame anchor={anchor} className="grid gap-10">
-      <Reveal>
-        <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
-      </Reveal>
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        {shown.map(({ client, id, logo }, at) => {
-          const tile = (
-            <LogoTile>
-              <MediaImage image={logo} sizes="(min-width: 64rem) 12rem, (min-width: 40rem) 30vw, 45vw" />
-            </LogoTile>
-          );
-          return (
-            <li key={id}>
-              {/* A row of six arrives together, each a moment after the one before (D125). */}
-              <Reveal order={at % 6}>
-                {client.url ? (
-                  <a href={client.url} target="_blank" rel="noopener noreferrer" className="block rounded-card">
-                    {tile}
-                  </a>
-                ) : (
-                  tile
-                )}
-              </Reveal>
-            </li>
-          );
-        })}
-      </ul>
+    <SectionFrame anchor={anchor} className="grid grid-cols-[minmax(0,1fr)] gap-10">
+      <div className="grid justify-items-center gap-4 text-center">
+        <h2 id={headingId(anchor)} className="text-display font-semibold">
+          <RiseWords text={content.heading.en} />
+        </h2>
+        <span
+          aria-hidden="true"
+          className="h-1 w-12 rounded-pill bg-[linear-gradient(90deg,var(--color-deep)_0_55%,var(--color-leaf)_55%)]"
+        />
+      </div>
+      <div className="min-w-0 lg:mx-[calc(50%_-_50vw)]">
+        <ClientsRows
+          clients={shown.map(({ client, id, logo }) => ({
+            id,
+            name: client.name.en,
+            url: client.url,
+            logo: (
+              <MediaImage
+                image={logo}
+                sizes="(min-width: 40rem) 12rem, 9rem"
+                decorative
+                className="absolute inset-2.5 size-[calc(100%-1.25rem)] object-contain"
+              />
+            ),
+          }))}
+        />
+      </div>
     </SectionFrame>
   );
 }

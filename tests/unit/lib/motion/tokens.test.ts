@@ -12,7 +12,6 @@ describe("the motion tokens (plan §30.4)", () => {
     expect(`${MOTION.duration.press * 1000}ms`).toBe(token("duration-press"));
     expect(`${MOTION.duration.state * 1000}ms`).toBe(token("duration-state"));
     expect(`${MOTION.duration.reveal * 1000}ms`).toBe(token("duration-reveal"));
-    expect(`${MOTION.duration.count * 1000}ms`).toBe(token("duration-count"));
   });
 
   it("name GSAP's versions of the CSS curves", () => {
@@ -22,9 +21,9 @@ describe("the motion tokens (plan §30.4)", () => {
     expect(MOTION.ease.inOut).toBe("power2.inOut");
   });
 
-  it("keep scroll-linked movement close behind the scroll, the glide short and a group's arrivals close", () => {
-    expect(MOTION.scrub).toBeLessThanOrEqual(0.5);
+  it("keep the glide short, a group's arrivals close and a heading's words closer (D129)", () => {
     expect(MOTION.lerp).toBeGreaterThanOrEqual(0.1);
     expect(MOTION.stagger).toBeLessThanOrEqual(0.1);
+    expect(MOTION.wordStagger).toBeLessThan(MOTION.stagger);
   });
 });

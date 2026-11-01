@@ -18,7 +18,7 @@ const KINDS = {
 export function ContactAction({
   kind,
   to,
-  variant = "leaf",
+  variant = "deep",
   size,
   arrow = false,
   className,

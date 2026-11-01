@@ -83,8 +83,8 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
         <div className="menu-row grid gap-3 px-gutter py-8" style={{ "--i": links.length } as CSSProperties}>
           {site ? (
             <div className="grid grid-cols-2 gap-3">
-              <ContactAction kind="whatsapp" to={site.contact.whatsapp} variant="pale" />
-              <ContactAction kind="call" to={site.contact.phone} variant="pale" />
+              <ContactAction kind="whatsapp" to={site.contact.whatsapp} variant="line" />
+              <ContactAction kind="call" to={site.contact.phone} variant="line" />
             </div>
           ) : null}
           <HeaderAction site={site} onNavigate={() => setOpen(false)} />

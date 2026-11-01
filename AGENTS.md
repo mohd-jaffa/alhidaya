@@ -451,15 +451,15 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
   across navigations.
 - **Reduced motion:** Lenis off, everything shown in place, no scrub, no reveals.
 - **Nothing moves on its own** (WCAG 2.2.2): motion follows the scroll or
-  arrives once. The exceptions are the footer's running words (D113) and the
-  two looping rows on Home, How it works in the families' card and Our
-  services (D124):
-  endless CSS loops, each with its own pause button (the rows also stop under
-  the pointer and focus), still with motion reduced.
-- Durations and eases are tokens. One motion grammar (plan §30.1: letters
-  settling, a statement darkening with the scroll, every block rising in as it
-  scrolls into view, the looping rows, the footer's words running), restrained
-  reveals, nothing scattered.
+  arrives once. The exceptions are Home's slides (D128), which move on every
+  six seconds with a pause button, and the clients' two rows (D133), endless
+  CSS loops that stop under the pointer, on focus and on a chosen logo (the
+  user chose no pause button for them); both still with motion reduced.
+- Durations and eases are tokens. One motion grammar (Theme 6, D132: the
+  slides wiping in, headings' words rising from behind their line, every
+  block rising in as it scrolls into view, the clients' rows running, the
+  header sliding away and back, the menu's pill sliding to the page opened,
+  D134), restrained reveals, nothing scattered.
 
 ---
 
@@ -501,9 +501,9 @@ numbers.
 Impeccable is a design-quality tool. It must not change product scope.
 
 `PRODUCT.md` (product truth) was set on 2026-10-28. The public site's
-direction is **the user's reference** (plan §30.1, D97, Phase 6B; "Follow
-the Line", D36, is superseded), and its contract lives in
-`.impeccable/surfaces/src-app-site-page-tsx.md`; every public screen is built
+direction is **Theme 6, the client's look** (plan D132, Phase 6C; the
+reference of Phase 6B, D97, and "Follow the Line", D36, are superseded), and
+its contract lives in `.impeccable/surfaces/src-app-site-page-tsx.md`; every public screen is built
 in that world and never invents its own colour, shape or motion.
 `DESIGN.md`, recorded from the built world when Phase 6B ended (R6B.5), is
 the design system's authority: read it before any UI change, and keep it

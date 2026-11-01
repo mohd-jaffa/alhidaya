@@ -52,6 +52,7 @@ describe("the validation module", () => {
       "sectionSchema",
       "seoSchema",
       "serviceDocumentSchema",
+      "shortQuoteFormSchema",
       "signInSchema",
       "siteDocumentSchema",
       "slugSchema",

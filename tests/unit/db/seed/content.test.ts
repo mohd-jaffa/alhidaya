@@ -29,34 +29,39 @@ describe("the seed content", () => {
     ]);
   });
 
-  it("gives each service its own photograph once imported, and none before (D102)", () => {
+  it("gives each service the current site's own photograph once imported, and none before (D102, D118)", () => {
     expect(seedServices().every((service) => service.image === null)).toBe(true);
     const refs = Object.fromEntries(Object.keys(SEED_PHOTOS).map((name) => [name, { mediaId: name }]));
     const services = seedServices(refs as never);
     expect(services.map((service) => service.image?.mediaId)).toEqual([
-      "hospitalCorridor",
-      "schoolNurse",
-      "homeNursing",
-      "chronicCare",
-      "childCare",
-      "newbornCare",
-      "palliativeCare",
-      "elderlyCare",
+      "currentStaffingTeam",
+      "currentSchoolNurse",
+      "currentHomeCare",
+      "currentBedsideCare",
+      "currentBabyCheck",
+      "currentMaternityWard",
+      "currentComfortingHands",
+      "currentHelpingUp",
     ]);
     expect(seedServices({ ...NO_PHOTOS }).map((service) => service.slug)).toEqual(SEED_SERVICES.map((s) => s.slug));
   });
 
-  it("opens Home in the reference's sections, how it works in the families' card, then the services (D97, D124)", () => {
-    expect(seedPages().HOME.sections.map((section) => section.type)).toEqual([
-      "SIGN",
-      "STATEMENT",
-      "HIGHLIGHTS",
-      "FOR_INSTITUTIONS",
-      "FOR_FAMILIES",
-      "SERVICES_ROW",
-      "FORM",
-      "CLIENTS",
-    ]);
+  it("opens Home as Theme 6: the current site's five slides, About, the services, the clients and the short quote (D128 – D133)", () => {
+    const home = seedPages().HOME;
+    expect(home.sections.map((section) => section.type)).toEqual(["SIGN", "INTRO", "SERVICES_ROW", "CLIENTS", "FORM"]);
+    const [sign, intro, , , form] = home.sections;
+    if (sign.type !== "SIGN" || intro.type !== "INTRO" || form.type !== "FORM")
+      throw new Error("Home's sections moved");
+    expect(sign.content.slides).toHaveLength(5);
+    expect(sign.content.slides.every((slide) => slide.buttonLabel.en === null && slide.buttonHref.en === null)).toBe(
+      true,
+    );
+    expect(intro.content.points).toHaveLength(3);
+    expect(form.content.form).toBe("SHORT_QUOTE");
+  });
+
+  it("puts Home first in the menu (D132)", () => {
+    expect(SEED_SITE.navigation[0]).toMatchObject({ href: "/", visible: true });
   });
 
   it("claims nothing the client has not confirmed (plan D7, Q9)", () => {

@@ -5,23 +5,23 @@ import { describe, expect, it, vi } from "vitest";
 import { Pill, PillLink } from "@/components/ui/pill";
 
 describe("the round actions (D97)", () => {
-  it("press as buttons, held while pending, in the leaf by default", async () => {
+  it("press as buttons, held while pending, in deep blue by default", async () => {
     const pressed = vi.fn();
     const { rerender } = render(<Pill onClick={pressed}>Send</Pill>);
     const button = screen.getByRole("button", { name: "Send" });
     expect(button).toHaveAttribute("type", "button");
-    expect(button.className).toContain("bg-leaf");
+    expect(button.className).toContain("bg-deep");
     await userEvent.click(button);
     expect(pressed).toHaveBeenCalledOnce();
 
     rerender(
-      <Pill variant="pale" type="submit" pending arrow onClick={pressed}>
+      <Pill variant="line" type="submit" pending arrow onClick={pressed}>
         Send
       </Pill>,
     );
     expect(screen.getByRole("button", { name: "Send" })).toHaveAttribute("aria-busy", "true");
     expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Send" }).className).toContain("bg-leaf-pale");
+    expect(screen.getByRole("button", { name: "Send" }).className).toContain("ring-deep");
   });
 
   it("go to a page of the site, another site in a new tab, or a call where they are", () => {

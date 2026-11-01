@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -39,10 +39,80 @@ describe("SiteHeader", () => {
     expect(within(main).getByRole("link", { name: "About" })).not.toHaveAttribute("aria-current");
   });
 
-  it("offers the quote as its one main action, and is not pinned over the page (D107)", () => {
+  it("offers the quote as its one main action, the current page deep blue in the pill (D132)", () => {
     render(<SiteHeader site={site} />);
     expect(screen.getAllByRole("link", { name: UI_TEXT.requestQuote })[0]).toHaveAttribute("href", "/request-a-quote");
-    expect(screen.getByRole("banner").className).not.toMatch(/\b(sticky|fixed)\b/);
+    const main = screen.getByRole("navigation", { name: UI_TEXT.mainNavigation });
+    expect(within(main).getByRole("list")).toHaveClass("rounded-pill");
+    expect(screen.getByRole("banner")).toHaveClass("sticky");
+  });
+
+  it("slides away as the page goes down past its top, and comes back as it goes up (D132)", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => frames.push(callback));
+    const cancel = vi.spyOn(window, "cancelAnimationFrame");
+    const { unmount } = render(<SiteHeader site={site} />);
+    const banner = screen.getByRole("banner");
+    const scrollTo = (y: number) => {
+      Object.defineProperty(window, "scrollY", { configurable: true, value: y });
+      act(() => {
+        window.dispatchEvent(new Event("scroll"));
+        window.dispatchEvent(new Event("scroll"));
+        frames.splice(0).forEach((frame) => frame(0));
+      });
+    };
+    scrollTo(100);
+    expect(banner).not.toHaveAttribute("data-hidden");
+    scrollTo(400);
+    expect(banner).toHaveAttribute("data-hidden");
+    scrollTo(400);
+    expect(banner).toHaveAttribute("data-hidden");
+    scrollTo(300);
+    expect(banner).not.toHaveAttribute("data-hidden");
+    unmount();
+    expect(cancel).toHaveBeenCalled();
+    vi.restoreAllMocks();
+  });
+
+  it("slides the deep-blue pill from the last page's link to the new one's, then lets it go (D134)", () => {
+    // Where each link sits in the pill, as a wide screen lays them out.
+    const box: Record<string, { left: number; width: number }> = {
+      About: { left: 6, width: 80 },
+      Services: { left: 90, width: 100 },
+    };
+    const starts: string[] = [];
+    const place = (element: HTMLElement) => box[element.closest("a")?.textContent ?? ""] ?? { left: 0, width: 0 };
+    vi.spyOn(HTMLElement.prototype, "offsetLeft", "get").mockImplementation(function (this: HTMLElement) {
+      return place(this).left;
+    });
+    vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(function (this: HTMLElement) {
+      return place(this).width;
+    });
+    const measure = HTMLElement.prototype.getBoundingClientRect;
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+      if (this.classList.contains("nav-pill")) starts.push(this.style.transform);
+      return measure.call(this);
+    });
+    nav.pathname = "/services";
+    const { rerender } = render(<SiteHeader site={site} />);
+    const main = screen.getByRole("navigation", { name: UI_TEXT.mainNavigation });
+    expect(starts).toEqual([]);
+
+    nav.pathname = "/about";
+    rerender(<SiteHeader site={site} />);
+    expect(starts).toEqual(["translateX(84px) scaleX(1.25)"]);
+    const pill = within(main).getByRole("link", { name: "About" }).querySelector<HTMLElement>(".nav-pill")!;
+    expect(pill.style.transform).toBe("");
+    expect(within(main).getByRole("link", { name: "Services" }).querySelector(".nav-pill")).toBeNull();
+
+    // A page the menu does not name has no pill; the next one's simply appears.
+    nav.pathname = "/privacy";
+    rerender(<SiteHeader site={site} />);
+    nav.pathname = "/services";
+    rerender(<SiteHeader site={site} />);
+    expect(starts).toHaveLength(1);
+    vi.restoreAllMocks();
+    nav.pathname = "/services/elderly-care";
   });
 
   it("still stands, with the logo and the quote, before the site content is published", () => {

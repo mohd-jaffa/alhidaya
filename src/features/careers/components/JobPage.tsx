@@ -80,7 +80,7 @@ export function JobPage({ job, others }: { job: PublishedJob; others: readonly P
                 {UI_TEXT.generalApplication}
               </PillLink>
             )}
-            <PillLink href={ROUTES.careers} variant="pale" size="lg">
+            <PillLink href={ROUTES.careers} variant="line" size="lg">
               {UI_TEXT.allOpenJobs}
             </PillLink>
           </PageHero>

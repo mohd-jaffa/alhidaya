@@ -25,7 +25,7 @@ export function PasswordInput({ className, ...props }: Omit<ComponentProps<"inpu
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}
-        className={[controlClasses("box"), "pe-14", className].filter(Boolean).join(" ")}
+        className={[controlClasses(), "pe-14", className].filter(Boolean).join(" ")}
       />
       <button
         type="button"

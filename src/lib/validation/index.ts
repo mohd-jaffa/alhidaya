@@ -72,6 +72,7 @@ export {
   enquirySchema,
   enquiryStatusSchema,
   quoteFormSchema,
+  shortQuoteFormSchema,
   type ContactFormInput,
   type ContactFormPayload,
   type EnquiryInput,
@@ -84,6 +85,8 @@ export {
   type EnquiryStatusPayload,
   type QuoteFormInput,
   type QuoteFormPayload,
+  type ShortQuoteFormInput,
+  type ShortQuoteFormPayload,
 } from "./schemas/enquiries";
 
 export { todayQuerySchema, type TodayQueryInput, type TodayQueryPayload } from "./schemas/inbox";

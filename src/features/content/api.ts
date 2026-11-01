@@ -46,7 +46,7 @@ export const getPublishedPage = cache(
   },
 );
 
-/** Every photo a page's sections name, at any depth: a photo, a card's, a group of faces, a step's (D97). */
+/** Every photo a page's sections name, at any depth: a photo, a slide's (D128). */
 const sectionImageIds = (document: PageDocument): string[] => [...mediaIds(document.sections)];
 
 /** The images a page's sections show: its photos, its client logos, and the services' photos where they are shown (D102, D111). */
@@ -58,7 +58,7 @@ function imageIds(
   const shows = (type: SectionType) => document.sections.some((section) => section.type === type);
   const logos = shows("CLIENTS") ? clients.map((client) => client.published.logo.mediaId) : [];
   const servicePhotos =
-    shows("FOR_FAMILIES") || shows("SERVICES_INDEX")
+    shows("SERVICES_ROW") || shows("SERVICES_INDEX")
       ? [...mediaIds(services.map((service) => service.published.image))]
       : [];
   return [...sectionImageIds(document), ...logos, ...servicePhotos];
@@ -77,7 +77,7 @@ export async function getPublishedPageContent(
   const [document, site, services, jobs, clients] = await Promise.all([
     getPublishedPage(page, view),
     getPublishedSite(view),
-    may("SERVICES_INDEX", "FORM", "FOR_FAMILIES") ? listPublishedServices(view) : [],
+    may("SERVICES_INDEX", "FORM", "SERVICES_ROW") ? listPublishedServices(view) : [],
     may("CAREERS_BAND", "JOBS_LIST") ? listPublishedJobs(new Date(), view) : [],
     may("CLIENTS") ? listPublishedClients(view) : [],
   ]);

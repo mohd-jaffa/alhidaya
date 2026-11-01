@@ -29,9 +29,15 @@ const noSeo = { title: en(null), description: en(null) };
 const section = <T extends SectionType>(type: T, content: Extract<Section, { type: T }>["content"]): Section =>
   ({ id: crypto.randomUUID(), type, visible: true, content }) as Section;
 
-/** Faces that are there: a photograph not imported yet is left out. */
-const faces = (...refs: ({ mediaId: string } | null)[]) =>
-  refs.filter((ref): ref is { mediaId: string } => ref !== null);
+/** One of Home's slides (D128): with no button at launch; the admin may give it one. */
+const slide = (image: { mediaId: string } | null, headline: string, highlight: string, text: string) => ({
+  image,
+  headline: en(headline),
+  highlight: en(highlight),
+  text: en(text),
+  buttonLabel: en(null),
+  buttonHref: en(null),
+});
 
 type SignContent = Extract<Section, { type: "SIGN" }>["content"];
 type HeroParts = Pick<SignContent, keyof typeof NO_HERO>;
@@ -60,123 +66,76 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
   return {
     HOME: {
       seo: noSeo,
-      // The reference's sections (D97), in its order, in the company's own facts (D7, D99).
+      // Theme 6 (D128 – D133): the slides, About, the services, the clients and the short quote.
       sections: [
         sign({
           headline: en("Quality nursing care at your doorstep"),
-          highlight: en("nursing care"),
-          lede: en(
-            "Nursing care at home and in clinics across Doha, and nurse staffing for hospitals, clinics and schools.",
-          ),
-          image: photos.avatarBraids,
-          avatars: faces(photos.avatarNavy, photos.heroNurse, photos.avatarGreen, photos.avatarTurban),
-          chips: [en("At home"), en("Day and night"), en("Across Doha")],
-          card: { title: en("Home nursing care"), tag: en("Our services"), image: photos.homeNursing },
-          note: { pictogram: "clock", text: en("Nurses around the clock") },
-          fact: { value: en("24/7"), label: en("Nurses around the clock") },
-        }),
-        section("STATEMENT", {
-          parts: [
-            { text: en("We bring"), strong: false, pictogram: null },
-            { text: en("quality nursing care"), strong: true, pictogram: "careAtHome" },
-            { text: en("to your doorstep, and"), strong: false, pictogram: null },
-            { text: en("nurse staffing"), strong: true, pictogram: "staffing" },
-            { text: en("to"), strong: false, pictogram: null },
-            { text: en("hospitals, clinics and schools"), strong: true, pictogram: "heart" },
-            { text: en("across Doha."), strong: false, pictogram: null },
-          ],
-        }),
-        section("HIGHLIGHTS", {
-          // The current site's slides (2026-10-31): their sentences carried into Home's headings.
-          note: {
-            pictogram: "shield",
-            title: en("Affordable nursing care, without compromising quality"),
-            text: en("Nursing care at home and in clinics, for families and for institutions across Doha."),
-          },
-          first: { image: photos.laughingCare, label: en("Care at home") },
-          accent: {
-            title: en("Two businesses under one roof"),
-            text: en("Home care for families, and nurse staffing for hospitals, clinics and schools."),
-            avatars: faces(photos.avatarTurban, photos.avatarGreen, photos.avatarNavy),
-            fact: { value: en("8"), label: en("Services") },
-          },
-          second: { image: photos.nursesTalking, label: en("Nurse staffing") },
-        }),
-        section("FOR_INSTITUTIONS", {
-          label: en("For hospitals, clinics & schools"),
-          headingStart: en("Trained nurses who deliver"),
-          pictogram: "staffing",
-          headingEnd: en("excellence every time"),
-          team: {
-            title: en("Nurses for your team"),
-            text: en("Tell us the roles you need to fill, and we will prepare a quote."),
-            avatars: faces(
-              photos.avatarGreen,
-              photos.avatarBraids,
-              photos.avatarNavy,
-              photos.avatarTurban,
-              photos.heroNurse,
+          highlight: en(null),
+          lede: en(null),
+          image: null,
+          // The current site's five slides (2026-10-31), their words rewritten (D6), each with its own photo.
+          slides: [
+            slide(
+              photos.currentHomeVisit,
+              "Quality nursing care at your doorstep.",
+              "nursing care",
+              "Highly trained nurses giving compassionate care to patients at home and in clinics, with a plan made for each one.",
             ),
-          },
-          photo: { image: photos.wardNurse, text: en("Nurses for hospital wards, clinics and school rooms.") },
-          reach: {
-            title: en("Across Doha, day and night"),
-            avatars: faces(photos.avatarNavy, photos.avatarGreen, photos.avatarTurban, photos.avatarBraids),
-          },
-          facts: [
-            { value: en("24/7"), label: en("Nurses around the clock") },
-            { value: en("8"), label: en("Nursing services") },
-            { value: en("Doha"), label: en("Homes, hospitals, clinics and schools") },
+            slide(
+              photos.currentThumbsUp,
+              "Experience the difference with Al Hidaya.",
+              "Al Hidaya.",
+              "Dedicated nurses, available around the clock, caring for your loved ones with compassion.",
+            ),
+            slide(
+              photos.currentHoldingHands,
+              "Compassionate nursing care for your loved ones.",
+              "loved ones.",
+              "Top-quality care at home and in clinics, given with dignity and respect.",
+            ),
+            slide(
+              photos.currentWardRound,
+              "Affordable nursing care, without compromise.",
+              "without compromise.",
+              "Comprehensive care at home and in clinics, more affordable than a stay in hospital.",
+            ),
+            slide(
+              photos.currentBloodPressure,
+              "Trained nurses who deliver excellence every time.",
+              "excellence",
+              "Skilled, experienced nurses across a range of services, for families and institutions.",
+            ),
           ],
+          note: { pictogram: "clock", text: en("Nurses around the clock") },
         }),
-        section("FOR_FAMILIES", {
-          label: en("For families"),
-          headingStart: en("Compassionate nursing care"),
-          pictogram: "heart",
-          headingEnd: en("for your loved ones"),
-          // How it works runs through the families' card (D124).
-          stepsLabel: en("How it works"),
-          steps: [
-            {
-              image: photos.onThePhone,
-              title: en("Tell us what you need"),
-              text: en("Call us, message us on WhatsApp, or send a request."),
-            },
-            {
-              image: photos.consultation,
-              title: en("We talk it through"),
-              text: en("We ask about the person, the care they need and the hours."),
-            },
-            {
-              image: photos.avatarNavy,
-              title: en("We agree a care plan"),
-              text: en("A plan that fits the patient's needs and the family's budget."),
-            },
-            {
-              image: photos.careAtHome,
-              title: en("Care begins"),
-              text: en("At home, in the clinic, or on your ward."),
-            },
+        section("INTRO", {
+          heading: en("About Al Hidaya Health Care Service"),
+          highlight: en("Al Hidaya Health Care Service"),
+          body: [
+            paragraph(
+              "Al Hidaya is a growing nursing care company in Doha, Qatar. We provide nursing care at home and in clinics, and supply nurses to hospitals, clinics and schools.",
+            ),
+            paragraph(
+              "Our knowledgeable, compassionate nurses work with each patient and family on a care plan that fits their needs and their budget.",
+            ),
           ],
-          photo: { image: photos.elderlyCare, text: en("A nurse comes to your home, so care fits your family's day.") },
-          features: [
-            { pictogram: "clock", title: en("Day and night") },
-            { pictogram: "chat", title: en("On WhatsApp") },
-            { pictogram: "careAtHome", title: en("At your doorstep") },
+          image: null,
+          points: [
+            { title: en("Committed to our patients"), text: en("Care given with compassion, respect and dignity.") },
+            { title: en("Committed to leadership"), text: en("Growing through our people and our clients.") },
+            { title: en("Committed to excellence"), text: en("Holding our care to the highest standard.") },
           ],
         }),
         section("SERVICES_ROW", {
-          label: en("Our services"),
-          headingStart: en("Nursing care"),
-          pictogram: "stethoscope",
-          headingEnd: en("for every need"),
-        }),
-        section("FORM", {
-          heading: en("Experience the difference with Al Hidaya"),
-          text: en("Write to us and we will reply. For anything urgent, call or message us on WhatsApp."),
-          form: "CONTACT",
+          heading: en("What we do"),
+          text: en("Nursing care for families at home, and nurse staffing for hospitals, clinics and schools."),
         }),
         section("CLIENTS", { heading: en("Our clients") }),
+        section("FORM", {
+          heading: en("Get a free quote for the care you need"),
+          text: en("Tell us who the care is for and when you need it. We reply quickly, at any hour."),
+          form: "SHORT_QUOTE",
+        }),
       ],
     },
     ABOUT: {
@@ -199,6 +158,8 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
             ),
           ],
           image: photos.clinicCheck,
+          highlight: en(null),
+          points: [],
         }),
         section("MISSION", {
           mission: en(
@@ -461,16 +422,16 @@ export const SEED_SERVICES: readonly ServiceDocument[] = [
   ),
 ];
 
-/** The photograph each seeded service shows (D102): in the families' card and on its own page. */
+/** The photograph each seeded service shows (D102): the current site's own (D118), on Home's cards and its page. */
 const SERVICE_PHOTOS: Record<string, SeedPhoto> = {
-  "hospital-and-clinic-staffing": "hospitalCorridor",
-  "school-nurse-staffing": "schoolNurse",
-  "home-nursing-care": "homeNursing",
-  "chronic-condition-care": "chronicCare",
-  "child-care": "childCare",
-  "maternity-and-newborn-care": "newbornCare",
-  "palliative-care": "palliativeCare",
-  "elderly-care": "elderlyCare",
+  "hospital-and-clinic-staffing": "currentStaffingTeam",
+  "school-nurse-staffing": "currentSchoolNurse",
+  "home-nursing-care": "currentHomeCare",
+  "chronic-condition-care": "currentBedsideCare",
+  "child-care": "currentBabyCheck",
+  "maternity-and-newborn-care": "currentMaternityWard",
+  "palliative-care": "currentComfortingHands",
+  "elderly-care": "currentHelpingUp",
 };
 
 /** The services with their photographs, once imported (D102). */
@@ -531,12 +492,12 @@ export const SEED_SITE: SiteDocument = {
   },
   social: [{ network: "INSTAGRAM", url: "https://www.instagram.com/alhidayanursingcompany_wll" }],
   navigation: [
+    { label: en("Home"), href: ROUTES.home, visible: true },
     { label: en("About"), href: ROUTES.about, visible: true },
     { label: en("Services"), href: ROUTES.services, visible: true },
     { label: en("Careers"), href: ROUTES.careers, visible: true },
     { label: en("Contact"), href: ROUTES.contact, visible: true },
   ],
-  runningWords: en("AL HIDAYA HEALTH CARE"),
   footer: [
     {
       heading: en("Company"),

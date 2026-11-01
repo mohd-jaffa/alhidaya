@@ -24,11 +24,15 @@ const data = (site = siteFixture()): SectionData => ({
 const service = () => screen.getByRole("combobox", { name: `${UI_TEXT.service} (${UI_TEXT.optional})` });
 
 describe("enquiryForms", () => {
-  it("readies both forms from the published content; the page's FORM section picks one", () => {
+  it("readies the three forms from the published content; the page's FORM section picks one (D130)", () => {
     const forms = enquiryForms(data());
     render(<>{forms.CONTACT}</>);
     expect(screen.getByRole("button", { name: UI_TEXT.sendMessage })).toBeInTheDocument();
-    render(<>{forms.QUOTE}</>);
+    const { unmount } = render(<>{forms.QUOTE}</>);
+    expect(screen.getByRole("option", { name: "School nurse staffing" })).toBeInTheDocument();
+    unmount();
+    render(<>{forms.SHORT_QUOTE}</>);
+    expect(screen.getByRole("button", { name: UI_TEXT.sendShortQuote })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "School nurse staffing" })).toBeInTheDocument();
   });
 

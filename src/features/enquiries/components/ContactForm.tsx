@@ -1,4 +1,5 @@
 "use client";
+"use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
 import { SiteForm } from "@/components/site/SiteForm";
 import { Field } from "@/components/ui/field";

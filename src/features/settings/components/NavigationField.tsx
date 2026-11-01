@@ -5,7 +5,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { EditorText, useEditorError } from "@/components/admin/editor/EditorText";
 import { ItemControls } from "@/components/admin/editor/ItemControls";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/choice";
+import { Switch } from "@/components/ui/switch";
 import { FieldError } from "@/components/ui/field";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
@@ -46,7 +46,7 @@ export function NavigationField() {
                 />
                 <LinkTarget name={`navigation.${index}.href`} />
               </div>
-              <Checkbox {...register(`navigation.${index}.visible`)}>{ADMIN_TEXT.shownInMenu}</Checkbox>
+              <Switch {...register(`navigation.${index}.visible`)}>{ADMIN_TEXT.shownInMenu}</Switch>
             </li>
           );
         })}

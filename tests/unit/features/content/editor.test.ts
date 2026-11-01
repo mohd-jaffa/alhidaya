@@ -15,13 +15,11 @@ import { contentFixture, pageFixture, section } from "@tests/support/fixtures/co
 describe("the editor's fields", () => {
   it("name every part of each section type's content, and nothing else", () => {
     for (const type of SECTION_TYPES) {
-      // Home's sign holds its hero's fields too (D97): every part of the content is named somewhere.
-      expect(
-        sectionFields("HOME", type)
-          .map((field) => field.name)
-          .toSorted(),
-        type,
-      ).toEqual(Object.keys(contentFixture(type)).toSorted());
+      // Home's sign is its slides (D128), every other page's its words: every part is named on one page or the other.
+      const names = new Set(
+        [...sectionFields("ABOUT", type), ...sectionFields("HOME", type)].map((field) => field.name),
+      );
+      expect([...names].toSorted(), type).toEqual(Object.keys(contentFixture(type)).toSorted());
     }
   });
 
@@ -37,34 +35,34 @@ describe("the editor's fields", () => {
     }
     expect(blankSection("QUOTE", "FORM").content).toMatchObject({ form: "QUOTE" });
     expect(blankSection("CONTACT", "FORM").content).toMatchObject({ form: "CONTACT" });
+    expect(blankSection("HOME", "FORM").content).toMatchObject({ form: "SHORT_QUOTE" });
     expect(blankSection("PRIVACY", "RICH_TEXT").content).toEqual({
       heading: { en: "" },
       body: [{ type: "paragraph", text: { en: "" } }],
     });
     expect(blankSection("HOME", "VALUES").content).toMatchObject({ items: [{ title: { en: "" }, text: { en: "" } }] });
-    expect(blankSection("HOME", "INTRO").content).toMatchObject({ image: null });
+    expect(blankSection("HOME", "INTRO").content).toMatchObject({ image: null, points: [] });
   });
 
-  it("start the redesign's sections with their least items blank, and Home's sign with its hero empty (D97)", () => {
-    expect(blankSection("HOME", "STATEMENT").content).toEqual({
-      parts: [{ text: { en: "" }, strong: false, pictogram: null }],
-    });
-    // How it works runs in the families' card, its steps added one by one (D124).
-    expect(blankSection("HOME", "FOR_FAMILIES").content).toMatchObject({ stepsLabel: { en: "" }, steps: [] });
-    expect(blankSection("HOME", "SERVICES_ROW").content).toEqual({
-      label: { en: "" },
-      headingStart: { en: "" },
-      pictogram: null,
-      headingEnd: { en: "" },
-    });
-    expect(blankSection("HOME", "SIGN").content).toMatchObject({
-      avatars: [],
-      chips: [],
-      card: { title: { en: "" }, tag: { en: "" }, image: null },
+  it("start Home's hero with one blank slide and no button, and its services with their heading (D128, D131)", () => {
+    expect(blankSection("HOME", "SIGN").content).toEqual({
+      slides: [
+        {
+          image: null,
+          headline: { en: "" },
+          highlight: { en: "" },
+          text: { en: "" },
+          buttonLabel: { en: "" },
+          buttonHref: { en: "" },
+        },
+      ],
       note: { pictogram: null, text: { en: "" } },
     });
-    expect(blankSection("ABOUT", "SIGN").content).not.toHaveProperty("avatars");
-    expect(blankItem("HOME", [{ kind: "line", name: "", label: "Chip", max: 32, required: true }])).toEqual({ en: "" });
+    expect(blankSection("ABOUT", "SIGN").content).not.toHaveProperty("slides");
+    expect(blankSection("HOME", "SERVICES_ROW").content).toEqual({ heading: { en: "" }, text: { en: "" } });
+    expect(blankItem("HOME", [{ kind: "line", name: "title", label: "Title", max: 32, required: true }])).toEqual({
+      title: { en: "" },
+    });
   });
 
   it("offer only what a page can still hold, never its sign (D87)", () => {
@@ -77,18 +75,7 @@ describe("the editor's fields", () => {
         "HOME",
         pageFixture("HOME").sections.map((held) => held.type),
       ),
-    ).toEqual([
-      "STATEMENT",
-      "HIGHLIGHTS",
-      "FOR_INSTITUTIONS",
-      "FOR_FAMILIES",
-      "SERVICES_ROW",
-      "FORM",
-      "VALUES",
-      "INSTITUTIONS",
-      "CLIENTS",
-      "CAREERS_BAND",
-    ]);
+    ).toEqual(["SERVICES_ROW", "FORM", "VALUES", "INSTITUTIONS", "CLIENTS", "CAREERS_BAND"]);
   });
 
   it("keep the sign first and fixed, and a section the page needs visible and there", () => {
@@ -104,16 +91,14 @@ describe("the editor's fields", () => {
 
   it("word a row by what its section says first", () => {
     expect(sectionSummary({ headline: { en: " Care at home " } })).toBe("Care at home");
-    expect(
-      sectionSummary({ label: { en: "For families" }, headingStart: { en: "Care for the people you love," } }),
-    ).toBe("Care for the people you love,");
+    // Home's hero says its first slide (D128).
     expect(
       sectionSummary({
-        parts: [{ text: { en: "We bring" } }, { text: { en: " " } }, { text: { en: "nursing care" } }],
+        headline: { en: "Kept" },
+        slides: [{ headline: { en: " Quality care " } }, { headline: { en: "Second" } }],
       }),
-    ).toBe("We bring nursing care");
-    expect(sectionSummary({ note: { title: { en: "Across Doha" } } })).toBe("Across Doha");
-    expect(sectionSummary({ parts: [], note: { title: { en: "" } } })).toBe("");
+    ).toBe("Quality care");
+    expect(sectionSummary({ headline: { en: "Kept" }, slides: [] })).toBe("Kept");
     expect(sectionSummary({ heading: { en: "" }, mission: { en: "Our mission." } })).toBe("Our mission.");
     expect(sectionSummary({ intro: { en: null }, emptyText: { en: "No openings." } })).toBe("No openings.");
     expect(

@@ -17,7 +17,7 @@ export function WayBack() {
         [ROUTES.contact, UI_TEXT.contact],
       ].map(([href, label]) => (
         <li key={href}>
-          <a href={href} className={pillClasses({ variant: "pale" })}>
+          <a href={href} className={pillClasses({ variant: "line" })}>
             {label}
           </a>
         </li>

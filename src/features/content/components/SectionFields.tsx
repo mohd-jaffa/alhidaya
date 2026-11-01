@@ -1,33 +1,31 @@
 "use client";
 
-import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { EditorText, useEditorError } from "@/components/admin/editor/EditorText";
 import { ItemControls } from "@/components/admin/editor/ItemControls";
 import { PhotoField } from "@/components/admin/editor/PhotoField";
 import { RichTextField } from "@/components/admin/editor/RichTextField";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/choice";
 import { Field, FieldError } from "@/components/ui/field";
 import { Pictogram } from "@/components/ui/pictogram";
 import { Select } from "@/components/ui/select";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
-import { PAGE_NAMES } from "@/constants/messages";
 import { type PageKey, SECTION_PICTOGRAMS, type SectionType } from "@/constants/sections";
-import { FORM_KINDS } from "@/constants/statuses";
+import { SECTION_FORMS } from "@/constants/statuses";
 
 import { blankItem, type SectionField, sectionFields } from "../editor";
 import { ValuesField } from "./ValuesField";
 
-/** Which of the two forms a form section shows (plan §7.2), each named as the page it belongs to. */
+/** Which form a form section shows (plan §7.2, D130): the Quote's, the Contact's, or the short quote. */
 function FormChoice({ name, label }: { name: string; label: string }) {
   const { register } = useFormContext();
   return (
     <Field label={label} required>
       <Select {...register(name)}>
-        {FORM_KINDS.map((kind) => (
+        {SECTION_FORMS.map((kind) => (
           <option key={kind} value={kind}>
-            {PAGE_NAMES[kind]}
+            {ADMIN_TEXT.formNames[kind]}
           </option>
         ))}
       </Select>
@@ -52,67 +50,7 @@ function PictogramChoice({ name, label }: { name: string; label: string }) {
   );
 }
 
-/** A yes or no about some words: a statement's darker phrases (D97). */
-function Toggle({ name, label }: { name: string; label: string }) {
-  const { register } = useFormContext();
-  return <Checkbox {...register(name)}>{label}</Checkbox>;
-}
-
-/**
- * Faces in a group (D97): each a photo from the library, in order, up to
- * `max`. A face just added waits empty for its photo, so the group keeps its
- * own list rather than React Hook Form's (whose items must be objects).
- */
-function FacesField({ name, label, max }: { name: string; label: string; max: number }) {
-  const { setValue } = useFormContext();
-  const faces = (useWatch({ name }) as ({ mediaId: string } | null)[] | undefined) ?? [];
-  const error = useEditorError(name);
-  const change = (next: ({ mediaId: string } | null)[]) => setValue(name, next, { shouldDirty: true });
-  const move = (from: number, to: number) => {
-    const next = [...faces];
-    const [face] = next.splice(from, 1);
-    next.splice(to, 0, face);
-    change(next);
-  };
-  return (
-    <fieldset className="grid gap-3">
-      <legend className="mb-2 font-semibold">{label}</legend>
-      <ol className="grid gap-3 sm:grid-cols-2">
-        {faces.map((_, index) => {
-          const thing = ADMIN_TEXT.numbered(ADMIN_TEXT.face, index + 1);
-          return (
-            <li key={index} className="grid gap-3 rounded-control border border-rule bg-ground p-4">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-small font-bold text-ink-2">{thing}</p>
-                <ItemControls
-                  thing={thing}
-                  index={index}
-                  count={faces.length}
-                  onMove={(to) => move(index, to)}
-                  onRemove={() => change(faces.filter((__, at) => at !== index))}
-                />
-              </div>
-              <PhotoField name={`${name}.${index}`} label={thing} required />
-            </li>
-          );
-        })}
-      </ol>
-      {error ? <FieldError>{error}</FieldError> : null}
-      {faces.length < max ? (
-        <Button
-          variant="quiet"
-          pictogram="plus"
-          onClick={() => change([...faces, null])}
-          className="justify-self-start"
-        >
-          {ADMIN_TEXT.addFace}
-        </Button>
-      ) : null}
-    </fieldset>
-  );
-}
-
-/** A list of items (D100), each holding its own fields: a statement's phrases, figures, features, steps. */
+/** A list of items, each holding its own fields: Home's slides, About's points. */
 function ListField({
   page,
   name,
@@ -163,10 +101,10 @@ function ListField({
   );
 }
 
-/** Fields at `base`: each named from it, or, when its name is empty, the value at `base` itself. */
+/** Fields at `base`, each named from it. */
 function Fields({ page, base, fields }: { page: PageKey; base: string; fields: readonly SectionField[] }) {
   return fields.map((field) => {
-    const name = field.name ? `${base}.${field.name}` : base;
+    const name = `${base}.${field.name}`;
     switch (field.kind) {
       case "line":
       case "lines":
@@ -191,10 +129,6 @@ function Fields({ page, base, fields }: { page: PageKey; base: string; fields: r
         return <FormChoice key={name} name={name} label={field.label} />;
       case "pictogram":
         return <PictogramChoice key={name} name={name} label={field.label} />;
-      case "toggle":
-        return <Toggle key={name} name={name} label={field.label} />;
-      case "faces":
-        return <FacesField key={name} name={name} label={field.label} max={field.max} />;
       case "group":
         return (
           <fieldset key={name} className="grid gap-4 rounded-control border border-rule p-4">
@@ -210,7 +144,7 @@ function Fields({ page, base, fields }: { page: PageKey; base: string; fields: r
 
 /**
  * A section opened in its row (D88): its type's fields in order (Home's sign
- * with its hero's besides, D97), and what it shows on its own besides them
+ * as its slides, D128), and what it shows on its own besides them
  * (the services, the jobs, the contact details), so the admin knows where
  * those are changed.
  */

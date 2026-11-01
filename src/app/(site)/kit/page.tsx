@@ -8,7 +8,7 @@ import { ArrowLink } from "@/components/ui/arrow-link";
 import { Button } from "@/components/ui/button";
 import { Checkbox, RadioGroup } from "@/components/ui/choice";
 import { ContactAction } from "@/components/ui/contact-action";
-import { ControlsLook, Field } from "@/components/ui/field";
+import { Field } from "@/components/ui/field";
 import { FileInput } from "@/components/ui/file-input";
 import { ImageFrame, LogoTile, Skeleton } from "@/components/ui/frames";
 import { Notice } from "@/components/ui/notice";
@@ -47,7 +47,7 @@ export default function KitPage() {
           lede={sign.content.lede.en}
         >
           <ContactAction kind="whatsapp" to={phone} size="lg" arrow />
-          <ContactAction kind="call" to={phone} variant="pale" size="lg" />
+          <ContactAction kind="call" to={phone} variant="line" size="lg" />
         </PageHero>
       ) : null}
 
@@ -55,13 +55,13 @@ export default function KitPage() {
         <h2 className="text-display font-normal">Actions</h2>
         <div className="flex flex-wrap items-center gap-3">
           <Pill arrow>Send message</Pill>
-          <Pill variant="pale">Choose another</Pill>
+          <Pill variant="line">Choose another</Pill>
           <Pill pending>Sending</Pill>
           <Pill disabled>Unavailable</Pill>
           <PillLink href={ROUTES.quote} size="lg" arrow>
             {UI_TEXT.requestQuote}
           </PillLink>
-          <ContactAction kind="email" to={SEED_SITE.contact.email} variant="pale" />
+          <ContactAction kind="email" to={SEED_SITE.contact.email} variant="line" />
         </div>
         <div className="flex flex-wrap items-center gap-3 rounded-card bg-leaf p-6">
           <ContactAction kind="whatsapp" to={phone} variant="onLeaf" arrow />
@@ -87,48 +87,46 @@ export default function KitPage() {
 
       <section id="kit-fields" className="grid max-w-xl gap-6 rounded-card bg-mist p-6 sm:p-8">
         <h2 className="text-display font-normal">Fields</h2>
-        <ControlsLook look="line">
-          <Field label="Full name" required>
-            <TextInput name="name" autoComplete="name" defaultValue="Mariam Ali" />
-          </Field>
-          <Field
-            label="Phone"
-            hint="A Qatar number, or one with its country code."
-            error="Phone must be a Qatar number (8 digits) or start with a country code, like +44."
-            required
-          >
-            <TextInput name="phone" type="tel" autoComplete="tel" defaultValue="3130 655" />
-          </Field>
-          <Field label="Service">
-            <Select name="service" defaultValue="">
-              <option value="">Not sure yet</option>
-              {SEED_SERVICES.map((service) => (
-                <option key={service.slug} value={service.slug}>
-                  {service.name.en}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <RadioGroup
-            legend="Preferred contact"
-            name="contact"
-            options={[
-              { value: "WHATSAPP", label: "WhatsApp" },
-              { value: "CALL", label: "A call" },
-              { value: "EMAIL", label: "Email" },
-            ]}
-            defaultChecked={false}
-          />
-          <Field label="Message" required>
-            <TextArea name="message" />
-          </Field>
-          <Field label="CV" hint="PDF, DOC or DOCX, up to 5 MB." required>
-            <FileInput name="cv" accept=".pdf,.doc,.docx" />
-          </Field>
-          <Checkbox name="consent" required error="Please agree to the privacy notice.">
-            I agree to the privacy notice.
-          </Checkbox>
-        </ControlsLook>
+        <Field label="Full name" required>
+          <TextInput name="name" autoComplete="name" defaultValue="Mariam Ali" />
+        </Field>
+        <Field
+          label="Phone"
+          hint="A Qatar number, or one with its country code."
+          error="Phone must be a Qatar number (8 digits) or start with a country code, like +44."
+          required
+        >
+          <TextInput name="phone" type="tel" autoComplete="tel" defaultValue="3130 655" />
+        </Field>
+        <Field label="Service">
+          <Select name="service" defaultValue="">
+            <option value="">Not sure yet</option>
+            {SEED_SERVICES.map((service) => (
+              <option key={service.slug} value={service.slug}>
+                {service.name.en}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <RadioGroup
+          legend="Preferred contact"
+          name="contact"
+          options={[
+            { value: "WHATSAPP", label: "WhatsApp" },
+            { value: "CALL", label: "A call" },
+            { value: "EMAIL", label: "Email" },
+          ]}
+          defaultChecked={false}
+        />
+        <Field label="Message" required>
+          <TextArea name="message" />
+        </Field>
+        <Field label="CV" hint="PDF, DOC or DOCX, up to 5 MB." required>
+          <FileInput name="cv" accept=".pdf,.doc,.docx" />
+        </Field>
+        <Checkbox name="consent" required error="Please agree to the privacy notice.">
+          I agree to the privacy notice.
+        </Checkbox>
         <div>
           <DialogDemo label="Open a dialog" title="Before you send" body="We reply as soon as we can." />
         </div>

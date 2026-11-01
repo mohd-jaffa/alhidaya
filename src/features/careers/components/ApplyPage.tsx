@@ -28,11 +28,11 @@ export function ApplyPage({ job }: { job: PublishedJob | null }) {
         lede={job ? UI_TEXT.applyLede : UI_TEXT.generalApplicationLede}
       >
         {job ? (
-          <PillLink href={ROUTES.job(job.published.slug)} variant="pale" size="lg">
+          <PillLink href={ROUTES.job(job.published.slug)} variant="line" size="lg">
             {UI_TEXT.aboutJob}
           </PillLink>
         ) : (
-          <PillLink href={ROUTES.careers} variant="pale" size="lg">
+          <PillLink href={ROUTES.careers} variant="line" size="lg">
             {UI_TEXT.allOpenJobs}
           </PillLink>
         )}

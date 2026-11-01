@@ -4,7 +4,7 @@ import { SECTION_NAMES } from "@/constants/admin-messages";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
 import { PAGE_KEYS, SECTION_TYPES } from "@/constants/sections";
 import { pageDocumentSchema, sectionSchema } from "@/lib/validation";
-import { pageFixture, section } from "@tests/support/fixtures/content";
+import { pageFixture, section, slideFixture } from "@tests/support/fixtures/content";
 
 const messages = (page: Parameters<typeof pageDocumentSchema>[0], value: unknown) =>
   pageDocumentSchema(page)
@@ -18,6 +18,42 @@ describe("sections", () => {
       sectionSchema.safeParse({ ...section("FORM"), content: { ...section("FORM").content, form: "OTHER" } }).success,
     ).toBe(false);
     expect(sectionSchema.safeParse({ ...section("SIGN"), id: "not-a-uuid" }).success).toBe(false);
+  });
+});
+
+describe("Home's slides (D128)", () => {
+  const sign = (slides: unknown[]) => ({ ...section("SIGN"), content: { ...section("SIGN").content, slides } });
+  const firstMessage = (value: unknown) => sectionSchema.safeParse(value).error?.issues[0].message;
+
+  it("take a button only with both its wording and its link, a blank link read as none", () => {
+    const parsed = sectionSchema.parse(sign([slideFixture({ buttonLabel: { en: "" }, buttonHref: { en: "" } })]));
+    expect(parsed.type === "SIGN" && parsed.content.slides[0].buttonHref).toEqual({ en: null });
+    expect(
+      sectionSchema.safeParse(
+        sign([slideFixture({ buttonLabel: { en: "Request a quote" }, buttonHref: { en: "/request-a-quote" } })]),
+      ).success,
+    ).toBe(true);
+    expect(firstMessage(sign([slideFixture({ buttonLabel: { en: "Request a quote" } })]))).toBe(
+      VALIDATION_MESSAGES.buttonNeedsBoth,
+    );
+    expect(firstMessage(sign([slideFixture({ buttonHref: { en: "/request-a-quote" } })]))).toBe(
+      VALIDATION_MESSAGES.buttonNeedsBoth,
+    );
+    expect(
+      firstMessage(sign([slideFixture({ buttonLabel: { en: "Go" }, buttonHref: { en: "javascript:alert(1)" } })])),
+    ).toBe(VALIDATION_MESSAGES.link);
+  });
+
+  it("are at most eight, and Home's hero shows at least one", () => {
+    expect(firstMessage(sign(Array.from({ length: 9 }, () => slideFixture())))).toBe(
+      VALIDATION_MESSAGES.atMost("Slides", 8),
+    );
+    const home = pageFixture("HOME");
+    const empty = { ...home, sections: [sign([]), ...home.sections.slice(1)] };
+    expect(messages("HOME", empty)).toEqual([VALIDATION_MESSAGES.atLeastOne("Slides")]);
+    expect(
+      messages("ABOUT", { ...pageFixture("ABOUT"), sections: [sign([]), ...pageFixture("ABOUT").sections.slice(1)] }),
+    ).toEqual([]);
   });
 });
 

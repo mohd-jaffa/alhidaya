@@ -9,6 +9,7 @@ import {
   type EmailStatus,
   type EnquiryStatus,
   type FormKind,
+  STORED_FORM,
 } from "@/constants/statuses";
 import { getDb } from "@/db/client";
 import { authUser, enquiries, enquiryNotes, type SubmittedField } from "@/db/schema";
@@ -82,12 +83,20 @@ export function enquiryFields(payload: EnquiryPayload, serviceName: string | nul
           [UI_TEXT.contactMethod, CONTACT_METHOD_LABELS[payload.contactMethod]],
           [UI_TEXT.message, payload.message],
         ]
-      : [
-          [UI_TEXT.yourName, payload.name],
-          [UI_TEXT.phone, displayPhone(payload.phone)],
-          [UI_TEXT.email, payload.email],
-          [UI_TEXT.message, payload.message],
-        ];
+      : payload.form === "SHORT_QUOTE"
+        ? [
+            [UI_TEXT.yourName, payload.name],
+            [UI_TEXT.service, serviceName],
+            [UI_TEXT.phone, displayPhone(payload.phone)],
+            [UI_TEXT.email, payload.email],
+            [UI_TEXT.message, payload.message],
+          ]
+        : [
+            [UI_TEXT.yourName, payload.name],
+            [UI_TEXT.phone, displayPhone(payload.phone)],
+            [UI_TEXT.email, payload.email],
+            [UI_TEXT.message, payload.message],
+          ];
   return [...answers, [UI_TEXT.consent, UI_TEXT.consentGiven] as const].flatMap(([label, value]) =>
     value === null ? [] : [{ label, value }],
   );
@@ -100,7 +109,7 @@ async function publishedServiceName(slug: string): Promise<string | null> {
 }
 
 /**
- * A Quote or Contact form as the route received it (plan §10.4): the chosen
+ * A Quote, Contact or short quote form as the route received it (plan §10.4): the chosen
  * service must be one the site shows, then the enquiry is stored with its
  * answers as the visitor saw them.
  */
@@ -109,12 +118,14 @@ export async function receiveEnquiry(
   visitorIp: string,
   at: Date = new Date(),
 ): Promise<string> {
-  const chosen = payload.form === "QUOTE" ? payload.service : null;
+  const chosen = payload.form === "CONTACT" ? null : payload.service;
   const serviceName = chosen ? await publishedServiceName(chosen) : null;
   if (chosen && !serviceName) {
     throw validationError("VALIDATION_ERROR", [{ path: "service", message: VALIDATION_MESSAGES.service }]);
   }
-  const { form, name, email, phone } = payload;
+  // A short quote is kept, emailed and listed as a Quote (D130).
+  const { name, email, phone } = payload;
+  const form = STORED_FORM[payload.form];
   return submitEnquiry({ form, name, email, phone, fields: enquiryFields(payload, serviceName) }, visitorIp, at);
 }
 

@@ -1,20 +1,24 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { PageSections } from "@/components/sections/PageSections";
 import { SECTION_TYPES } from "@/constants/sections";
 import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
+import { ROUTES } from "@/constants/routes";
 import type { SectionData } from "@/features/content/types";
 import type { Section } from "@/lib/validation";
 import {
   clientFixture,
   imageFixture,
+  pageFixture,
   jobFixture,
   publishedFixture,
   section,
   serviceFixture,
   siteFixture,
 } from "@tests/support/fixtures/content";
+
+vi.mock("@/components/motion/MotionProvider", () => ({ useMotion: () => ({ engine: null }) }));
 
 const withImage = (type: "SIGN" | "INTRO" | "INSTITUTIONS", mediaId: string | null) => {
   const found = section(type);
@@ -65,32 +69,26 @@ describe("PageSections", () => {
       "reach-us",
       "form",
       "text",
-      "statement",
-      "highlights",
-      "for-institutions",
-      "families",
       "our-services",
     ]);
     expect(screen.getByRole("img", { name: "A nurse at home" })).toHaveAttribute("fetchpriority", "high");
-    expect(screen.getByRole("img", { name: "Doha Clinic" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Doha Clinic" })).toBeInTheDocument();
     expect(screen.getByRole("form", { name: "Contact form" })).toBeInTheDocument();
     expect(container.querySelector("#start")).toHaveTextContent(PAGE_NAMES.ABOUT);
   });
 
-  it("opens Home with its hero, gives a form the site's email, and draws no form the page did not give", () => {
+  it("opens Home on its slides edge to edge, its About leading to the About page, and draws no form the page did not give", () => {
     const data: SectionData = { site: siteFixture(), services: [], jobs: [], clients: [], images: new Map() };
-    render(
-      <PageSections
-        page="HOME"
-        sections={[withImage("SIGN", null), withImage("INSTITUTIONS", null), section("FORM")]}
-        data={data}
-      />,
+    const home = pageFixture("HOME");
+    const { container } = render(
+      <PageSections page="HOME" sections={[home.sections[0], section("INTRO"), section("FORM")]} data={data} />,
     );
     expect(screen.queryByText(PAGE_NAMES.HOME)).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: UI_TEXT.whatsapp })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: UI_TEXT.slidesLabel })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: UI_TEXT.readAboutUs })).toHaveAttribute("href", ROUTES.about);
     expect(screen.getByRole("link", { name: siteFixture().contact.email })).toBeInTheDocument();
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
     expect(screen.queryByRole("form")).not.toBeInTheDocument();
+    expect(container.firstElementChild).not.toHaveClass("pt-16");
   });
 
   it("gives a form no email before the site content is published", () => {

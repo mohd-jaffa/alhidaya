@@ -209,6 +209,13 @@ question (§41) the user may overturn.
 | D125 | **Every block reveals as it scrolls into view** (the user, 2026-10-31: "add in transition animation to the contents of the page"; reveal as you scroll, the user's choice): every page's blocks rise into place once, in order, as before for most: now also the form and its words, each part of the admin's text (a heading with its words), each client logo (in rows of six), the contact details and the map, and each audience's heading on Services. Nothing above the fold is hidden, and nothing moves with motion reduced. | 2026-10-31 |
 | D126 | **Deleting an image is red** (the user, 2026-10-31: "just make that delete button red … make sure a confirm will be asked before delete"): the media library's Delete, and the Delete in the question it asks first, are white on the error red (6.6:1; a `danger` button). The error red, otherwise for errors only (D63), also marks this one action that cannot be undone. Delete is still offered only for an image no longer in use. | 2026-10-31 |
 | D127 | **Testers sign in through a tunnel** (the user, 2026-10-31: testers on a cloudflared tunnel could not sign in; asked how the tunnel's address should be trusted, they chose to set `NEXT_PUBLIC_SITE_URL` to it rather than add a trusted list). The site's same-origin check and Better Auth already trust that address alone; the dev server is told to serve its own files to that address's host too (`allowedDevOrigins` from `NEXT_PUBLIC_SITE_URL`), or its live-reload connection is refused and the page keeps reloading, wiping the sign-in form. Development only: the production build ignores it, and no check is widened. | 2026-10-31 |
+| D128 | **Home's slides** (the client, through the user, 2026-10-31: "Slides there are 4 in the old site, need those in the new one too, considering admin can add more or less slides"; the buttons "not needed on the slides, or else make it editable by admin"; "keep next and previous buttons too"; answers: all five of the current site's slides, an optional button set by the admin, an auto slider with a pause, and one list of slides in the editor). Home's sign is its slides: one to eight, each a photo, a headline with its highlighted words, its words and an optional button (wording and link, both or neither; none at launch); the card on the photo stays (an icon and a note). They move on every six seconds by a bar that fills (a CSS animation, so the pause stops both), with Previous and Next, a bar for each slide and the count; the pause is a small round button with a full touch target; with motion reduced nothing moves on its own. The first photo is the page's first paint and only settles; each later one wipes in over the last; each headline's words rise from behind their line. The hero's faces, chips, photo card and figure (D97) are removed. | 2026-10-31 |
+| D129 | **About on Home and headings rising** (the user, 2026-10-31: "About section like theme-5"; about Al Hidaya "in black color and rest in blue but not one below another"; "Headings rise through a mask"). `INTRO` gains its highlighted words and up to six points: its heading large with the phrase in deep blue, flowing on one line; the first paragraph as the lead, the rest beneath; the points as a ruled list beside a check; on Home, Read more about us. Every Theme 6 heading's words rise from behind their line as it scrolls into view (motion only, visible by default). | 2026-10-31 |
+| D130 | **The short quote** (the user, 2026-10-31: "Contact form as theme-4"; the client's form "looks same to same as their old one, need some changes"; answers: a short quote form, its questions fixed in code, not editable in the admin). Home's FORM section holds the short quote: name, mobile, email, service and message, with the consent; on a pale-green band, the heading, words and the ways to reach us (WhatsApp, a 24/7 call, email, from Settings) beside the form on a card under a deep-blue strip. A short quote is stored, emailed and listed as a Quote with fewer answers, so the database keeps its two kinds **(agent default)**. The site's forms are boxed now. | 2026-10-31 |
+| D131 | **What we do** (the user, 2026-10-31: "like theme-2 but not inside a bubble but straight lines", "individual services card be inside rounded cards", the All services button "in middle like the read more about us, not inside a bubble"). `SERVICES_ROW` holds a heading and words: on a mist band edge to edge, every service as a rounded photo card, its audience and name on a soft-white label, in a row that scrolls sideways, snapping card by card, with two arrows; All services centred below as a plain link. Its loop (D124) is removed. | 2026-10-31 |
+| D132 | **Theme 6, the client's look** (the client, 2026-10-31: they wanted the old site's simple structure, then, shown five themes, chose the user's mix: "Navbar use from theme-2", "Slider like theme-2 but … straight lines like theme-4", "About section like theme-5", "What we do section like theme-2", "Contact form as theme-4", "Footer as theme-5"; earlier, "dont use proper white color", and blue-led with green accents). Deep blue leads (the main button, links, the phrase in a heading); the leaf green is an accent (D122's green primary is superseded); soft white wherever white would be on the public site (the admin keeps its own); buttons with rounded corners. The header: the logo, the pages in a floating pill (Home first in the menu), the brochure; it stays at the top and slides away going down, back going up (D107 superseded). The footer: soft white under a rule, the logo in its colours (the running words, D106 and D113, are removed, with their setting). Home's statement, highlights and the two audience sections (D97, D100, D105, D124) are removed. The admin's look is unchanged (the user: "no changes needed in the admin panel or its designs"). Every other page keeps its sections for now, in the new header, footer, colours and buttons, until the user reviews them one by one. | 2026-10-31 |
+| D133 | **The clients' rows** (the user, 2026-10-31: "for clients, https://nahrdev.com/ … need the same to same type animation and working"; "no need of pause as clicking a client logo highlights it and pauses the animation"). The logos run in two rows in opposite directions, faded at their ends, grey until the pointer is on one, when it turns to its colours and grows and its row stops; a click or tap does the same until it is clicked again or the visitor clicks elsewhere; a logo with a site opens it instead. No pause button, as the user chose: a chosen logo stops only its own row (WCAG 2.2.2 asks for a way to stop everything that moves on its own; recorded, the user's call). With motion reduced the rows stand still. | 2026-10-31 |
+| D134 | **The menu's sliding pill and the admin's switches** (the user, 2026-11-01: "the blue pill which is on the selected page should transition from one to another … animation of the pill shifting should be there"; "for enabling or disabling elements in the admin panel, just a blue box is given, instead keep a toggle pill … with a small text enable or disable"). The header's deep-blue pill slides from the last page's link to the new one's as a page opens (a transform from where it was, at its width; with motion reduced it simply appears). In the admin, what turns something on or off (the floating WhatsApp button, a menu link shown in the menu) is a switch: a pill whose knob slides to the end, deep blue when on, with a small "Enabled" or "Disabled" beside it. A yes-or-no that turns nothing on (a photo is decorative) and the forms' consent stay boxes to tick. | 2026-11-01 |
 
 ## 3. Audiences and the admin
 
@@ -333,27 +340,25 @@ content from the record.
 
 ### 6.1 Home — `/`
 
-In the reference's order (D97, §30.1):
+As Theme 6, the client's choice (D132):
 
-1. **The hero** (fixed, first): nurse faces between round brackets, the
-   headline with one phrase on the highlight, the supporting line, WhatsApp
-   and Request a Quote (fixed), and a real fact (D99); beside it a tall care
-   photo with word chips and two floating cards.
-2. **The statement**: one sentence darkening word by word with the scroll.
-3. **The highlights**: four cards.
-4. **For hospitals, clinics & schools** (D105): the staffing offer, its
-   cards and real-fact counters.
-5. **For families** (D105): how it works running in a loop through a card
-   (its steps, D124), a photo and feature cards.
-6. **Our services** (D124): every service running past in a loop, with a
-   small All services button.
-7. **The Contact form** (D104).
-8. **Clients**: the client logo wall (§11). Hidden until logos are supplied.
+1. **The slides** (fixed, first, D128): the admin's slides, five at launch from
+   the current site, each a photo edge to edge beside its headline (a phrase
+   in deep blue), its words and an optional button; they move on every six
+   seconds, with Previous and Next, a bar for each and a pause; the card on
+   the photo.
+2. **About** (D129): the heading large with its phrase in blue, the lead and
+   the rest of the words, the points as a ruled list, Read more about us.
+3. **What we do** (D131): on a mist band, every service as a rounded photo
+   card in a row to scroll, with its arrows, and All services centred below.
+4. **Our clients** (D133): the logos in two rows running opposite ways.
+   Hidden until logos are supplied.
+5. **The short quote** (D130): on a pale-green band, the heading, the words
+   and the ways to reach us beside the short form on its card.
 
-Home's earlier sections (who we are, the services, values, the staffing
-offer, careers with the three most recent open jobs (D72), the contact band)
-stay in its catalogue (§7.1), redrawn in the new look (D112), for the admin
-to add.
+Home's earlier sections (the services list, values, the staffing offer,
+careers with the three most recent open jobs (D72), the contact band) stay
+in its catalogue (§7.1) for the admin to add.
 
 ### 6.2 About — `/about`
 
@@ -433,8 +438,8 @@ says where the visitor is and the way back.
 
 | Type | Content | Used on |
 |---|---|---|
-| `SIGN` | headline, the highlighted words (D109), supporting line, photo; on Home it is the hero (D97): faces, up to three word chips over the photo, a card with a photo and its tag, a note with an icon, and a real fact (D99), with WhatsApp and the quote fixed; on every other page the hero's smaller opening (D109), the page's name and actions fixed | every page (fixed, first) |
-| `INTRO` | heading, rich text, optional photo | Home, About |
+| `SIGN` | headline, the highlighted words (D109), supporting line, photo; on Home it is the slides instead (D128): one to eight, each a photo, a headline, its highlighted words, its words and an optional button (wording and link, both or neither), and the card on the photo (an icon and a note); on every other page the page's sign (D109), the page's name and actions fixed | every page (fixed, first) |
+| `INTRO` | heading, its highlighted words, rich text, optional photo, up to six points (title, line) (D129); on Home it ends on Read more about us | Home, About |
 | `SERVICES_INDEX` | heading, intro; shows every published service, in order | Home, Services |
 | `VALUES` | heading, up to six items (title, line) | Home, About |
 | `MISSION` | mission, vision | About |
@@ -444,13 +449,9 @@ says where the visitor is and the way back.
 | `JOBS_LIST` | intro, empty-state text | Careers |
 | `CONTACT_BAND` | heading, text; reads the contact details (§13) | most pages |
 | `CONTACT_DETAILS` | heading; contact details and the static map | Contact |
-| `FORM` | heading, text; which form (Quote or Contact); the site's email as a chip beside it (D97) | Home (Contact, D104), Contact, Quote |
+| `FORM` | heading, text; which form (Quote, Contact or the short quote, D130); the short quote on its band beside the ways to reach us, any other beside the site's email as a chip | Home (the short quote, D130), Contact, Quote |
 | `RICH_TEXT` | headings, paragraphs, lists, links (no raw HTML) | About, Privacy, Terms |
-| `STATEMENT` | the statement, phrase by phrase: its words, darker or not, an optional icon after it (D97) | Home |
-| `HIGHLIGHTS` | four cards: a note (icon, title, text); a photo with its words; the green card (title, text, faces, a figure); a photo with its words (D97) | Home |
-| `FOR_INSTITUTIONS` | its pill, its heading in two parts with an icon between; a team card (title, text, faces), a photo card, a reach card (title, faces); up to four real figures (D99, D105) | Home |
-| `FOR_FAMILIES` | its pill and heading; how it works in its card: a label and up to six steps, each a photo, a title and words, numbered in order, running past in a loop (D124); a photo card with its words; up to three features (icon, title) (D105) | Home |
-| `SERVICES_ROW` | its pill and heading; every published service running past in a loop, each opening its page, and a small All services pill (D124) | Home |
+| `SERVICES_ROW` | heading, text; every published service as a rounded photo card in a row to scroll, each opening its page, and All services (D131) | Home |
 
 Rich text is stored as structured blocks (heading, paragraph, list, link),
 never HTML; links must be internal routes or validated `https` URLs.
@@ -1144,6 +1145,13 @@ schema; every answer `no-store`; every answer carries `x-request-id`.
 
 ### 30.1 The direction — the user's reference (D97)
 
+> **Theme 6 (D132) supersedes this direction for the public site, from
+> 2026-10-31:** the current site's simple structure in a cleaner look, deep
+> blue leading with leaf-green accents on soft white; the header's floating
+> pill, the slides (D128), About (D129), What we do (D131), the clients' rows
+> (D133), the short quote (D130) and the soft-white footer. `DESIGN.md`
+> records it. What follows is the earlier direction, kept for its history.
+
 Pinned by the user (2026-10-30): the telehealth landing language of Dribbble
 shot 24320685 (Eloqwnt for DocInPoc), followed section by section in Al
 Hidaya's words, photos and the logo's colours. The direction contract lives in
@@ -1561,6 +1569,13 @@ one commit (D27).
 | R6B.8 | The current site's images in the seed (D118): its 11 client logos as client-logo drafts, its 15 photographs in the media library | D118 | R6B.7 | DONE (2026-10-31) |
 | R6B.9 | The user's review of publishing: a publish never lost when the app restarts (D119); Preview saves first (D120); the admin column's logo loaded first | D119, D120 | R6B.8 | DONE (2026-10-31) |
 | R6B.10 | The user's review of the look: the company named as its logo reads (D121); the logo's green as the primary, with navy words (D122); the admin in the logo's blue (D123); how it works in the families' card and Our services in its place, both looping (D124); every block revealed as it scrolls in (D125); deleting an image in red (D126) | D121 – D126 | R6B.9 | DONE (2026-10-31) |
+
+### Phase 6C — Theme 6, the client's look (D128 – D133)
+
+| ID | Work | Source | Waits on | Status |
+|---|---|---|---|---|
+| R6C.1 | Home as Theme 6: the slides (D128); About and headings rising (D129); the short quote (D130); What we do (D131); the header, the footer, the colours, the soft whites and the buttons (D132); the clients' rows (D133); the four old Home sections removed; the menu's sliding pill and the admin's switches (D134); the seed and the journeys | D128 – D134 | R6B.10 | DONE (2026-11-01) |
+| R6C.2 | Every other public page in Theme 6, page by page as the user reviews them | D132 | R6C.1 | TODO |
 
 ### Phase 7 — Performance, accessibility and the finish
 

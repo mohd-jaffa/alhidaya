@@ -72,7 +72,7 @@ test("a brochure published opens at /brochure and /profile.pdf; a hidden menu li
     await expect(brochure.getByRole("link", { name: ADMIN_TEXT.openBrochure })).toBeVisible();
 
     const menu = page.getByRole("region", { name: ADMIN_TEXT.headerMenu });
-    await menu.getByRole("checkbox", { name: ADMIN_TEXT.shownInMenu }).first().uncheck();
+    await menu.getByRole("switch", { name: ADMIN_TEXT.shownInMenu }).first().uncheck();
 
     const bar = page.locator("form").filter({ has: page.getByRole("heading", { level: 1 }) });
     await bar.getByRole("button", { name: ADMIN_TEXT.publish }).click();

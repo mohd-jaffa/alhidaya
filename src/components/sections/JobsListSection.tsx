@@ -35,7 +35,7 @@ export function JobsListSection({
         {open.length === 0 ? <p className="text-lead whitespace-pre-line">{content.emptyText.en}</p> : null}
       </Reveal>
       {open.length > 0 ? <JobLinks jobs={open} /> : null}
-      <PillLink href={ROUTES.applyGeneral} variant="pale" arrow className="justify-self-start">
+      <PillLink href={ROUTES.applyGeneral} variant="line" arrow className="justify-self-start">
         {UI_TEXT.generalApplication}
       </PillLink>
     </SectionFrame>

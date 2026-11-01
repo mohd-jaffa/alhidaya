@@ -11,7 +11,7 @@ import { EditorText } from "@/components/admin/editor/EditorText";
 import { ListItems } from "@/components/admin/editor/RichTextField";
 import { SeoFields } from "@/components/admin/editor/SeoFields";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/choice";
+import { Switch } from "@/components/ui/switch";
 import { Notice } from "@/components/ui/notice";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
@@ -30,10 +30,10 @@ import { MapPinField } from "./MapPinField";
 import { NavigationField } from "./NavigationField";
 import { SocialLinksField } from "./SocialLinksField";
 
-/** Whether the floating WhatsApp button shows (D67): a box to tick. */
+/** Whether the floating WhatsApp button shows (D67): a switch (D134). */
 function WhatsAppButton() {
   const { register } = useFormContext();
-  return <Checkbox {...register("whatsappButton")}>{ADMIN_TEXT.whatsappButtonLabel}</Checkbox>;
+  return <Switch {...register("whatsappButton")}>{ADMIN_TEXT.whatsappButtonLabel}</Switch>;
 }
 
 /**
@@ -122,12 +122,6 @@ function SettingsForm({ initial }: { initial: SiteDraftItem }) {
         <NavigationField />
       </EditorGroup>
       <EditorGroup title={ADMIN_TEXT.footer} hint={ADMIN_TEXT.footerHint}>
-        <EditorText
-          name="runningWords.en"
-          label={ADMIN_TEXT.runningWords}
-          hint={ADMIN_TEXT.runningWordsHint}
-          max={TEXT_LIMITS.heading}
-        />
         <FooterField />
       </EditorGroup>
       <SeoFields hint={ADMIN_TEXT.siteSeoHint} required />

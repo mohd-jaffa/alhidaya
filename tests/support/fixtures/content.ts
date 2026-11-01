@@ -23,8 +23,10 @@ const CONTENT: Record<SectionType, Section["content"]> = {
   },
   INTRO: {
     heading: en("Who we are"),
+    highlight: en(null),
     body: [{ type: "paragraph", text: en("A nursing company in Doha.") }],
     image: null,
+    points: [],
   },
   SERVICES_INDEX: { heading: en("Services"), intro: en(null) },
   VALUES: { heading: en("Why us"), items: [{ title: en("Day and night"), text: en(null) }] },
@@ -37,53 +39,21 @@ const CONTENT: Record<SectionType, Section["content"]> = {
   CONTACT_DETAILS: { heading: en("Contact") },
   FORM: { heading: en("Send a message"), text: en(null), form: "CONTACT" },
   RICH_TEXT: { heading: en(null), body: [{ type: "paragraph", text: en("Text.") }] },
-  STATEMENT: {
-    parts: [
-      { text: en("We bring"), strong: false, pictogram: null },
-      { text: en("nursing care"), strong: true, pictogram: "heart" },
-    ],
-  },
-  HIGHLIGHTS: {
-    note: { pictogram: "globe", title: en("Across Doha"), text: en("Care at home and in clinics.") },
-    first: { image: null, label: en("Care at home") },
-    accent: {
-      title: en("Two businesses"),
-      text: en(null),
-      avatars: [],
-      fact: { value: en("8"), label: en("Services") },
-    },
-    second: { image: null, label: en(null) },
-  },
-  FOR_INSTITUTIONS: {
-    label: en("For institutions"),
-    headingStart: en("Nurse staffing for"),
-    pictogram: "staffing",
-    headingEnd: en("hospitals and schools"),
-    team: { title: en("Nurses for your team"), text: en(null), avatars: [] },
-    photo: { image: null, text: en(null) },
-    reach: { title: en("Across Doha"), avatars: [] },
-    facts: [{ value: en("24/7"), label: en("Nurses around the clock") }],
-  },
-  FOR_FAMILIES: {
-    label: en("For families"),
-    headingStart: en("Care for the people you love,"),
-    pictogram: "heart",
-    headingEnd: en("at home."),
-    stepsLabel: en("How it works"),
-    steps: [
-      { image: null, title: en("Tell us what you need"), text: en(null) },
-      { image: null, title: en("Care begins"), text: en(null) },
-    ],
-    photo: { image: null, text: en(null) },
-    features: [{ pictogram: "clock", title: en("Day and night") }],
-  },
-  SERVICES_ROW: {
-    label: en("Our services"),
-    headingStart: en("Nursing care"),
-    pictogram: null,
-    headingEnd: en(null),
-  },
+  SERVICES_ROW: { heading: en("What we do"), text: en(null) },
 };
+
+/** One of Home's slides (D128), with no button unless a test gives one. */
+export const slideFixture = (
+  overrides: Partial<Extract<Section, { type: "SIGN" }>["content"]["slides"][number]> = {},
+) => ({
+  image: null,
+  headline: en("Quality nursing care at your doorstep."),
+  highlight: en("nursing care"),
+  text: en("Nurses who care for your loved ones at home."),
+  buttonLabel: en(null),
+  buttonHref: en(null),
+  ...overrides,
+});
 
 export const section = (type: SectionType, visible = true): Section =>
   ({ id: crypto.randomUUID(), type, visible, content: CONTENT[type] }) as Section;
@@ -106,7 +76,11 @@ export function pageFixture(page: PageKey): PageDocument {
     PRIVACY: ["SIGN", "RICH_TEXT"],
     TERMS: ["SIGN", "RICH_TEXT"],
   };
-  return { seo, sections: types[page].map((type) => section(type)) };
+  const sections = types[page].map((type) => section(type));
+  // Home's hero shows at least one slide (D128).
+  if (page === "HOME")
+    sections[0] = { ...sections[0], content: { ...contentFixture("SIGN"), slides: [slideFixture()] } } as Section;
+  return { seo, sections };
 }
 
 export const serviceFixture = (overrides: Partial<ServiceDocument> = {}): ServiceDocument => ({
@@ -162,7 +136,6 @@ export const siteFixture = (overrides: Partial<SiteDocument> = {}): SiteDocument
   },
   social: [{ network: "INSTAGRAM", url: "https://instagram.com/alhidayanursingcompany_wll" }],
   navigation: [{ label: en("Services"), href: "/services", visible: true }],
-  runningWords: en("AL HIDAYA HEALTH CARE"),
   footer: [{ heading: en("Company"), links: [{ label: en("About"), href: "/about" }] }],
   seo: { title: en("Al Hidaya Health Care Service"), description: en("Nursing care in Doha.") },
   brochure: null,

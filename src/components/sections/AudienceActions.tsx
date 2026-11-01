@@ -31,7 +31,7 @@ export function AudienceActions({
   return site ? (
     <>
       <ContactAction kind="whatsapp" to={site.contact.whatsapp} size={size} arrow />
-      <ContactAction kind="call" to={site.contact.phone} variant="pale" size={size} />
+      <ContactAction kind="call" to={site.contact.phone} variant="line" size={size} />
     </>
   ) : null;
 }

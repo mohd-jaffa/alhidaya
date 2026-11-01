@@ -191,6 +191,33 @@ describe("receiveEnquiry, against the local MySQL", () => {
     ]);
   });
 
+  it("keeps a short quote as a Quote, its five answers as the visitor saw them, its service by name (D130)", async () => {
+    const id = await receiveEnquiry(
+      enquirySchema.parse({
+        form: "SHORT_QUOTE",
+        name: "Aisha Khan",
+        service: "school-nurse-staffing",
+        phone: "5551 2345",
+        email: "aisha@example.com",
+        message: "A nurse for our school.",
+        consent: true,
+        turnstileToken: "token-from-cloudflare",
+      }),
+      ip(),
+      at,
+    );
+    const [row] = await getDb().select().from(enquiries).where(eq(enquiries.id, id));
+    expect(row.form).toBe("QUOTE");
+    expect(row.fields).toEqual([
+      { label: UI_TEXT.yourName, value: "Aisha Khan" },
+      { label: UI_TEXT.service, value: "School nurse staffing" },
+      { label: UI_TEXT.phone, value: "+974 5551 2345" },
+      { label: UI_TEXT.email, value: "aisha@example.com" },
+      { label: UI_TEXT.message, value: "A nurse for our school." },
+      { label: UI_TEXT.consent, value: UI_TEXT.consentGiven },
+    ]);
+  });
+
   it("refuses a service the site does not show, beside the service field, keeping nothing", async () => {
     const before = await stored();
     for (const slug of ["draft-service", "no-such-service"]) {

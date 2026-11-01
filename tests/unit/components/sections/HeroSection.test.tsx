@@ -1,107 +1,72 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { HeroSection } from "@/components/sections/HeroSection";
 import { UI_TEXT } from "@/constants/messages";
-import { ROUTES } from "@/constants/routes";
 import type { SiteImage } from "@/features/media/types";
 import type { Section } from "@/lib/validation";
-import { contentFixture, imageFixture, siteFixture } from "@tests/support/fixtures/content";
+import { contentFixture, imageFixture, slideFixture } from "@tests/support/fixtures/content";
 
 type SignContent = Extract<Section, { type: "SIGN" }>["content"];
 
 const photos: Record<string, SiteImage> = {
-  hero: { ...imageFixture("A nurse at a desk"), id: "hero" },
-  card: { ...imageFixture("A nurse at home"), id: "card" },
-  a: { ...imageFixture("A face"), id: "a" },
-  b: { ...imageFixture("Another face"), id: "b" },
+  one: { ...imageFixture("A nurse with an older woman"), id: "one" },
+  two: { ...imageFixture("A nurse on a ward"), id: "two" },
 };
 const image = (ref: { mediaId: string } | null) => (ref ? (photos[ref.mediaId] ?? null) : null);
 
 const hero = (overrides: Partial<SignContent> = {}): SignContent => ({
   ...contentFixture("SIGN"),
-  headline: { en: "Quality nursing care at your doorstep" },
-  highlight: { en: "nursing care" },
-  lede: { en: "Nursing care at home across Doha." },
-  image: { mediaId: "hero" },
-  avatars: [{ mediaId: "a" }, { mediaId: "b" }, { mediaId: "gone" }],
-  chips: [{ en: "At home" }, { en: "Day and night" }],
-  card: { title: { en: "Home nursing care" }, tag: { en: "Our services" }, image: { mediaId: "card" } },
+  slides: [
+    slideFixture({ image: { mediaId: "one" } }),
+    slideFixture({
+      image: { mediaId: "gone" },
+      headline: { en: "Nurses for hospitals and schools." },
+      highlight: { en: null },
+      text: { en: null },
+      buttonLabel: { en: "Request a quote" },
+      buttonHref: { en: "/quote" },
+    }),
+  ],
   note: { pictogram: "clock", text: { en: "Nurses around the clock" } },
-  fact: { value: { en: "24/7" }, label: { en: "Nurses around the clock" } },
   ...overrides,
 });
 
-describe("HeroSection (D97)", () => {
-  it("opens Home with its headline, words, WhatsApp and the quote, faces, a real fact, and its photo first", () => {
-    const { container } = render(<HeroSection anchor="start" content={hero()} image={image} site={siteFixture()} />);
+describe("HeroSection (D128)", () => {
+  it("opens Home at its anchor with each slide's headline, its phrase in blue, its words and its photo, the first fetched first", () => {
+    const { container } = render(<HeroSection anchor="start" content={hero()} image={image} />);
     expect(container.firstElementChild).toHaveAttribute("id", "start");
-    expect(screen.getByRole("heading", { level: 1, name: "Quality nursing care at your doorstep" })).toBeVisible();
-    expect(container.querySelector(".bg-leaf-pale")).toHaveTextContent("nursing care");
-    expect(screen.getByText("Nursing care at home across Doha.")).toBeVisible();
-    expect(screen.getByRole("link", { name: UI_TEXT.whatsapp })).toHaveAttribute(
-      "href",
-      expect.stringMatching(/^https:\/\/wa\.me\/97431306555\?text=/),
-    );
-    expect(screen.getByRole("link", { name: UI_TEXT.requestQuote })).toHaveAttribute("href", ROUTES.quote);
-    expect(screen.getByRole("img", { name: "A nurse at a desk" })).toHaveAttribute("fetchpriority", "high");
-    expect(screen.getByText("24/7")).toBeVisible();
-    // A face whose photograph is gone is left out.
-    expect(container.querySelectorAll('img[alt=""]').length).toBeGreaterThanOrEqual(4);
+    const first = screen.getByRole("group", { name: UI_TEXT.slideOf(1, 2) });
+    expect(first).toHaveTextContent("Quality nursing care at your doorstep.");
+    expect(first.querySelector(".text-deep")).toHaveTextContent("nursing");
+    expect(first).toHaveTextContent("Nurses who care for your loved ones at home.");
+    const [photo] = container.querySelectorAll("img");
+    expect(photo).toHaveAttribute("alt", "A nurse with an older woman");
+    expect(photo).toHaveAttribute("fetchpriority", "high");
   });
 
-  it("puts its chips over the photo, and its two cards at the photo's foot", () => {
-    render(<HeroSection anchor="start" content={hero()} image={image} site={siteFixture()} />);
-    const chips = screen.getByText("At home").closest("ul")!;
-    expect(within(chips).getAllByRole("listitem")).toHaveLength(2);
-    expect(screen.getByText("Home nursing care")).toBeVisible();
-    expect(screen.getByText("Our services")).toBeVisible();
-    expect(screen.getByText("Nurses around the clock", { selector: "span.font-medium" })).toBeVisible();
+  it("gives a slide its button only with both words and a link, and a slide without a photo the mist", () => {
+    const { container } = render(<HeroSection anchor="start" content={hero()} image={image} />);
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+    expect(screen.getByText("Request a quote").closest("a")).toHaveAttribute("href", "/quote");
+    expect(container.querySelectorAll(".slide-photo .bg-mist")).toHaveLength(1);
   });
 
-  it("stands with only its headline, before the site content is published", () => {
-    const { container } = render(
-      <HeroSection
-        anchor="start"
-        content={{ ...contentFixture("SIGN"), lede: { en: null }, highlight: { en: null } }}
-        image={image}
-        site={null}
-      />,
+  it("puts the card on the photo with its icon, or no card when it has no words", () => {
+    const { container, rerender } = render(<HeroSection anchor="start" content={hero()} image={image} />);
+    expect(screen.getByText("Nurses around the clock")).toBeInTheDocument();
+    rerender(
+      <HeroSection anchor="start" content={hero({ note: { pictogram: null, text: { en: null } } })} image={image} />,
     );
-    expect(screen.getByRole("heading", { level: 1 })).toBeVisible();
-    expect(screen.queryByRole("link", { name: UI_TEXT.whatsapp })).toBeNull();
-    expect(screen.getByRole("link", { name: UI_TEXT.requestQuote })).toBeVisible();
-    expect(container.querySelector("img")).toBeNull();
-    expect(screen.queryByRole("list")).toBeNull();
-  });
-
-  it("shows a card or a note on its own, a fact without its words, and a card without its tag or photo", () => {
-    const { rerender } = render(
-      <HeroSection
-        anchor="start"
-        content={hero({
-          card: { title: { en: null }, tag: { en: null }, image: null },
-          note: { pictogram: null, text: { en: "Around the clock" } },
-          fact: { value: { en: "8" }, label: { en: null } },
-        })}
-        image={image}
-        site={null}
-      />,
-    );
-    expect(screen.getByText("Around the clock")).toBeVisible();
-    expect(screen.getByText("8")).toBeVisible();
+    expect(screen.queryByText("Nurses around the clock")).not.toBeInTheDocument();
     rerender(
       <HeroSection
         anchor="start"
-        content={hero({
-          card: { title: { en: "Elderly care" }, tag: { en: null }, image: null },
-          note: { pictogram: null, text: { en: null } },
-        })}
+        content={hero({ note: { pictogram: null, text: { en: "Day and night" } } })}
         image={image}
-        site={null}
       />,
     );
-    expect(screen.getByText("Elderly care")).toBeVisible();
-    expect(screen.queryByText("Around the clock")).toBeNull();
+    expect(screen.getByText("Day and night").previousElementSibling).toBeNull();
+    expect(container.querySelector(".slide-photo")).not.toBeNull();
   });
 });

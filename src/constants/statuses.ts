@@ -74,6 +74,17 @@ export const FORM_KINDS = ["QUOTE", "CONTACT"] as const;
 export type FormKind = (typeof FORM_KINDS)[number];
 
 /**
+ * The forms a page's FORM section can hold (D130): both, and the short quote
+ * Home's quote card asks (name, mobile, email, service, message). A short
+ * quote is a Quote enquiry with fewer answers: stored, emailed and listed as
+ * one, so the database knows only the two kinds.
+ */
+export const SECTION_FORMS = [...FORM_KINDS, "SHORT_QUOTE"] as const;
+export type SectionForm = (typeof SECTION_FORMS)[number];
+/** The kind each section form is kept as. */
+export const STORED_FORM: Record<SectionForm, FormKind> = { QUOTE: "QUOTE", CONTACT: "CONTACT", SHORT_QUOTE: "QUOTE" };
+
+/**
  * The Quote form's choices (plan §10.1): who the care is for, and how the
  * visitor would like to hear back. Only the form knows them: an enquiry keeps
  * the words the visitor chose (§10.4), so the database has no CHECK for them.

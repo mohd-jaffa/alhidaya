@@ -1,4 +1,5 @@
 "use client";
+"use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
 import Link from "next/link";
 import { type ReactNode, useId } from "react";
@@ -7,7 +8,6 @@ import type { ZodType } from "zod";
 import { BotCheck } from "@/components/ui/bot-check";
 import { Checkbox } from "@/components/ui/choice";
 import { ContactAction } from "@/components/ui/contact-action";
-import { ControlsLook } from "@/components/ui/field";
 import { Notice } from "@/components/ui/notice";
 import { Pill } from "@/components/ui/pill";
 import { UI_TEXT } from "@/constants/messages";
@@ -23,10 +23,11 @@ function takeFocus(node: HTMLDivElement | null) {
 }
 
 /**
- * What the site's forms share (plan §9.2, §10, §30.3): Quote, Contact and the
- * application. Their fields, each a line as the reference draws them (D97),
- * the consent to the privacy notice, the trap for bots and Turnstile (§10.3),
- * one send action, a forest pill at the form's end, and the outcome in place.
+ * What the site's forms share (plan §9.2, §10, §30.3): Quote, Contact, the
+ * short quote and the application. Their fields, boxed (D132), two to a row
+ * on a wide screen when the form asks, the consent to the privacy notice, the
+ * trap for bots and Turnstile (§10.3), one send action at the form's end, and
+ * the outcome in place.
  * Sent, the form gives way to the thanks, which takes focus, with WhatsApp as
  * the fastest follow-up when the form offers it (§10.4); not sent, the reason
  * shows above the action and everything typed stays.
@@ -40,6 +41,7 @@ export function SiteForm({
   notSent,
   whatsapp = null,
   botCheck,
+  columns = false,
   children,
 }: {
   schema: () => Promise<ZodType>;
@@ -54,6 +56,8 @@ export function SiteForm({
   whatsapp?: string | null;
   /** Turnstile's site key, and the form's name in Cloudflare's dashboard. */
   botCheck: { siteKey: string; action: string };
+  /** Two fields to a row from a small tablet up (a field may span both). */
+  columns?: boolean;
   children: (errors: FieldErrors) => ReactNode;
 }) {
   const { form, errors, status, failure, answered } = useSchemaForm({ schema, send });
@@ -81,8 +85,8 @@ export function SiteForm({
       <noscript>
         <Notice tone="info" title={UI_TEXT.formNeedsScript} />
       </noscript>
-      <ControlsLook look="line">
-        {children(errors)}
+      <>
+        {columns ? <div className="grid gap-6 sm:grid-cols-2 sm:gap-x-5">{children(errors)}</div> : children(errors)}
         <div aria-hidden="true" className="sr-only">
           <label>
             {UI_TEXT.honeypot}
@@ -91,11 +95,11 @@ export function SiteForm({
         </div>
         <Checkbox name="consent" required error={errors.consent}>
           {UI_TEXT.consent}{" "}
-          <Link href={ROUTES.privacy} target="_blank" className="font-medium text-forest underline underline-offset-4">
+          <Link href={ROUTES.privacy} target="_blank" className="font-medium text-deep underline underline-offset-4">
             {UI_TEXT.privacyNotice}
           </Link>
         </Checkbox>
-      </ControlsLook>
+      </>
       {/* The send action; Turnstile's box and a failed send's reason take room before it only when shown. */}
       <div className="grid">
         <BotCheck

@@ -10,41 +10,43 @@ import {
   SECTION_PICTOGRAMS,
   type SectionType,
 } from "@/constants/sections";
-import { FORM_KINDS } from "@/constants/statuses";
+import { SECTION_FORMS } from "@/constants/statuses";
 
 import { optionalLine, optionalLines, requiredLine, requiredLines } from "../primitives";
 
-import { imageRefSchema, localized, richTextSchema, seoSchema } from "./content";
+import { hrefSchema, imageRefSchema, localized, richTextSchema, seoSchema } from "./content";
 
 const heading = localized(requiredLine("Heading", { max: TEXT_LIMITS.heading }));
 const shortText = (label: string) => localized(optionalLines(label, TEXT_LIMITS.lede));
 
-/* The redesign's parts (D97, D100): faces in a group, an icon beside words, a real fact (D99), a titled photo. */
-const faces = (max: number) => z.array(imageRefSchema).max(max, VALIDATION_MESSAGES.atMost("Faces", max));
 const chipIcon = z.enum(SECTION_PICTOGRAMS).nullable();
-const label = (name: string) => localized(requiredLine(name, { max: TEXT_LIMITS.label }));
 const optionalLabel = (name: string) => localized(optionalLine(name, TEXT_LIMITS.label));
-const fact = z.object({
-  value: localized(requiredLine("Figure", { max: TEXT_LIMITS.figure })),
-  label: label("What the figure counts"),
-});
-const pictured = z.object({ image: imageRefSchema.nullable(), text: shortText("Words on the photo") });
-/** Home's hero left empty (D97): what every other page's sign holds in its place. */
-export const NO_HERO = {
-  avatars: [],
-  chips: [],
-  card: { title: { en: null }, tag: { en: null }, image: null },
-  note: { pictogram: null, text: { en: null } },
-  fact: { value: { en: null }, label: { en: null } },
-};
 
-/** An audience's opening (D97): its pill, then its heading with an icon set between two parts. */
-const opening = {
-  label: localized(requiredLine("Label", { max: TEXT_LIMITS.chip })),
-  headingStart: localized(requiredLine("Heading", { max: TEXT_LIMITS.heading })),
-  pictogram: chipIcon,
-  headingEnd: localized(optionalLine("Heading, after the icon", TEXT_LIMITS.heading)),
-};
+/**
+ * One of Home's slides (D128): its photo, its headline with a phrase in blue,
+ * its line, and a button only when the admin gives it both words and a link.
+ */
+const slide = z
+  .object({
+    image: imageRefSchema.nullable(),
+    headline: localized(requiredLine("Headline", { max: TEXT_LIMITS.heading })),
+    highlight: localized(optionalLine("Highlighted words", TEXT_LIMITS.heading)),
+    text: shortText("Text"),
+    buttonLabel: optionalLabel("Button wording"),
+    buttonHref: localized(
+      z
+        .union([hrefSchema, z.literal("")])
+        .nullable()
+        .transform((value) => value || null),
+    ),
+  })
+  .refine((value) => Boolean(value.buttonLabel.en) === Boolean(value.buttonHref.en), {
+    message: VALIDATION_MESSAGES.buttonNeedsBoth,
+    path: ["buttonHref"],
+  });
+
+/** Home's hero left empty: what every other page's sign holds in its place. */
+export const NO_HERO = { slides: [], note: { pictogram: null, text: { en: null } } };
 
 /** What each section type holds (plan §7.2). */
 const SECTION_CONTENT = {
@@ -52,26 +54,28 @@ const SECTION_CONTENT = {
     headline: localized(requiredLine("Headline", { max: TEXT_LIMITS.heading })),
     lede: shortText("Supporting line"),
     image: imageRefSchema.nullable(),
-    // Words of the headline on the pale-green highlight, on any page's sign (D97, D109).
+    // Words of the headline set apart, on any page's sign (D97, D109).
     highlight: localized(optionalLine("Highlighted words", TEXT_LIMITS.heading)).default({ en: null }),
-    // Home's hero only (D97): faces, chips over the photo, its two cards and a fact.
-    avatars: faces(LIST_LIMITS.avatars).default(NO_HERO.avatars),
-    chips: z
-      .array(localized(requiredLine("Chip", { max: TEXT_LIMITS.chip })))
-      .max(LIST_LIMITS.chips, VALIDATION_MESSAGES.atMost("Chips", LIST_LIMITS.chips))
-      .default(NO_HERO.chips),
-    card: z
-      .object({ title: optionalLabel("Card"), tag: optionalLabel("Card's tag"), image: imageRefSchema.nullable() })
-      .default(NO_HERO.card),
+    // Home's hero only (D128): the slides, and the card on the photo.
+    slides: z
+      .array(slide)
+      .max(LIST_LIMITS.slides, VALIDATION_MESSAGES.atMost("Slides", LIST_LIMITS.slides))
+      .default(NO_HERO.slides),
     note: z.object({ pictogram: chipIcon, text: optionalLabel("Note") }).default(NO_HERO.note),
-    fact: z
-      .object({
-        value: localized(optionalLine("Figure", TEXT_LIMITS.figure)),
-        label: optionalLabel("What the figure counts"),
-      })
-      .default(NO_HERO.fact),
   }),
-  INTRO: z.object({ heading, body: richTextSchema, image: imageRefSchema.nullable() }),
+  // About on Home (D129): its heading with a phrase in blue, its words, and points beneath them.
+  INTRO: z.object({
+    heading,
+    highlight: localized(optionalLine("Highlighted words", TEXT_LIMITS.heading)).default({ en: null }),
+    body: richTextSchema,
+    image: imageRefSchema.nullable(),
+    points: z
+      .array(
+        z.object({ title: localized(requiredLine("Title", { max: TEXT_LIMITS.valueTitle })), text: shortText("Text") }),
+      )
+      .max(LIST_LIMITS.values, VALIDATION_MESSAGES.atMost("Points", LIST_LIMITS.values))
+      .default([]),
+  }),
   SERVICES_INDEX: z.object({ heading, intro: shortText("Introduction") }),
   VALUES: z.object({
     heading,
@@ -99,64 +103,13 @@ const SECTION_CONTENT = {
   }),
   CONTACT_BAND: z.object({ heading, text: shortText("Text") }),
   CONTACT_DETAILS: z.object({ heading }),
-  FORM: z.object({ heading, text: shortText("Text"), form: z.enum(FORM_KINDS) }),
+  FORM: z.object({ heading, text: shortText("Text"), form: z.enum(SECTION_FORMS) }),
   RICH_TEXT: z.object({
     heading: localized(optionalLine("Heading", TEXT_LIMITS.heading)),
     body: richTextSchema.min(1, VALIDATION_MESSAGES.atLeastOne("The text")),
   }),
-  STATEMENT: z.object({
-    parts: z
-      .array(
-        z.object({
-          text: localized(requiredLine("Words", { max: TEXT_LIMITS.line })),
-          strong: z.boolean(),
-          pictogram: chipIcon,
-        }),
-      )
-      .min(1, VALIDATION_MESSAGES.atLeastOne("The statement"))
-      .max(LIST_LIMITS.statementParts, VALIDATION_MESSAGES.atMost("The statement", LIST_LIMITS.statementParts)),
-  }),
-  HIGHLIGHTS: z.object({
-    note: z.object({ pictogram: chipIcon, title: label("Title"), text: shortText("Text") }),
-    first: z.object({ image: imageRefSchema.nullable(), label: optionalLabel("Words on the photo") }),
-    accent: z.object({
-      title: label("Title"),
-      text: shortText("Text"),
-      avatars: faces(4),
-      fact: z.object({
-        value: localized(optionalLine("Figure", TEXT_LIMITS.figure)),
-        label: optionalLabel("What the figure counts"),
-      }),
-    }),
-    second: z.object({ image: imageRefSchema.nullable(), label: optionalLabel("Words on the photo") }),
-  }),
-  FOR_INSTITUTIONS: z.object({
-    ...opening,
-    team: z.object({ title: label("Title"), text: shortText("Text"), avatars: faces(LIST_LIMITS.avatars) }),
-    photo: pictured,
-    reach: z.object({ title: label("Title"), avatars: faces(4) }),
-    facts: z.array(fact).max(LIST_LIMITS.facts, VALIDATION_MESSAGES.atMost("Figures", LIST_LIMITS.facts)),
-  }),
-  // How it works runs through the families' card (D124): its label, then its steps in order.
-  FOR_FAMILIES: z.object({
-    ...opening,
-    stepsLabel: optionalLabel("The steps' label"),
-    steps: z
-      .array(
-        z.object({
-          image: imageRefSchema.nullable(),
-          title: localized(requiredLine("Step", { max: TEXT_LIMITS.valueTitle })),
-          text: shortText("Text"),
-        }),
-      )
-      .max(LIST_LIMITS.steps, VALIDATION_MESSAGES.atMost("The steps", LIST_LIMITS.steps)),
-    photo: pictured,
-    features: z
-      .array(z.object({ pictogram: chipIcon, title: label("Title") }))
-      .max(LIST_LIMITS.features, VALIDATION_MESSAGES.atMost("Features", LIST_LIMITS.features)),
-  }),
-  // Every published service running past, under its opening (D124).
-  SERVICES_ROW: z.object({ ...opening }),
+  // Every published service as a card in a row to scroll, under its heading (D131).
+  SERVICES_ROW: z.object({ heading, text: shortText("Text") }),
 } satisfies Record<SectionType, z.ZodType>;
 
 const sectionOf = <T extends SectionType>(type: T) =>
@@ -176,10 +129,6 @@ export const sectionSchema = z.discriminatedUnion("type", [
   sectionOf("CONTACT_DETAILS"),
   sectionOf("FORM"),
   sectionOf("RICH_TEXT"),
-  sectionOf("STATEMENT"),
-  sectionOf("HIGHLIGHTS"),
-  sectionOf("FOR_INSTITUTIONS"),
-  sectionOf("FOR_FAMILIES"),
   sectionOf("SERVICES_ROW"),
 ]);
 export type Section = z.output<typeof sectionSchema>;
@@ -196,8 +145,8 @@ export type PageDocumentInput = z.input<typeof pageShape>;
 /**
  * A page as one document (plan D58), held to its page's rules (plan §7.1): the
  * sign first and visible, only the types the page allows, at most as many of
- * each as allowed, what it cannot work without present and visible, and no
- * section twice.
+ * each as allowed, what it cannot work without present and visible, no
+ * section twice, and Home's hero with a slide.
  */
 export function pageDocumentSchema(page: PageKey) {
   const rule = PAGE_RULES[page];
@@ -210,6 +159,14 @@ export function pageDocumentSchema(page: PageKey) {
       rest.some((section) => section.type === FIXED_FIRST_SECTION)
     ) {
       issue(VALIDATION_MESSAGES.signFirst);
+    }
+    // Home's hero is its slides (D128): it shows at least one.
+    if (page === "HOME" && first.type === "SIGN" && first.content.slides.length === 0) {
+      context.addIssue({
+        code: "custom",
+        message: VALIDATION_MESSAGES.atLeastOne("Slides"),
+        path: ["sections", 0, "content", "slides"],
+      });
     }
     const counts = new Map<SectionType, number>();
     for (const section of sections) counts.set(section.type, (counts.get(section.type) ?? 0) + 1);

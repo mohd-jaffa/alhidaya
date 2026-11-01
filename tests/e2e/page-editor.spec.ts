@@ -55,13 +55,13 @@ test("Pages lists the eight pages with their state, and a page's editor passes a
   await page.getByRole("link", { name: /^Home/ }).click();
   await expect(page).toHaveURL(ADMIN_ROUTES.page("HOME"));
   await expect(page.getByRole("heading", { level: 1, name: "Home" })).toBeVisible();
-  await page.getByRole("button", { name: /For families/, expanded: false }).click();
-  await expect(page.getByRole("textbox", { name: ADMIN_TEXT.heading, exact: true })).toBeVisible();
+  // Home's header is its slides (D128): each with its headline and photo, then the card on the photo's icon.
+  await page.getByRole("button", { name: /Page header/, expanded: false }).click();
+  await expect(page.getByRole("textbox", { name: ADMIN_TEXT.headline, exact: true }).first()).toBeVisible();
   await expect(page.getByRole("combobox", { name: new RegExp(`^${ADMIN_TEXT.icon}`) }).first()).toBeVisible();
   await axe(page);
 
-  // The steps' photos come first (D124); the photo card's is the last.
-  await page.getByRole("button", { name: ADMIN_TEXT.changePhoto }).last().click();
+  await page.getByRole("button", { name: ADMIN_TEXT.changePhoto }).first().click();
   const library = page.getByRole("dialog", { name: ADMIN_TEXT.choosePhoto });
   await expect(library.getByRole("button").nth(1)).toBeVisible();
   await axe(page);
@@ -128,7 +128,7 @@ test("leaving a page with unsaved changes asks first, and Leave without saving g
   test.skip(testInfo.project.name !== "desktop", "the rail is a desktop's");
   await signIn(page);
   await page.goto(ADMIN_ROUTES.page("HOME"));
-  await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.hide, "Statement") }).click();
+  await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.hide, "Client logos") }).click();
   await expect(page.getByText(ADMIN_TEXT.hidden)).toBeVisible();
 
   const rail = page.getByRole("complementary");

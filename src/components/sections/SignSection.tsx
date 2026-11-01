@@ -54,11 +54,11 @@ export function SignSection({
         <>
           <ContactAction kind="whatsapp" to={site.contact.whatsapp} size="lg" arrow />
           {second === "quote" ? (
-            <PillLink href={ROUTES.quote} variant="pale" size="lg">
+            <PillLink href={ROUTES.quote} variant="line" size="lg">
               {UI_TEXT.requestQuote}
             </PillLink>
           ) : (
-            <ContactAction kind="call" to={site.contact.phone} variant="pale" size="lg" />
+            <ContactAction kind="call" to={site.contact.phone} variant="line" size="lg" />
           )}
         </>
       ) : null}
