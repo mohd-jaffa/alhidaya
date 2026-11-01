@@ -19,7 +19,7 @@ const staffing = publishedFixture(
 const noImage = () => null;
 
 describe("ServicesIndexSection", () => {
-  it("sets each audience's services out as cards under its pill, in order, with that audience's actions", () => {
+  it("sets each audience's services out as Home's cards under its name, in order, with that audience's actions", () => {
     const content = { ...contentFixture("SERVICES_INDEX"), intro: en("Care at home, and nurses for institutions.") };
     render(
       <ServicesIndexSection
@@ -39,8 +39,7 @@ describe("ServicesIndexSection", () => {
         .getAllByRole("link")
         .map((link) => link.getAttribute("href")),
     ).toEqual([ROUTES.service("home-nursing-care"), ROUTES.service("elderly-care")]);
-    expect(within(families).getByText("Care for older people.")).toBeInTheDocument();
-    expect(within(institutions).getByRole("link", { name: "School nurse staffing" })).toBeInTheDocument();
+    expect(within(institutions).getByRole("link", { name: /School nurse staffing/ })).toBeInTheDocument();
 
     expect(screen.getByRole("heading", { level: 3, name: AUDIENCE_LABELS.FAMILIES })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 3, name: AUDIENCE_LABELS.INSTITUTIONS })).toBeInTheDocument();

@@ -40,6 +40,7 @@ export const UI_TEXT = {
   emailUs: "Email us",
   quoteCardTitle: "Request a quote",
   quoteCardNote: "We reply quickly",
+  messageCardTitle: "Your message",
   mobile: "Mobile number",
   sendShortQuote: "Get a free quote",
   shortQuoteMessageHint: "Who is the care for, and when do you need it?",

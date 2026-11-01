@@ -327,6 +327,20 @@
   .slides-band[data-paused] .slide-photo[data-current] {
     animation-play-state: paused;
   }
+
+  /* An inner page's opening (D135) arrives as Home's first slide does: its photo settles, its words rise. */
+  .split-photo {
+    animation: drift var(--duration-slide) var(--ease-out) both;
+  }
+
+  .page-split .rise-word > span {
+    animation: word-rise 1s var(--ease-out) both;
+    animation-delay: calc(var(--i) * 60ms + 120ms);
+  }
+
+  .page-split .split-line {
+    animation: rise-in var(--duration-reveal) 0.45s var(--ease-out) both;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

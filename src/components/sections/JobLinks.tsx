@@ -14,16 +14,17 @@ const STAGGERED = 4;
 /**
  * Open jobs as cards (plan §6.5, D97): each job's title (the whole card is
  * its link), where, on what terms, and the day it closes when it has one,
- * with an arrow in a white chip.
+ * with an arrow in a chip: mist cards with a white chip, or on a band (D135)
+ * white cards with a pale one.
  */
-export function JobLinks({ jobs }: { jobs: readonly PublishedJob[] }) {
+export function JobLinks({ jobs, onBand = false }: { jobs: readonly PublishedJob[]; onBand?: boolean }) {
   return (
     <ul className="grid gap-3">
       {jobs.map(({ id, published: job }, at) => (
         <li key={id}>
           <Reveal
             order={Math.min(at, STAGGERED)}
-            className="group relative flex items-center justify-between gap-4 rounded-card bg-mist p-5 sm:p-6"
+            className={`group relative flex items-center justify-between gap-4 rounded-card p-5 sm:p-6 ${onBand ? "bg-card shadow-raised" : "bg-mist"}`}
           >
             <div className="grid gap-1.5">
               <Link
@@ -48,7 +49,7 @@ export function JobLinks({ jobs }: { jobs: readonly PublishedJob[] }) {
             </div>
             <span
               aria-hidden="true"
-              className="grid size-11 shrink-0 place-items-center rounded-full bg-ground text-forest"
+              className={`grid size-11 shrink-0 place-items-center rounded-full text-forest ${onBand ? "bg-leaf-pale" : "bg-ground"}`}
             >
               <Pictogram
                 name="arrow"

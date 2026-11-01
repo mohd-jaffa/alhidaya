@@ -152,7 +152,7 @@ components:
 
 # Design System: Al Hidaya Health Care Service
 
-<!-- Written from the built world when Home became Theme 6 (Phase 6C, R6C.1, 2026-10-31). Source of truth: src/app/globals.css, src/lib/motion/tokens.ts, src/components/{ui,sections,site,motion}. Where this file and the code disagree, the code was right on the day this was written; fix the file. Every page but Home still carries Phase 6B's sections in Theme 6's header, footer, colours and buttons until R6C.2. -->
+<!-- Written from the built world when Home became Theme 6 (Phase 6C, R6C.1, 2026-10-31). Source of truth: src/app/globals.css, src/lib/motion/tokens.ts, src/components/{ui,sections,site,motion}. Where this file and the code disagree, the code was right on the day this was written; fix the file. Updated when the other pages joined Theme 6 (R6C.2, D135, 2026-11-01): Contact's and Careers' openings, a job's page and Apply keep Phase 6B's look, as the user chose. -->
 
 ## Overview
 
@@ -263,6 +263,21 @@ The heading centred with a short mark beneath (deep 55%, leaf 45%). Two rows of 
 ### The short quote (D130, from Theme 4)
 A pale-green band. Left: the heading, its words, and the ways to reach us from Settings, each a 44 px chip (WhatsApp in leaf; call and email white with deep marks) beside a small label and the number or address in title semibold. Right: the card (card, 28 px, Overlay) under a deep strip ("Request a quote", "We reply quickly"), holding the short form two fields to a row from 640 px, the message across.
 
+### An inner page's opening (D135)
+About, Services, a service, the quote page, Privacy, Terms and the missing page open like Home's slide, still: under a rule, the page's name (semibold, deep; left out when the headline says it), the headline (hero, 600, navy, its phrase in deep, its words rising as a slide's do), the line (lead, ink-2) and the actions; the photo edge to edge on the right (52% of a wide window, 34 rem tall at least; first on a phone), settling from 106%. Without a photo the words stand alone at the site's width. Contact, Careers, a job's page and Apply keep the rounded photo and the pale-green highlight (D109).
+
+### Bands (D135)
+A section may lie on a band edge to edge: the mist band (What we do, About's mission and vision, Contact's ways to reach us) or the pale-green band (the short quote, Talk to us, Contact's form, Careers' open jobs, whose jobs turn to white cards with a pale chip); Careers' Before you apply lies on the mist band too. Two bands in a row meet; a page ending on one meets the footer.
+
+### Talk to us, mission and vision, values (D135)
+Talk to us: on the pale-green band, the heading (display, 600) and words beside the ways to reach us as on the short quote. Mission and vision: two white cards (28 px, Raised) on the mist band, each its icon in a 44 px deep-blue chip beside its title (title, 600), the statement in lead ink-2. Values: the heading (display, 500) beside a ruled list, each value a forest check, its title semibold and its line in ink-2, as About's points.
+
+### Services as cards (D135)
+The Services page and a service's other services show What we do's rounded card in a grid: four across from 1024 px, two from 640 px, one on a phone (4:3 there, 3:4 above). Each audience under its name (title, 600) with its actions.
+
+### Contact (D135)
+Its ways to reach us on the mist band as white cards, each icon in a pale chip, with the map; its form on the pale-green band, on the short quote's card under a deep strip ("Your message", "We reply quickly").
+
 ### Forms (the site's)
 Boxed now (D130): white, 1.5 px ink-2 border, 6 px corners, 48 px tall, 16 px text, the label above in medium, hint under it, the error below with its pictogram. The consent's privacy link in deep. The send action the large deep button with an arrow, full width on a phone.
 
@@ -284,6 +299,7 @@ GSAP and ScrollTrigger with Lenis on the GSAP ticker, loaded after first paint; 
 - **Blocks rising** (GSAP, D125): blocks rise 24 px and fade in once as they scroll into view, 80 ms apart in a group.
 - **Clients' rows** (CSS, D133): endless, linear, the second row reversed; stopped under the pointer, on focus and on a chosen logo.
 - **Header** (CSS transition, 640 ms ease-out): away going down, back going up.
+- **An inner page's opening** (CSS, D135): its photo settles from 106% over six seconds; its headline's words rise as a slide's do, then its line and actions rise in.
 - **The menu's pill** (CSS transition, 640 ms ease-out, D134): set back where the last page's link was, at its width, then let go; the words cross to white as it arrives.
 - **State:** press 120 ms, colour 200 ms, a card photo's zoom 1 s; a service arrow and a link's arrow step forward under the pointer.
 
@@ -291,7 +307,7 @@ GSAP and ScrollTrigger with Lenis on the GSAP ticker, loaded after first paint; 
 
 **The Still-Page Rule.** Nothing else moves on its own (WCAG 2.2.2). The slides have a pause; the clients' rows stop under the pointer, on focus and on a chosen logo (the user chose no pause button for them; recorded in D133).
 
-**The Reduced-Motion Path.** With reduced motion the engine never loads: no Lenis, no reveals, no word rising; the slides stay until moved and their pause is hidden; the clients' rows stand still, their repeats gone, wrapped in rows; the header simply appears and disappears; the menu's pill is simply on the new page.
+**The Reduced-Motion Path.** With reduced motion the engine never loads: no Lenis, no reveals, no word rising; the slides stay until moved and their pause is hidden; the clients' rows stand still, their repeats gone, wrapped in rows; the header simply appears and disappears; the menu's pill is simply on the new page; an inner page's opening is simply there.
 
 ## Do's and Don'ts
 

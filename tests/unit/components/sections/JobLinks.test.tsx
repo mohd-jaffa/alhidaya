@@ -18,4 +18,11 @@ describe("JobLinks", () => {
     expect(second).toHaveTextContent("Doha, Qatar·Contract");
     expect(second).not.toHaveTextContent("Closes");
   });
+
+  it("on a band, sets each job on a white card with a pale chip (D135)", () => {
+    const { container } = render(<JobLinks jobs={[{ ...publishedFixture(jobFixture()), open: true }]} onBand />);
+    expect(container.querySelector(".bg-card")).toBeInTheDocument();
+    expect(container.querySelector(".bg-leaf-pale")).toBeInTheDocument();
+    expect(container.querySelector(".bg-mist")).toBeNull();
+  });
 });

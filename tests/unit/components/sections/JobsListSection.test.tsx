@@ -33,4 +33,11 @@ describe("JobsListSection", () => {
     render(<JobsListSection anchor="jobs" content={contentFixture("JOBS_LIST")} jobs={[job("one")]} />);
     expect(screen.getByRole("region").querySelector(".text-lead")).toBeNull();
   });
+
+  it("on Careers, lies on Home's pale-green band, its jobs on white cards (D135)", () => {
+    render(<JobsListSection anchor="jobs" content={contentFixture("JOBS_LIST")} jobs={[job("one")]} band />);
+    const band = screen.getByRole("region", { name: UI_TEXT.openJobs });
+    expect(band).toHaveClass("bg-leaf-pale");
+    expect(band.querySelector(".bg-card")).toBeInTheDocument();
+  });
 });

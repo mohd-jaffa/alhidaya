@@ -3664,3 +3664,66 @@ pages following its look until each is reviewed (R6C.2).
 
 ### Blockers
 - None.
+
+## 2026-11-01 — R6C.2: the other pages in Theme 6 (D135)
+
+The user asked for the other pages after Home, keeping Contact and Careers as
+they were; then asked for Contact's form card and its two sections' colours,
+and Careers' two sections' colours, to follow Home. Their answers are D135.
+
+### Added
+- `PageSplit`: an inner page's opening in Theme 6's straight lines (About,
+  Services, a service's page, the quote page, Privacy, Terms, the missing
+  page): under a rule, the page's name in deep blue, the headline with its
+  phrase in deep blue rising word by word, the line and the actions, the
+  photo edge to edge (settling in), or the words alone without one.
+- `SectionBand`: a section on the mist or pale-green band edge to edge.
+- `ContactWays`: WhatsApp, a call at any hour and the email as rows, out of
+  Home's quote band, shared with Talk to us.
+- `ServiceCard`: What we do's rounded card, shared with the services grid.
+- The icon chip's deep tone (mission and vision).
+
+### Changed
+- Talk to us on Home's pale-green band, the ways to reach us beside its
+  words.
+- The Services page and a service's other services: Home's rounded cards
+  in a grid (four, two, one across), each audience under its name.
+- The staffing card, the services list and a service's page: Theme 6's
+  headings (semibold, rising).
+- About: mission and vision as white cards with deep-blue icons on the mist
+  band; the values a ruled list with checks beside their heading.
+- Contact: its ways to reach us on the mist band (white cards), its form on
+  the pale-green band on Home's card ("Your message"). Its opening stays.
+- Careers: Open jobs on the pale-green band, its jobs on white cards with
+  a pale chip; Before you apply on the mist band (the user's ask). Its
+  opening, a job's page and Apply are unchanged, as the user chose; the
+  quote page keeps its form layout.
+- `PageSections`: a straight-lined page starts under the header, a page
+  ending on a band meets the footer, two bands in a row meet.
+- `Words`: a word with no space before it (a comma after the phrase) keeps
+  to the word before, never parting at a line's end (the Services
+  headline's comma stood apart, and wrapped alone on a phone).
+- Plan: D135, R6C.2. AGENTS.md §19, DESIGN.md (the inner pages' opening,
+  bands, Talk to us, mission, vision and values, the services' cards,
+  Contact).
+
+### Local development (no repository change)
+- The local database's pages read through today's schemas, so About's
+  introduction gained the highlight and points it was saved without (About
+  failed to render: "Cannot read properties of undefined"); backed up
+  first. The dev server keeps About's old copy until About is published
+  once (Publish revalidates its tag).
+
+### Validation
+- Typecheck, lint, format check passed.
+- Unit and integration tests passed (1215), coverage 100%.
+- E2E passed (phone, desktop): 185 passed, 41 skipped (one-width
+  journeys); the Contact form's journey finds its form on Home's card.
+- Seen in the built app at 1440 and 390 px: About, Services, a service,
+  the quote page, Privacy, the missing page, Contact and Careers.
+- First paint, JavaScript (gzip, within 174,080 bytes): Home, Contact and
+  the quote page 173,449; the application 170,967; About, Services,
+  Careers, Privacy and Terms 167,093; a service 164,917.
+
+### Blockers
+- None.

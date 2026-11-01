@@ -20,8 +20,26 @@ import { MissionSection } from "./MissionSection";
 import { RichTextSection } from "./RichTextSection";
 import { ServicesIndexSection } from "./ServicesIndexSection";
 import { ServicesRowSection } from "./ServicesRowSection";
-import { SignSection } from "./SignSection";
+import { KEEPS_HERO, SignSection } from "./SignSection";
 import { ValuesSection } from "./ValuesSection";
+
+/** Whether a section is drawn on a band of colour edge to edge (D130, D131, D135). */
+function onBand(page: PageKey, section: Section): boolean {
+  switch (section.type) {
+    case "SERVICES_ROW":
+    case "MISSION":
+    case "CONTACT_BAND":
+    case "CONTACT_DETAILS":
+      return true;
+    case "FORM":
+      return section.content.form === "SHORT_QUOTE" || page === "CONTACT";
+    case "JOBS_LIST":
+    case "RICH_TEXT":
+      return page === "CAREERS";
+    default:
+      return false;
+  }
+}
 
 function SectionFor({
   page,
@@ -81,7 +99,7 @@ function SectionFor({
     case "CAREERS_BAND":
       return <CareersBandSection anchor={anchor} content={section.content} jobs={data.jobs} />;
     case "JOBS_LIST":
-      return <JobsListSection anchor={anchor} content={section.content} jobs={data.jobs} />;
+      return <JobsListSection anchor={anchor} content={section.content} jobs={data.jobs} band={page === "CAREERS"} />;
     case "CONTACT_BAND":
       return <ContactBandSection anchor={anchor} content={section.content} site={data.site} />;
     case "CONTACT_DETAILS":
@@ -94,10 +112,11 @@ function SectionFor({
           form={forms[section.content.form]}
           kind={section.content.form}
           site={data.site}
+          band={page === "CONTACT"}
         />
       );
     case "RICH_TEXT":
-      return <RichTextSection anchor={anchor} content={section.content} />;
+      return <RichTextSection anchor={anchor} content={section.content} band={page === "CAREERS"} />;
     case "SERVICES_ROW":
       return <ServicesRowSection anchor={anchor} content={section.content} services={data.services} image={image} />;
   }
@@ -106,7 +125,9 @@ function SectionFor({
 /**
  * A page's visible sections in the admin's order (plan §7), each drawn by
  * its type's component from the published content. The forms are fixed in
- * code and handed in by the page that holds them.
+ * code and handed in by the page that holds them. A page opening in straight
+ * lines starts under the header (D128, D135); one ending on a band meets the
+ * footer; two bands in a row meet.
  */
 export function PageSections({
   page,
@@ -120,14 +141,30 @@ export function PageSections({
   forms?: Partial<Record<SectionForm, ReactNode>>;
 }) {
   const anchors = sectionAnchors(sections);
+  const bands = sections.map((section) => onBand(page, section));
+  const top = KEEPS_HERO.includes(page) ? "pt-16 xl:pt-12" : "";
+  const bottom = bands.at(-1) ? "" : "pb-section";
   return (
-    <div
-      // Home opens on its slides and ends on its quote's band, both edge to edge (D128, D130).
-      className={`grid grid-cols-[minmax(0,1fr)] gap-section ${page === "HOME" ? "" : "pt-16 pb-section xl:pt-12"}`}
-    >
-      {sections.map((section, index) => (
-        <SectionFor key={section.id} page={page} section={section} anchor={anchors[index]} data={data} forms={forms} />
-      ))}
+    <div className={`grid grid-cols-[minmax(0,1fr)] gap-section ${top} ${bottom}`}>
+      {sections.map((section, index) => {
+        const drawn = (
+          <SectionFor
+            key={section.id}
+            page={page}
+            section={section}
+            anchor={anchors[index]}
+            data={data}
+            forms={forms}
+          />
+        );
+        return bands[index] && bands[index - 1] ? (
+          <div key={section.id} className="-mt-section">
+            {drawn}
+          </div>
+        ) : (
+          drawn
+        );
+      })}
     </div>
   );
 }

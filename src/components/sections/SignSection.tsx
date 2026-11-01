@@ -7,6 +7,7 @@ import type { SiteImage } from "@/features/media/types";
 import type { Section, SiteDocument } from "@/lib/validation";
 
 import { PageHero } from "./PageHero";
+import { PageSplit } from "./PageSplit";
 
 type SignContent = Extract<Section, { type: "SIGN" }>["content"];
 
@@ -22,10 +23,13 @@ const SECOND_ACTION: Partial<Record<PageKey, "quote" | "call">> = {
   CONTACT: "call",
 };
 
+/** The pages that keep Phase 6B's opening, as the user chose (D135); every other opens in Theme 6's straight lines. */
+export const KEEPS_HERO: readonly PageKey[] = ["CONTACT", "CAREERS"];
+
 /**
- * The sign every page but Home opens with (plan §6, §7.2, D109): the page's
- * name on its pill, the admin's headline, highlight, supporting line and
- * photo, and the page's ways to reach the company.
+ * The sign every page but Home opens with (plan §6, §7.2, D109, D135): the
+ * page's name, the admin's headline, highlight, supporting line and photo,
+ * and the page's ways to reach the company.
  */
 export function SignSection({
   page,
@@ -41,8 +45,9 @@ export function SignSection({
   site: SiteDocument | null;
 }) {
   const second = SECOND_ACTION[page];
+  const Opening = KEEPS_HERO.includes(page) ? PageHero : PageSplit;
   return (
-    <PageHero
+    <Opening
       anchor={anchor}
       label={PAGE_NAMES[page]}
       headline={content.headline.en}
@@ -62,6 +67,6 @@ export function SignSection({
           )}
         </>
       ) : null}
-    </PageHero>
+    </Opening>
   );
 }

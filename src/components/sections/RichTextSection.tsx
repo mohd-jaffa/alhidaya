@@ -2,7 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { RichText } from "@/components/ui/rich-text";
 import type { RichText as RichTextBlocks, Section } from "@/lib/validation";
 
-import { SectionFrame, SectionHeading } from "./SectionFrame";
+import { SectionBand, SectionFrame, SectionHeading } from "./SectionFrame";
 
 type RichTextContent = Extract<Section, { type: "RICH_TEXT" }>["content"];
 
@@ -19,12 +19,23 @@ export function textParts(blocks: RichTextBlocks): RichTextBlocks[] {
 /**
  * The admin's own text (plan §6.2, §6.9): with a heading, its headings sit
  * under it; without one, they are the page's. Each part, a heading with its
- * words, rises into place as it scrolls into view (D125).
+ * words, rises into place as it scrolls into view (D125). On Careers it lies
+ * on Home's pastel-blue band (D135).
  */
-export function RichTextSection({ anchor, content }: { anchor: string; content: RichTextContent }) {
+export function RichTextSection({
+  anchor,
+  content,
+  band = false,
+}: {
+  anchor: string;
+  content: RichTextContent;
+  /** On the pastel-blue band, as Careers sets it. */
+  band?: boolean;
+}) {
   const heading = content.heading.en;
+  const Frame = band ? SectionBand : SectionFrame;
   return (
-    <SectionFrame anchor={anchor} named={heading !== null} className="grid gap-6">
+    <Frame anchor={anchor} named={heading !== null} tone="mist" className="grid gap-6">
       {heading ? (
         <Reveal>
           <SectionHeading anchor={anchor}>{heading}</SectionHeading>
@@ -38,6 +49,6 @@ export function RichTextSection({ anchor, content }: { anchor: string; content: 
           </Reveal>
         ))}
       </div>
-    </SectionFrame>
+    </Frame>
   );
 }

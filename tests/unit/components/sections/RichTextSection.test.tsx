@@ -34,4 +34,9 @@ describe("RichTextSection", () => {
     ).toEqual([["Before"], ["One", "A", "B"], ["Two"]]);
     expect(textParts([])).toEqual([]);
   });
+
+  it("on Careers, lies on Home's pastel-blue band (D135)", () => {
+    render(<RichTextSection anchor="text" content={{ heading: en("Before you apply"), body }} band />);
+    expect(screen.getByRole("region", { name: "Before you apply" })).toHaveClass("bg-mist");
+  });
 });

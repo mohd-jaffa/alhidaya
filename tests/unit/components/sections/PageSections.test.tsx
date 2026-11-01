@@ -91,6 +91,41 @@ describe("PageSections", () => {
     expect(container.firstElementChild).not.toHaveClass("pt-16");
   });
 
+  it("starts a straight-lined page under the header, ends it on its band, and lets two bands meet (D135)", () => {
+    const data: SectionData = { site: siteFixture(), services: [], jobs: [], clients: [], images: new Map() };
+    const about = render(
+      <PageSections
+        page="ABOUT"
+        sections={[withImage("SIGN", null), section("INTRO"), section("CONTACT_BAND")]}
+        data={data}
+      />,
+    );
+    expect(about.container.firstElementChild).not.toHaveClass("pt-16");
+    expect(about.container.firstElementChild).not.toHaveClass("pb-section");
+    about.unmount();
+
+    const contact = render(
+      <PageSections
+        page="CONTACT"
+        sections={[withImage("SIGN", null), section("CONTACT_DETAILS"), section("FORM")]}
+        data={data}
+        forms={{ CONTACT: <form aria-label="Contact form" /> }}
+      />,
+    );
+    const page = contact.container.firstElementChild!;
+    // Contact keeps its opening (D135), so it starts below the header as before.
+    expect(page).toHaveClass("pt-16");
+    expect(page.lastElementChild).toHaveClass("-mt-section");
+    expect(page.querySelector("#form")).toHaveClass("bg-leaf-pale");
+    expect(page.querySelector("#reach-us")).toHaveClass("bg-mist");
+    contact.unmount();
+
+    const privacy = render(
+      <PageSections page="PRIVACY" sections={[withImage("SIGN", null), section("RICH_TEXT")]} data={data} />,
+    );
+    expect(privacy.container.firstElementChild).toHaveClass("pb-section");
+  });
+
   it("gives a form no email before the site content is published", () => {
     const data: SectionData = { site: null, services: [], jobs: [], clients: [], images: new Map() };
     render(<PageSections page="CONTACT" sections={[withImage("SIGN", null), section("FORM")]} data={data} />);

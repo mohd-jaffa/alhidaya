@@ -24,6 +24,17 @@ describe("SignSection", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
+  it("opens every other page in Theme 6's straight lines, its phrase in deep blue (D135)", () => {
+    const { container } = render(
+      <SignSection page="SERVICES" anchor="start" content={content} image={imageFixture()} site={siteFixture()} />,
+    );
+    expect(container.querySelector("section")).toHaveClass("border-t");
+    expect(container.querySelector(".bg-leaf-pale")).toBeNull();
+    expect([...container.querySelectorAll("h1 .text-deep")].map((word) => word.textContent).join(" ")).toBe(
+      "at your doorstep",
+    );
+  });
+
   it("on About and Services, offers WhatsApp and a quote", () => {
     render(<SignSection page="ABOUT" anchor="start" content={content} image={null} site={siteFixture()} />);
     expect(screen.queryByRole("img")).not.toBeInTheDocument();

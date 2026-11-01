@@ -8,33 +8,29 @@ import { contentFixture, siteFixture } from "@tests/support/fixtures/content";
 const en = <T,>(value: T) => ({ en: value });
 
 describe("ContactBandSection", () => {
-  it("ends the page on WhatsApp and a call, the number, the email and the hours written out", () => {
+  it("ends the page on Home's pale-green band, WhatsApp, a call at any hour and the email beside its words (D135)", () => {
     const content = { ...contentFixture("CONTACT_BAND"), text: en("Message us at any hour.") };
     render(<ContactBandSection anchor="contact" content={content} site={siteFixture()} />);
-    expect(screen.getByRole("region", { name: "Talk to us" })).toBeInTheDocument();
+    const band = screen.getByRole("region", { name: "Talk to us" });
+    expect(band).toHaveClass("bg-leaf-pale");
     expect(screen.getByText("Message us at any hour.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: UI_TEXT.whatsapp })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: UI_TEXT.call })).toHaveAttribute("href", "tel:+97431306555");
-    expect(screen.getByText("+974 3130 6555")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "info@alhidaya.qa" })).toHaveAttribute("href", "mailto:info@alhidaya.qa");
-    expect(screen.getByText("Available 24/7")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: new RegExp(UI_TEXT.whatsappUs) })).toHaveAttribute(
+      "href",
+      expect.stringContaining("wa.me"),
+    );
+    expect(screen.getByRole("link", { name: new RegExp(UI_TEXT.callUs247) })).toHaveAttribute(
+      "href",
+      "tel:+97431306555",
+    );
+    expect(screen.getByRole("link", { name: new RegExp(UI_TEXT.emailUs) })).toHaveAttribute(
+      "href",
+      "mailto:info@alhidaya.qa",
+    );
   });
 
-  it("keeps its words without the details, and the details without the hours", () => {
-    const { rerender } = render(
-      <ContactBandSection anchor="contact" content={contentFixture("CONTACT_BAND")} site={null} />,
-    );
+  it("keeps its words without the details", () => {
+    render(<ContactBandSection anchor="contact" content={contentFixture("CONTACT_BAND")} site={null} />);
     expect(screen.getByRole("region", { name: "Talk to us" })).toBeInTheDocument();
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
-
-    const site = siteFixture();
-    rerender(
-      <ContactBandSection
-        anchor="contact"
-        content={contentFixture("CONTACT_BAND")}
-        site={{ ...site, contact: { ...site.contact, hours: en(null) } }}
-      />,
-    );
-    expect(screen.queryByText("Available 24/7")).not.toBeInTheDocument();
   });
 });

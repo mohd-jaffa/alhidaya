@@ -11,6 +11,8 @@ const TONES = {
   ground: "bg-ground text-forest",
   /** On the pale-green band (D130): white, its icon deep blue. */
   blue: "bg-ground text-deep",
+  /** On a white card (D135): the logo's deep blue, its icon white. */
+  deep: "bg-deep text-on-deep",
 } as const;
 
 const SIZES = {

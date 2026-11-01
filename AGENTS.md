@@ -459,7 +459,7 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
   slides wiping in, headings' words rising from behind their line, every
   block rising in as it scrolls into view, the clients' rows running, the
   header sliding away and back, the menu's pill sliding to the page opened,
-  D134), restrained reveals, nothing scattered.
+  D134; an inner page's opening arriving as Home's first slide does, D135), restrained reveals, nothing scattered.
 
 ---
 

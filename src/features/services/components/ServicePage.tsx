@@ -1,7 +1,8 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { RiseWords } from "@/components/motion/RiseWords";
 import { AudienceActions } from "@/components/sections/AudienceActions";
-import { PageHero } from "@/components/sections/PageHero";
-import { SectionFrame, SectionHeading } from "@/components/sections/SectionFrame";
+import { PageSplit } from "@/components/sections/PageSplit";
+import { headingId, SectionFrame } from "@/components/sections/SectionFrame";
 import { ServiceCards } from "@/components/sections/ServiceCards";
 import { JsonLd } from "@/components/site/JsonLd";
 import { IconChip } from "@/components/ui/icon-chip";
@@ -17,10 +18,11 @@ import type { SiteDocument } from "@/lib/validation";
 import type { PublishedService } from "../api";
 
 /**
- * A service's page (plan §6.4, D109, D111): its opening with who it is for on
- * its pill, its photo and its audience's actions; what the service is, with
+ * A service's page (plan §6.4, D109, D111, D135): its opening in straight
+ * lines with who it is for above its name, its photo and its audience's
+ * actions; what the service is, with
  * who it is for and what it includes on a mist card; and the other services
- * for the same audience as photo cards.
+ * for the same audience as Home's photo cards.
  */
 export function ServicePage({
   service,
@@ -50,8 +52,8 @@ export function ServicePage({
           siteUrl,
         )}
       />
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-section pt-16 pb-section xl:pt-12">
-        <PageHero
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-section pb-section">
+        <PageSplit
           anchor="start"
           label={AUDIENCE_LABELS[published.audience]}
           headline={published.name.en}
@@ -59,27 +61,29 @@ export function ServicePage({
           image={image(published.image)}
         >
           <AudienceActions audience={published.audience} site={site} service={published.slug} size="lg" />
-        </PageHero>
+        </PageSplit>
 
         <SectionFrame
           anchor="about"
           className="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-start lg:gap-16"
         >
           <Reveal className="grid content-start gap-6">
-            <SectionHeading anchor="about">{UI_TEXT.aboutService}</SectionHeading>
+            <h2 id={headingId("about")} className="text-display font-semibold text-balance">
+              <RiseWords text={UI_TEXT.aboutService} />
+            </h2>
             <RichText blocks={published.description} headingLevel="h3" />
           </Reveal>
           {published.forWhom.en || published.included.length > 0 ? (
             <Reveal order={1} className="grid content-start gap-8 rounded-card bg-mist p-6 sm:p-8">
               {published.forWhom.en ? (
                 <div className="grid gap-3">
-                  <h3 className="text-title font-medium">{UI_TEXT.whoItIsFor}</h3>
+                  <h3 className="text-title font-semibold">{UI_TEXT.whoItIsFor}</h3>
                   <p className="whitespace-pre-line text-ink-2">{published.forWhom.en}</p>
                 </div>
               ) : null}
               {published.included.length > 0 ? (
                 <div className="grid gap-4">
-                  <h3 className="text-title font-medium">{UI_TEXT.whatItIncludes}</h3>
+                  <h3 className="text-title font-semibold">{UI_TEXT.whatItIncludes}</h3>
                   <ul className="grid gap-3">
                     {published.included.map((item) => (
                       <li key={item.en} className="flex items-start gap-3">
@@ -97,7 +101,9 @@ export function ServicePage({
         {related.length > 0 ? (
           <SectionFrame anchor="others" className="grid gap-10">
             <div className="flex flex-wrap items-end justify-between gap-4">
-              <SectionHeading anchor="others">{UI_TEXT.otherServices}</SectionHeading>
+              <h2 id={headingId("others")} className="text-display font-semibold text-balance">
+                <RiseWords text={UI_TEXT.otherServices} />
+              </h2>
               <div className="flex flex-wrap gap-3">
                 <AudienceActions audience={published.audience} site={site} service={published.slug} />
               </div>

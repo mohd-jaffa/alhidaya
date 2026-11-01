@@ -17,7 +17,7 @@ const en = <T,>(value: T) => ({ en: value });
 const NO_IMAGES = new Map();
 
 describe("ServicePage", () => {
-  it("opens a family service under its pill with its photo, WhatsApp and a call, then the others as cards", () => {
+  it("opens a family service under who it is for, with its photo, WhatsApp and a call, then the others as cards", () => {
     const photo = imageFixture("A nurse at home");
     const theirs = imageFixture("An older man and his nurse");
     const service = publishedFixture(
@@ -53,7 +53,7 @@ describe("ServicePage", () => {
     expect(within(about).getByRole("listitem")).toHaveTextContent("Medication management");
 
     const others = screen.getByRole("region", { name: UI_TEXT.otherServices });
-    expect(within(others).getByRole("link", { name: "Elderly care" })).toHaveAttribute(
+    expect(within(others).getByRole("link", { name: /Elderly care/ })).toHaveAttribute(
       "href",
       ROUTES.service("elderly-care"),
     );

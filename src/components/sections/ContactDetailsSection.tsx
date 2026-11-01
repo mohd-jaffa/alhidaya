@@ -10,17 +10,17 @@ import { ROUTES } from "@/constants/routes";
 import { displayPhone, mailtoHref, telHref, whatsappHref } from "@/lib/contact";
 import type { Section, SiteDocument } from "@/lib/validation";
 
-import { SectionFrame, SectionHeading } from "./SectionFrame";
+import { SectionBand, SectionHeading } from "./SectionFrame";
 
 type ContactDetailsContent = Extract<Section, { type: "CONTACT_DETAILS" }>["content"];
 
 const LINK = "font-medium text-forest underline decoration-transparent underline-offset-4 hover:decoration-current";
 
-/** One way to reach the company on its mist card (D97): its icon in a white chip, what it is, and it. */
+/** One way to reach the company on its white card (D135): its icon in a pale chip, what it is, and it. */
 function Detail({ pictogram, term, children }: { pictogram: PictogramName; term: string; children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 gap-y-1 rounded-card bg-mist p-5 sm:p-6">
-      <IconChip name={pictogram} tone="ground" className="row-span-2" />
+    <div className="grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 gap-y-1 rounded-card bg-card p-5 sm:p-6">
+      <IconChip name={pictogram} tone="pale" className="row-span-2" />
       <dt className="text-small text-ink-2">{term}</dt>
       <dd className="grid justify-items-start gap-1">{children}</dd>
     </div>
@@ -28,10 +28,10 @@ function Detail({ pictogram, term, children }: { pictogram: PictogramName; term:
 }
 
 /**
- * Every way to reach the company (plan §6.7), from the site content, each on
- * its own card: WhatsApp, the phone, the email, the office with the way to it
- * on Google Maps, the hours, and the brochure when there is one; beside them,
- * the static map.
+ * Every way to reach the company (plan §6.7), from the site content, on
+ * Home's pastel-blue band (D135), each on its own card: WhatsApp, the phone,
+ * the email, the office with the way to it on Google Maps, the hours, and the
+ * brochure when there is one; beside them, the static map.
  */
 export function ContactDetailsSection({
   anchor,
@@ -43,7 +43,7 @@ export function ContactDetailsSection({
   site: SiteDocument | null;
 }) {
   return (
-    <SectionFrame anchor={anchor} className="grid gap-10">
+    <SectionBand anchor={anchor} tone="mist" className="grid gap-10">
       <Reveal>
         <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
       </Reveal>
@@ -94,6 +94,6 @@ export function ContactDetailsSection({
           </Reveal>
         </div>
       ) : null}
-    </SectionFrame>
+    </SectionBand>
   );
 }

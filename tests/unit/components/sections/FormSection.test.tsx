@@ -81,4 +81,21 @@ describe("FormSection", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Get a free quote" }).querySelector("p.text-lead")).toBeNull();
   });
+
+  it("on the Contact page, sets the form on Home's pale-green band and card, its strip naming it (D135)", () => {
+    render(
+      <FormSection
+        anchor="form"
+        content={contentFixture("FORM")}
+        form={<form aria-label="Contact form" />}
+        kind="CONTACT"
+        site={siteFixture()}
+        band
+      />,
+    );
+    const band = screen.getByRole("region", { name: "Send a message" });
+    expect(band).toHaveClass("bg-leaf-pale");
+    expect(within(band).getByText(UI_TEXT.messageCardTitle)).toBeInTheDocument();
+    expect(within(band).getByRole("form", { name: "Contact form" })).toBeInTheDocument();
+  });
 });
