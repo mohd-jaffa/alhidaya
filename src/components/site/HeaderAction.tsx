@@ -1,6 +1,8 @@
+"use no memo"; // Small and rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
+
 import { Pictogram } from "@/components/ui/pictogram";
 import { PillLink } from "@/components/ui/pill";
-import { pillClasses } from "@/components/ui/pill-classes";
+import { type PillSize, type PillVariant, pillClasses } from "@/components/ui/pill-classes";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { SITE } from "@/constants/site";
@@ -15,10 +17,15 @@ import type { SiteDocument } from "@/lib/validation";
  */
 export function HeaderAction({
   site,
+  variant,
+  size,
   className,
   onNavigate,
 }: {
   site: SiteDocument | null;
+  /** The look the place gives it: the phone menu's deep blue takes a white one (D167). */
+  variant?: PillVariant;
+  size?: PillSize;
   className?: string;
   onNavigate?: () => void;
 }) {
@@ -28,14 +35,14 @@ export function HeaderAction({
         href={ROUTES.brochure}
         download={SITE.brochureFilename}
         onClick={onNavigate}
-        className={pillClasses({}, className)}
+        className={pillClasses({ variant, size }, className)}
       >
         <Pictogram name="download" size="sm" />
         <span>{UI_TEXT.brochureButton}</span>
       </a>
     );
   return (
-    <PillLink href={ROUTES.quote} arrow onClick={onNavigate} className={className}>
+    <PillLink href={ROUTES.quote} variant={variant} size={size} arrow onClick={onNavigate} className={className}>
       {UI_TEXT.requestQuote}
     </PillLink>
   );

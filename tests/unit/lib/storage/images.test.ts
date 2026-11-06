@@ -2,6 +2,7 @@
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 
+import { UPLOAD_LIMITS } from "@/constants/limits";
 import { ERROR_MESSAGES } from "@/constants/messages";
 import { makeImageSizes } from "@/lib/storage/images";
 
@@ -51,5 +52,30 @@ describe("makeImageSizes", { timeout: 30_000 }, () => {
     await expect(makeImageSizes(new TextEncoder().encode("<svg onload=alert(1)>"))).rejects.toThrow(
       ERROR_MESSAGES.UPLOAD_TYPE_NOT_ALLOWED,
     );
+  });
+  it("refuses images with readable headers but truncated pixel data", async () => {
+    const original = await photo(200, 100);
+    const truncated = original.slice(0, Math.floor(original.length * 0.75));
+    expect((await sharp(truncated).metadata()).width).toBe(200);
+    await expect(makeImageSizes(truncated)).rejects.toMatchObject({ code: "UPLOAD_TYPE_NOT_ALLOWED" });
+  });
+
+  it("rejects excessive decoded dimensions before allocating the pixels", async () => {
+    const original = Buffer.from(await photo(10, 10));
+    const frame = original.indexOf(Buffer.from([0xff, 0xc0]));
+    expect(frame).toBeGreaterThan(0);
+    original.writeUInt16BE(65_535, frame + 5);
+    original.writeUInt16BE(65_535, frame + 7);
+    expect(65_535 ** 2).toBeGreaterThan(UPLOAD_LIMITS.imageMaxPixels);
+    await expect(makeImageSizes(original)).rejects.toMatchObject({ code: "UPLOAD_TYPE_NOT_ALLOWED" });
+  });
+
+  it("re-encodes a real image and discards appended program text", async () => {
+    const payload = Buffer.from("<?php echo 'upload-payload-test'; ?>");
+    const original = Buffer.concat([await photo(10, 10), payload]);
+    for (const size of await makeImageSizes(original)) {
+      expect(Buffer.from(size.bytes).includes(payload)).toBe(false);
+      expect((await sharp(size.bytes).metadata()).width).toBe(10);
+    }
   });
 });

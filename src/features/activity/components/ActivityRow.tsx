@@ -25,6 +25,8 @@ function thingOf(subject: ActivitySubject): string {
       return ADMIN_TEXT.thePage(PAGE_NAMES[subject.page]);
     case "order":
       return ADMIN_TEXT.theOrder[subject.collection];
+    case "typography":
+      return ADMIN_TEXT.fontManager;
     case "settings":
       return ADMIN_TEXT.theSettings;
     case "operations":
@@ -52,6 +54,8 @@ function hrefOf(subject: ActivitySubject): string | null {
       return ADMIN_ROUTES.page(subject.page);
     case "order":
       return ORDER_ROUTES[subject.collection];
+    case "typography":
+      return ADMIN_ROUTES.fonts;
     case "settings":
       return ADMIN_ROUTES.settings;
     case "operations":
@@ -152,7 +156,10 @@ export function ActivityRow({ item }: { item: ActivityItem }) {
       <div className="grid min-w-0 gap-0.5">
         <h3 className="font-semibold">
           {href ? (
-            <Link href={href} className="text-deep underline-offset-4 hover:underline">
+            <Link
+              href={href}
+              className="inline-flex min-h-touch min-w-touch items-center text-deep underline-offset-4 hover:underline"
+            >
               {what}
             </Link>
           ) : (

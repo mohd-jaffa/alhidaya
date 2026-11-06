@@ -10,12 +10,18 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError } from "@/components/ui/field";
 import { Pictogram } from "@/components/ui/pictogram";
 import { Select } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { type PageKey, SECTION_PICTOGRAMS, type SectionType } from "@/constants/sections";
 import { SECTION_FORMS } from "@/constants/statuses";
 
 import { blankItem, type SectionField, sectionFields } from "../editor";
 import { ValuesField } from "./ValuesField";
+
+function ToggleField({ name, label }: { name: string; label: string }) {
+  const { register } = useFormContext();
+  return <Switch {...register(name)}>{label}</Switch>;
+}
 
 /** Which form a form section shows (plan §7.2, D130): the Quote's, the Contact's, or the short quote. */
 function FormChoice({ name, label }: { name: string; label: string }) {
@@ -106,6 +112,8 @@ function Fields({ page, base, fields }: { page: PageKey; base: string; fields: r
   return fields.map((field) => {
     const name = `${base}.${field.name}`;
     switch (field.kind) {
+      case "toggle":
+        return <ToggleField key={name} name={name} label={field.label} />;
       case "line":
       case "lines":
         return (

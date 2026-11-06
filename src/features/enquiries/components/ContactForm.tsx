@@ -25,14 +25,28 @@ export function ContactForm({ whatsapp, siteKey }: { whatsapp: string | null; si
     >
       {(errors) => (
         <>
-          <Field label={UI_TEXT.yourName} required error={errors.name}>
-            <TextInput name="name" autoComplete="name" maxLength={TEXT_LIMITS.name} />
-          </Field>
-          <Field label={UI_TEXT.phone} hint={UI_TEXT.phoneHint} required error={errors.phone}>
-            <TextInput name="phone" type="tel" autoComplete="tel" maxLength={TEXT_LIMITS.phone} />
-          </Field>
+          <div className="grid items-start gap-6 sm:grid-cols-2">
+            <Field label={UI_TEXT.yourName} required error={errors.name}>
+              <TextInput name="name" autoComplete="name" placeholder={UI_TEXT.fullName} maxLength={TEXT_LIMITS.name} />
+            </Field>
+            <Field label={UI_TEXT.phone} required error={errors.phone}>
+              <TextInput
+                name="phone"
+                placeholder={UI_TEXT.phonePlaceholder}
+                type="tel"
+                autoComplete="tel"
+                maxLength={TEXT_LIMITS.phone}
+              />
+            </Field>
+          </div>
           <Field label={UI_TEXT.email} required error={errors.email}>
-            <TextInput name="email" type="email" autoComplete="email" maxLength={TEXT_LIMITS.email} />
+            <TextInput
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder={UI_TEXT.emailPlaceholder}
+              maxLength={TEXT_LIMITS.email}
+            />
           </Field>
           <Field label={UI_TEXT.message} required error={errors.message}>
             <TextArea name="message" maxLength={TEXT_LIMITS.message} />

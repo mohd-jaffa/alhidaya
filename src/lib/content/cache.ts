@@ -18,9 +18,11 @@ export const CACHE_TAGS = {
   document: (key: DocumentKey): string =>
     key === "SITE"
       ? "site"
-      : key.startsWith("PAGE:")
-        ? `page:${key.slice(5)}`
-        : COLLECTION_TAGS[key.slice(6) as RecordCollection],
+      : key === "TYPOGRAPHY"
+        ? "typography"
+        : key.startsWith("PAGE:")
+          ? `page:${key.slice(5)}`
+          : COLLECTION_TAGS[key.slice(6) as RecordCollection],
   collection: (collection: RecordCollection): string => COLLECTION_TAGS[collection],
   record: (collection: RecordCollection, slug: string): string => `${RECORD_TAGS[collection]}:${slug}`,
   media: "media",

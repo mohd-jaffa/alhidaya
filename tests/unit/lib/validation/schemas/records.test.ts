@@ -12,6 +12,30 @@ import {
 import { clientFixture, jobFixture, serviceFixture } from "@tests/support/fixtures/content";
 
 describe("a service", () => {
+  it("defaults legacy services to no header buttons and validates at most two safe, labelled destinations", () => {
+    const legacy: Partial<ReturnType<typeof serviceFixture>> = serviceFixture();
+    delete legacy.headerButtons;
+    expect(serviceDocumentSchema.parse(legacy).headerButtons).toEqual([]);
+    const buttons = [
+      { label: { en: " Contact us " }, href: "/contact" },
+      { label: { en: "Message us" }, href: "https://wa.me/97431306555" },
+    ];
+    expect(serviceDocumentSchema.parse(serviceFixture({ headerButtons: buttons })).headerButtons[0].label.en).toBe(
+      "Contact us",
+    );
+    for (const href of ["javascript:alert(1)", "data:text/html,x", "//evil.example", "https://user:pass@example.com"])
+      expect(
+        serviceDocumentSchema.safeParse(serviceFixture({ headerButtons: [{ label: { en: "Unsafe" }, href }] })).success,
+      ).toBe(false);
+    expect(
+      serviceDocumentSchema.safeParse(serviceFixture({ headerButtons: [{ label: { en: "" }, href: "/contact" }] }))
+        .success,
+    ).toBe(false);
+    expect(
+      serviceDocumentSchema.safeParse(serviceFixture({ headerButtons: [...buttons, buttons[0]] })).error?.issues[0]
+        .message,
+    ).toBe(VALIDATION_MESSAGES.atMost("Header buttons", 2));
+  });
   it("is valid as its fixture, and refuses an unknown audience or a bad address", () => {
     expect(serviceDocumentSchema.parse(serviceFixture()).slug).toBe("home-nursing-care");
     expect(serviceDocumentSchema.safeParse(serviceFixture({ audience: "EVERYONE" as never })).success).toBe(false);

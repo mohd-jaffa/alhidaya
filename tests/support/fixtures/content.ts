@@ -15,6 +15,8 @@ const en = <T>(value: T) => ({ en: value });
 
 const CONTENT: Record<SectionType, Section["content"]> = {
   SIGN: {
+    showActions: false,
+    hideNote: false,
     headline: en("Nursing care, at your doorstep"),
     highlight: en(null),
     lede: en(null),
@@ -34,7 +36,7 @@ const CONTENT: Record<SectionType, Section["content"]> = {
   INSTITUTIONS: { heading: en("For institutions"), text: en("Nurse staffing."), image: null },
   CLIENTS: { heading: en("Our clients") },
   CAREERS_BAND: { heading: en("Join us"), text: en(null) },
-  JOBS_LIST: { intro: en(null), emptyText: en("No openings right now.") },
+  JOBS_LIST: { intro: en(null), emptyText: en("No openings right now."), image: null },
   CONTACT_BAND: { heading: en("Talk to us"), text: en(null) },
   CONTACT_DETAILS: { heading: en("Contact") },
   FORM: { heading: en("Send a message"), text: en(null), form: "CONTACT" },
@@ -90,6 +92,7 @@ export const serviceFixture = (overrides: Partial<ServiceDocument> = {}): Servic
   summary: en("Qualified nurses at home."),
   description: [{ type: "paragraph", text: en("Care at home.") }],
   included: [en("Medication management")],
+  headerButtons: [],
   forWhom: en(null),
   image: null,
   seo,

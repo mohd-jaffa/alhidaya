@@ -91,7 +91,10 @@ export function ImageDetails({ image, onDeleted }: { image: LibraryImageItem; on
           <ul className="grid gap-1">
             {image.usedIn.map((place) => (
               <li key={place.href}>
-                <Link href={place.href} className="font-semibold text-deep underline-offset-4 hover:underline">
+                <Link
+                  href={place.href}
+                  className="inline-flex min-h-touch min-w-touch items-center font-semibold text-deep underline-offset-4 hover:underline"
+                >
                   {place.label}
                 </Link>
               </li>

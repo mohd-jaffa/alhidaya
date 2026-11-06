@@ -1,3 +1,5 @@
+import type { TypographyDraft } from "./typography";
+
 import type { OperationsView, SiteDraft } from "./api";
 
 /** A date as it crosses the wire: text, made a date again where it is shown. */
@@ -5,6 +7,7 @@ type Wired<T> = { [K in keyof T]: T[K] extends Date | null ? Exclude<T[K], Date>
 
 /** The site's content opened in Settings, as its endpoint answers it (D94). */
 export type SiteDraftItem = Wired<SiteDraft>;
+export type TypographyDraftItem = Wired<TypographyDraft>;
 
 /** How the site runs, as Operations' endpoint answers it (D95). */
 export type OperationsViewItem = Omit<OperationsView, "lastPurge"> & {

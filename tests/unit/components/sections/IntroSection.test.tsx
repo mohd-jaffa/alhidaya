@@ -11,6 +11,45 @@ vi.mock("@/components/motion/MotionProvider", () => ({ useMotion: () => ({ engin
 const en = <T,>(value: T) => ({ en: value });
 
 describe("IntroSection (D129)", () => {
+  it("places Home's existing points together in one full-width card, with the link after it", () => {
+    const content = {
+      ...contentFixture("INTRO"),
+      points: Array.from({ length: 6 }, (_, at) => ({
+        title: en(`Commitment ${at + 1}`),
+        text: en(at === 5 ? null : `Statement ${at + 1}`),
+      })),
+    };
+    render(<IntroSection anchor="about" content={content} image={null} pointCards more={ROUTES.about} />);
+    const list = screen.getByRole("list");
+    expect(list).toHaveClass("rounded-card", "bg-card", "md:grid-cols-3");
+    expect(list.parentElement).toHaveClass("intro-point-card", "lg:col-span-2");
+    expect(list.closest(".intro-copy")).toBeNull();
+    expect(within(list).getAllByRole("listitem")).toHaveLength(6);
+    expect(list.querySelector("svg")).toBeNull();
+    expect(within(list).getByText("Statement 1")).toBeVisible();
+    expect(within(list).getByText("Commitment 6")).toBeVisible();
+    const link = screen.getByRole("link", { name: UI_TEXT.readAboutUs });
+    expect(link).toHaveAttribute("href", ROUTES.about);
+    expect(list.nextElementSibling).toBe(link);
+  });
+
+  it("leaves no empty card or extra row when Home has no points", () => {
+    const { container } = render(
+      <IntroSection anchor="about" content={contentFixture("INTRO")} image={null} pointCards more={ROUTES.about} />,
+    );
+    expect(screen.queryByRole("list")).toBeNull();
+    expect(container.querySelector(".intro-point-card")).toBeNull();
+    expect(screen.getByRole("link", { name: UI_TEXT.readAboutUs }).closest(".intro-copy")).not.toBeNull();
+  });
+
+  it("aligns About's description to the photo only while a photo exists", () => {
+    const { rerender } = render(
+      <IntroSection anchor="about" content={contentFixture("INTRO")} image={imageFixture()} alignToPhoto />,
+    );
+    expect(screen.getByRole("region")).toHaveClass("intro-align-photo");
+    rerender(<IntroSection anchor="about" content={contentFixture("INTRO")} image={null} alignToPhoto />);
+    expect(screen.getByRole("region")).not.toHaveClass("intro-align-photo");
+  });
   it("says who the company is, with a photo under its heading when there is one", () => {
     const { rerender } = render(
       <IntroSection anchor="about" content={contentFixture("INTRO")} image={imageFixture()} />,
@@ -45,6 +84,7 @@ describe("IntroSection (D129)", () => {
     const points = within(section).getAllByRole("listitem");
     expect(points).toHaveLength(2);
     expect(points[0]).toHaveTextContent("Care with dignity.");
+    expect(points[0].querySelector("svg")).not.toBeNull();
     expect(screen.getByRole("link", { name: UI_TEXT.readAboutUs })).toHaveAttribute("href", ROUTES.about);
   });
 

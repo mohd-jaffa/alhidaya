@@ -24,7 +24,15 @@ const ROADS = [
  * the landmark; the office is a navy station once its spot is set (D74).
  * Words are laid over the drawing as text, so they stay legible at any size.
  */
-export function StaticMap({ pin, office }: { pin: { lat: number; lon: number } | null; office: string }) {
+export function StaticMap({
+  pin,
+  office,
+  className = "",
+}: {
+  pin: { lat: number; lon: number } | null;
+  office: string;
+  className?: string;
+}) {
   const at = pin ? mapPosition(pin.lat, pin.lon) : null;
   const { landmark } = MAP;
   return (
@@ -32,7 +40,7 @@ export function StaticMap({ pin, office }: { pin: { lat: number; lon: number } |
       <div
         role="img"
         aria-label={at ? UI_TEXT.mapWithOffice(office) : UI_TEXT.mapLabel}
-        className="relative aspect-[3/2] overflow-hidden rounded-card bg-mist"
+        className={`relative aspect-[3/2] overflow-hidden rounded-card bg-mist ${className}`}
       >
         <svg
           viewBox={`0 0 ${MAP.width} ${MAP.height}`}

@@ -28,7 +28,7 @@ describe("markedWords (D128)", () => {
     const { container } = render(<Words text="Care at home, and nurses" highlight="Care at home" />);
     expect(container.querySelector("[aria-hidden]")).toHaveTextContent("Care at home, and nurses");
     // The comma stays on the line of the word before it.
-    expect(container.querySelector(".whitespace-nowrap")).toHaveTextContent("home,");
+    expect(container.querySelector(".inline-block.max-w-full")).toHaveTextContent("home,");
   });
 
   it("marks nothing when the phrase is missing from the text, or none is given", () => {

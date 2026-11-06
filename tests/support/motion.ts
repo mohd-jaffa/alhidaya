@@ -55,7 +55,13 @@ export function fakeEngine({ inViewport = false, wide = true } = {}) {
       lenises.push(this);
     }
   }
-  const engine = { gsap, ScrollTrigger, Lenis } as unknown as MotionEngine;
+  const engine = {
+    gsap,
+    ScrollTrigger,
+    Lenis,
+    mountPageMotion: vi.fn(() => vi.fn()),
+    startSmoothScroll: vi.fn(),
+  } as unknown as MotionEngine;
   return { engine, gsap, ScrollTrigger, Lenis, lenises, revert, stopListening, media };
 }
 

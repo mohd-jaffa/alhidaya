@@ -26,7 +26,7 @@ export function useFieldControl(): FieldControl {
 /** The error beside a field (plan §30.3): words, the error icon and the error red (D63). */
 export function FieldError({ id, children }: { id?: string; children: ReactNode }) {
   return (
-    <p id={id} className="flex items-start gap-2 text-small font-medium text-error">
+    <p data-font-role="error" id={id} className="flex items-start gap-2 text-small font-medium text-error">
       <Pictogram name="error" size="sm" className="mt-px" />
       <span>{children}</span>
     </p>
@@ -65,7 +65,7 @@ export function Field({
   const control: FieldControl = { id, "aria-describedby": describedBy, required };
   if (error) control["aria-invalid"] = true;
   return (
-    <div className="grid gap-2">
+    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-2">
       <label htmlFor={id} className={hideLabel ? "sr-only" : "font-semibold"}>
         {label}
         {required || !markOptional ? null : (
@@ -88,4 +88,4 @@ export function Field({
 
 /** The look every text-like control shares (D130): boxed, 16 px and up, a 48 px target, a firm edge. */
 export const controlClasses = () =>
-  "w-full min-h-12 rounded-control border-[1.5px] border-ink-2 bg-ground px-4 text-body text-navy placeholder:text-ink-2 aria-invalid:border-2 aria-invalid:border-error";
+  "w-full min-w-0 max-w-full min-h-12 rounded-control border-[1.5px] border-ink-2 bg-ground px-4 text-body text-navy placeholder:text-ink-2 aria-invalid:border-2 aria-invalid:border-error";

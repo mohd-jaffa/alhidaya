@@ -1,0 +1,175 @@
+{
+  "rows": [
+    {
+      "path": "/admin",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/enquiries",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/applications",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/home",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/about",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/services",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/careers",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/contact",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/quote",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/privacy",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/pages/terms",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/new",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/33f64e36-540c-4cd9-91ed-67830d6fa472",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/00b68a77-c568-4081-9b27-4f87de7229c6",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/3729ca19-a9d9-4b5b-847a-3ff2f8bb621c",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/4c3ef600-f635-47d1-9c57-40bb2f56c32c",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/83620bb2-3c3e-4b0e-bb17-ff18f5f896d9",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/618ece21-e91e-494c-9528-54ed1bed7249",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/13d447fd-2301-492a-8411-a93ea55b23a4",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/services/fd217934-1caf-43ac-851f-5c2f15e3c73e",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/jobs",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/jobs/new",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/jobs/3397d9f7-4ad4-436c-9eba-6c6514b49e0f",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/clients",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/clients/new",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/clients/0a253d02-0c9f-4b9e-b0af-001d160140d3",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/media",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/settings",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/settings/fonts",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/settings/operations",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/activity",
+      "status": 200,
+      "serverAnnotations": false
+    },
+    {
+      "path": "/admin/profile",
+      "status": 200,
+      "serverAnnotations": false
+    }
+  ],
+  "issues": []
+}

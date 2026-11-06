@@ -43,6 +43,156 @@ async function signIn(page: Page) {
 
 const axe = async (page: Page) => expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
+test("Home's slider pill hides, previews, publishes and returns without losing its note (D157)", async ({
+  page,
+  browser,
+}) => {
+  await signIn(page);
+  const original = (await readDocumentDraft<PageDocument>("PAGE:HOME"))!.draft;
+  const visitorContext = await browser.newContext();
+  const visitor = await visitorContext.newPage();
+  const headers = { origin: E2E_ORIGIN };
+  try {
+    await page.goto(ADMIN_ROUTES.page("HOME"));
+    await page.getByRole("button", { name: /Page header/, expanded: false }).click();
+    const toggle = page.getByRole("switch", { name: ADMIN_TEXT.hideSliderPill });
+    await visitor.goto(ROUTES.home);
+    await expect(visitor.locator(".slide-note")).toHaveCount(1);
+    for (const hidden of [true, false]) {
+      await toggle.setChecked(hidden);
+      const [preview] = await Promise.all([
+        page.waitForEvent("popup"),
+        page.getByRole("link", { name: ADMIN_TEXT.preview, exact: true }).click(),
+      ]);
+      await expect(preview.locator(".slide-note")).toHaveCount(hidden ? 0 : 1);
+      await preview.close();
+      await page.getByRole("button", { name: ADMIN_TEXT.publish, exact: true }).click();
+      const published = page.waitForResponse(
+        (response) =>
+          response.url().endsWith(ADMIN_API_ROUTES.adminPagePublish("HOME")) && response.request().method() === "POST",
+      );
+      await page
+        .getByRole("dialog", { name: ADMIN_TEXT.publishTitle("Home") })
+        .getByRole("button", { name: ADMIN_TEXT.publish, exact: true })
+        .click();
+      expect((await published).ok()).toBe(true);
+      await visitor.reload();
+      await expect(visitor.locator(".slide-note")).toHaveCount(hidden ? 0 : 1);
+    }
+    const saved = (await readDocumentDraft<PageDocument>("PAGE:HOME"))!.draft;
+    const before = original.sections.find((s) => s.type === "SIGN");
+    const after = saved.sections.find((s) => s.type === "SIGN");
+    expect(after?.type === "SIGN" && after.content.note).toEqual(before?.type === "SIGN" && before.content.note);
+    await axe(page);
+  } finally {
+    expect((await page.request.put(ADMIN_API_ROUTES.adminPage("HOME"), { data: original, headers })).ok()).toBe(true);
+    expect((await page.request.post(ADMIN_API_ROUTES.adminPagePublish("HOME"), { headers })).ok()).toBe(true);
+    await visitorContext.close();
+  }
+});
+
+test("Careers' opening moves, hides, previews and publishes while its content stays available (D148)", async ({
+  page,
+  browser,
+}) => {
+  await signIn(page);
+  const original = (await readDocumentDraft<PageDocument>("PAGE:CAREERS"))!.draft;
+  const headline = original.sections.find((section) => section.type === "SIGN")!;
+  const before = headline.type === "SIGN" ? headline.content.headline.en : "";
+  const visitorContext = await browser.newContext();
+  const visitor = await visitorContext.newPage();
+  const headers = { origin: E2E_ORIGIN };
+  try {
+    await page.goto(ADMIN_ROUTES.page("CAREERS"));
+    await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.moveDown, "Page header") }).click();
+    await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.hide, "Page header") }).click();
+    await page.getByRole("button", { name: ADMIN_TEXT.saveDraft, exact: true }).click();
+    await expect(page.getByText(ADMIN_TEXT.changesNotPublished, { exact: true })).toBeVisible();
+    const saved = (await readDocumentDraft<PageDocument>("PAGE:CAREERS"))!.draft;
+    expect(saved.sections.findIndex((section) => section.type === "SIGN")).toBe(1);
+    expect(saved.sections.find((section) => section.type === "SIGN")!.visible).toBe(false);
+    await visitor.goto(ROUTES.careers);
+    await expect(visitor.getByRole("heading", { level: 1, name: before })).toBeVisible();
+    const [preview] = await Promise.all([
+      page.waitForEvent("popup"),
+      page.getByRole("link", { name: ADMIN_TEXT.preview, exact: true }).click(),
+    ]);
+    await expect(preview.getByRole("heading", { level: 1, name: UI_TEXT.openJobs })).toBeVisible();
+    await expect(preview.getByRole("heading", { name: before, exact: true })).toHaveCount(0);
+    await expect(preview.locator('[data-page="CAREERS"]')).toHaveCSS("padding-top", "0px");
+    await preview.close();
+    await page.getByRole("button", { name: ADMIN_TEXT.publish, exact: true }).click();
+    await page
+      .getByRole("dialog", { name: ADMIN_TEXT.publishTitle("Careers") })
+      .getByRole("button", { name: ADMIN_TEXT.publish, exact: true })
+      .click();
+    await expect(page.getByText(ADMIN_TEXT.isPublished("Careers"))).toBeVisible();
+    await visitor.reload();
+    await expect(visitor.getByRole("heading", { level: 1, name: UI_TEXT.openJobs })).toBeVisible();
+    await expect(visitor.getByRole("heading", { name: before, exact: true })).toHaveCount(0);
+    await expect(visitor.locator('[data-page="CAREERS"]')).toHaveCSS("padding-top", "0px");
+    await axe(visitor);
+    await axe(page);
+    await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.show, "Page header") }).click();
+    await page.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.moveUp, "Page header") }).click();
+  } finally {
+    expect((await page.request.put(ADMIN_API_ROUTES.adminPage("CAREERS"), { data: original, headers })).ok()).toBe(
+      true,
+    );
+    expect((await page.request.post(ADMIN_API_ROUTES.adminPagePublish("CAREERS"), { headers })).ok()).toBe(true);
+    await visitorContext.close();
+  }
+});
+
+for (const key of ["ABOUT", "SERVICES"] as const) {
+  const title = key === "ABOUT" ? "About" : "Services";
+  test(`${title}'s opening buttons can be enabled, previewed and hidden without losing their links (D156)`, async ({
+    page,
+    browser,
+  }) => {
+    await signIn(page);
+    const original = (await readDocumentDraft<PageDocument>(`PAGE:${key}`))!.draft;
+    const visitorContext = await browser.newContext();
+    const visitor = await visitorContext.newPage();
+    const path = key === "ABOUT" ? ROUTES.about : ROUTES.services;
+    const headers = { origin: E2E_ORIGIN };
+    try {
+      await page.goto(ADMIN_ROUTES.page(key));
+      await page.getByRole("button", { name: /Page header/, expanded: false }).click();
+      const toggle = page.getByRole("switch", { name: ADMIN_TEXT.showOpeningButtons });
+      await expect(toggle).not.toBeChecked();
+      await visitor.goto(path);
+      await expect(visitor.locator("#start").getByRole("link")).toHaveCount(0);
+      for (const visible of [true, false]) {
+        await toggle.setChecked(visible);
+        const [preview] = await Promise.all([
+          page.waitForEvent("popup"),
+          page.getByRole("link", { name: ADMIN_TEXT.preview, exact: true }).click(),
+        ]);
+        await expect(preview.locator("#start").getByRole("link")).toHaveCount(visible ? 2 : 0);
+        await preview.close();
+        await page.getByRole("button", { name: ADMIN_TEXT.publish, exact: true }).click();
+        const published = page.waitForResponse(
+          (response) =>
+            response.url().endsWith(ADMIN_API_ROUTES.adminPagePublish(key)) && response.request().method() === "POST",
+        );
+        await page
+          .getByRole("dialog", { name: ADMIN_TEXT.publishTitle(title) })
+          .getByRole("button", { name: ADMIN_TEXT.publish, exact: true })
+          .click();
+        expect((await published).ok()).toBe(true);
+        await expect(page.getByText(ADMIN_TEXT.isPublished(title))).toBeVisible();
+        await visitor.reload();
+        await expect(visitor.locator("#start").getByRole("link")).toHaveCount(visible ? 2 : 0);
+      }
+    } finally {
+      expect((await page.request.put(ADMIN_API_ROUTES.adminPage(key), { data: original, headers })).ok()).toBe(true);
+      expect((await page.request.post(ADMIN_API_ROUTES.adminPagePublish(key), { headers })).ok()).toBe(true);
+      await visitorContext.close();
+    }
+  });
+}
+
 test("Pages lists the eight pages with their state, and a page's editor passes axe with a section open", async ({
   page,
 }) => {

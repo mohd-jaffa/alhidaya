@@ -2,6 +2,7 @@ import { UI_TEXT } from "@/constants/messages";
 import { mailtoHref, telHref, whatsappHref } from "@/lib/contact";
 
 import { PillLink } from "./pill";
+import { Pictogram } from "./pictogram";
 import type { PillVariant } from "./pill-classes";
 
 /**
@@ -34,7 +35,10 @@ export function ContactAction({
   const { label, href } = KINDS[kind];
   return (
     <PillLink href={href(to)} variant={variant} size={size} arrow={arrow} className={className}>
-      {label}
+      <span className="inline-flex items-center gap-2">
+        {kind === "whatsapp" ? <Pictogram name="chat" size="sm" /> : null}
+        {label}
+      </span>
     </PillLink>
   );
 }

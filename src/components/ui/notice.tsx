@@ -29,7 +29,11 @@ export function Notice({
 }) {
   const { pictogram, frame, icon } = TONES[tone];
   return (
-    <div role={tone === "error" ? "alert" : "status"} className={`flex gap-3 rounded-panel p-4 ${frame}`}>
+    <div
+      data-font-role={tone === "error" ? "error" : "status"}
+      role={tone === "error" ? "alert" : "status"}
+      className={`flex gap-3 rounded-panel p-4 ${frame}`}
+    >
       <Pictogram name={pictogram} size="md" className={icon} />
       <div className="grid gap-1">
         <p id={titleId} className="font-semibold">

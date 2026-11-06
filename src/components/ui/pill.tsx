@@ -1,3 +1,5 @@
+"use no memo"; // Small and rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
+
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
@@ -41,9 +43,9 @@ export function Pill({
     <button
       type={type}
       className={pillClasses({ variant, size }, className)}
-      aria-busy={pending || undefined}
-      disabled={pending || props.disabled}
       {...props}
+      aria-busy={pending || props["aria-busy"]}
+      disabled={pending || props.disabled}
     >
       <Content arrow={arrow}>{children}</Content>
     </button>

@@ -18,6 +18,7 @@ describe("the page rules", () => {
     expect(DOCUMENT_KEYS).toEqual([
       ...PAGE_KEYS.map((page) => `PAGE:${page}`),
       "SITE",
+      "TYPOGRAPHY",
       "ORDER:SERVICES",
       "ORDER:CLIENTS",
     ]);

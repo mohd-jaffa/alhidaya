@@ -4,7 +4,7 @@ import { UPLOAD_LIMITS } from "@/constants/limits";
 import { IMAGE_OUTPUTS, IMAGE_WIDTHS } from "@/constants/uploads";
 import { validationError } from "@/lib/errors";
 
-// One image at a time: the server has one core and 1 GB of memory (plan §15, §21.1).
+// Bound libvips worker threads per pipeline on the one-core server (plan §15, §21.1).
 sharp.concurrency(1);
 
 export interface MadeSize {
@@ -22,27 +22,29 @@ export interface MadeSize {
  * damage refuses the file.
  */
 export async function makeImageSizes(original: Uint8Array): Promise<MadeSize[]> {
-  const source = () => sharp(original, { limitInputPixels: UPLOAD_LIMITS.imageMaxPixels, autoOrient: true });
-  let width: number;
+  const source = () =>
+    sharp(original, { limitInputPixels: UPLOAD_LIMITS.imageMaxPixels, autoOrient: true, failOn: "warning" });
   try {
-    width = (await source().metadata()).autoOrient.width;
+    const width = (await source().metadata()).autoOrient.width;
+    const widths = new Set([
+      ...IMAGE_WIDTHS.filter((candidate) => candidate < width),
+      Math.min(width, UPLOAD_LIMITS.imageMaxWidth),
+    ]);
+
+    const sizes: MadeSize[] = [];
+    for (const target of widths) {
+      for (const { type, quality } of IMAGE_OUTPUTS) {
+        const { data, info } = await source()
+          .resize({ width: target, withoutEnlargement: true })
+          .toFormat(type, { quality })
+          .toBuffer({ resolveWithObject: true });
+        sizes.push({ width: info.width, height: info.height, type, bytes: new Uint8Array(data) });
+      }
+    }
+    return sizes;
   } catch {
+    // A readable header does not prove that the pixels can be safely decoded.
+    // Reject failures in any output conversion before a single variant is stored.
     throw validationError("UPLOAD_TYPE_NOT_ALLOWED");
   }
-  const widths = new Set([
-    ...IMAGE_WIDTHS.filter((candidate) => candidate < width),
-    Math.min(width, UPLOAD_LIMITS.imageMaxWidth),
-  ]);
-
-  const sizes: MadeSize[] = [];
-  for (const target of widths) {
-    for (const { type, quality } of IMAGE_OUTPUTS) {
-      const { data, info } = await source()
-        .resize({ width: target, withoutEnlargement: true })
-        .toFormat(type, { quality })
-        .toBuffer({ resolveWithObject: true });
-      sizes.push({ width: info.width, height: info.height, type, bytes: new Uint8Array(data) });
-    }
-  }
-  return sizes;
 }

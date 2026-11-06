@@ -8,6 +8,9 @@ import { PreviewBar } from "@/components/site/PreviewBar";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SkipLink } from "@/components/site/SkipLink";
+import { siteFontVariables } from "@/app/site-fonts";
+import { getPublishedTypography } from "@/features/settings/typography";
+import { typographyStyle } from "@/lib/typography/styles";
 import { getPublishedSite } from "@/features/settings/api";
 import { contentView, previewMetadata } from "@/lib/content/view";
 import { publicSiteUrl } from "@/lib/env/public";
@@ -29,10 +32,10 @@ export function generateMetadata(): Promise<Metadata> {
 export default async function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   await connection();
   const view = await contentView();
-  const site = await getPublishedSite(view);
+  const [site, typography] = await Promise.all([getPublishedSite(view), getPublishedTypography(view)]);
   return (
     <MotionProvider>
-      <div className="site-world min-h-dvh">
+      <div className={`site-world min-h-dvh ${siteFontVariables}`} style={typographyStyle(typography)}>
         <SkipLink />
         <PreviewBar active={view === "preview"} />
         <SiteHeader site={site} />

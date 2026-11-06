@@ -57,6 +57,7 @@ describe("the validation module", () => {
       "siteDocumentSchema",
       "slugSchema",
       "todayQuerySchema",
+      "typographySchema",
     ]);
   });
 });

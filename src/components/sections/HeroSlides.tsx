@@ -3,22 +3,20 @@
 
 import { type ReactNode, useState } from "react";
 
-import { Pictogram } from "@/components/ui/pictogram";
+import { CarouselArrow } from "@/components/ui/carousel-arrow";
 import { UI_TEXT } from "@/constants/messages";
 
 /** The current photo's slow drift (src/app/globals.css): its end moves the slides on. */
 const DRIFT = "drift";
 
-const ROUND = "grid size-11 shrink-0 place-items-center rounded-full transition-colors duration-(--duration-state)";
-
 /**
- * Home's slides in motion (D128): which slide shows, the one it replaced (so
- * the new photo wipes in over it), and whether the visitor paused them. A
- * slide moves on when its photo's slow drift ends, as its bar fills: both are
- * CSS animations of the same length, so the pause stops both together; the
- * photo shows at every width, where the bars do not. With motion reduced
- * neither runs and the slides stay until the visitor moves them. The words and photos are
- * drawn on the server; this only marks the current ones.
+ * Home's automatic slides: a three-second photo drift and progress
+ * bar share the clock. The incoming wipe has its own layer; the outgoing
+ * photo holds its last frame beneath it. Each visit starts a fresh drift.
+ * Deliberate keyboard focus stops the clock without a button; hovering or
+ * clicking the photo never stops automatic playback. With reduced
+ * motion automatic playback stops and the chevrons still choose slides.
+ * Words and photos are server drawn.
  */
 export function HeroSlides({
   label,
@@ -33,21 +31,21 @@ export function HeroSlides({
   note: ReactNode;
 }) {
   const count = texts.length;
-  const [{ at, was }, setPlace] = useState({ at: 0, was: -1 });
-  const [paused, setPaused] = useState(false);
-  const go = (next: number) => setPlace((place) => ({ at: (next + count) % count, was: place.at }));
-  const two = (value: number) => String(value).padStart(2, "0");
+  const [{ at, was, turn }, setPlace] = useState({ at: 0, was: -1, turn: 0 });
+  const move = (step: number) =>
+    setPlace((place) => ({ at: (place.at + step + count) % count, was: place.at, turn: place.turn + 1 }));
 
   return (
     <section
       aria-roledescription="carousel"
       aria-label={label}
-      data-paused={paused || undefined}
+      aria-description={count > 1 ? UI_TEXT.slidesAutoplayHelp : undefined}
+      tabIndex={count > 1 ? 0 : undefined}
       data-moved={was >= 0 || undefined}
       className="slides-band grid border-t border-rule lg:min-h-[40rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)]"
     >
       <div className="grid content-center gap-10 px-gutter py-10 sm:py-14 lg:ps-[max(var(--spacing-gutter),calc((100vw-var(--container-site))/2+var(--spacing-gutter)))] lg:pe-14">
-        <div className="grid" aria-live={paused ? "polite" : "off"}>
+        <div className="grid lg:min-h-slide-copy" aria-live="off">
           {texts.map((text, index) => (
             <div
               key={index}
@@ -62,52 +60,23 @@ export function HeroSlides({
           ))}
         </div>
         {count > 1 ? (
-          <div className="flex items-center gap-3 justify-self-start rounded-pill bg-mist p-1.5 pe-2">
-            <button
-              type="button"
-              onClick={() => go(at - 1)}
-              aria-label={UI_TEXT.previousSlide}
-              className={`${ROUND} bg-ground text-deep ring-[1.5px] ring-rule ring-inset hover:ring-deep`}
-            >
-              <Pictogram name="arrow" size="sm" className="rotate-180 rtl:rotate-0" />
-            </button>
-            <button
-              type="button"
-              onClick={() => go(at + 1)}
-              aria-label={UI_TEXT.nextSlide}
-              className={`${ROUND} bg-deep text-on-deep hover:bg-navy`}
-            >
-              <Pictogram name="arrow" size="sm" className="rtl:rotate-180" />
-            </button>
-            <div className="flex items-center gap-1.5 max-sm:hidden">
+          <div className="slide-progress flex max-w-full items-center gap-1 justify-self-start rounded-pill bg-mist p-1">
+            <CarouselArrow direction="previous" onClick={() => move(-1)} />
+            <div className="flex min-w-0 items-center gap-(--spacing-slide-progress-gap)" aria-hidden="true">
               {texts.map((_, index) => (
-                <button
+                <span
                   key={index}
-                  type="button"
-                  onClick={() => go(index)}
-                  aria-label={UI_TEXT.slideOf(index + 1, count)}
-                  aria-current={index === at || undefined}
                   data-current={index === at || undefined}
                   data-done={index < at || undefined}
-                  className="slide-bar grid h-11 w-6 items-center transition-[width] duration-(--duration-state) data-current:w-12"
+                  className="slide-bar grid w-6 items-center sm:w-8"
                 >
-                  <span className="block h-1 rounded-pill bg-rule">
+                  <span className="slide-rail block h-1 rounded-pill bg-rule">
                     <span className="slide-fill block h-full rounded-pill bg-deep" />
                   </span>
-                </button>
+                </span>
               ))}
             </div>
-            <span className="px-1 text-small text-ink-2 tabular-nums">
-              {two(at + 1)} / {two(count)}
-            </span>
-            <button
-              type="button"
-              onClick={() => setPaused((now) => !now)}
-              aria-label={paused ? UI_TEXT.playSlides : UI_TEXT.pauseSlides}
-              className={`${ROUND} relative size-9 bg-ground text-navy ring-[1.5px] ring-rule ring-inset before:absolute before:-inset-1 hover:ring-deep motion-reduce:hidden`}
-            >
-              <Pictogram name={paused ? "play" : "pause"} size="sm" />
-            </button>
+            <CarouselArrow direction="next" onClick={() => move(1)} />
           </div>
         ) : null}
       </div>
@@ -117,12 +86,19 @@ export function HeroSlides({
             key={index}
             data-current={index === at || undefined}
             data-was={index === was || undefined}
-            onAnimationEnd={(event) => {
-              if (index === at && event.animationName === DRIFT) go(at + 1);
-            }}
+            aria-hidden={index !== at}
             className="slide-photo absolute inset-0"
           >
-            {photo}
+            <div
+              key={index === at ? turn : index === was ? turn - 1 : -1}
+              onAnimationEnd={(event) => {
+                if (count > 1 && index === at && event.target === event.currentTarget && event.animationName === DRIFT)
+                  move(1);
+              }}
+              className="slide-image absolute inset-0"
+            >
+              {photo}
+            </div>
           </div>
         ))}
         {note}

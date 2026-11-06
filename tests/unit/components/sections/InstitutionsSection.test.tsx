@@ -15,7 +15,7 @@ describe("InstitutionsSection", () => {
     expect(screen.getByRole("region", { name: "For institutions" })).toBeInTheDocument();
     expect(screen.getByText("Nurse staffing.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: UI_TEXT.requestQuote })).toHaveAttribute("href", ROUTES.quote);
-    expect(screen.getByText(AUDIENCE_LABELS.INSTITUTIONS)).toHaveClass("text-deep");
+    expect(screen.queryByText(AUDIENCE_LABELS.INSTITUTIONS)).toBeNull();
     expect(screen.getByRole("img")).toBeInTheDocument();
 
     rerender(<InstitutionsSection anchor="institutions" content={contentFixture("INSTITUTIONS")} image={null} />);

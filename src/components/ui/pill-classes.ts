@@ -9,6 +9,8 @@
 const VARIANTS = {
   deep: "bg-deep text-on-deep shadow-raised hover:bg-navy",
   line: "text-deep ring-[1.5px] ring-deep ring-inset hover:bg-mist",
+  /** On the deep-blue phone menu (D167): the card's white, its words deep blue. */
+  onDeep: "bg-card text-deep shadow-raised hover:bg-mist focus-visible:outline-focus-on-deep",
   /** On the leaf footer or a green card: white, its words navy. */
   onLeaf: "bg-ground text-navy hover:bg-leaf-pale focus-visible:outline-focus-on-leaf",
   /** Beside it on the leaf: outlined in navy. */
@@ -29,7 +31,7 @@ export function pillClasses(
   className?: string,
 ): string {
   return [
-    "group inline-flex items-center justify-center gap-2 rounded-button font-semibold leading-tight no-underline",
+    "font-role-button group inline-flex items-center justify-center gap-2 rounded-button font-semibold leading-tight no-underline",
     "transition-[background-color,color,transform] duration-(--duration-state) ease-out active:scale-[0.98]",
     "disabled:cursor-not-allowed disabled:opacity-50 aria-busy:cursor-progress",
     VARIANTS[variant],

@@ -35,9 +35,9 @@ interface Look {
 
 export function buttonClasses({ variant = "primary", size = "md" }: Look, className?: string): string {
   return [
-    "inline-flex items-center justify-center gap-2 rounded-control font-semibold leading-tight no-underline",
+    "font-role-button inline-flex min-w-0 max-w-full items-center justify-center gap-2 rounded-control font-semibold leading-tight no-underline",
     "transition-transform duration-(--duration-press) ease-out active:scale-[0.98]",
-    "disabled:cursor-not-allowed disabled:opacity-50 aria-busy:cursor-progress",
+    "disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-busy:cursor-progress",
     VARIANTS[variant],
     SIZES[size],
     className,
@@ -50,7 +50,7 @@ function Content({ pictogram, children }: { pictogram?: PictogramName; children:
   return (
     <>
       {pictogram ? <Pictogram name={pictogram} size="sm" /> : null}
-      <span>{children}</span>
+      <span className="min-w-0 wrap-anywhere">{children}</span>
     </>
   );
 }
@@ -73,9 +73,9 @@ export function Button({
     <button
       type={type}
       className={buttonClasses({ variant, size }, className)}
-      aria-busy={pending || undefined}
-      disabled={pending || props.disabled}
       {...props}
+      aria-busy={pending || props["aria-busy"]}
+      disabled={pending || props.disabled}
     >
       <Content pictogram={pictogram}>{children}</Content>
     </button>

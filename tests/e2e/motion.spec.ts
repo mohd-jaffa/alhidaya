@@ -15,6 +15,56 @@ async function openMenu(page: Page) {
   return page.getByRole("dialog", { name: UI_TEXT.menu }).getByRole("listitem");
 }
 
+test("the footer logo stays stationary while its diagonal shine repeats, and reduced motion hides the shine", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const footer = page.getByRole("contentinfo");
+  const logo = footer.getByRole("img", { name: UI_TEXT.siteName });
+  await logo.scrollIntoViewIfNeeded();
+  const before = (await logo.boundingBox())!;
+  const shine = footer.locator(".footer-logo-shine");
+  await expect(shine).toHaveAttribute("aria-hidden", "true");
+  await expect(shine).toHaveCSS("mask-size", "contain");
+  await expect(logo).toHaveCSS("object-fit", "contain");
+  expect(await shine.evaluate((element) => getComputedStyle(element).maskImage)).toContain(
+    (await logo.getAttribute("src"))!,
+  );
+  const frames = await shine.evaluate((element) => {
+    const [animation] = element.getAnimations({ subtree: true });
+    animation.pause();
+    const sample = (time: number) => {
+      animation.currentTime = time;
+      const style = getComputedStyle(element, "::after");
+      return { transform: style.transform, opacity: Number(style.opacity), iterations: style.animationIterationCount };
+    };
+    const effect = animation.effect as KeyframeEffect;
+    return {
+      duration: effect.getTiming().duration,
+      offsets: effect.getKeyframes().map((frame) => frame.computedOffset),
+      samples: [sample(0), sample(2500), sample(6000), sample(7600), sample(8050)],
+    };
+  });
+  expect(frames.duration).toBe(7250);
+  const sweep = (frames.offsets.at(-2)! - frames.offsets[1]) * Number(frames.duration);
+  expect(sweep).toBeCloseTo(4500, 2);
+  expect(Number(frames.duration) - sweep).toBeCloseTo(2750, 2);
+  expect(frames.samples[0].opacity).toBe(0);
+  expect(frames.samples[1].opacity).toBeGreaterThan(0);
+  expect(frames.samples[1].transform).not.toBe(frames.samples[0].transform);
+  expect(frames.samples[2].opacity).toBe(0);
+  expect(frames.samples[3].opacity).toBe(0);
+  expect(frames.samples[4].opacity).toBeGreaterThan(0);
+  expect(frames.samples[1].iterations).toBe("infinite");
+  expect((await logo.boundingBox())!.width).toBe(before.width);
+  expect((await logo.boundingBox())!.height).toBe(before.height);
+  await expect(logo).toHaveCSS("transform", "none");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(shine).toBeHidden();
+  await expect(logo).toBeVisible();
+});
+
 test.describe("with a mouse or trackpad", () => {
   test("Lenis smooths the wheel once the page has painted", async ({ page }) => {
     await page.goto(KIT);
@@ -54,15 +104,38 @@ test.describe("on a touch screen", () => {
     await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
   });
 
-  test("the menu fades in, its rows rising into place one after another (D117)", async ({ page }) => {
+  test("the menu's sheet drops in and its rows settle one after another; it lifts away, rows fading, before it closes (D117, D167)", async ({
+    page,
+  }) => {
     const rows = await openMenu(page);
-    await expect(rows.first()).toHaveCSS("animation-name", "rise");
+    const menu = page.getByRole("dialog", { name: UI_TEXT.menu });
+    await expect(menu).toHaveCSS("animation-name", "menu-in");
+    await expect(rows.first()).toHaveCSS("animation-name", "menu-row-in");
     const delays = await rows.evaluateAll((items) =>
       items.map((item) => parseFloat(getComputedStyle(item).animationDelay)),
     );
     expect(delays).toEqual([...delays].sort((a, b) => a - b));
     expect(new Set(delays).size).toBe(delays.length);
     await expect(rows.last()).toHaveCSS("opacity", "1");
+    // At rest the sheet is in place (the finished animation reads as the identity matrix).
+    await expect(menu).toHaveCSS("transform", /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/);
+
+    // Closing: the rows fade as the sheet lifts; the dialog stays open until it has gone.
+    await menu.getByRole("button", { name: UI_TEXT.close }).click();
+    await expect(menu).toHaveAttribute("data-closing", "");
+    await expect(menu).toHaveCSS("animation-name", "menu-out");
+    await expect(rows.first()).toHaveCSS("animation-name", "menu-fade");
+    await expect(menu).toBeHidden();
+    // A closed dialog has no role to find it by; it is still the same element.
+    await expect(page.locator("dialog.menu-sheet")).not.toHaveAttribute("data-closing");
+    await expect(page.getByRole("button", { name: UI_TEXT.menu })).toBeFocused();
+
+    // Escape and a chosen page leave the same way.
+    await page.getByRole("button", { name: UI_TEXT.menu }).click();
+    await expect(menu).toHaveCSS("animation-name", "menu-in");
+    await page.keyboard.press("Escape");
+    await expect(menu).toHaveAttribute("data-closing", "");
+    await expect(menu).toBeHidden();
   });
 });
 
@@ -82,6 +155,12 @@ test.describe("with reduced motion", () => {
     const rows = await openMenu(page);
     await expect(rows.first()).toHaveCSS("animation-name", "none");
     await expect(rows.first()).toHaveCSS("opacity", "1");
+    // With nothing to animate, it goes at once, leaving nothing marked behind.
+    const menu = page.getByRole("dialog", { name: UI_TEXT.menu });
+    await expect(menu).toHaveCSS("animation-name", "none");
+    await menu.getByRole("button", { name: UI_TEXT.close }).click();
+    await expect(menu).toBeHidden();
+    await expect(page.locator("dialog.menu-sheet")).not.toHaveAttribute("data-closing");
   });
 });
 

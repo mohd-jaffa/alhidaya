@@ -17,15 +17,19 @@ export function ContactBandSection({
   anchor,
   content,
   site,
+  tone = "leaf",
+  cards = false,
 }: {
   anchor: string;
   content: ContactBandContent;
   site: SiteDocument | null;
+  tone?: "leaf" | "mist";
+  cards?: boolean;
 }) {
   return (
     <SectionBand
       anchor={anchor}
-      tone="leaf"
+      tone={tone}
       className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16"
     >
       <div className="grid content-start gap-4">
@@ -38,7 +42,7 @@ export function ContactBandSection({
       </div>
       {site ? (
         <Reveal>
-          <ContactWays site={site} />
+          <ContactWays site={site} cards={cards} />
         </Reveal>
       ) : null}
     </SectionBand>

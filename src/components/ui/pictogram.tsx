@@ -1,4 +1,6 @@
-import { DIRECTIONAL_PICTOGRAMS, PICTOGRAMS, type PictogramName } from "@/assets/brand/pictograms";
+"use no memo"; // Small and rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
+
+import { DIRECTIONAL_PICTOGRAMS, PICTOGRAMS, WHATSAPP_MARK, type PictogramName } from "@/assets/brand/pictograms";
 
 /** The sizes a pictogram is drawn at: inline with text, beside a control, on a line, on a sign. */
 const SIZES = {
@@ -41,9 +43,11 @@ export function Pictogram({ name, size = "md", label, className }: PictogramProp
       focusable="false"
       {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })}
     >
-      {PICTOGRAMS[name].map((path) => (
-        <path key={path} d={path} />
-      ))}
+      {name === "chat" ? (
+        <use href={WHATSAPP_MARK} width={24} height={24} fill="currentColor" stroke="none" />
+      ) : (
+        PICTOGRAMS[name].map((path) => <path key={path} d={path} />)
+      )}
     </svg>
   );
 }

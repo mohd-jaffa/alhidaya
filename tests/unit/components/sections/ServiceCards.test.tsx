@@ -8,6 +8,25 @@ import { imageFixture, publishedFixture, serviceFixture } from "@tests/support/f
 const en = <T,>(value: T) => ({ en: value });
 
 describe("ServiceCards", () => {
+  it("uses compact thumbnail-and-title links for the approved service-detail related section, without audience panels", () => {
+    const photo = imageFixture();
+    const withPhoto = publishedFixture(serviceFixture({ image: { mediaId: photo.id } }));
+    const without = publishedFixture(serviceFixture({ name: en("Elderly care"), slug: "elderly-care" }));
+    const { container } = render(
+      <ServiceCards
+        compact
+        services={[withPhoto, without]}
+        image={(ref) => (ref?.mediaId === photo.id ? photo : null)}
+      />,
+    );
+    expect(screen.getByRole("link", { name: "Home nursing care" })).toHaveAttribute(
+      "href",
+      ROUTES.service("home-nursing-care"),
+    );
+    expect(screen.getByRole("link", { name: "Elderly care" })).toBeInTheDocument();
+    expect(container.querySelectorAll("img")).toHaveLength(1);
+    expect(screen.queryByText("For families")).not.toBeInTheDocument();
+  });
   it("gives each service Home's card: its photo, its audience and its name opening its page (D135)", () => {
     const photo = imageFixture("A nurse at home");
     const withPhoto = publishedFixture(serviceFixture({ image: { mediaId: photo.id } }));
@@ -22,7 +41,7 @@ describe("ServiceCards", () => {
       "href",
       ROUTES.service("home-nursing-care"),
     );
-    expect(within(first).getByText("For families")).toBeInTheDocument();
+    expect(within(first).queryByText("For families")).toBeNull();
     // The photo shows the service the card names, so it is decoration beside the name.
     expect(container.querySelectorAll("img")).toHaveLength(1);
     expect(first.querySelector("img")).toHaveAttribute("alt", "");

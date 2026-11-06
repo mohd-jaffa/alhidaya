@@ -36,6 +36,8 @@ function onBand(page: PageKey, section: Section): boolean {
     case "JOBS_LIST":
     case "RICH_TEXT":
       return page === "CAREERS";
+    case "SERVICES_INDEX":
+      return page === "SERVICES";
     default:
       return false;
   }
@@ -47,12 +49,14 @@ function SectionFor({
   anchor,
   data,
   forms,
+  hasSign,
 }: {
   page: PageKey;
   section: Section;
   anchor: string;
   data: SectionData;
   forms: Partial<Record<SectionForm, ReactNode>>;
+  hasSign: boolean;
 }) {
   const image = (ref: { mediaId: string } | null) => (ref ? (data.images.get(ref.mediaId) ?? null) : null);
   switch (section.type) {
@@ -76,11 +80,14 @@ function SectionFor({
           content={section.content}
           image={image(section.content.image)}
           more={page === "HOME" ? ROUTES.about : null}
+          alignToPhoto={page === "ABOUT"}
+          pointCards={page === "HOME"}
         />
       );
     case "SERVICES_INDEX":
       return (
         <ServicesIndexSection
+          unified={page === "SERVICES"}
           anchor={anchor}
           content={section.content}
           services={data.services}
@@ -89,7 +96,7 @@ function SectionFor({
         />
       );
     case "VALUES":
-      return <ValuesSection anchor={anchor} content={section.content} />;
+      return <ValuesSection anchor={anchor} content={section.content} panels={page === "ABOUT"} />;
     case "MISSION":
       return <MissionSection anchor={anchor} content={section.content} />;
     case "INSTITUTIONS":
@@ -99,9 +106,26 @@ function SectionFor({
     case "CAREERS_BAND":
       return <CareersBandSection anchor={anchor} content={section.content} jobs={data.jobs} />;
     case "JOBS_LIST":
-      return <JobsListSection anchor={anchor} content={section.content} jobs={data.jobs} band={page === "CAREERS"} />;
+      return (
+        <JobsListSection
+          anchor={anchor}
+          content={section.content}
+          jobs={data.jobs}
+          image={image(section.content.image ?? null)}
+          band={page === "CAREERS"}
+          primary={!hasSign}
+        />
+      );
     case "CONTACT_BAND":
-      return <ContactBandSection anchor={anchor} content={section.content} site={data.site} />;
+      return (
+        <ContactBandSection
+          anchor={anchor}
+          content={section.content}
+          site={data.site}
+          tone={page === "SERVICES" ? "mist" : "leaf"}
+          cards={page === "ABOUT" || page === "SERVICES"}
+        />
+      );
     case "CONTACT_DETAILS":
       return <ContactDetailsSection anchor={anchor} content={section.content} site={data.site} />;
     case "FORM":
@@ -118,7 +142,15 @@ function SectionFor({
     case "RICH_TEXT":
       return <RichTextSection anchor={anchor} content={section.content} band={page === "CAREERS"} />;
     case "SERVICES_ROW":
-      return <ServicesRowSection anchor={anchor} content={section.content} services={data.services} image={image} />;
+      return (
+        <ServicesRowSection
+          pyramid={page === "HOME"}
+          anchor={anchor}
+          content={section.content}
+          services={data.services}
+          image={image}
+        />
+      );
   }
 }
 
@@ -142,10 +174,13 @@ export function PageSections({
 }) {
   const anchors = sectionAnchors(sections);
   const bands = sections.map((section) => onBand(page, section));
-  const top = KEEPS_HERO.includes(page) ? "pt-16 xl:pt-12" : "";
+  const top = KEEPS_HERO.includes(page) && sections[0]?.type === "SIGN" ? "pt-16 xl:pt-12" : "";
   const bottom = bands.at(-1) ? "" : "pb-section";
   return (
-    <div className={`grid grid-cols-[minmax(0,1fr)] gap-section ${top} ${bottom}`}>
+    <div
+      data-page={page}
+      className={`page-sections grid grid-cols-[minmax(0,1fr)] ${page === "CONTACT" ? "contact-page" : "gap-section"} ${top} ${bottom}`}
+    >
       {sections.map((section, index) => {
         const drawn = (
           <SectionFor
@@ -155,9 +190,12 @@ export function PageSections({
             anchor={anchors[index]}
             data={data}
             forms={forms}
+            hasSign={sections.some((item) => item.type === "SIGN")}
           />
         );
-        return bands[index] && bands[index - 1] ? (
+        const joinsOpening =
+          page === "SERVICES" && section.type === "SERVICES_INDEX" && sections[index - 1]?.type === "SIGN";
+        return page !== "CONTACT" && ((bands[index] && bands[index - 1]) || joinsOpening) ? (
           <div key={section.id} className="-mt-section">
             {drawn}
           </div>

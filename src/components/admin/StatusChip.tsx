@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
  * (D63).
  */
 const TONES = {
-  new: { chip: "bg-deep/10 text-deep", dot: "bg-deep" },
+  new: { chip: "bg-status-new/10 text-status-new", dot: "bg-status-new" },
   progress: { chip: "bg-sky/15 text-navy", dot: "bg-sky" },
   done: { chip: "bg-leaf/20 text-navy", dot: "bg-leaf" },
   off: { chip: "bg-mist text-ink-2", dot: "bg-ink-2" },

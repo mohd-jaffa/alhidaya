@@ -14,7 +14,15 @@ describe("Button", () => {
 
   it("stays in place and refuses a second press while it is busy", () => {
     render(
-      <Button type="submit" pending variant="secondary" size="lg" pictogram="download">
+      <Button
+        type="submit"
+        pending
+        disabled={false}
+        aria-busy={false}
+        variant="secondary"
+        size="lg"
+        pictogram="download"
+      >
         Sending
       </Button>,
     );

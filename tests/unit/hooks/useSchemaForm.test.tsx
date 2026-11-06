@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import * as z from "zod";
@@ -74,6 +74,25 @@ async function fillValid(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe("useSchemaForm", () => {
+  it("accepts only one submit while the schema is loading, while sending and after success", async () => {
+    let ready!: (value: z.ZodType) => void;
+    let finish!: () => void;
+    const loading = new Promise<z.ZodType>((resolve) => (ready = resolve));
+    const sent = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
+    render(<Probe load={() => loading} send={sent} />);
+    await fillValid(userEvent.setup());
+    const form = screen.getByRole("form", { name: "Probe" });
+    fireEvent.submit(form);
+    fireEvent.submit(form);
+    await act(async () => ready(schema));
+    expect(sent).toHaveBeenCalledOnce();
+    fireEvent.submit(form);
+    expect(sent).toHaveBeenCalledOnce();
+    await act(async () => finish());
+    fireEvent.submit(form);
+    expect(sent).toHaveBeenCalledOnce();
+    expect(screen.getByTestId("answered")).toHaveTextContent("1");
+  });
   it("fetches the schema once, when the visitor first reaches into the form", async () => {
     const user = userEvent.setup();
     const load = vi.fn(async () => schema);

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useForm } from "react-hook-form";
 import { beforeAll, describe, expect, it, vi } from "vitest";
@@ -95,11 +95,38 @@ describe("DraftEditor (D88, D92)", () => {
       />,
     );
     const preview = screen.getByRole("link", { name: ADMIN_TEXT.preview });
+    expect(preview).not.toHaveAttribute("aria-disabled");
+    expect(fireEvent(preview, new MouseEvent("auxclick", { bubbles: true, cancelable: true, button: 1 }))).toBe(true);
     preview.addEventListener("click", (event) => event.preventDefault());
     await userEvent.click(preview);
     expect(open).not.toHaveBeenCalled();
     expect(save).not.toHaveBeenCalled();
     open.mockRestore();
+  });
+
+  it("makes Preview unavailable while publishing a clean saved draft, then restores it", async () => {
+    let finish = () => {};
+    const publish = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
+    render(
+      <Thing
+        state={{ publishedAt: "2026-10-29T08:00:00Z", unpublishedChanges: true }}
+        path="/services/elderly-care"
+        publish={publish}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.publish }));
+    await userEvent.click(screen.getAllByRole("button", { name: ADMIN_TEXT.publish })[1]);
+    await waitFor(() => expect(publish).toHaveBeenCalledOnce());
+    const preview = screen.getByRole("link", { name: ADMIN_TEXT.preview });
+    expect(preview).toHaveAttribute("aria-disabled", "true");
+    expect(preview).toHaveAttribute("tabindex", "-1");
+    expect(screen.getByRole("textbox", { name: "Name" })).toBeDisabled();
+    expect(fireEvent.click(preview)).toBe(false);
+    expect(fireEvent(preview, new MouseEvent("auxclick", { bubbles: true, cancelable: true, button: 1 }))).toBe(false);
+    finish();
+    await waitFor(() => expect(preview).not.toHaveAttribute("aria-disabled"));
+    expect(preview).not.toHaveAttribute("tabindex");
+    expect(screen.getByRole("textbox", { name: "Name" })).toBeEnabled();
   });
 
   it("saves unsaved changes before it previews, its tab sent to the preview once saved (D120)", async () => {

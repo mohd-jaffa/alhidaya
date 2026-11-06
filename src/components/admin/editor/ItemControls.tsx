@@ -28,7 +28,7 @@ export function ItemControls({
   onRemove?: () => void;
 }) {
   return (
-    <div className="flex shrink-0">
+    <div className="flex min-w-0 max-w-full flex-wrap">
       <IconButton
         label={ADMIN_TEXT.actionOn(ADMIN_TEXT.moveUp, thing)}
         pictogram="chevronUp"

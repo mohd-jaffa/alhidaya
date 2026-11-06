@@ -30,6 +30,22 @@ function row(page: PageKey, index: number, sections = pageFixture(page).sections
 }
 
 describe("SectionRow", () => {
+  it("allows Careers' header to hide and move, but retains its content for restoration (D148)", async () => {
+    const { form, onMove } = row("CAREERS", 0);
+    expect(document.querySelector("[draggable]")).not.toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.hide, "Page header") }));
+    expect(form().getValues("sections.0.visible")).toBe(false);
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.show, "Page header") }));
+    expect(form().getValues("sections.0.visible")).toBe(true);
+    await userEvent.click(
+      screen.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.moveDown, "Page header") }),
+    );
+    expect(onMove).toHaveBeenCalledWith(1);
+    expect(screen.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.remove, "Page header") })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
   it("names its place, its kind and what it says first, and opens with its fields where it is", async () => {
     const { onToggle } = row("HOME", 1);
     const toggle = screen.getByRole("button", { expanded: false });

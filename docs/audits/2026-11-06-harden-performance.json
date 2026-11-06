@@ -1,0 +1,622 @@
+{
+  "finalHomeBuild": "vDyLyiKJCqSx9Lg_TEsVr",
+  "coverage": "Six affected templates; other five passed before the Home-only stability fix, Home rechecked afterward. Same strict production thresholds.",
+  "mobile": [
+    {
+      "route": "/services/school-nurse-staffing",
+      "lcp": 529.3944999999999,
+      "cls": 0,
+      "lighthouse": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "initialJS": 164561,
+      "runtime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 259
+      }
+    },
+    {
+      "route": "/contact",
+      "lcp": 525.6375,
+      "cls": 0,
+      "lighthouse": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "initialJS": 173839,
+      "runtime": {
+        "inpUpperBound": 32,
+        "interactionCount": 26,
+        "interactions": [32, 32, 32, 32, 32, 32, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.69999999999891,
+        "frameCount": 349
+      }
+    },
+    {
+      "route": "/services",
+      "lcp": 528.6610000000001,
+      "cls": 0,
+      "lighthouse": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "initialJS": 167427,
+      "runtime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 398
+      }
+    },
+    {
+      "route": "/about",
+      "lcp": 547.1579999999999,
+      "cls": 0,
+      "lighthouse": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "initialJS": 167427,
+      "runtime": {
+        "inpUpperBound": 40,
+        "interactionCount": 2,
+        "interactions": [40, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 469
+      }
+    },
+    {
+      "route": "/careers",
+      "lcp": 548.979,
+      "cls": 0,
+      "lighthouse": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "initialJS": 167427,
+      "runtime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 274
+      }
+    },
+    {
+      "route": "/",
+      "lcp": 548.4075,
+      "cls": 0,
+      "lighthouse": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "initialJS": 173842,
+      "runtime": {
+        "inpUpperBound": 120,
+        "interactionCount": 26,
+        "interactions": [
+          120, 64, 64, 48, 32, 32, 32, 32, 32, 32, 32, 24, 24, 24, 24, 24, 16, 16, 16, 16, 16, 16, 16, 16
+        ],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.018292682926829267,
+        "refreshInterval": 16.69999999999891,
+        "frameCount": 484
+      }
+    }
+  ],
+  "desktop": [
+    {
+      "route": "/services/school-nurse-staffing",
+      "runtime": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 236
+      }
+    },
+    {
+      "route": "/services",
+      "runtime": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0012675839522247943,
+        "shifts": [
+          {
+            "start": 282.5,
+            "value": 0.0012675839522247943,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:7\">institutions</span></span>",
+                "before": {
+                  "x": 433.34375,
+                  "y": 411.90625,
+                  "width": 295.984375,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 729.328125,
+                  "bottom": 489.421875,
+                  "left": 433.34375
+                },
+                "after": {
+                  "x": 444.1875,
+                  "y": 411.90625,
+                  "width": 324.28125,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 768.46875,
+                  "bottom": 489.421875,
+                  "left": 444.1875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:4\">and</span></span>",
+                "before": {
+                  "x": 554.25,
+                  "y": 341.1875,
+                  "width": 106.21875,
+                  "height": 77.515625,
+                  "top": 341.1875,
+                  "right": 660.46875,
+                  "bottom": 418.703125,
+                  "left": 554.25
+                },
+                "after": {
+                  "x": 559.765625,
+                  "y": 341.1875,
+                  "width": 111.484375,
+                  "height": 77.515625,
+                  "top": 341.1875,
+                  "right": 671.25,
+                  "bottom": 418.703125,
+                  "left": 559.765625
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 348
+      }
+    },
+    {
+      "route": "/about",
+      "runtime": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.04191906624415937,
+        "shifts": [
+          {
+            "start": 281.2999999523163,
+            "value": 0.04191906624415937,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 476.625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 476.625,
+                  "right": 826,
+                  "bottom": 558.625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 341.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 341.1875,
+                  "right": 826,
+                  "bottom": 423.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word text-deep\"><span data-word=\"true\" style=\"--i:3\">compassion</span></span>",
+                "before": {
+                  "x": 136,
+                  "y": 411.90625,
+                  "width": 339.109375,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 475.109375,
+                  "bottom": 489.421875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 276.453125,
+                  "y": 411.90625,
+                  "width": 359.671875,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 636.125,
+                  "bottom": 489.421875,
+                  "left": 276.453125
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 468
+      }
+    },
+    {
+      "route": "/contact",
+      "runtime": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 245
+      }
+    },
+    {
+      "route": "/careers",
+      "runtime": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 268
+      }
+    },
+    {
+      "route": "/",
+      "runtime": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0018122578687628599,
+        "shifts": [
+          {
+            "start": 289,
+            "value": 0.0018122578687628599,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 690,
+                  "height": 82,
+                  "top": 284,
+                  "right": 826,
+                  "bottom": 366,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 690,
+                  "height": 82,
+                  "top": 284,
+                  "right": 826,
+                  "bottom": 366,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 354.71875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 354.71875,
+                  "right": 826,
+                  "bottom": 436.71875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 354.71875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 354.71875,
+                  "right": 826,
+                  "bottom": 436.71875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a aria-current=\"page\" class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-m",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:5\">doorstep.</span></span>",
+                "before": {
+                  "x": 345.609375,
+                  "y": 360.71875,
+                  "width": 263.375,
+                  "height": 77.515625,
+                  "top": 360.71875,
+                  "right": 608.984375,
+                  "bottom": 438.234375,
+                  "left": 345.609375
+                },
+                "after": {
+                  "x": 351.25,
+                  "y": 360.71875,
+                  "width": 283.9375,
+                  "height": 77.515625,
+                  "top": 360.71875,
+                  "right": 635.1875,
+                  "bottom": 438.234375,
+                  "left": 351.25
+                }
+              },
+              {
+                "node": "<span class=\"rise-word text-deep\"><span data-word=\"true\" style=\"--i:1\">nursing</span></span>",
+                "before": {
+                  "x": 349.234375,
+                  "y": 290,
+                  "width": 207.28125,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 556.515625,
+                  "bottom": 367.515625,
+                  "left": 349.234375
+                },
+                "after": {
+                  "x": 355.5,
+                  "y": 290,
+                  "width": 221.640625,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 577.140625,
+                  "bottom": 367.515625,
+                  "left": 355.5
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 454
+      }
+    }
+  ]
+}

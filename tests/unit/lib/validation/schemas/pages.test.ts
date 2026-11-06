@@ -12,6 +12,25 @@ const messages = (page: Parameters<typeof pageDocumentSchema>[0], value: unknown
     .error?.issues.map((issue) => issue.message) ?? [];
 
 describe("sections", () => {
+  it("keeps legacy jobs documents valid and accepts only a valid optional photo reference (D174)", () => {
+    const jobs = section("JOBS_LIST");
+    for (const image of [undefined, null, { mediaId: crypto.randomUUID() }])
+      expect(sectionSchema.safeParse({ ...jobs, content: { ...jobs.content, image } }).success).toBe(true);
+    expect(sectionSchema.safeParse({ ...jobs, content: { ...jobs.content, image: { mediaId: "bad" } } }).success).toBe(
+      false,
+    );
+  });
+  it("accepts optional slider-pill visibility and refuses non-booleans (D157)", () => {
+    const sign = section("SIGN");
+    for (const hideNote of [true, false, undefined])
+      expect(sectionSchema.safeParse({ ...sign, content: { ...sign.content, hideNote } }).success).toBe(true);
+    expect(sectionSchema.safeParse({ ...sign, content: { ...sign.content, hideNote: "yes" } }).success).toBe(false);
+  });
+  it("accepts optional opening-action visibility and rejects non-boolean values (D156)", () => {
+    const sign = section("SIGN");
+    expect(sectionSchema.safeParse({ ...sign, content: { ...sign.content, showActions: true } }).success).toBe(true);
+    expect(sectionSchema.safeParse({ ...sign, content: { ...sign.content, showActions: "yes" } }).success).toBe(false);
+  });
   it("each hold their own content", () => {
     for (const type of SECTION_TYPES) expect(sectionSchema.safeParse(section(type)).success, type).toBe(true);
     expect(
@@ -58,6 +77,21 @@ describe("Home's slides (D128)", () => {
 });
 
 describe("a page", () => {
+  it("lets Careers move and hide its single retained header, while jobs stay visible (D148)", () => {
+    const careers = pageFixture("CAREERS");
+    const [sign, jobs] = careers.sections;
+    expect(messages("CAREERS", { ...careers, sections: [jobs, { ...sign, visible: false }] })).toEqual([]);
+    expect(messages("CAREERS", { ...careers, sections: [jobs, sign] })).toEqual([]);
+    expect(messages("CAREERS", { ...careers, sections: [jobs] })).toContain(
+      VALIDATION_MESSAGES.sectionRequired(SECTION_NAMES.SIGN),
+    );
+    expect(messages("CAREERS", { ...careers, sections: [sign, jobs, section("SIGN")] })).toContain(
+      VALIDATION_MESSAGES.sectionLimit(SECTION_NAMES.SIGN, 1),
+    );
+    expect(messages("CAREERS", { ...careers, sections: [sign, { ...jobs, visible: false }] })).toContain(
+      VALIDATION_MESSAGES.sectionRequired(SECTION_NAMES.JOBS_LIST),
+    );
+  });
   it("is valid as each page's fixture", () => {
     for (const page of PAGE_KEYS) expect(messages(page, pageFixture(page)), page).toEqual([]);
   });

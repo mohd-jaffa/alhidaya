@@ -6,7 +6,8 @@
  * 0.35, 1), the cubic in-out).
  */
 export const MOTION = {
-  duration: { press: 0.12, state: 0.2, reveal: 0.64 },
+  duration: { press: 0.12, state: 0.2, reveal: 0.64, typewriter: 6 },
+  typewriter: { typingShare: 0.34, deleteAt: 0.56, deleteShare: 0.34 },
   ease: { out: "expo.out", inOut: "power2.inOut" },
   /** How far a block rises as it is revealed, in pixels. */
   revealDistance: 24,

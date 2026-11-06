@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { useRevalidate } from "./useRevalidate";
 
@@ -19,11 +19,14 @@ export function useApiMutation<TInput, TResult>(
   } = {},
 ) {
   const refresh = useRevalidate();
+  const active = useRef(false);
   const [submitting, setSubmitting] = useState(false);
   const { revalidate, onSuccess, onError } = options;
 
   const submit = useCallback(
     async (input: TInput): Promise<TResult | undefined> => {
+      if (active.current) return undefined;
+      active.current = true;
       setSubmitting(true);
       try {
         const result = await run(input);
@@ -34,6 +37,7 @@ export function useApiMutation<TInput, TResult>(
         onError?.(failure);
         return undefined;
       } finally {
+        active.current = false;
         setSubmitting(false);
       }
     },

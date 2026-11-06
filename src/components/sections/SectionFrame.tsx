@@ -67,10 +67,18 @@ export function SectionBand({
 }
 
 /** A section's heading (D97): large and light, as the reference sets them. */
-export function SectionHeading({ anchor, children }: { anchor: string; children: ReactNode }) {
+export function SectionHeading({
+  anchor,
+  children,
+  as: Heading = "h2",
+}: {
+  anchor: string;
+  children: ReactNode;
+  as?: "h1" | "h2";
+}) {
   return (
-    <h2 id={headingId(anchor)} className="text-display font-normal text-balance">
+    <Heading id={headingId(anchor)} className="text-display font-normal text-balance">
       {children}
-    </h2>
+    </Heading>
   );
 }

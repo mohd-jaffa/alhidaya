@@ -1,360 +1,486 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-31T00:00:00Z",
-  "title": "Design System: Al Hidaya Health Care Services",
+  "generatedAt": "2026-11-04T00:00:00.000Z",
+  "title": "Design System: Al Hidaya Health Care Service",
   "extensions": {
     "colorMeta": {
-      "forest": {
-        "role": "primary",
-        "displayName": "Forest",
-        "canonical": "oklch(47.7% 0.115 137)",
-        "tonalRamp": [
-          "oklch(15% 0.030 137)",
-          "oklch(27% 0.086 137)",
-          "oklch(39% 0.103 137)",
-          "oklch(51% 0.110 137)",
-          "oklch(63% 0.094 137)",
-          "oklch(75% 0.077 137)",
-          "oklch(86% 0.062 137)",
-          "oklch(95% 0.030 137)"
-        ]
-      },
-      "forest-2": {
-        "role": "primary",
-        "displayName": "Forest Pressed",
-        "canonical": "oklch(41.6% 0.101 137)",
-        "tonalRamp": [
-          "oklch(15% 0.030 137)",
-          "oklch(27% 0.083 137)",
-          "oklch(39% 0.097 137)",
-          "oklch(51% 0.089 137)",
-          "oklch(63% 0.075 137)",
-          "oklch(75% 0.060 137)",
-          "oklch(86% 0.047 137)",
-          "oklch(95% 0.030 137)"
-        ]
-      },
-      "leaf-pale": {
-        "role": "primary",
-        "displayName": "Leaf Pale",
-        "canonical": "oklch(96.0% 0.026 123)",
-        "tonalRamp": [
-          "oklch(15% 0.004 123)",
-          "oklch(27% 0.005 123)",
-          "oklch(39% 0.008 123)",
-          "oklch(51% 0.012 123)",
-          "oklch(63% 0.016 123)",
-          "oklch(75% 0.020 123)",
-          "oklch(86% 0.023 123)",
-          "oklch(95% 0.026 123)"
-        ]
-      },
       "deep": {
-        "role": "secondary",
+        "role": "primary",
         "displayName": "Deep Blue",
-        "canonical": "oklch(49.6% 0.136 251)",
+        "canonical": "oklch(49.63% 0.13638 250.76)",
         "tonalRamp": [
-          "oklch(15% 0.030 251)",
-          "oklch(27% 0.099 251)",
-          "oklch(39% 0.119 251)",
-          "oklch(51% 0.134 251)",
-          "oklch(63% 0.114 251)",
-          "oklch(75% 0.095 251)",
-          "oklch(86% 0.077 251)",
-          "oklch(95% 0.030 251)"
+          "oklch(15% 0.04092 250.76)",
+          "oklch(27% 0.07365 250.76)",
+          "oklch(39% 0.10638 250.76)",
+          "oklch(51% 0.13638 250.76)",
+          "oklch(63% 0.13638 250.76)",
+          "oklch(75% 0.13638 250.76)",
+          "oklch(86% 0.07637 250.76)",
+          "oklch(95% 0.02728 250.76)"
         ]
       },
       "sky": {
         "role": "secondary",
         "displayName": "Sky Blue",
-        "canonical": "oklch(67.1% 0.128 237)",
+        "canonical": "oklch(67.09% 0.12835 237.00)",
         "tonalRamp": [
-          "oklch(15% 0.030 237)",
-          "oklch(27% 0.067 237)",
-          "oklch(39% 0.085 237)",
-          "oklch(51% 0.104 237)",
-          "oklch(63% 0.122 237)",
-          "oklch(75% 0.116 237)",
-          "oklch(86% 0.099 237)",
-          "oklch(95% 0.030 237)"
+          "oklch(15% 0.03851 237.00)",
+          "oklch(27% 0.06931 237.00)",
+          "oklch(39% 0.10012 237.00)",
+          "oklch(51% 0.12835 237.00)",
+          "oklch(63% 0.12835 237.00)",
+          "oklch(75% 0.12835 237.00)",
+          "oklch(86% 0.07188 237.00)",
+          "oklch(95% 0.02567 237.00)"
         ]
       },
       "leaf": {
-        "role": "secondary",
+        "role": "primary",
         "displayName": "Leaf",
-        "canonical": "oklch(69.9% 0.148 127)",
+        "canonical": "oklch(69.86% 0.14829 126.52)",
         "tonalRamp": [
-          "oklch(15% 0.030 127)",
-          "oklch(27% 0.072 127)",
-          "oklch(39% 0.093 127)",
-          "oklch(51% 0.115 127)",
-          "oklch(63% 0.136 127)",
-          "oklch(75% 0.139 127)",
-          "oklch(86% 0.120 127)",
-          "oklch(95% 0.030 127)"
+          "oklch(15% 0.04449 126.52)",
+          "oklch(27% 0.08007 126.52)",
+          "oklch(39% 0.11566 126.52)",
+          "oklch(51% 0.14829 126.52)",
+          "oklch(63% 0.14829 126.52)",
+          "oklch(75% 0.14829 126.52)",
+          "oklch(86% 0.08304 126.52)",
+          "oklch(95% 0.02966 126.52)"
         ]
       },
-      "navy": {
-        "role": "neutral",
-        "displayName": "Navy Ink",
-        "canonical": "oklch(25.8% 0.061 253)",
+      "leaf-2": {
+        "role": "primary",
+        "displayName": "Leaf Hover",
+        "canonical": "oklch(65.36% 0.13813 126.67)",
         "tonalRamp": [
-          "oklch(15% 0.030 253)",
-          "oklch(27% 0.060 253)",
-          "oklch(39% 0.051 253)",
-          "oklch(51% 0.043 253)",
-          "oklch(63% 0.034 253)",
-          "oklch(75% 0.025 253)",
-          "oklch(86% 0.017 253)",
-          "oklch(95% 0.010 253)"
+          "oklch(15% 0.04144 126.67)",
+          "oklch(27% 0.07459 126.67)",
+          "oklch(39% 0.10774 126.67)",
+          "oklch(51% 0.13813 126.67)",
+          "oklch(63% 0.13813 126.67)",
+          "oklch(75% 0.13813 126.67)",
+          "oklch(86% 0.07735 126.67)",
+          "oklch(95% 0.02763 126.67)"
         ]
       },
-      "ink-2": {
+      "on-leaf": {
         "role": "neutral",
-        "displayName": "Ink Two",
-        "canonical": "oklch(43.3% 0.061 256)",
+        "displayName": "On Leaf",
+        "canonical": "oklch(25.76% 0.06122 253.43)",
         "tonalRamp": [
-          "oklch(15% 0.030 256)",
-          "oklch(27% 0.049 256)",
-          "oklch(39% 0.058 256)",
-          "oklch(51% 0.055 256)",
-          "oklch(63% 0.047 256)",
-          "oklch(75% 0.038 256)",
-          "oklch(86% 0.030 256)",
-          "oklch(95% 0.023 256)"
+          "oklch(15% 0.01836 253.43)",
+          "oklch(27% 0.03306 253.43)",
+          "oklch(39% 0.04775 253.43)",
+          "oklch(51% 0.06122 253.43)",
+          "oklch(63% 0.06122 253.43)",
+          "oklch(75% 0.06122 253.43)",
+          "oklch(86% 0.03428 253.43)",
+          "oklch(95% 0.01224 253.43)"
         ]
       },
-      "ink-soft": {
+      "on-leaf-2": {
         "role": "neutral",
-        "displayName": "Quiet Grey",
-        "canonical": "oklch(63.1% 0.036 261)",
+        "displayName": "On Leaf Two",
+        "canonical": "oklch(32.52% 0.03548 213.05)",
         "tonalRamp": [
-          "oklch(15% 0.015 261)",
-          "oklch(27% 0.021 261)",
-          "oklch(39% 0.026 261)",
-          "oklch(51% 0.031 261)",
-          "oklch(63% 0.036 261)",
-          "oklch(75% 0.031 261)",
-          "oklch(86% 0.026 261)",
-          "oklch(95% 0.023 261)"
+          "oklch(15% 0.01065 213.05)",
+          "oklch(27% 0.01916 213.05)",
+          "oklch(39% 0.02768 213.05)",
+          "oklch(51% 0.03548 213.05)",
+          "oklch(63% 0.03548 213.05)",
+          "oklch(75% 0.03548 213.05)",
+          "oklch(86% 0.01987 213.05)",
+          "oklch(95% 0.00710 213.05)"
         ]
       },
-      "ground": {
-        "role": "neutral",
-        "displayName": "Ground",
-        "canonical": "oklch(100.0% 0.000 90)",
+      "forest": {
+        "role": "primary",
+        "displayName": "Forest",
+        "canonical": "oklch(52.75% 0.10948 126.18)",
         "tonalRamp": [
-          "oklch(15% 0.000 90)",
-          "oklch(27% 0.000 90)",
-          "oklch(39% 0.000 90)",
-          "oklch(51% 0.000 90)",
-          "oklch(63% 0.000 90)",
-          "oklch(75% 0.000 90)",
-          "oklch(86% 0.000 90)",
-          "oklch(95% 0.000 90)"
+          "oklch(15% 0.03284 126.18)",
+          "oklch(27% 0.05912 126.18)",
+          "oklch(39% 0.08540 126.18)",
+          "oklch(51% 0.10948 126.18)",
+          "oklch(63% 0.10948 126.18)",
+          "oklch(75% 0.10948 126.18)",
+          "oklch(86% 0.06131 126.18)",
+          "oklch(95% 0.02190 126.18)"
         ]
       },
-      "mist": {
-        "role": "neutral",
-        "displayName": "Mist",
-        "canonical": "oklch(97.1% 0.009 248)",
+      "leaf-pale": {
+        "role": "primary",
+        "displayName": "Leaf Pale",
+        "canonical": "oklch(95.98% 0.02612 123.42)",
         "tonalRamp": [
-          "oklch(15% 0.001 248)",
-          "oklch(27% 0.001 248)",
-          "oklch(39% 0.003 248)",
-          "oklch(51% 0.004 248)",
-          "oklch(63% 0.005 248)",
-          "oklch(75% 0.006 248)",
-          "oklch(86% 0.007 248)",
-          "oklch(95% 0.008 248)"
+          "oklch(15% 0.00784 123.42)",
+          "oklch(27% 0.01411 123.42)",
+          "oklch(39% 0.02038 123.42)",
+          "oklch(51% 0.02612 123.42)",
+          "oklch(63% 0.02612 123.42)",
+          "oklch(75% 0.02612 123.42)",
+          "oklch(86% 0.01463 123.42)",
+          "oklch(95% 0.00522 123.42)"
         ]
       },
-      "rule": {
+      "on-deep": {
         "role": "neutral",
-        "displayName": "Rule",
-        "canonical": "oklch(90.4% 0.021 248)",
+        "displayName": "On Deep",
+        "canonical": "oklch(100.00% 0.00000 0.00)",
         "tonalRamp": [
-          "oklch(15% 0.003 248)",
-          "oklch(27% 0.005 248)",
-          "oklch(39% 0.008 248)",
-          "oklch(51% 0.011 248)",
-          "oklch(63% 0.014 248)",
-          "oklch(75% 0.017 248)",
-          "oklch(86% 0.020 248)",
-          "oklch(95% 0.020 248)"
+          "oklch(15% 0.00000 0.00)",
+          "oklch(27% 0.00000 0.00)",
+          "oklch(39% 0.00000 0.00)",
+          "oklch(51% 0.00000 0.00)",
+          "oklch(63% 0.00000 0.00)",
+          "oklch(75% 0.00000 0.00)",
+          "oklch(86% 0.00000 0.00)",
+          "oklch(95% 0.00000 0.00)"
         ]
       },
       "on-deep-2": {
         "role": "neutral",
         "displayName": "On Deep Two",
-        "canonical": "oklch(92.8% 0.023 248)",
+        "canonical": "oklch(92.81% 0.02251 248.07)",
         "tonalRamp": [
-          "oklch(15% 0.003 248)",
-          "oklch(27% 0.005 248)",
-          "oklch(39% 0.008 248)",
-          "oklch(51% 0.011 248)",
-          "oklch(63% 0.014 248)",
-          "oklch(75% 0.018 248)",
-          "oklch(86% 0.021 248)",
-          "oklch(95% 0.022 248)"
+          "oklch(15% 0.00675 248.07)",
+          "oklch(27% 0.01215 248.07)",
+          "oklch(39% 0.01755 248.07)",
+          "oklch(51% 0.02251 248.07)",
+          "oklch(63% 0.02251 248.07)",
+          "oklch(75% 0.02251 248.07)",
+          "oklch(86% 0.01260 248.07)",
+          "oklch(95% 0.00450 248.07)"
         ]
       },
-      "on-forest-2": {
+      "navy": {
         "role": "neutral",
-        "displayName": "On Forest Two",
-        "canonical": "oklch(93.4% 0.034 127)",
+        "displayName": "Navy Ink",
+        "canonical": "oklch(25.76% 0.06122 253.43)",
         "tonalRamp": [
-          "oklch(15% 0.005 127)",
-          "oklch(27% 0.007 127)",
-          "oklch(39% 0.012 127)",
-          "oklch(51% 0.017 127)",
-          "oklch(63% 0.022 127)",
-          "oklch(75% 0.026 127)",
-          "oklch(86% 0.031 127)",
-          "oklch(95% 0.030 127)"
+          "oklch(15% 0.01836 253.43)",
+          "oklch(27% 0.03306 253.43)",
+          "oklch(39% 0.04775 253.43)",
+          "oklch(51% 0.06122 253.43)",
+          "oklch(63% 0.06122 253.43)",
+          "oklch(75% 0.06122 253.43)",
+          "oklch(86% 0.03428 253.43)",
+          "oklch(95% 0.01224 253.43)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Two",
+        "canonical": "oklch(43.34% 0.06096 255.86)",
+        "tonalRamp": [
+          "oklch(15% 0.01829 255.86)",
+          "oklch(27% 0.03292 255.86)",
+          "oklch(39% 0.04755 255.86)",
+          "oklch(51% 0.06096 255.86)",
+          "oklch(63% 0.06096 255.86)",
+          "oklch(75% 0.06096 255.86)",
+          "oklch(86% 0.03414 255.86)",
+          "oklch(95% 0.01219 255.86)"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "oklch(63.06% 0.03650 260.97)",
+        "tonalRamp": [
+          "oklch(15% 0.01095 260.97)",
+          "oklch(27% 0.01971 260.97)",
+          "oklch(39% 0.02847 260.97)",
+          "oklch(51% 0.03650 260.97)",
+          "oklch(63% 0.03650 260.97)",
+          "oklch(75% 0.03650 260.97)",
+          "oklch(86% 0.02044 260.97)",
+          "oklch(95% 0.00730 260.97)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "oklch(100.00% 0.00000 0.00)",
+        "tonalRamp": [
+          "oklch(15% 0.00000 0.00)",
+          "oklch(27% 0.00000 0.00)",
+          "oklch(39% 0.00000 0.00)",
+          "oklch(51% 0.00000 0.00)",
+          "oklch(63% 0.00000 0.00)",
+          "oklch(75% 0.00000 0.00)",
+          "oklch(86% 0.00000 0.00)",
+          "oklch(95% 0.00000 0.00)"
+        ]
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Page",
+        "canonical": "oklch(98.14% 0.00453 258.32)",
+        "tonalRamp": [
+          "oklch(15% 0.00136 258.32)",
+          "oklch(27% 0.00244 258.32)",
+          "oklch(39% 0.00353 258.32)",
+          "oklch(51% 0.00453 258.32)",
+          "oklch(63% 0.00453 258.32)",
+          "oklch(75% 0.00453 258.32)",
+          "oklch(86% 0.00254 258.32)",
+          "oklch(95% 0.00091 258.32)"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card",
+        "canonical": "oklch(99.36% 0.00170 247.84)",
+        "tonalRamp": [
+          "oklch(15% 0.00051 247.84)",
+          "oklch(27% 0.00092 247.84)",
+          "oklch(39% 0.00133 247.84)",
+          "oklch(51% 0.00170 247.84)",
+          "oklch(63% 0.00170 247.84)",
+          "oklch(75% 0.00170 247.84)",
+          "oklch(86% 0.00095 247.84)",
+          "oklch(95% 0.00034 247.84)"
+        ]
+      },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "oklch(97.08% 0.00856 247.91)",
+        "tonalRamp": [
+          "oklch(15% 0.00257 247.91)",
+          "oklch(27% 0.00462 247.91)",
+          "oklch(39% 0.00668 247.91)",
+          "oklch(51% 0.00856 247.91)",
+          "oklch(63% 0.00856 247.91)",
+          "oklch(75% 0.00856 247.91)",
+          "oklch(86% 0.00479 247.91)",
+          "oklch(95% 0.00171 247.91)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "oklch(90.43% 0.02091 248.06)",
+        "tonalRamp": [
+          "oklch(15% 0.00627 248.06)",
+          "oklch(27% 0.01129 248.06)",
+          "oklch(39% 0.01631 248.06)",
+          "oklch(51% 0.02091 248.06)",
+          "oklch(63% 0.02091 248.06)",
+          "oklch(75% 0.02091 248.06)",
+          "oklch(86% 0.01171 248.06)",
+          "oklch(95% 0.00418 248.06)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus",
+        "canonical": "oklch(49.63% 0.13638 250.76)",
+        "tonalRamp": [
+          "oklch(15% 0.04092 250.76)",
+          "oklch(27% 0.07365 250.76)",
+          "oklch(39% 0.10638 250.76)",
+          "oklch(51% 0.13638 250.76)",
+          "oklch(63% 0.13638 250.76)",
+          "oklch(75% 0.13638 250.76)",
+          "oklch(86% 0.07637 250.76)",
+          "oklch(95% 0.02728 250.76)"
+        ]
+      },
+      "focus-on-deep": {
+        "role": "neutral",
+        "displayName": "Focus on Deep",
+        "canonical": "oklch(100.00% 0.00000 0.00)",
+        "tonalRamp": [
+          "oklch(15% 0.00000 0.00)",
+          "oklch(27% 0.00000 0.00)",
+          "oklch(39% 0.00000 0.00)",
+          "oklch(51% 0.00000 0.00)",
+          "oklch(63% 0.00000 0.00)",
+          "oklch(75% 0.00000 0.00)",
+          "oklch(86% 0.00000 0.00)",
+          "oklch(95% 0.00000 0.00)"
+        ]
+      },
+      "focus-on-leaf": {
+        "role": "neutral",
+        "displayName": "Focus on Leaf",
+        "canonical": "oklch(25.76% 0.06122 253.43)",
+        "tonalRamp": [
+          "oklch(15% 0.01836 253.43)",
+          "oklch(27% 0.03306 253.43)",
+          "oklch(39% 0.04775 253.43)",
+          "oklch(51% 0.06122 253.43)",
+          "oklch(63% 0.06122 253.43)",
+          "oklch(75% 0.06122 253.43)",
+          "oklch(86% 0.03428 253.43)",
+          "oklch(95% 0.01224 253.43)"
         ]
       },
       "error": {
         "role": "error",
         "displayName": "Error Red",
-        "canonical": "oklch(50.0% 0.182 30)",
+        "canonical": "oklch(50.03% 0.18205 29.51)",
         "tonalRamp": [
-          "oklch(15% 0.030 30)",
-          "oklch(27% 0.132 30)",
-          "oklch(39% 0.158 30)",
-          "oklch(51% 0.180 30)",
-          "oklch(63% 0.154 30)",
-          "oklch(75% 0.128 30)",
-          "oklch(86% 0.103 30)",
-          "oklch(95% 0.030 30)"
+          "oklch(15% 0.05462 29.51)",
+          "oklch(27% 0.09831 29.51)",
+          "oklch(39% 0.14200 29.51)",
+          "oklch(51% 0.18205 29.51)",
+          "oklch(63% 0.18205 29.51)",
+          "oklch(75% 0.18205 29.51)",
+          "oklch(86% 0.10195 29.51)",
+          "oklch(95% 0.03641 29.51)"
         ]
       },
-      "on-forest": {
-        "role": "neutral",
-        "displayName": "On Forest"
-      },
-      "on-deep": {
-        "role": "neutral",
-        "displayName": "On Deep"
-      },
-      "focus": {
-        "role": "neutral",
-        "displayName": "Focus"
-      },
-      "focus-on-deep": {
-        "role": "neutral",
-        "displayName": "Focus On Dark"
+      "whatsapp": {
+        "role": "accent",
+        "displayName": "WhatsApp brand green",
+        "canonical": "#25d366",
+        "tonalRamp": ["#0b3f1f", "#126a33", "#1a9447", "#25d366", "#43dc7d", "#71e59c", "#a0edbc", "#d3f7df"]
       }
     },
     "typographyMeta": {
       "hero": {
         "displayName": "Hero",
-        "purpose": "The one h1 of a page: Home's hero and every PageHero; settling letters, one highlighted phrase."
+        "purpose": "Slide and page opening headlines."
       },
       "display": {
         "displayName": "Display",
-        "purpose": "A section's heading; the phone menu's page links."
-      },
-      "statement": {
-        "displayName": "Statement",
-        "purpose": "Home's one large centred sentence, navy and quiet-grey words."
-      },
-      "figure": {
-        "displayName": "Figure",
-        "purpose": "Counters' figures in a facts row."
-      },
-      "marquee": {
-        "displayName": "Marquee",
-        "purpose": "The footer's running words, uppercase."
+        "purpose": "Section headings and Mission/Vision titles."
       },
       "section": {
         "displayName": "Section",
-        "purpose": "Headings in long text and the admin's screen headings."
+        "purpose": "Admin section headings."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "A card's name; the hero fact's value."
+        "purpose": "Service, job, quote-card and contact titles."
       },
       "lead": {
         "displayName": "Lead",
-        "purpose": "The supporting line under a headline, in ink-2."
+        "purpose": "Supporting lines and Mission/Vision statements."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Running text, pill words, field values."
+        "purpose": "Reading text and controls."
       },
       "small": {
         "displayName": "Small",
-        "purpose": "Summaries, hints, credits, footer column headings, errors."
+        "purpose": "Hints, audience labels, footer details and errors."
+      },
+      "service-hero": {
+        "displayName": "Service hero",
+        "purpose": "Approved editorial service-detail headlines, 42–96 px."
+      },
+      "value-title": {
+        "displayName": "Value title",
+        "purpose": "About commitment panel headings; semantic h3 keeps its selected font family."
       }
     },
     "shadows": [
       {
-        "name": "float",
-        "value": "0 20px 44px -20px rgb(11 36 64 / 0.32)",
-        "purpose": "White cards floating over the hero photo."
-      },
-      {
         "name": "raised",
         "value": "0 8px 24px -12px rgb(11 36 64 / 0.28)",
-        "purpose": "The floating WhatsApp button."
+        "purpose": "Header pill, public buttons, service cards and WhatsApp."
+      },
+      {
+        "name": "float",
+        "value": "0 20px 44px -20px rgb(11 36 64 / 0.32)",
+        "purpose": "Soft-white card on the hero photo."
       },
       {
         "name": "overlay",
         "value": "0 24px 56px -16px rgb(11 36 64 / 0.38)",
-        "purpose": "A dialog."
+        "purpose": "Quote/form cards and dialogs."
+      },
+      {
+        "name": "careers-photo",
+        "value": "0 18px 32px -8px rgb(11 36 64 / 0.28), 0 6px 14px -4px rgb(11 36 64 / 0.18)",
+        "purpose": "The approved borderless Careers photo accent."
       }
     ],
     "motion": [
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Arrivals and state (GSAP expo.out)."
+        "purpose": "Shared state or arrival timing."
       },
       {
         "name": "ease-in-out",
         "value": "cubic-bezier(0.65, 0, 0.35, 1)",
-        "purpose": "Moves; the skeleton's fade (GSAP power2.inOut)."
+        "purpose": "Shared state or arrival timing."
       },
       {
         "name": "duration-press",
         "value": "120ms",
-        "purpose": "A press."
+        "purpose": "Shared state or arrival timing."
       },
       {
         "name": "duration-state",
         "value": "200ms",
-        "purpose": "Colour and arrow changes."
+        "purpose": "Shared state or arrival timing."
       },
       {
         "name": "duration-reveal",
         "value": "640ms",
-        "purpose": "A block rising once (24 px), cards 80 ms apart; photo hover zoom."
-      },
-      {
-        "name": "duration-count",
-        "value": "1400ms",
-        "purpose": "A counter counting up once."
+        "purpose": "Shared state or arrival timing."
       },
       {
         "name": "duration-settle",
         "value": "1100ms",
-        "purpose": "A headline's letters settling, 12 ms apart from 80 ms (CSS only)."
+        "purpose": "Retained settling letters on the Phase 6B openings."
       },
       {
-        "name": "scrub",
-        "value": "0.4s",
-        "purpose": "Scroll-linked tracks catching up."
+        "name": "duration-slide",
+        "value": "6s",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+      },
+      {
+        "name": "duration-slide-wipe",
+        "value": "1100ms",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+      },
+      {
+        "name": "duration-slide-word",
+        "value": "900ms",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+      },
+      {
+        "name": "stagger-slide-word",
+        "value": "45ms",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+      },
+      {
+        "name": "delay-slide-word",
+        "value": "160ms",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+      },
+      {
+        "name": "delay-slide-line",
+        "value": "480ms",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+      },
+      {
+        "name": "delay-slide-action",
+        "value": "620ms",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+      },
+      {
+        "name": "delay-slide-frame",
+        "value": "760ms",
+        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "lenis-lerp",
-        "value": "0.12",
-        "purpose": "Wheel smoothing per frame; never on touch."
+        "value": "0.16",
+        "purpose": "Desktop wheel smoothing, driven by the GSAP ticker; native touch scroll."
       },
       {
-        "name": "focus-ring",
-        "value": "3px solid var(--color-focus); outline-offset: 3px",
-        "purpose": "Every focusable thing; white on deep, navy or forest."
+        "name": "mission-panels",
+        "value": "640ms expo.out; arms 80ms apart; words 55ms apart",
+        "purpose": "Medical cross and globe, then masked headings and statements; scoped once, transform/opacity, no loop (D137)."
       }
     ],
     "breakpoints": [
@@ -374,163 +500,251 @@
         "name": "xl",
         "value": "1280px"
       }
-    ]
+    ],
+    "mobileAdaptation": {
+      "scope": "D161 public world only; D162 separately makes the navbar non-sticky at every width. Admin unchanged.",
+      "phoneBreakpoint": "48rem",
+      "headlineMin": "32px",
+      "sectionHeadingMin": "28px",
+      "supportingText": "17px",
+      "bodyInputMin": "16px",
+      "sectionSpacing": "40px",
+      "touchTargetMin": "44px",
+      "menuRow": "52px",
+      "photoOpening": "Compact copy/image fade with content-driven growth; optional note reserves its own space",
+      "layouts": "Compact shared photo openings, shorter intro crops, smaller mission art and related thumbnails, phone footer navigation in two columns, scrollable landscape menu"
+    },
+    "fontManager": {
+      "decision": "D168/D169",
+      "scope": "public website only",
+      "default": "Inter Tight",
+      "library": [
+        "Inter Tight",
+        "Inter",
+        "Atkinson Hyperlegible Next",
+        "Roboto",
+        "Open Sans",
+        "Source Sans 3",
+        "Nunito Sans",
+        "Manrope",
+        "DM Sans",
+        "Work Sans",
+        "Playfair Display",
+        "Cormorant Garamond",
+        "Fraunces",
+        "Space Grotesk",
+        "Syne"
+      ],
+      "editable": "font family per semantic role",
+      "workflow": "independent draft, authenticated preview, publish, discard",
+      "uploads": false
+    },
+    "responsiveConsistency": {
+      "decision": "D172–D179",
+      "publicNav": "Shared soft-white surface and 64/76/100 px height; only photo openings overlap.",
+      "brandLogo": "Contain fitting; footer shine uses centred contain mask.",
+      "contactCards": "Off-white rounded channels, bold terms, 8 px independent translate on hover/focus; static reduced-motion shadow.",
+      "homeContactSquares": "WhatsApp green/navy mark; navy Call/Email squares with white marks.",
+      "targets": "Admin menu, back links, activity/media links, pagination and footer links retain 44 px targets.",
+      "careers": "Approved nursing-photo accent: shadow, no white border, green-gradient card on mist, compact outside spacing and opacity-only one/two/three dots; static reduced motion.",
+      "contactBackdrop": "Deep-blue Reach us and message backdrop; off-white reach cards, green rounded message panel and white form remain.",
+      "serviceCatalogue": "No visible category labels, grouped lists or audience selector; existing historical data remains compatible.",
+      "aboutValues": "D177 Promise triptych: blue, green and mist panels; sequential reveals, stationary hover shine and static reduced motion.",
+      "contactMap": "Lazy Google satellite iframe, rounded shadow, accessible title, stable minimum 200 px geometry including enlarged text; confirmed pin or published business/area search. Stronger static two-layer navy map shadow (Nov 5 follow-up).",
+      "aboutIntro": "Description aligns with the image below the heading on wide screens; mobile order unchanged."
+    },
+    "polishD181": {
+      "compactServices": "Fill grid rows when title wrapping differs, with original composition and motion retained.",
+      "editorPreview": "Visibly and semantically unavailable during pending writes; normal/auxiliary activation blocked, then restored.",
+      "pendingEdits": "Native named fieldset locks editor controls during writes, protecting against response-reset races; restore after completion/failure, with zero-minimum width."
+    },
+    "homeRefinementsD182D183": {
+      "about": "Full-width off-white card, three equal columns from tablet, plain headings/descriptions without checks, stacked on phones.",
+      "hero": "Three-second isolated clock, plain SVG chevrons before/after decorative progress bars, no Pause/count, 44px targets, flexible rails and keyboard/reduced-motion support.",
+      "pyramid": "D185 selected the soft-photo-fade design with three landscape cards; see landscapePyramidD185."
+    },
+    "landscapePyramidD185": {
+      "composition": "Three landscape cards on every screen, centred front, two smaller/softer rear cards symmetrically offset left/right by 14%, scaling around a shared vertical centre at every width so both upper/lower corner gaps remain; no fixed downward drop or vertical deck. Whole pyramid inside existing max-site gutters.",
+      "caption": "Body-scale semibold white text centred at the photo bottom over a navy fade, with no label card or name arrow. Intrinsic text reflow at accessibility enlargement.",
+      "behavior": "Six-second automatic advance, manual arrows/swipe, keyboard-focus pause, reduced motion and native fallback retained; other service surfaces unchanged.",
+      "layoutStability": "Keep native flex layout boxes, a zero-minimum track/grid column, and compose the enhanced pyramid with transforms only. No deferred display/inset change or layout shift."
+    }
   },
   "components": [
     {
-      "name": "Forest Pill",
+      "name": "Deep Button",
       "kind": "button",
-      "refersTo": "pill-forest",
-      "description": "The one main action in a view; arrow steps forward on hover, presses in by transform.",
-      "html": "<a class=\"ds-pill ds-pill-forest\" href=\"#\"><span>WhatsApp</span><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a>",
-      "css": ".ds-pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;font-family:'Inter Tight',system-ui,sans-serif;font-size:1.0625rem;font-weight:500;line-height:1.25;text-decoration:none;transition:background-color 200ms cubic-bezier(0.16,1,0.3,1),color 200ms cubic-bezier(0.16,1,0.3,1),transform 200ms cubic-bezier(0.16,1,0.3,1)}.ds-pill svg{transition:transform 200ms cubic-bezier(0.16,1,0.3,1)}.ds-pill:hover svg{transform:translateX(4px)}.ds-pill:active{transform:scale(0.98)}.ds-pill:focus-visible{outline:3px solid #0f64ac;outline-offset:3px}.ds-pill-forest{background:#3b6b24;color:#fff}.ds-pill-forest:hover{background:#2f581c}"
+      "refersTo": "button-deep",
+      "description": "The public site’s main action: deep blue, white words, 12 px corners and a stepping arrow.",
+      "html": "<a class=\"ds-deep\" href=\"#\">Request a quote <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a>",
+      "css": ".ds-deep{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--radius-button,12px);font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif);font-size:var(--text-body,1.0625rem);font-weight:600;line-height:1.25;text-decoration:none;transition:background-color var(--duration-state,200ms),transform var(--duration-state,200ms);background:var(--color-deep,#0f64ac);color:var(--color-on-deep,#fff);box-shadow:var(--shadow-raised,0 8px 24px -12px rgb(11 36 64 / .28))}.ds-deep:hover{background:var(--color-navy,#0b2440)}.ds-deep svg{transition:transform var(--duration-state,200ms)}.ds-deep:hover svg{transform:translateX(4px)}.ds-deep:active{transform:scale(.98)}.ds-deep:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-deep{transition:none!important;animation:none!important}}"
     },
     {
-      "name": "Pale Pill",
+      "name": "Line Button",
       "kind": "button",
-      "refersTo": "pill-pale",
-      "description": "The action beside the forest pill.",
-      "html": "<a class=\"ds-pill ds-pill-pale\" href=\"#\">Request a quote</a>",
-      "css": ".ds-pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;font-family:'Inter Tight',system-ui,sans-serif;font-size:1.0625rem;font-weight:500;line-height:1.25;text-decoration:none;transition:background-color 200ms cubic-bezier(0.16,1,0.3,1),color 200ms cubic-bezier(0.16,1,0.3,1),transform 200ms}.ds-pill:active{transform:scale(0.98)}.ds-pill:focus-visible{outline:3px solid #0f64ac;outline-offset:3px}.ds-pill-pale{background:#eef5e2;color:#3b6b24}.ds-pill-pale:hover{background:#3b6b24;color:#fff}"
+      "refersTo": "button-line",
+      "description": "The quieter action beside a deep button: blue ring and words, mist on hover.",
+      "html": "<a class=\"ds-line\" href=\"#\">Call us <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a>",
+      "css": ".ds-line{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--radius-button,12px);font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif);font-size:var(--text-body,1.0625rem);font-weight:600;line-height:1.25;text-decoration:none;transition:background-color var(--duration-state,200ms),transform var(--duration-state,200ms);background:transparent;color:var(--color-deep,#0f64ac);box-shadow:inset 0 0 0 1.5px var(--color-deep,#0f64ac)}.ds-line:hover{background:var(--color-mist,#f1f6fb)}.ds-line:active{transform:scale(.98)}.ds-line:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-line{transition:none!important;animation:none!important}}"
     },
     {
-      "name": "Pill Label",
-      "kind": "chip",
-      "refersTo": "pill-label",
-      "description": "Who a section speaks to or what a page is, above its heading; left out where the headline names the page.",
-      "html": "<p class=\"ds-pill-label\">For families</p>",
-      "css": ".ds-pill-label{display:inline-flex;align-items:center;min-height:36px;margin:0;padding:0 16px;border-radius:999px;background:#eef5e2;color:#3b6b24;font-family:'Inter Tight',system-ui,sans-serif;font-size:1.0625rem;font-weight:500}"
-    },
-    {
-      "name": "Icon Chip",
-      "kind": "chip",
-      "refersTo": "icon-chip-pale",
-      "description": "A thin-line pictogram in a round chip; decoration beside words.",
-      "html": "<span class=\"ds-chip\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12.5l4.5 4.5L19 7\"/></svg></span> <span class=\"ds-chip ds-chip-forest\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/></svg></span>",
-      "css": ".ds-chip{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#eef5e2;color:#3b6b24}.ds-chip-forest{background:#3b6b24;color:#fff}"
-    },
-    {
-      "name": "Service Card",
-      "kind": "card",
-      "refersTo": "card-mist",
-      "description": "A mist card with its photo, name and arrow, and summary; the whole card is the link.",
-      "html": "<a class=\"ds-card\" href=\"#\"><span class=\"ds-card-photo\"></span><span class=\"ds-card-body\"><span class=\"ds-card-title\">Home nursing care <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></span><span class=\"ds-card-text\">Qualified nurses at home, day and night.</span></span></a>",
-      "css": ".ds-card{display:grid;gap:8px;width:280px;padding:8px 8px 24px;border-radius:28px;background:#f1f6fb;color:#0b2440;text-decoration:none;font-family:'Inter Tight',system-ui,sans-serif}.ds-card-photo{display:block;aspect-ratio:4/3;border-radius:20px;background:#eef5e2;transition:transform 640ms cubic-bezier(0.16,1,0.3,1)}.ds-card-body{display:grid;gap:8px;padding:0 12px}.ds-card-title{display:flex;justify-content:space-between;gap:12px;font-size:1.3125rem;font-weight:500;line-height:1.25}.ds-card-title svg{color:#3b6b24;transition:transform 200ms cubic-bezier(0.16,1,0.3,1)}.ds-card:hover .ds-card-title svg{transform:translateX(4px)}.ds-card:hover .ds-card-title{text-decoration:underline;text-underline-offset:4px}.ds-card-text{font-size:0.875rem;line-height:1.45;color:#3a5272}.ds-card:focus-visible{outline:3px solid #0f64ac;outline-offset:3px}"
-    },
-    {
-      "name": "Form Panel with Line Field",
+      "name": "Boxed Field",
       "kind": "input",
-      "refersTo": "field-line",
-      "description": "The site's forms: a mist panel, lined fields, the forest send pill.",
-      "html": "<form class=\"ds-form\"><label class=\"ds-label\" for=\"ds-n\">Your name</label><input id=\"ds-n\" class=\"ds-line\" placeholder=\"Full name\"><button type=\"button\" class=\"ds-send\">Send request</button></form>",
-      "css": ".ds-form{display:grid;gap:8px;max-width:420px;padding:40px;border-radius:28px;background:#f1f6fb;font-family:'Inter Tight',system-ui,sans-serif;color:#0b2440}.ds-label{font-weight:500}.ds-line{min-height:48px;border:0;border-bottom:1.5px solid #3a5272;background:transparent;font:inherit;font-size:1.0625rem;color:#0b2440}.ds-line::placeholder{color:#3a5272}.ds-line:focus-visible{outline:3px solid #0f64ac;outline-offset:3px}.ds-line[aria-invalid=true]{border-bottom:2px solid #b42318}.ds-send{justify-self:end;margin-top:24px;min-height:56px;padding:0 28px;border:0;border-radius:999px;background:#3b6b24;color:#fff;font:inherit;font-size:1.3125rem;font-weight:500;transition:background-color 200ms,transform 200ms}.ds-send:hover{background:#2f581c}.ds-send:active{transform:scale(0.98)}.ds-send:focus-visible{outline:3px solid #0f64ac;outline-offset:3px}"
+      "refersTo": "field-box",
+      "description": "Public and admin fields: white, ink border, 6 px corners, 48 px tall, label above.",
+      "html": "<label class=\"ds-field\">Your name<input class=\"ds-field-input\" placeholder=\"Full name\" autocomplete=\"name\"></label>",
+      "css": ".ds-field{display:grid;gap:8px;font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif);font-weight:500;color:var(--color-navy,#0b2440)}.ds-field-input{min-height:48px;padding:0 16px;border:1.5px solid var(--color-ink-2,#3a5272);border-radius:var(--radius-control,6px);background:var(--color-ground,#fff);color:var(--color-navy,#0b2440);font:inherit;font-size:16px}.ds-field-input::placeholder{color:var(--color-ink-2,#3a5272)}.ds-field-input:hover{border-color:var(--color-navy,#0b2440)}.ds-field-input:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}.ds-field-input[aria-invalid=true]{border-color:var(--color-error,#b42318)}@media(prefers-reduced-motion:reduce){.ds-field,.ds-field-input{transition:none!important;animation:none!important}}"
     },
     {
-      "name": "Header Navigation",
+      "name": "Floating Navigation Pill",
       "kind": "nav",
-      "refersTo": "nav-link-current",
-      "description": "Not pinned: logo, round links (current on mist), forest quote pill.",
-      "html": "<nav class=\"ds-nav\"><a href=\"#\">About</a><a href=\"#\" aria-current=\"page\">Services</a><a href=\"#\">Careers</a><a href=\"#\">Contact</a></nav>",
-      "css": ".ds-nav{display:flex;gap:4px;font-family:'Inter Tight',system-ui,sans-serif;font-size:1.0625rem}.ds-nav a{display:flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;color:#3a5272;text-decoration:none;transition:color 200ms}.ds-nav a:hover{color:#0b2440}.ds-nav a[aria-current=page]{background:#f1f6fb;color:#0b2440}.ds-nav a:focus-visible{outline:3px solid #0f64ac;outline-offset:3px}"
+      "refersTo": "nav-pill",
+      "description": "D162: the public header stays at the document top and scrolls away naturally. Its current page is blue; 44 px links sit in a card pill with existing page-change motion. Longer editable menus use the full-screen menu at desktop widths (D142). Phone menu rows adapt under D161.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a href=\"#\" aria-current=\"page\">Home</a><a href=\"#\">About</a><a href=\"#\">Services</a></nav>",
+      "css": ".ds-nav{display:inline-flex;gap:4px;padding:6px;border-radius:var(--radius-pill,999px);background:var(--color-card,#fcfdfe);box-shadow:var(--shadow-raised,0 8px 24px -12px rgb(11 36 64 / .28));font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif)}.ds-nav a{display:flex;align-items:center;min-height:var(--spacing-touch,44px);padding:0 16px;border-radius:var(--radius-pill,999px);color:var(--color-navy,#0b2440);font-weight:500;text-decoration:none}.ds-nav a:not([aria-current=page]):hover{background:var(--color-mist,#f1f6fb)}.ds-nav a[aria-current=page]{background:var(--color-deep,#0f64ac);color:var(--color-on-deep,#fff)}.ds-nav a:active{transform:scale(.98)}.ds-nav a:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-nav{transition:none!important;animation:none!important}}"
     },
     {
-      "name": "Forest Footer",
+      "name": "Service Photo Card",
+      "kind": "card",
+      "refersTo": "service-card",
+      "description": "296 × 395 px photo card, represented by its pale placeholder here; a soft-white inset label holds its name and audience.",
+      "html": "<a class=\"ds-service\" href=\"#\"><span class=\"ds-service-label\"><strong>Home nursing care</strong><span class=\"ds-service-meta\">For families <i><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></i></span></span></a>",
+      "css": ".ds-service{display:flex;align-items:flex-end;width:296px;height:395px;padding:12px;box-sizing:border-box;border-radius:var(--radius-card,28px);background:var(--color-leaf-pale,#eef5e2);box-shadow:var(--shadow-raised,0 8px 24px -12px rgb(11 36 64 / .28));color:var(--color-navy,#0b2440);text-decoration:none;font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif)}.ds-service-label{display:grid;gap:8px;width:100%;padding:14px;border-radius:var(--radius-inset,20px);background:var(--color-card,#fcfdfe)}.ds-service-label strong{font-size:var(--text-title,1.3125rem);font-weight:600}.ds-service-meta{display:flex;justify-content:space-between;align-items:center;color:var(--color-forest,#5b7628);font-size:var(--text-small,.875rem);font-weight:600}.ds-service-meta i{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--color-deep,#0f64ac);color:var(--color-on-deep,#fff)}.ds-service:hover svg{transform:translateX(3px)}.ds-service svg{transition:transform var(--duration-state,200ms)}.ds-service:active{transform:scale(.98)}.ds-service:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-service,.ds-service-label,.ds-service-meta{transition:none!important;animation:none!important}}"
+    },
+    {
+      "name": "Slide Progress",
+      "kind": "custom",
+      "refersTo": "slide-progress",
+      "description": "Decorative progression rails only: no previous, next, pause or slide count (D136). The preview shows a static midpoint.",
+      "html": "<div class=\"ds-progress\" aria-hidden=\"true\"><span class=\"ds-progress-current\"><i></i></span><span></span><span></span></div>",
+      "css": ".ds-progress{display:inline-flex;align-items:center;gap:6px;padding:6px;border-radius:var(--radius-pill,999px);background:var(--color-mist,#f1f6fb)}.ds-progress>span{display:block;overflow:hidden;width:40px;height:4px;border-radius:var(--radius-pill,999px);background:var(--color-rule,#d5e1ed);transform:scaleX(.55)}.ds-progress>.ds-progress-current{transform:scaleX(1)}.ds-progress i{display:block;width:100%;height:100%;background:var(--color-deep,#0f64ac);transform:scaleX(.5);transform-origin:left}@media(prefers-reduced-motion:reduce){.ds-progress,.ds-progress-current{transition:none!important;animation:none!important}}"
+    },
+    {
+      "name": "Mission and Vision",
+      "kind": "custom",
+      "description": "D137 entry retained. D149 whole-card hover/focus: uplift, forward zoom and opposing perspective tilts, full-card light sweep, supporting cross/globe motion. Reduced motion keeps a static highlight.",
+      "html": "<div class=\"ds-mission-pair\"><article class=\"ds-mission\"><svg viewBox=\"0 0 160 160\" width=\"144\" height=\"144\" fill=\"currentColor\" aria-hidden=\"true\"><path fill=\"var(--color-leaf,#86ae3c)\" d=\"M66 20h28v46H66z\"/><path fill=\"var(--color-sky,#33a0da)\" d=\"M94 66h46v28H94z\"/><path d=\"M66 66h28v74H66zM20 66h46v28H20z\"/></svg><h2>Mission</h2></article><article class=\"ds-vision\"><svg viewBox=\"0 0 160 160\" width=\"144\" height=\"144\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"80\" cy=\"80\" r=\"58\"/><ellipse cx=\"80\" cy=\"80\" rx=\"25\" ry=\"58\"/><ellipse cx=\"80\" cy=\"80\" rx=\"58\" ry=\"25\"/></svg><h2>Vision</h2></article></div>",
+      "css": ".ds-mission-pair{display:flex;flex-wrap:wrap;gap:24px;font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif)}.ds-mission-pair article{flex:1;min-width:180px;padding:28px;border-radius:var(--radius-card,28px)}.ds-mission{background:var(--color-deep,#0f64ac);color:var(--color-on-deep,#fff)}.ds-vision{background:var(--color-leaf-pale,#eef5e2);color:var(--color-navy,#0b2440)}.ds-vision svg{color:var(--color-forest,#5b7628)}.ds-mission-pair h2{margin:20px 0 0;font-size:var(--text-display,2rem);font-weight:600;line-height:1.1}@media(prefers-reduced-motion:reduce){.ds-mission-pair,.ds-mission,.ds-vision{transition:none!important;animation:none!important}}"
+    },
+    {
+      "name": "Soft-White Footer",
       "kind": "custom",
       "refersTo": "footer",
-      "description": "Forest with white words; the running words cross its top with the scroll (CSS only).",
-      "html": "<footer class=\"ds-footer\"><p class=\"ds-run\">Care at home&nbsp;&nbsp;Care at home</p><p class=\"ds-foot-text\">Nursing care across Doha.</p><a class=\"ds-foot-pill\" href=\"#\">Request a quote</a></footer>",
-      "css": ".ds-footer{overflow:hidden;padding:48px 24px;background:#3b6b24;color:#fff;font-family:'Inter Tight',system-ui,sans-serif}.ds-run{margin:0;white-space:nowrap;text-transform:uppercase;font-size:clamp(4rem,1.5rem + 10vw,11rem);line-height:0.9;letter-spacing:-0.04em}.ds-foot-text{color:#e3eed6}.ds-foot-pill{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#fff;color:#3b6b24;font-weight:500;text-decoration:none}.ds-foot-pill:hover{background:#eef5e2}.ds-foot-pill:focus-visible{outline:3px solid #fff;outline-offset:3px}"
+      "description": "Theme 6: soft-white ground, navy column headings, ink links and blue contact marks. Follow us on beneath Contact: one network has icon/name; multiple have accessible icons in a wrapping row with 44 px targets. D165/D170: diagonal masked highlight over the stationary original logo on a 7.25-second CSS cycle: the slow 4.5-second sweep is preserved, the quiet gap is halved to 2.75 seconds; static reduced motion. No running words. D166 final: faint static nurse-care outline only; omit approximate tool artwork under the user-authorized fallback. Preserve all content/layout, plain copyright and D165 shine. Responsive placement, local lazy-loaded decorative image.",
+      "html": "<footer class=\"ds-footer\"><strong>Al Hidaya</strong><p>Nursing care across Doha.</p><nav aria-label=\"Footer\"><a href=\"#\">About</a><a href=\"#\">Services</a><a href=\"#\">Contact</a></nav></footer>",
+      "css": ".ds-footer{padding:40px 24px;border-block:1px solid var(--color-rule,#d5e1ed);background:var(--color-page,#f7f9fc);color:var(--color-ink-2,#3a5272);font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif)}.ds-footer strong{color:var(--color-navy,#0b2440);font-size:var(--text-title,1.3125rem)}.ds-footer nav{display:grid}.ds-footer a{display:inline-flex;align-items:center;min-height:var(--spacing-touch,44px);justify-self:start;color:inherit;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px}.ds-footer a:hover{color:var(--color-navy,#0b2440);text-decoration-color:currentColor}.ds-footer a:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-footer{transition:none!important;animation:none!important}}"
     },
     {
       "name": "Admin Primary Button",
       "kind": "button",
       "refersTo": "admin-button-primary",
-      "description": "The admin's action (Operate surface only): deep blue, 6 px corners.",
-      "html": "<button class=\"ds-admin-btn\">Save draft</button>",
-      "css": ".ds-admin-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border:0;border-radius:6px;background:#0f64ac;color:#fff;font-family:'Inter Tight',system-ui,sans-serif;font-size:1.0625rem;font-weight:600;transition:transform 120ms cubic-bezier(0.16,1,0.3,1)}.ds-admin-btn:hover{background:#0b2440}.ds-admin-btn:active{transform:scale(0.98)}.ds-admin-btn:focus-visible{outline:3px solid #0f64ac;outline-offset:3px}"
+      "description": "Admin only (D138): forest actions and focus, white words, 6 px corners. Public actions remain blue.",
+      "html": "<button class=\"ds-admin-button\">Save draft</button>",
+      "css": ".ds-admin-button{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border:0;border-radius:var(--radius-control,6px);background:var(--color-forest,#5b7628);color:var(--color-on-deep,#fff);font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif);font-size:var(--text-body,1.0625rem);font-weight:600;transition:transform var(--duration-press,120ms)}.ds-admin-button:hover{background:var(--color-navy,#0b2440)}.ds-admin-button:active{transform:scale(.98)}.ds-admin-button:focus-visible{outline:3px solid var(--color-forest,#5b7628);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-admin-button{transition:none!important;animation:none!important}}"
+    },
+    {
+      "name": "Admin Navigation and Status",
+      "kind": "nav",
+      "refersTo": "admin-column",
+      "description": "Pale-green admin navigation with a leaf active row, navy words and unchanged blue New status. Mobile menu and sign-in use the same green palette.",
+      "html": "<nav class=\"ds-admin-nav\" aria-label=\"Admin\"><strong>Al Hidaya</strong><a href=\"#\" aria-current=\"page\">Overview</a><a href=\"#\">Enquiries <span class=\"ds-admin-new\"><i></i> New</span></a><a href=\"#\">Pages</a></nav>",
+      "css": ".ds-admin-nav{display:grid;gap:4px;max-width:280px;padding:24px;background:var(--color-leaf-pale,#eef5e2);color:var(--color-navy,#0b2440);font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif)}.ds-admin-nav strong{padding-block-end:20px}.ds-admin-nav a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding:0 12px;border-radius:var(--radius-control,6px);font-weight:400;text-decoration:none;color:var(--color-ink-2,#3a5272)}.ds-admin-nav a[aria-current=page]{background:var(--color-leaf,#86ae3c);color:var(--color-navy,#0b2440)}.ds-admin-nav a:not([aria-current]):hover{background:color-mix(in srgb,var(--color-forest,#5b7628) 10%,transparent)}.ds-admin-nav a:focus-visible{outline:3px solid var(--color-forest,#5b7628);outline-offset:3px}.ds-admin-new{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:var(--radius-tag,4px);font-size:var(--text-small,.875rem);font-weight:600;color:var(--color-status-new,#0f64ac);background:color-mix(in srgb,var(--color-status-new,#0f64ac) 10%,transparent)}.ds-admin-new i{width:8px;height:8px;border-radius:50%;background:currentColor}@media(prefers-reduced-motion:reduce){.ds-admin-nav,.ds-admin-new{transition:none!important;animation:none!important}}"
+    },
+    {
+      "name": "Home Services Pyramid",
+      "kind": "carousel",
+      "description": "Home alone (D143/D171): five visible layers on phone and laptop, with tighter phone overlap; 30 px steps, six-second automatic progression, rear title/link panels and softened rear photos; manual arrows and swipe, reduced-motion static navigation. The linked service card itself remains unchanged.",
+      "html": "<div class=\"ds-pyramid\"><a class=\"ds-service ds-pyramid-rear\" href=\"#\"><span class=\"ds-service-label\"><strong>School nurse staffing</strong><span class=\"ds-service-meta\">For families <i><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></i></span></span></a><a class=\"ds-service\" href=\"#\"><span class=\"ds-service-label\"><strong>Home nursing care</strong><span class=\"ds-service-meta\">For families <i><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></i></span></span></a><a class=\"ds-service ds-pyramid-rear\" href=\"#\"><span class=\"ds-service-label\"><strong>Chronic condition care</strong><span class=\"ds-service-meta\">For families <i><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></i></span></span></a></div>",
+      "css": ".ds-service{display:flex;align-items:flex-end;width:296px;height:395px;padding:12px;box-sizing:border-box;border-radius:var(--radius-card,28px);background:var(--color-leaf-pale,#eef5e2);box-shadow:var(--shadow-raised,0 8px 24px -12px rgb(11 36 64 / .28));color:var(--color-navy,#0b2440);text-decoration:none;font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif)}.ds-service-label{display:grid;gap:8px;width:100%;padding:14px;border-radius:var(--radius-inset,20px);background:var(--color-card,#fcfdfe)}.ds-service-label strong{font-size:var(--text-title,1.3125rem);font-weight:600}.ds-service-meta{display:flex;justify-content:space-between;align-items:center;color:var(--color-forest,#5b7628);font-size:var(--text-small,.875rem);font-weight:600}.ds-service-meta i{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--color-deep,#0f64ac);color:var(--color-on-deep,#fff)}.ds-service:hover svg{transform:translateX(3px)}.ds-service svg{transition:transform var(--duration-state,200ms)}.ds-service:active{transform:scale(.98)}.ds-service:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-service,.ds-service-label,.ds-service-meta{transition:none!important;animation:none!important}}.ds-pyramid{display:flex;align-items:flex-start;gap:16px;overflow:hidden;padding:12px}.ds-pyramid .ds-service{flex-shrink:0;width:220px;height:293px}.ds-pyramid .ds-pyramid-rear{transform:translateY(30px) scale(.88);background:var(--color-mist,#f1f6fb)}"
+    },
+    {
+      "name": "Contact Ribbon",
+      "kind": "section",
+      "description": "D145/D147 opening and Reach us unchanged; D152 message section on rounded pastel green, heading/map/office left and a shadowed white form card right. No overlap. Type/hold/delete loop remains reduced-motion aware. D153 adds only a blue backdrop behind the unchanged rounded green panel.",
+      "html": "<section class=\"ds-contact\"><div class=\"ds-contact-opening\">We are here<br>day and night</div><div class=\"ds-contact-reach\"><strong>Reach us</strong><p>WhatsApp · Phone · Email</p></div><div class=\"ds-contact-message\"><aside><h2>Send us a message</h2><p>Map</p><h3>Visit our office</h3><p>Published address</p></aside><div>Message form</div></div></section>",
+      "css": ".ds-contact{background:var(--color-mist);font-family:var(--font-sans);color:var(--color-navy)}.ds-contact-opening{padding:32px;background:var(--color-ground);font-size:32px;line-height:1.06;font-weight:600}.ds-contact-reach{padding:24px 32px 56px;background:var(--color-mist)}.ds-contact-message{margin:0 16px 16px;padding:32px;display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;background:var(--color-leaf-pale);border-radius:28px}.ds-contact-message>div{padding:24px;border-radius:28px;background:var(--color-card);box-shadow:var(--shadow-float)}@media(max-width:500px){.ds-contact-message{grid-template-columns:1fr}}"
+    },
+    {
+      "name": "Service Detail",
+      "kind": "section",
+      "description": "D164: shared fading full-width photo opening with service title/summary, optional published header actions, white non-sticky navbar. Pastel-blue About and three compact related cards remain; no-photo fallback stays text-only.",
+      "html": "<section class=\"ds-editorial-service\"><div class=\"ds-service-photo\"><h2>Home nursing care</h2><p>Compassionate, reliable nurses who care for you or your family at home.</p></div><section><strong>About the service</strong><p>The existing published description.</p></section></section>",
+      "css": ".ds-editorial-service{font-family:var(--font-sans);color:var(--color-navy)}.ds-service-photo{padding:100px 32px 48px;background:var(--color-navy);color:var(--color-card)}.ds-service-photo h2{font-size:42px;line-height:1.04;font-weight:600;margin:0 0 24px}.ds-editorial-service>section{padding:32px;background:var(--color-mist)}@media(max-width:767px){.ds-service-photo h2{font-size:32px}}"
+    },
+    {
+      "name": "Blended Photo Opening",
+      "kind": "section",
+      "description": "D158/D160: full-width navy-dimmed photo, light headline and sky-tinted phrase. The navbar stays solid soft white with original coloured logo; only the image top fades gradually through a static mask. Home note visibility is independently published (D157). Photo openings on Home, About and main Services only.",
+      "html": "<section class=\"ds-blended-opening\"><header>Al Hidaya <span>Home　 About　 Services　 Careers　 Contact</span></header><h2>Quality <em>nursing care</em><br>at your doorstep.</h2><p>Highly trained nurses giving compassionate care.</p></section>",
+      "css": ".ds-blended-opening{position:relative;min-height:350px;background:var(--color-navy);color:var(--color-card);font-family:var(--font-sans);padding:150px 32px 32px}.ds-blended-opening header{position:absolute;inset:0 0 auto;height:90px;padding:24px 32px;color:var(--color-navy);background:var(--color-card)}.ds-blended-opening header span{float:right}.ds-blended-opening h2{font-size:42px;line-height:1.04;margin:0 0 20px}.ds-blended-opening em{font-style:normal;color:color-mix(in srgb,var(--color-sky) 55%,var(--color-card))}"
     }
   ],
   "narrative": {
-    "northStar": "Care, Shown in People",
-    "overview": "\n**Creative North Star: \"Care, Shown in People\"**\n\nThe public site is the telehealth landing language of Dribbble shot 24320685 (Eloqwnt for DocInPoc), pinned by the user (plan D97) and translated into the logo's colours and Al Hidaya's own facts. It is a calm white page in **Persuade** mode: care is shown in photographs of people and in soft, deeply rounded mist cards; the logo's leaf green, deepened to forest, carries every main action, the one accent card and the footer; words are large, light and tight, and they arrive as you read: a headline's letters settle into place, a statement darkens with the scroll, cards rise one after another, steps travel sideways, the footer's words run.\n\nIt is not signage and not a dashboard. The old wayfinding line (D36) and its station dots are gone, the header is not pinned (D107), and nothing is decorated for its own sake. Density is low on the public site: one idea per section, separated by one generous section gap. The admin panel is a separate **Operate** surface that shares the tokens and type but keeps its own firm, boxed look (see the Admin note under Components).",
+    "northStar": "The Old Site, Made Clear",
+    "overview": "**Creative North Star: \"The Old Site, Made Clear\"**\n\nThe client wanted the structure they already knew (the current alhidaya.qa: a hero, About, What we do, Our clients, a quote form, a four-column footer) without it feeling like the same site. Shown five themes, they chose a mix, Theme 6 (plan D132): Theme 2's header and services cards, Theme 4's straight-lined hero and quote card, Theme 5's About and footer. It is a **Persuade** page on soft white, never a pure white (the client's words): deep blue leads every action, the logo's leaf green is the accent, photographs carry the care, and motion arrives as you read: slides wipe in, headings' words rise from behind their line, blocks rise as they scroll in, the clients' logos run in two rows.\n\nDensity stays low: one idea per section, the old site's order, generous section gaps; bands of mist and pale green mark What we do and the quote. The admin panel is a separate **Operate** surface and keeps its own look entirely (the user: \"no changes needed in the admin panel or its designs\").",
     "keyCharacteristics": [
-      "White ground, mist cards at 28 px radius, photographs in 24 px frames, everything actionable round.",
-      "One family, Inter Tight, at light-to-regular weights for anything large; medium for titles.",
-      "Forest is the action colour on the site; deep blue is the action colour in the admin.",
-      "Motion follows the scroll or arrives once; it never runs on its own and always has a still path.",
-      "Only real facts and licensed stock: no invented proof, no staff captions on stock."
+      "Soft white page (`page`), cards a touch lighter (`card`), mist and pale-leaf bands.",
+      "Deep blue for the main button, links and the highlighted phrase in a heading; leaf green for small marks (checks, the WhatsApp chip, the mark under a heading).",
+      "Buttons with 12 px corners; the header's links in a floating round pill.",
+      "One family, Inter Tight, semibold for headings and titles, regular for reading.",
+      "Automatic motion is limited to Home’s hero/services, Contact’s typewriter and the clients’ rows, with their recorded stop conditions and reduced-motion paths."
     ],
     "rules": [
       {
+        "name": "The Never-Pure-White Rule",
+        "body": "On the public site, white is soft white: the page is `page`, a raised surface `card`. The user’s Contact exception (D145) sets its opening and form controls to pure `ground` white; other surfaces retain the existing palette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Blue-Leads Rule",
+        "body": "One main action per view, deep blue with white words; green never carries an action on the site, only a mark.",
+        "section": "colors"
+      },
+      {
         "name": "The White-Only-On-Dark Rule",
-        "body": "White text sits only on deep blue, navy or forest (and forest-2, error). Sky and leaf carry navy text. tests/contract/tokens.test.ts holds every pairing the design uses to 4.5:1 and fails the build if one slips.",
-        "section": "colors"
-      },
-      {
-        "name": "The Large-Grey Rule",
-        "body": "The quiet grey is for large type only (the statement role and up); the test asserts it stays under 4.5:1 so no one mistakes it for a body colour.",
-        "section": "colors"
-      },
-      {
-        "name": "The Red-Means-Wrong Rule",
-        "body": "The error red appears only for errors, always with an icon and words, never colour alone.",
+        "body": "White text sits only on deep blue, navy or error red; sky and leaf carry navy. tests/contract/tokens.test.ts holds every pairing to 4.5:1, the soft whites included.",
         "section": "colors"
       },
       {
         "name": "The Logo-Only Rule",
-        "body": "No colour outside the tokens above (D35, D98), and light theme only (D28). Tailwind's own palette is removed in globals.css (`--color-*: initial`), so an off-token colour does not compile to anything.",
+        "body": "No colour outside the tokens (D35), light theme only (D28); Tailwind's palette is removed so nothing else compiles.",
         "section": "colors"
       },
       {
-        "name": "The Light-And-Large Rule",
-        "body": "Hero, display and statement are set at 400 (figures at 300) and tight; weight never climbs to make a headline louder. Size and the pale highlight do that.",
+        "name": "The Phrase-In-Blue Rule",
+        "body": "A heading may set one phrase in deep blue (the admin's highlighted words), in the same weight and flow as the rest; never a second phrase, never a background. On the D158 dimmed photo openings, the phrase takes a light tint of sky for contrast.",
         "section": "typography"
-      },
-      {
-        "name": "The One-Highlight Rule",
-        "body": "A headline may put one phrase of a word or two on the pale-green highlight (leaf-pale, 0.18em radius, kept on one line). Never more than one per headline.",
-        "section": "typography"
-      },
-      {
-        "name": "The Only-What-Floats Rule",
-        "body": "A card in the page's flow has no shadow; mist on white is its edge. A shadow means \"this sits over something\", and is always navy-tinted and soft, never hard or offset.",
-        "section": "elevation"
       },
       {
         "name": "The Transform-And-Opacity Rule",
-        "body": "Only transform and opacity move. Never layout properties, filter, box-shadow or large clip-path.",
-        "section": "motion"
+        "body": "Movement is transform and opacity; the slides' wipe is the one clip-path, on a single photo at a time.",
+        "section": "components"
       },
       {
         "name": "The Still-Page Rule",
-        "body": "Nothing moves on its own (WCAG 2.2.2): motion follows the scroll or arrives once. Content is visible by default; a reveal only hides what is still below the fold, and only with opacity. The one loop is a loading skeleton's slow fade (1.6 s).",
-        "section": "motion"
+        "body": "Nothing else moves on its own (WCAG 2.2.2). The slides stop on deliberate keyboard focus; the clients' rows stop under the pointer, on focus and on a chosen logo (the user chose no pause button for them; recorded in D133). Contact’s explicitly requested typewriter is another exception (D147), paused offscreen/hidden and static for reduced motion.",
+        "section": "components"
       },
       {
         "name": "The Reduced-Motion Path",
-        "body": "With reduced motion the engine never loads: no Lenis, no reveals, no scrub, no counting; settling letters and running words are off in CSS; every animation and transition is cut to 0.01 ms. Tracks become plain sideways-scrolling rows.",
-        "section": "motion"
+        "body": "With reduced motion the engine never loads: no Lenis, no reveals, no word rising; the slides stay on the first slide, with static progress; the clients' rows stand still, their repeats gone, wrapped in rows; the header scrolls with the document; the menu's pill is simply on the new page; the phone menu appears and goes at once; an inner page's opening is simply there.",
+        "section": "components"
       }
     ],
     "dos": [
-      "Do take every colour, size, radius, shadow, duration and ease from the tokens; Tailwind's own sets are removed so nothing else compiles.",
-      "Do keep white text to deep blue, navy and forest, navy text on sky and leaf, and the quiet grey to the statement role and larger.",
-      "Do use one forest pill per view for the main action, the pale pill beside it, and the arrow only for an action that moves the visitor on.",
-      "Do put photographs in 24 px frames and cards at 28 px; nest a photo in a card at a smaller radius.",
-      "Do give every interactive thing a 44 px target, every input 16 px text and a 48 px height, and keep the 3 px focus ring (deep blue, 3 px offset; white on deep, navy or forest).",
-      "Do use licensed stock with its provenance recorded in `src/db/seed/photos/README.md`, and show only real facts in counters and fact cards (D7, D99).",
-      "Do run axe at phone and desktop on every page, and test every new colour pairing in `tests/contract/tokens.test.ts`.",
-      "Do keep each public route within 174,080 bytes of gzip JavaScript at first paint (Home and Contact: 172,042 at Phase 6B's end). Client JavaScript is the scarcest resource: prefer CSS (as the settling letters and running words do) and server components; keep looks that a server page needs out of client components (as `pill-classes.ts` does)."
+      "Do take every colour, size, radius, shadow, duration and ease from the tokens.",
+      "Do keep the public site on soft white; raise a surface with `card`, never a pure white.",
+      "Do use one deep button per view, the line button beside it, the arrow only for an action that moves the visitor on.",
+      "Do give every interactive thing a 44 px target and keep the 3 px focus ring.",
+      "Do show only real facts and licensed or the client's own photographs (D7).",
+      "Do keep each public route within 174,080 bytes of gzip JavaScript at first paint; prefer CSS and server components (the slides' words and photos are drawn on the server; only their state is in the browser)."
     ],
     "donts": [
-      "Don't use a colour outside the logo's, a dark theme, or the error red for anything that is not an error.",
-      "Don't set a headline heavier than 400 to make it louder, or highlight more than one phrase in it.",
-      "Don't put a shadow on a card in the page's flow, or use a hard or offset shadow anywhere.",
-      "Don't pin the header, bring back the wayfinding line or station dots, or add anything that moves on its own.",
-      "Don't caption a stock photograph as Al Hidaya staff, or show statistics, testimonials, ratings, awards or licence numbers the client has not supplied.",
-      "Don't use cartoons, mascots, clip-art, emoji or playful decoration; pictograms are thin-line, in chips or beside words.",
-      "Don't use the admin's Button or boxed fields on the public site, or the site's pills, motion or line fields in the admin.",
-      "Don't add design controls (colour, font, size, spacing, layout, animation) to the admin (D12)."
+      "Don't use a colour outside the logo's, a dark theme, or green for an action.",
+      "Don't round the hero, or bring back the running words, the statement, the highlights or the audience sections.",
+      "Don't add anything else that moves on its own.",
+      "Don't caption stock as Al Hidaya's staff, or invent statistics, testimonials or licences.",
+      "Don't add design controls to the admin (D12), or let its scoped green theme change the public site (D138)."
     ]
   }
 }

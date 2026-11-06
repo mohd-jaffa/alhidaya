@@ -62,6 +62,7 @@ describe("seedContent, against the local MySQL", () => {
           "PAGE:QUOTE",
           "PAGE:PRIVACY",
           "SITE",
+          "TYPOGRAPHY",
           "ORDER:SERVICES",
           "ORDER:CLIENTS",
         ],

@@ -79,6 +79,7 @@ export function useSchemaForm({
   const [answered, setAnswered] = useState(0);
   const loading = useRef<Promise<ZodType> | null>(null);
   const tried = useRef(false);
+  const submitting = useRef(false);
 
   function load(): Promise<ZodType> {
     loading.current ??= schema().catch((error: unknown) => {
@@ -105,36 +106,41 @@ export function useSchemaForm({
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (status === "sending") return;
-    const form = event.currentTarget;
-    tried.current = true;
-    const values = formValues(form);
-    let check: ZodType;
-    try {
-      check = await load();
-    } catch (error) {
-      fail(error);
-      return;
-    }
-    const result = check.safeParse(values);
-    if (!result.success) return showErrors(form, byField(result.error.issues));
-
-    setErrors({});
+    if (submitting.current || status === "sent") return;
+    submitting.current = true;
     setFailure(null);
     setStatus("sending");
     try {
-      await send(values);
-      setStatus("sent");
-    } catch (error) {
-      const refused = error instanceof ApiError ? refusedFields(error, form) : {};
-      if (Object.keys(refused).length > 0) {
-        showErrors(form, refused);
-        // A field the server could not take (a CV not saved, D84) is said above the send action too.
-        if ((error as ApiError).code === "VALIDATION_ERROR") return;
+      const form = event.currentTarget;
+      tried.current = true;
+      const values = formValues(form);
+      let check: ZodType;
+      try {
+        check = await load();
+      } catch (error) {
+        fail(error);
+        return;
       }
-      fail(error);
+      const result = check.safeParse(values);
+      if (!result.success) return showErrors(form, byField(result.error.issues));
+
+      setErrors({});
+      try {
+        await send(values);
+        setStatus("sent");
+      } catch (error) {
+        const refused = error instanceof ApiError ? refusedFields(error, form) : {};
+        if (Object.keys(refused).length > 0) {
+          showErrors(form, refused);
+          // A field the server could not take (a CV not saved, D84) is said above the send action too.
+          if ((error as ApiError).code === "VALIDATION_ERROR") return;
+        }
+        fail(error);
+      } finally {
+        setAnswered((count) => count + 1);
+      }
     } finally {
-      setAnswered((count) => count + 1);
+      submitting.current = false;
     }
   }
 

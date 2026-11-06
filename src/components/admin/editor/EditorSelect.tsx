@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
+import { useController } from "react-hook-form";
 
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
@@ -17,11 +17,11 @@ export function EditorSelect({
   label: string;
   options: readonly (readonly [value: string, label: string])[];
 }) {
-  const { register } = useFormContext();
+  const { field } = useController({ name });
   const error = useEditorError(name);
   return (
     <Field label={label} error={error} required>
-      <Select {...register(name)}>
+      <Select {...field}>
         {options.map(([value, words]) => (
           <option key={value} value={value}>
             {words}

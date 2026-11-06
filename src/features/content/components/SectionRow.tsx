@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Pictogram } from "@/components/ui/pictogram";
 import { ADMIN_TEXT, SECTION_NAMES } from "@/constants/admin-messages";
-import type { PageKey } from "@/constants/sections";
+import { PAGE_RULES, type PageKey } from "@/constants/sections";
 import type { PageDocumentInput, SectionInput } from "@/lib/validation";
 
 import { sectionLock, sectionSummary } from "../editor";
@@ -21,7 +21,7 @@ import { SectionFields } from "./SectionFields";
  * One section of a page as a row (D88, D90): its place, its kind, what it
  * says first, whether it is hidden; Hide or Show, Move up, Move down and
  * Remove (asked first). Pressed, it opens where it is with its fields. The
- * sign stays first; a section the page needs stays visible and stays.
+ * sign stays first except on Careers; a section the page needs stays visible and stays.
  */
 export function SectionRow({
   page,
@@ -80,7 +80,7 @@ export function SectionRow({
             </span>
           </button>
         </h3>
-        <div className="flex flex-wrap items-center gap-2 ps-9 sm:ps-0">
+        <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2 ps-9 sm:ps-0">
           {invalid ? <StatusChip tone="error">{ADMIN_TEXT.needsAttention}</StatusChip> : null}
           {section.visible ? null : (
             <span className="inline-flex items-center gap-1.5 rounded-tag bg-rule/60 px-2 py-0.5 text-small font-semibold">
@@ -88,7 +88,7 @@ export function SectionRow({
               {ADMIN_TEXT.hidden}
             </span>
           )}
-          {lock ? (
+          {lock === "fixed" || lock === "needed" ? (
             <span className="text-small text-ink-2">
               {lock === "fixed" ? ADMIN_TEXT.alwaysFirst : ADMIN_TEXT.pageNeedsIt}
             </span>
@@ -107,7 +107,7 @@ export function SectionRow({
               thing={name}
               index={index}
               count={sections.length}
-              first={1}
+              first={PAGE_RULES[page].movableSign ? 0 : 1}
               canRemove={lock === null}
               onMove={onMove}
               onRemove={() => setAsking(true)}

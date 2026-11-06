@@ -20,7 +20,7 @@ import { ApplicationForm } from "./ApplicationForm";
 export function ApplyPage({ job }: { job: PublishedJob | null }) {
   const headline = job ? job.published.title.en : UI_TEXT.generalApplicationHeadline;
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-section pt-16 pb-section xl:pt-12">
+    <div className="career-document grid grid-cols-[minmax(0,1fr)] gap-section pt-16 pb-section xl:pt-12">
       <PageHero
         anchor="start"
         label={PAGE_NAMES.CAREERS}

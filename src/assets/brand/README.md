@@ -8,6 +8,7 @@ approve (plan D62, R2.2, R7.5).
 |---|---|
 | `logo.svg` | The full logo: the mark, *Al Hidaya Health Care Service WLL*, and the Arabic line |
 | `logo-mark.svg` | The mark alone |
+| `logo-mark-white.svg` | The mark alone in plain white, for a faint watermark on deep blue (the phone menu, D167) |
 | `src/app/icon.svg` | The mark, centred in a square: the browser's icon |
 | `src/app/favicon.ico`, `src/app/apple-icon.png` | Drawn from `icon.svg` by `npx tsx scripts/make-icons.mts` |
 

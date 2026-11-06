@@ -15,9 +15,9 @@ export function Switch({
   ...props
 }: { children: ReactNode } & Omit<ComponentProps<"input">, "type" | "role">) {
   return (
-    <label className="group flex min-h-touch cursor-pointer items-center justify-between gap-4 py-2">
-      <span>{children}</span>
-      <span className="relative flex shrink-0 items-center gap-2.5">
+    <label className="group flex min-h-touch min-w-0 cursor-pointer flex-wrap items-center justify-between gap-4 py-2">
+      <span className="min-w-0">{children}</span>
+      <span className="relative flex max-w-full shrink-0 flex-wrap items-center gap-2.5">
         <input
           type="checkbox"
           role="switch"

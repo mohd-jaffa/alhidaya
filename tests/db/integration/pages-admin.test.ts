@@ -13,7 +13,7 @@ import {
   savePageDraft,
 } from "@/features/content/api";
 import { readPublishedDocument, saveDocumentDraft } from "@/lib/content/documents";
-import { pageFixture } from "@tests/support/fixtures/content";
+import { pageFixture, slideFixture } from "@tests/support/fixtures/content";
 
 const REQUEST = `req_pages_admin_${crypto.randomUUID()}`;
 const actor = { adminId: null, requestId: REQUEST };
@@ -115,4 +115,90 @@ describe("the admin's pages, against the local MySQL", () => {
     expect(rows.map((row) => row.action)).toEqual(expect.arrayContaining(["UPDATE", "PUBLISH", "DISCARD_DRAFT"]));
     expect(rows.every((row) => row.entityId === "PAGE:HOME")).toBe(true);
   });
+  it("publishes Careers' reordered hidden opening and restores it without losing content (D148)", async () => {
+    const original = pageFixture("CAREERS");
+    const [sign, jobs] = original.sections;
+    const hidden = { ...original, sections: [jobs, { ...sign, visible: false }] };
+    await savePageDraft("CAREERS", hidden, actor);
+    await publishPage("CAREERS", actor);
+    expect(await readPublishedDocument("PAGE:CAREERS")).toEqual(hidden);
+    await savePageDraft("CAREERS", original, actor);
+    await publishPage("CAREERS", actor);
+    expect(await readPublishedDocument("PAGE:CAREERS")).toEqual(original);
+  });
+});
+
+it("publishes About and Services opening-action visibility without discarding their content (D156)", async () => {
+  for (const page of ["ABOUT", "SERVICES"] as const) {
+    const original = pageFixture(page);
+    for (const visible of [true, false]) {
+      const draft = {
+        ...original,
+        sections: original.sections.map((section) =>
+          section.type === "SIGN" ? { ...section, content: { ...section.content, showActions: visible } } : section,
+        ),
+      };
+      await savePageDraft(page, draft, actor);
+      await publishPage(page, actor);
+      expect(await readPublishedDocument(`PAGE:${page}`)).toEqual(draft);
+    }
+  }
+});
+
+it("publishes Home's slider-pill visibility and preserves its text/icon (D157)", async () => {
+  const original = pageFixture("HOME");
+  for (const hideNote of [true, false]) {
+    const draft = {
+      ...original,
+      sections: original.sections.map((section) =>
+        section.type === "SIGN"
+          ? {
+              ...section,
+              content: {
+                ...section.content,
+                slides: [slideFixture()],
+                hideNote,
+                note: { pictogram: "clock" as const, text: { en: "Nurses around the clock" } },
+              },
+            }
+          : section,
+      ),
+    };
+    await savePageDraft("HOME", draft, actor);
+    await publishPage("HOME", actor);
+    expect(await readPublishedDocument("PAGE:HOME")).toEqual(draft);
+  }
+});
+
+it("keeps the optional Careers photo draft-only until publishing and refuses missing media (D174)", async () => {
+  await getDb().delete(documents).where(eq(documents.key, "PAGE:CAREERS"));
+  const photoId = await image();
+  const careers = pageFixture("CAREERS");
+  const withPhoto = {
+    ...careers,
+    sections: careers.sections.map((section) =>
+      section.type === "JOBS_LIST"
+        ? { ...section, content: { ...section.content, image: { mediaId: photoId } } }
+        : section,
+    ),
+  };
+  await savePageDraft("CAREERS", withPhoto, actor);
+  expect(await readPublishedDocument("PAGE:CAREERS")).toBeNull();
+  await publishPage("CAREERS", actor);
+  expect(await readPublishedDocument("PAGE:CAREERS")).toEqual(withPhoto);
+  await expect(
+    savePageDraft(
+      "CAREERS",
+      {
+        ...withPhoto,
+        sections: withPhoto.sections.map((section) =>
+          section.type === "JOBS_LIST"
+            ? { ...section, content: { ...section.content, image: { mediaId: crypto.randomUUID() } } }
+            : section,
+        ),
+      },
+      actor,
+    ),
+  ).rejects.toMatchObject({ code: "IMAGE_NOT_FOUND" });
+  await getDb().delete(documents).where(eq(documents.key, "PAGE:CAREERS"));
 });

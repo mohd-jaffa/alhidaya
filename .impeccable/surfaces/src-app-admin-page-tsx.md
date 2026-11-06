@@ -25,12 +25,7 @@ arrived, newest first and ruled by day, each row handled where it is. It refuses
 the dashboard of KPI tiles and charts, the public site's signs and motion, and
 page-per-click inbox work.
 
-OWN-WORLD: quiet and firm. A column of links in the logo's deep blue (D123) in groups (since D101 a
-plain list: no line, no station dots), the current one marked, new counts in
-sky pills. A white work area; mist for an opened row; deep blue for actions
-and "New", sky for in progress, leaf for resolved; error red only for
-failures, with icon and words. Inter Tight (D108) at a fixed rem scale; times
-in tabular figures; 6 px radii; hairline rules.
+OWN-WORLD: quiet and firm, pastel green (D138, chosen by the user after the public work). The sidebar, phone bar/menu and sign-in panel use pale leaf with navy text, the colour logo and green counts; the active row is leaf with navy words. White work areas, fixed Inter Tight type, 6 px corners, hairlines and the existing grouped list remain. Forest carries actions, links, focus and switches, scoped to `/admin`; the public palette stays blue. Status colours retain their meaning: New blue, in progress sky, resolved leaf, errors red, all with words and marks.
 
 STORY: the admin opens on Today and sees what needs them, opens a row, calls,
 moves it along, notes it, and trusts nothing was missed.
@@ -73,3 +68,17 @@ the day's log, for content.
   what the page allows. SEO last. Errors at their field and counted in the
   bar.
 - Desktop first; on a phone rows are full width and actions wrap.
+
+## Font Manager (D168, 2026-11-04)
+
+Settings → Font Manager extends the existing Operate editor. Twenty labelled
+native selectors choose from a fixed fifteen-font library, grouped by text purpose,
+with live specimens beside on wide screens and below on phones. The shared
+draft toolbar and leave guard apply. Save/Preview/Publish/Discard affect only
+typography. The admin's own typography stays fixed; only specimens vary.
+
+D172 responsive verification: preserve the full 44 px mobile menu button; editor Back, pagination, activity destinations and media-usage destinations retain full tap targets. Contain-fit brand logos preserve their shape in narrow rails. All existing tasks, sections, selectors and publication behavior remain.
+
+D181 polish: Preview shares the toolbar’s pending state: dimmed, aria-disabled, out of the tab order and blocked for normal/auxiliary activation while saving, publishing or discarding. Restore it after completion or failure. Preserve saved-draft preview and automatic save before preview.
+
+D181 protects pending writes with a named native fieldset disabled during the operation; restore on success/failure. Keep the field group’s zero minimum width for mobile/enlarged text and all current inputs/labels.

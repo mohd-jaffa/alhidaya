@@ -15,7 +15,7 @@ export function FloatingWhatsApp({ site }: { site: SiteDocument | null }) {
       href={whatsappHref(site.contact.whatsapp, UI_TEXT.whatsappPrefill)}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed end-[max(1rem,env(safe-area-inset-right))] bottom-[max(1rem,env(safe-area-inset-bottom))] z-(--z-header) grid size-14 place-items-center rounded-full bg-deep text-on-deep shadow-raised transition-transform duration-(--duration-press) ease-out hover:bg-navy active:scale-95"
+      className="fixed end-[max(1rem,env(safe-area-inset-right))] bottom-[max(1rem,env(safe-area-inset-bottom))] z-(--z-header) grid size-14 place-items-center rounded-full bg-whatsapp text-on-deep shadow-raised transition-transform duration-(--duration-press) ease-out hover:bg-whatsapp/90 active:scale-95"
     >
       <Pictogram name="chat" label={UI_TEXT.whatsappButton} />
     </a>

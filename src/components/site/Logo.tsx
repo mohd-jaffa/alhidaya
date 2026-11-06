@@ -24,7 +24,7 @@ export function Logo({
       alt={UI_TEXT.siteName}
       unoptimized
       priority={priority}
-      className={className}
+      className={`object-contain ${className ?? ""}`}
     />
   );
 }

@@ -88,10 +88,7 @@ describe("ServiceEditor (D92)", () => {
     await userEvent.type(textbox(ADMIN_TEXT.serviceName), "Elderly care");
     await userEvent.type(textbox(ADMIN_TEXT.summary), "Nurses for older people at home.");
     await userEvent.type(textbox("Paragraph 1"), "Care at home.");
-    await userEvent.selectOptions(
-      screen.getByRole("combobox", { name: ADMIN_TEXT.audience }),
-      ADMIN_TEXT.audienceNames.INSTITUTIONS,
-    );
+    expect(screen.queryByRole("combobox", { name: ADMIN_TEXT.audience })).toBeNull();
     await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.publish }));
     await userEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: ADMIN_TEXT.publish }));
     expect(await screen.findByText(ADMIN_TEXT.isPublished("Elderly care"))).toBeVisible();
@@ -100,7 +97,7 @@ describe("ServiceEditor (D92)", () => {
       ["POST", ADMIN_API_ROUTES.adminServicePublish("s1")],
     ]);
     expect(JSON.parse(String(fetch.mock.calls.find(([, init]) => init?.method === "POST")![1]!.body))).toMatchObject({
-      audience: "INSTITUTIONS",
+      audience: "FAMILIES",
     });
   });
 

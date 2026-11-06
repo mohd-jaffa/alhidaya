@@ -13,6 +13,7 @@ describe("the cache tags (plan §22.1)", () => {
   it("name what each read shows", () => {
     expect(CACHE_TAGS.document("PAGE:HOME")).toBe("page:HOME");
     expect(CACHE_TAGS.document("SITE")).toBe("site");
+    expect(CACHE_TAGS.document("TYPOGRAPHY")).toBe("typography");
     expect(CACHE_TAGS.document("ORDER:SERVICES")).toBe("services");
     expect(CACHE_TAGS.document("ORDER:CLIENTS")).toBe("clients");
     expect(CACHE_TAGS.collection("JOBS")).toBe("jobs");

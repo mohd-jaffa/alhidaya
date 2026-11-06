@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { CV_EXPIRY_DAYS, RETENTION_DAYS } from "@/constants/limits";
-import { DOCUMENT_KEYS } from "@/constants/sections";
+import { DOCUMENT_KEYS, TYPOGRAPHY_DOCUMENT_KEY } from "@/constants/sections";
 import { MEDIA_KINDS, RECORD_COLLECTIONS } from "@/constants/statuses";
 
 const sql = readFileSync("drizzle/0003_content.sql", "utf8");
@@ -16,7 +16,7 @@ function allowed(name: string): string[] {
 
 describe("0003_content", () => {
   it("allows exactly the documents, collections and media kinds the code knows", () => {
-    expect(allowed("documents_key_check")).toEqual([...DOCUMENT_KEYS]);
+    expect(allowed("documents_key_check")).toEqual(DOCUMENT_KEYS.filter((key) => key !== TYPOGRAPHY_DOCUMENT_KEY));
     expect(allowed("records_collection_check")).toEqual([...RECORD_COLLECTIONS]);
     expect(allowed("media_kind_check")).toEqual([...MEDIA_KINDS]);
   });

@@ -41,13 +41,25 @@ export function ShortQuoteForm({
       {(errors) => (
         <>
           <Field label={UI_TEXT.yourName} required error={errors.name}>
-            <TextInput name="name" autoComplete="name" maxLength={TEXT_LIMITS.name} />
+            <TextInput name="name" autoComplete="name" placeholder={UI_TEXT.fullName} maxLength={TEXT_LIMITS.name} />
           </Field>
           <Field label={UI_TEXT.mobile} required error={errors.phone}>
-            <TextInput name="phone" type="tel" autoComplete="tel" maxLength={TEXT_LIMITS.phone} />
+            <TextInput
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder={UI_TEXT.countryCodePlaceholder}
+              maxLength={TEXT_LIMITS.phone}
+            />
           </Field>
           <Field label={UI_TEXT.email} required error={errors.email}>
-            <TextInput name="email" type="email" autoComplete="email" maxLength={TEXT_LIMITS.email} />
+            <TextInput
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder={UI_TEXT.emailPlaceholder}
+              maxLength={TEXT_LIMITS.email}
+            />
           </Field>
           <Field label={UI_TEXT.service} error={errors.service}>
             <Select name="service" defaultValue="">
@@ -60,8 +72,13 @@ export function ShortQuoteForm({
             </Select>
           </Field>
           <div className="sm:col-span-2">
-            <Field label={UI_TEXT.message} hint={UI_TEXT.shortQuoteMessageHint} required error={errors.message}>
-              <TextArea name="message" maxLength={TEXT_LIMITS.message} />
+            <Field label={UI_TEXT.message} required error={errors.message}>
+              <TextArea
+                name="message"
+                placeholder={UI_TEXT.shortQuoteMessageHint}
+                rows={5}
+                maxLength={TEXT_LIMITS.message}
+              />
             </Field>
           </div>
         </>

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 import { describe, expect, it } from "vitest";
@@ -25,5 +25,11 @@ describe("EditorSelect", () => {
     expect(select).toHaveValue("INSTITUTIONS");
     await userEvent.selectOptions(select, "Care at home");
     expect(form!.getValues("audience")).toBe("FAMILIES");
+    await act(async () => form!.reset({ audience: "INSTITUTIONS" }));
+    expect(select).toHaveValue("INSTITUTIONS");
+    await userEvent.selectOptions(select, "FAMILIES");
+    expect(form!.getValues("audience")).toBe("FAMILIES");
+    await act(async () => form!.reset({ audience: "INSTITUTIONS" }));
+    expect(select).toHaveValue("INSTITUTIONS");
   });
 });

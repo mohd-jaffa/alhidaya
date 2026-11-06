@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { createContext, type ReactNode, use, useEffect, useRef, useState } from "react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { loadMotionEngine, type MotionEngine, type SmoothScroll, startSmoothScroll } from "@/lib/motion/engine";
+import { loadMotionEngine, type MotionEngine, type SmoothScroll } from "@/lib/motion/engine";
 import { REDUCED_MOTION_QUERY, WHEEL_QUERY } from "@/lib/motion/preferences";
 
 interface MotionState {
@@ -67,7 +67,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!active || !wheel) return;
-    const scroll = startSmoothScroll(active);
+    const scroll = active.startSmoothScroll(active);
     smooth.current = scroll;
     return () => {
       scroll.stop();
@@ -89,6 +89,8 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     window.addEventListener("load", refresh, { once: true });
     return () => window.removeEventListener("load", refresh);
   }, [active]);
+
+  useEffect(() => active?.mountPageMotion(), [active, pathname]);
 
   return <MotionContext value={{ engine: active }}>{children}</MotionContext>;
 }

@@ -116,11 +116,11 @@ export function InboxLog<T extends { id: string; createdAt: string }>({
         </section>
       ))}
       {pages > 1 ? (
-        <nav aria-label={ADMIN_TEXT.pageOf(data.page, pages)} className="flex items-center gap-4">
+        <nav aria-label={ADMIN_TEXT.pageOf(data.page, pages)} className="flex flex-wrap items-center gap-4">
           {data.page > 1 ? (
             <Link
               href={pageHref(pageBase, data.page - 1)}
-              className="font-semibold text-deep underline underline-offset-4"
+              className="inline-flex min-h-touch min-w-touch items-center font-semibold text-deep underline underline-offset-4"
             >
               {ADMIN_TEXT.newer}
             </Link>
@@ -129,7 +129,7 @@ export function InboxLog<T extends { id: string; createdAt: string }>({
           {data.page < pages ? (
             <Link
               href={pageHref(pageBase, data.page + 1)}
-              className="font-semibold text-deep underline underline-offset-4"
+              className="inline-flex min-h-touch min-w-touch items-center font-semibold text-deep underline underline-offset-4"
             >
               {ADMIN_TEXT.older}
             </Link>

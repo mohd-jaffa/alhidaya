@@ -1,0 +1,1076 @@
+{
+  "buildId": "xIApxph_gBS1wViJ7yUpx",
+  "measuredAt": "2026-11-02T18:00:33.188Z",
+  "scope": "Final standalone build, published local content, deterministic gzip counts. All public routes plus the deliberate missing-page template.",
+  "budget": 174080,
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "initial": {
+        "total": 174080,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/3kft5o0sfnrp1.js",
+            "gzip": 9633
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/about",
+      "status": 200,
+      "initial": {
+        "total": 168127,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/097x-2y3-mq7u.js",
+            "gzip": 3919
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services",
+      "status": 200,
+      "initial": {
+        "total": 168127,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/097x-2y3-mq7u.js",
+            "gzip": 3919
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/careers",
+      "status": 200,
+      "initial": {
+        "total": 168127,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/097x-2y3-mq7u.js",
+            "gzip": 3919
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/contact",
+      "status": 200,
+      "initial": {
+        "total": 174080,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/3kft5o0sfnrp1.js",
+            "gzip": 9633
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/request-a-quote",
+      "status": 200,
+      "initial": {
+        "total": 174080,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/3kft5o0sfnrp1.js",
+            "gzip": 9633
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/privacy",
+      "status": 200,
+      "initial": {
+        "total": 168127,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/097x-2y3-mq7u.js",
+            "gzip": 3919
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/terms",
+      "status": 200,
+      "initial": {
+        "total": 168127,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/097x-2y3-mq7u.js",
+            "gzip": 3919
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/hospital-and-clinic-staffing",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/school-nurse-staffing",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/home-nursing-care",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/chronic-condition-care",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/child-care",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/maternity-and-newborn-care",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/palliative-care",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/services/elderly-care",
+      "status": 200,
+      "initial": {
+        "total": 165536,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/1y3a1_i4ef1pp.js",
+            "gzip": 1328
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/careers/registered-general-nurse-home-care",
+      "status": 200,
+      "initial": {
+        "total": 164775,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/0i0b6n1cmk5ij.js",
+            "gzip": 567
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/careers/apply",
+      "status": 200,
+      "initial": {
+        "total": 171194,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/2ex8s0eq9oxer.js",
+            "gzip": 6986
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/careers/registered-general-nurse-home-care/apply",
+      "status": 200,
+      "initial": {
+        "total": 171194,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2ex8s0eq9oxer.js",
+            "gzip": 6986
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      }
+    },
+    {
+      "route": "/performance-page-that-does-not-exist",
+      "status": 404,
+      "initial": {
+        "total": 164208,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          }
+        ]
+      }
+    }
+  ]
+}

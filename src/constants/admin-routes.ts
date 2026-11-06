@@ -31,6 +31,7 @@ export const ADMIN_ROUTES = {
   applications: "/admin/applications",
   application: (id: string) => `/admin/applications/${id}`,
   settings: "/admin/settings",
+  fonts: "/admin/settings/fonts",
   operations: "/admin/settings/operations",
   activity: "/admin/activity",
   /** The signed-in admin's own details: their name and their password (D115). */
@@ -96,6 +97,9 @@ export const ADMIN_API_ROUTES = {
   adminClientOrderPublish: "/api/admin/clients/order/publish",
   adminClientOrderDiscard: "/api/admin/clients/order/discard",
   /** The site's content (D94): its draft, published or discarded, and a new brochure uploaded. */
+  adminTypography: "/api/admin/typography",
+  adminTypographyPublish: "/api/admin/typography/publish",
+  adminTypographyDiscard: "/api/admin/typography/discard",
   adminSite: "/api/admin/site",
   adminSitePublish: "/api/admin/site/publish",
   adminSiteDiscard: "/api/admin/site/discard",

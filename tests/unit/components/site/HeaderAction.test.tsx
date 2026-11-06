@@ -11,6 +11,8 @@ describe("HeaderAction (D116)", () => {
     const onNavigate = vi.fn();
     render(<HeaderAction site={siteFixture({ brochure: { mediaId: crypto.randomUUID() } })} onNavigate={onNavigate} />);
     const brochure = screen.getByRole("link", { name: UI_TEXT.brochureButton });
+    expect(brochure).toHaveTextContent(/^Brochure$/);
+    expect(brochure.querySelector("svg")).not.toBeNull();
     expect(brochure).toHaveAttribute("href", "/brochure");
     expect(brochure).toHaveAttribute("download", "Al-Hidaya-Health-Care-Service-Brochure.pdf");
     expect(brochure).toHaveClass("bg-deep", "rounded-button");
@@ -26,5 +28,12 @@ describe("HeaderAction (D116)", () => {
     rerender(<HeaderAction site={null} />);
     expect(screen.getByRole("link", { name: UI_TEXT.requestQuote })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: UI_TEXT.brochureButton })).not.toBeInTheDocument();
+  });
+
+  it("takes the look its place gives it: the phone menu's white button on deep blue (D167)", () => {
+    const { rerender } = render(<HeaderAction site={siteFixture()} variant="onDeep" size="lg" />);
+    expect(screen.getByRole("link", { name: UI_TEXT.requestQuote })).toHaveClass("bg-card", "text-deep", "min-h-13");
+    rerender(<HeaderAction site={siteFixture({ brochure: { mediaId: crypto.randomUUID() } })} variant="onDeep" />);
+    expect(screen.getByRole("link", { name: UI_TEXT.brochureButton })).toHaveClass("bg-card", "text-deep");
   });
 });

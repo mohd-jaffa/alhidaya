@@ -1,0 +1,677 @@
+[
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 768,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 844,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 1024,
+    "font": "syne",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "inter",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "atkinson-hyperlegible-next",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "roboto",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "open-sans",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "source-sans-3",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "nunito-sans",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "manrope",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "dm-sans",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "work-sans",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "playfair-display",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "cormorant-garamond",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "fraunces",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "space-grotesk",
+    "fits": true
+  },
+  {
+    "width": 1440,
+    "font": "syne",
+    "fits": true
+  }
+]

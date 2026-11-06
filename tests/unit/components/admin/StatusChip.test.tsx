@@ -14,7 +14,7 @@ describe("StatusChip", () => {
         <StatusChip tone="off">Archived</StatusChip>
       </>,
     );
-    expect(screen.getByText("New")).toHaveClass("text-deep");
+    expect(screen.getByText("New")).toHaveClass("text-status-new");
     expect(screen.getByText("Alert email not sent")).toHaveClass("text-error");
     expect(screen.getByText("Resolved").querySelector("[aria-hidden]")).toHaveClass("bg-leaf");
     expect(screen.getByText("In progress").querySelector("[aria-hidden]")).toHaveClass("bg-sky");

@@ -3727,3 +3727,957 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None.
+
+## 2026-11-01 — R6C.3: Home's cinematic automatic hero (D136)
+
+### Changed
+- The user chose Impeccable's Cinematic hero direction, then asked for the
+  client's automatic slider without Previous, Next, Pause or a slide count.
+  Only the progression bars remain, including on phones.
+- `HeroSlides`: separate wipe and zoom layers, the outgoing photograph held
+  at its last frame and a fresh six-second drift on each visit; current
+  photographs alone exposed to screen readers. Hover or keyboard focus
+  temporarily stops the drift and fill; reduced motion keeps the first slide
+  still. No script timer, dependency or extra animation loop.
+- `HeroSection` and the motion tokens: coordinate the masked headline words,
+  supporting line, optional action, photo note and progress; keep a long
+  photo note inside the photograph's edges. Rails scale instead of animating
+  layout width. Existing content, section order and Theme 6 retained.
+- Plan D136 and Q48 record the user's choice and the timing/hover defaults
+  for review. DESIGN.md and the public surface brief describe the built hero.
+- No database migration, environment or production-server change.
+
+### Validation
+- Local validation in progress; results will be appended below.
+
+### Blockers
+- None. The change stays uncommitted for the user's review, as requested.
+
+### R6C.3 follow-up — the slider sticking
+- The user reported that automatic playback sometimes stopped until reload.
+  Removed hover and mouse-focus pauses: the clock stops only for deliberate
+  keyboard focus (`:focus-visible`), so a pointer resting on the image or a
+  tap/click cannot leave it stopped. The screen-reader hint names that path.
+- Browser regression: hold the pointer on the hero, click it, watch every
+  slide and the wrap to the first, then pause and resume by keyboard.
+
+## 2026-11-01 — R6C.4: Mission and Vision with an authored entrance (D137)
+
+### Changed
+- The user chose distinct paired panels: deep-blue Mission with white text,
+  pale-green Vision with navy text, display headings and unchanged statements.
+- After review, replaced the rejected heart with an assembling medical cross,
+  using the logo's colours. Its four arms meet while Vision's globe unfolds;
+  the rules open, then the masked headings and statements arrive.
+- `MissionPanels`: a GSAP timeline scoped to each panel, stopped and reverted
+  on navigation, using the existing engine and motion tokens. Transform and
+  opacity only, once on entering; reduced motion and slow/failed script load
+  show the completed art and words. Panels already on screen stay visible.
+- Plan D137, the tracker, DESIGN.md and the public surface brief updated.
+- No migration, dependency, content change or production-server change.
+
+### Validation
+- Focused MissionSection and MissionPanels unit tests passed.
+- Browser, full-suite and coverage validation in progress.
+
+### Blockers
+- None. Uncommitted for user review. Admin colours follow this public work.
+
+### R6C.3–R6C.4 browser validation
+- Production-build public browser checks passed: 46 passed, two one-width
+  skips. Both phone and desktop completed the entire automatic slider loop
+  while hovered and clicked, then paused/resumed by deliberate keyboard focus.
+- Home and About passed axe; Mission and Vision's panels, headings and
+  statements settled correctly. The heart is gone; the medical cross and
+  unfolding globe are the user's final choice. Ready for user review.
+
+## 2026-11-01 — R6C.5: the pastel-green admin (D138)
+
+### Changed
+- After the public work passed its browser checks, applied the user's chosen
+  pastel-green navigation and sign-in panels, navy words and the colour logo;
+  leaf marks the current row, forest carries actions, links, focus and switches.
+- `AdminLayout` scopes these roles to the admin. White work areas, layouts,
+  behaviour and the public site's blue palette stay as they were. A separate
+  status token keeps New blue; other statuses and errors keep their colours.
+- The plan, DESIGN.md and the admin surface brief record D138.
+- No migration, dependency, environment or production-server change.
+
+### Validation
+- Full validation in progress; final results follow below.
+
+### Blockers
+- None. All changes remain uncommitted for the user's review.
+
+## 2026-11-01 — final validation and entire-codebase Impeccable audit
+
+### Validation
+- Lint, format check, typecheck and the standalone production build passed.
+- Unit, contract and local MySQL integration: 343 files, 1,217 tests passed;
+  statements, branches, functions and lines all 100%.
+- Full E2E: 187 passed, 41 intentional one-width skips (5.5 minutes). Phone
+  and desktop, axe, publishing, admin workflows, forms, security journeys,
+  keyboard focus, reduced motion, and 320/768/1024 px width checks passed.
+- Home, Mission/Vision and the green sign-in viewed at desktop and phone;
+  the green admin captured in the built app. Admin action/focus is forest,
+  while New remains blue; the public palette is isolated.
+- Modern-browser first-load JavaScript, gzip: Home/Contact/Quote 173,775 B;
+  About/Services/Careers/Privacy/Terms 167,411 B; a service 164,996 B; general
+  application 171,046 B. All within 174,080 B; post-paint motion accounted
+  separately by D65. Conditional legacy-only polyfills excluded. LCP, INP,
+  CLS, Lighthouse and real-device frame timing were not certified by this run.
+
+### Audit
+- The user requested `/impeccable audit` on the entire codebase after the
+  UI work. Report: `docs/audits/2026-11-01-impeccable-audit.md`, with raw
+  detector evidence and bundle measurements beside it. Audit score 15/20.
+- Detector: no primary findings; 11 reviewed advisories (10 email-only
+  size/radius values and one integration image-fixture colour).
+- Verified findings: one P1 (no persistent stop for automatic content), two
+  P2 (targets below the project's 44 px rule; incomplete performance gates),
+  one P3 (stale Impeccable JSON sidecar). Audit reports these without making
+  fixes or reversing the user's design decisions.
+- R6C.3–R6C.5 are ready for review; R7.4 records the audit and its open
+  findings. Q49 records the unresolved motion-control decision.
+- No commit, push or production-server change, as requested.
+
+### Blocker
+- Status: OPEN
+- Area: Accessibility conformance before release (audit P1, Q49).
+- Description: Home cannot be persistently stopped while using the rest of
+  the page; choosing one client logo stops only its row.
+- What was attempted: Automatic playback, full loop, hover/click behaviour,
+  deliberate keyboard pause/resume and reduced motion verified in browsers.
+- Why it is blocked: The user removed the slider controls and chose no
+  clients' pause button; a persistent replacement needs the user's decision.
+- Required decision/input: Whether and where to provide a persistent motion
+  control compatible with the progression-only slider.
+- Temporary workaround: Reduced motion keeps slides/logos still; keyboard
+  focus temporarily pauses Home. Neither is recorded as a full resolution.
+
+## 2026-11-01 — audit findings 3 and 4 (D139), for review
+
+### Changed
+- The user corrected the requested scope to the audit's third and fourth
+  numbered findings: performance gates and the Impeccable sidecar. The
+  automatic-content and 44 px target findings remain unchanged.
+- Added a separate production-build performance suite and `test:performance`:
+  modern initial JavaScript (including streamed boundary references), mobile
+  Lighthouse categories/LCP/CLS, Event Timing interactions and native touch
+  scroll; desktop wheel scroll checks long tasks and missed-vsync estimates.
+  Every seeded public route is measured serially. Reports keep initial and
+  post-paint bytes separate (D65); applications skip only the intentionally
+  conflicting noindex/crawlability audit. Thresholds match §31, without retries.
+- CI runs the new gates and retains reports on success or failure. Lighthouse
+  13.6.0 is a development-only dependency; no new script ships to a visitor.
+  `docs/PERFORMANCE.md` explains the profile, procedure, evidence and limits.
+- Regenerated `.impeccable/design.json` from current DESIGN.md and source:
+  current colour keys and OKLCH ramps, Theme 6 buttons/header/footer/progress,
+  Mission/Vision cross and globe, green admin navigation/actions and preserved
+  blue New status. Ten self-contained previews use token-bound CSS. Narrative
+  is copied from DESIGN.md; that authority was preserved in this follow-up.
+- No migration, environment variable, product feature or production change.
+
+### Validation
+- Full verification in progress; final results are appended below.
+
+### Blockers
+- Physical-device/compositor checks and cached-response time from the server's
+  region remain release verification; local lab evidence does not certify them.
+- Existing accessibility decision Q49 remains open. Nothing committed or pushed.
+
+## 2026-11-01 — shared-link previews (D140), for review
+
+### Changed
+- Updated the existing server-only share-image renderer from the earlier
+  green-band composition to Theme 6: original Al Hidaya colour logo, published
+  page headline in deep blue, optional pale-green label, domain and blue/leaf
+  baseline. Headline size adapts to longer published copy.
+- Included the existing logo in standalone image-route file tracing. No new
+  dependency, remote fetch, CMS design control, environment variable or migration.
+- Added crawler checks for WhatsApp across all 19 published launch routes,
+  plus Home checks for Facebook, X, LinkedIn and Slack: complete metadata in
+  the initial HTML head, absolute image URLs and readable 1200 × 630 PNGs
+  below 300 KB. No messages are sent to a social service.
+
+### Validation
+- Verification in progress; final results appended below.
+
+### Blockers
+- Live platform appearance and cached-preview refresh require the authorized
+  deployment; the client’s server remains untouched. Nothing committed.
+
+## 2026-11-01 — upload security verification (D141), for review
+
+### Changed
+- Reviewed image, brochure and CV routes: bounded streaming request reads,
+  per-file size/type checks, admin authorization/origin and public-form gates,
+  generated storage names and extensions, private CV storage and attachment-only
+  downloads, public-folder execution restrictions and nosniff.
+- Image decoding now maps failures during every output conversion to
+  UPLOAD_TYPE_NOT_ALLOWED before any variant is written. libvips warning
+  handling is explicit; the existing 40-million-pixel ceiling remains.
+- Added harmless adversarial tests for renamed executable/script/SVG/PDF
+  content, forged image signatures, truncated JPEG pixels, excessive decoded
+  dimensions, oversized images/brochures and a program disguised as a PDF CV.
+  Re-encoding a real image discards appended program text.
+- No new runtime dependency, migration, service or server change.
+
+### Validation
+- Targeted image/storage/body/hero/share tests: 10 files, 45 tests passed.
+- Broader verification in progress; final results appended below.
+
+### Blocker
+- Status: OPEN
+- Area: Malware scanning, Q52.
+- Description: PDF/Word uploads receive signature-based identification, not
+  full document validation, disarm/reconstruction or antivirus scanning. DOCX
+  identification uses ZIP signature plus a Word path marker; DOC uses OLE magic.
+- What was attempted: Reviewed all upload, storage, download and mail paths;
+  existing controls and new adversarial tests remain within the approved plan.
+- Why it is blocked: A scanner adds infrastructure or an external service
+  outside the current architecture (AGENTS.md §29).
+- Required decision/input: Whether to investigate a cPanel-compatible scanner.
+- Temporary workaround: Existing supported-type/size checks, image re-encoding,
+  generated non-executable filenames, isolated private CV storage; no claim
+  that signature checks prove a document is valid or malware-free.
+
+## 2026-11-01 — performance verification correction
+
+### Changed
+- The first complete current-run performance pass caught font-swap CLS above
+  0.05 on Home and three Careers/application pages. Replaced the openings’
+  font-dependent ch container widths with equivalent stable em-based tokens.
+  No font, headline content, animation or performance threshold changed.
+- The touch-scroll probe now travels one viewport beyond the nominal range,
+  avoiding a swipe stopping short from rounding/inertia; it still requires
+  reaching the bottom and counts the entire gesture.
+
+### Validation
+- Focused cold-font desktop Careers/application checks: four passed; previous
+  failed CLS values 0.0779–0.0925 fell below 0.001 in the focused pass.
+- Full rerun pending. Earlier partial runs are diagnostic evidence, not a pass.
+
+### Resolution — D141 / Q52 scope
+- The user chose: “Harden and verify existing checks now; decide malware
+  scanning before launch.” The scanner is deferred by that explicit decision,
+  not a blocker to finishing the current upload hardening. The launch decision
+  remains open; no antivirus, external service or file transfer was added.
+
+### Additional measured Home correction
+- Stable em widths fixed the Careers/application shifts, but Home still shifted
+  because the tallest hidden slide changed the shared grid height at font swap.
+  Added a desktop-only 22 rem minimum copy-area token; longer copy still grows,
+  and mobile layout is unchanged. No overflow clipping or hidden text added.
+
+### Upload / share validation follow-up
+- Current complete unit/contract/database run: 345 files, 1,224 tests passed;
+  statements, branches, functions and lines all 100%.
+- Built functional browser run: 188 passed, 43 intentional one-width skips;
+  the new oversized fixture was initially zero-filled and hit the type check
+  before the size check. Corrected it to carry a valid image/PDF signature.
+  The focused desktop media suite then passed all three tests, including every
+  disguised-file and size-limit assertion. No application source changed for
+  that fixture correction.
+- WhatsApp crawler checks passed for all 19 launch routes, plus Home for
+  Facebook, X, LinkedIn and Slack. Absolute OG/Twitter image URLs, initial-head
+  metadata, 1200 × 630 PNG generation and sub-300 KB size passed on the standalone
+  build with the bundled logo/font. Home and long-title cards visually reviewed.
+- Full lint, format, typecheck and standalone build passed; dependency audits
+  passed, with no known moderate-or-higher advisory in the 97 shipped packages.
+- Final Home layout and full performance verification continue below.
+
+## 2026-11-01 — final D139–D141 validation, ready for review
+
+### Validation
+- Final standalone performance run: all 40 serial cases passed in 9.1 minutes
+  with unchanged thresholds and no retries. Maximum initial modern JS 173,784
+  gzip bytes (296 spare), mobile lab LCP 618 ms, scripted INP bound 56 ms and
+  combined measured CLS 0.0384; minimum Lighthouse category 96. No scrolling
+  long task above 50 ms observed; desktop missed-vsync estimate 0% in this run.
+  Post-paint motion: 50,245 gzip bytes, accounted separately under D65.
+- Evidence and all 20 route summaries recorded in
+  docs/audits/2026-11-01-performance.json; original audit preserved with a
+  follow-up recording fixes to numbered findings 3/4 and the additional
+  shared-link/upload requests. Findings 1/2 remain unchanged.
+- Final Home minimum copy area: 16 affected unit/contract tests passed,
+  six phone/desktop opening/axe/font browser checks passed, standalone rebuilt.
+  The complete 345-file/1,224-test 100% coverage run and the functional/browser
+  fixture correction are recorded immediately above.
+- CI coverage uses one worker, matching the successful complete local run and
+  avoiding reproduced photo-encoding contention; no test timeout relaxed.
+- R7.1 lab gates and R7.4 selected fixes are ready for review. R7.3 records the
+  focused upload review without claiming the broader ASVS review complete.
+- No schema migration, new environment variable, visitor script or production
+  change. Nothing committed or pushed.
+
+### Remaining release checks
+- Physical-device/compositor and field responsiveness, server-region cached
+  response time and live social-preview caches need release verification.
+- The user chose to decide malware scanning before launch (Q52). Current
+  PDF/Word signature checks are not full validation or a virus-free guarantee.
+- Persistent motion controls remain the existing decision Q49.
+
+## 2026-11-01 — Impeccable harden and polish (D142), for review
+
+### Changed
+- Confirmed four regressions before fixing them: public forms sent twice while
+  their lazy schema loaded, admin mutations accepted simultaneous submissions,
+  and both button families allowed disabled=false to override pending=true.
+  Immediate locks now cover validation/request/revalidation, preserve retry
+  after errors, and keep pending controls disabled and announced busy.
+- Confirmed long headings/contact details widened rendered phone/tablet/desktop
+  pages; added resilient wrapping, including masked words and settling text.
+  No copy is truncated or replaced and no translation feature was added.
+- Standalone navigation/footer/authentication/section links now meet the existing
+  44 px target requirement. Footer rows retain a compact rhythm, and the phone
+  sign-in band no longer receives excess free grid height above its form.
+- Reuse the existing menu when desktop navigation exceeds its safe capacity:
+  five links or 42 total label characters (agent default). No saved link is
+  removed. The same menu, current state and header action stay available.
+- DESIGN.md and the changed Impeccable component previews document the current
+  targets and behaviour. Theme 6, green admin, content, animation sequence and
+  reduced-motion support are preserved. No infrastructure or server change.
+
+### Validation
+- Baseline race/disabled tests: four failed as expected; all pass after fixes.
+- Targeted unit suite: eight files, 38 tests passed before the final navigation
+  browser checks. Long text no longer widens 390/768/1440 px renders.
+- Local rendered Home, About, Contact and sign-in fit at 200% text enlargement
+  at 390/768/1440 px. Phone sign-in before/after and public layouts reviewed.
+- Final complete verification in progress; results appended below.
+
+### Blockers / limits
+- No critique snapshot was returned for the current Home file, so this was an
+  independent harden/polish pass. The session’s existing context was retained.
+- Persistent motion control Q49 remains unresolved: the user’s progression-only
+  hero is preserved. Malware scanning remains the before-launch decision Q52.
+- No new claim of physical-device, Safari, screen-reader speech or production
+  verification. Nothing committed or pushed.
+
+### D142 verification follow-up
+- Complete unit/contract/local-MySQL suite: 345 files, 1,227 tests passed;
+  statements, branches, functions and lines all 100%.
+- Complete built browser suite: 195 passed, 45 intentional one-width skips
+  (5.7 minutes). This includes publishing ten long navigation labels, checking
+  all links at 1440 and 390 px, keyboard access to the final link, Escape/focus
+  return, and restoring the original published site.
+- The manual 1024 px logo/nav overlap check passed; no breakpoint change made.
+  One local browser check initially hit an automatic approval-review timeout;
+  its permitted retry succeeded, with no permission or server change.
+- The hardening detector reports zero primary findings and 11 unchanged
+  advisories (email formatting and a fixture colour); they are not new UI defects.
+- An additional extreme highlighted heading revealed internal overflow despite
+  a fitting page width. Its short phrase remains atomic, while longer highlights
+  can wrap inside the heading; punctuation groups share a bounded wrapper.
+  Seven affected motion-text unit tests passed. Added real-component browser
+  stress markup to check internal scroll width as well as document width.
+- Final rebuild, affected browser checks and isolated performance gates pending.
+
+- Final highlighted-heading browser checks: 32 passed, four intentional
+  one-width skips, including all public pages’ width/axe checks at 320, 768
+  and 1024 px. The 112-character highlighted word now wraps inside its heading
+  instead of its previous 2,152 px internal overflow on a 390 px page.
+- The admin phone logo’s target also uses the existing 44 px minimum; its
+  32 px image and already-44 px menu button keep the bar’s visual height intact.
+  Added that assertion to the existing phone-menu/sign-out journey.
+
+## 2026-11-01 — D142 final verification, ready for review
+
+### Validation
+- Final hardened standalone build: all 40 serial performance checks passed
+  (9.2 minutes), unchanged budgets, no retries. Maximum initial JS 173,897 gzip
+  bytes (183 spare), mobile lab LCP 621 ms, scripted INP bound 72 ms, CLS 0.0386;
+  minimum Lighthouse category 96. No scrolling task above 50 ms observed; desktop
+  missed-vsync estimate 0%. Deferred motion remains 50,245 gzip bytes.
+- Complete 345-file/1,227-test run had 100% coverage; full built E2E passed
+  195 checks with 45 intentional skips. Final static wrapper corrections passed
+  17 affected unit/contract checks and 32 affected browser checks (four skips),
+  then the final phone admin target/menu/sign-out check passed.
+- Final typecheck, lint, format and standalone build passed. Zero primary
+  detector findings and 11 unchanged advisories. No new runtime dependency.
+- Source diff reviewed; no temporary scripts, debug output or test fixtures
+  were added to shipped source. The D142 report and per-route performance JSON
+  preserve this build separately from historical D139 measurements.
+
+### Remaining decisions / release limits
+- Q49 persistent motion control and the user-deferred Q52 malware-scanning
+  decision remain open before release. Q53 records reviewable layout defaults.
+- Physical-device, speech/Safari/Firefox/field/server-region/live-social-cache
+  checks are not claimed by local Chromium evidence. Broader ASVS work remains.
+- No migration, environment change, production action, commit or push.
+
+## 2026-11-02 — Home services pyramid (D143)
+
+### Changed
+- Home alone uses the approved service-card pyramid: 30 px steps, full title/link
+  panels on the rear cards and softer rear photographs. The existing arrows and
+  touch gestures cycle through published services. The user changed the preview’s
+  eight-second interval to the main slider’s shared six-second duration.
+- The enhancement loads after paint, stops offscreen/in a hidden tab/during
+  deliberate keyboard focus, and leaves manual navigation static for reduced
+  motion. A native row remains usable without the motion chunk. Other public
+  service grids and the admin are unchanged. No new dependency or migration.
+
+### Validation
+- In progress: focused unit/coverage, standalone build, phone/desktop browser,
+  responsive/keyboard/axe and isolated performance checks.
+
+### Blockers / limits
+- Q49 persistent motion-stop choice remains open under the approved no-pause
+  direction. No production action, commit or push; the user reviews first.
+
+### D143 validation completed — 2026-11-02
+- Full unit/contract/local-MySQL integration suite: 347 files, 1,239 tests,
+  100% coverage. Full built E2E: 198 passed, 44 intentional skips; subsequent
+  focused journeys verified real swipe/fresh-tap navigation, no-JavaScript
+  fallback, reduced motion, automatic advancement and axe. Final CSS build
+  repeated the phone/desktop pyramid journeys (two passed).
+- Production CSS RTL centring checked at 390 and 1440 px; general layout
+  checked at 320, 390, 768 and 1440 px. The scoped detector returned no findings.
+- All 20 route initial-JS budgets passed. The largest is exactly 174,080 gzip
+  bytes (170 KiB), leaving no headroom. No limit was relaxed.
+- Final-build isolated Home/Contact phone/desktop performance: four passed,
+  no retries; LCP ≤ 527 ms, lab interaction bound ≤ 88 ms, CLS ≤ 0.0349,
+  no measured scroll long tasks. Lighthouse 100 on measured routes.
+  A prior Contact keyup sample failed at 320 ms; it remains disclosed in
+  `docs/audits/2026-11-02-home-services-pyramid.md`, alongside the passing
+  follow-up, without claiming a confirmed cause. Historical whole-route
+  runs remain distinct from this targeted follow-up.
+- Q49 and physical-device/field/browser/server-region limits remain open.
+  No migration, environment change, production action, commit or push.
+
+## 2026-11-02 — Service and Contact concept images (D144)
+
+### Added
+- Five reusable service-detail design concepts, shown consistently with the
+  existing Home nursing care content for comparison. All five also checked
+  against all eight service titles, correct audience actions and both widths.
+- Five Reach us/Send us a message compositions using current company contact
+  facts, map geometry, consent and existing fields. Ten desktop and ten phone
+  PNGs prepared for client sharing, with two overview sheets and a ZIP.
+- These are external review images only. No service-detail or Contact source
+  implementation changed. Q54 records the user’s pending design choice.
+
+### Validation
+- Desktop 1440 px and phone 390 px render checks: no horizontal overflow,
+  broken images or browser-script errors. All 80 service/layout/viewport
+  combinations passed title/action and overflow checks. Images visually reviewed.
+
+### Blockers / limits
+- The user chooses a service layout and Contact layout before implementation.
+  Motion captions describe proposed behavior; the PNGs themselves are static.
+  No new dependency, schema, environment, production action, commit or push.
+- Final repository lint, typecheck, format check and diff whitespace checks
+  passed after the CSS direction correction and review documentation update.
+
+## 2026-11-03 — Contact and service-detail layouts (D145–D147)
+
+### Changed
+- Contact follows Blue ribbon: white opening, pastel-blue Reach us, pastel-green
+  message section, overlapping form and office/map. Navigation/footer retained.
+  Name/phone align; phone guidance is a placeholder with visible labels.
+- The Contact headline types fully, holds, deletes from the end and repeats.
+  Native opacity animations on the deferred motion path reserve full geometry,
+  pause offscreen/hidden and cancel to complete still text for reduced motion.
+- Service details follow Care editorial with a large blue heading and tall
+  rounded portrait. About is pastel blue; Who it is for and the 24/7 panel are
+  omitted, with stored content retained. The user clarified Other services:
+  compact thumbnail/title cards on pale green with All services, showing three
+  random distinct same-audience published services (fewer when fewer exist),
+  excluding the current service. Home and the Services listing keep their cards.
+- The service editor supports up to two optional header labels/destinations,
+  none by default, governed by existing draft/preview/publish. Safe internal or
+  HTTPS links only; count, labels and links validated at save/publish boundaries.
+  Missing legacy fields default to empty; no SQL migration is needed.
+- Smooth-scroll setup moved to the deferred motion runtime so added behavior
+  retains the existing initial-JavaScript budget. No new dependency or frame loop.
+
+### Validation
+- Full pre-related-correction coverage: 1,251 tests passed, 100% across all
+  metrics. Full built phone/desktop E2E: 203 passed, 45 intentional skips.
+  Final related correction and performance validation are recorded below.
+- Responsive renders at 320/390/768/1440 px, native type/delete phases,
+  reduced-motion cleanup and form alignment checked. A scoped detector returned
+  no findings before the related-card correction; later checks are visual/browser.
+
+### Blockers / limits
+- Q49 persistent motion-stop and physical-device/field/browser/server-region
+  release checks remain. No real client data change, production action, commit
+  or push. All edits remain for user review.
+
+## 2026-11-03
+
+### Changed
+- D148: Careers’ retained opening can be moved and hidden/restored through the Pages editor; other page locks remain. User requested it hidden now in the local preview. No migration.
+
+### Validation
+- In progress; no commit, push or deployment.
+
+### Blockers
+- None.
+
+### Changed
+- D149: About’s Mission/Vision panels lift and highlight on hover/focus, with transform/opacity-only CSS and a static reduced-motion highlight. Existing entrance animation retained. Validation underway.
+
+### Changed
+- D150: Only the main Services page’s All services section now places every service in one pastel-green compact-card grid, without audience groups/actions. Rest of page and Home unchanged. No migration; validation underway.
+
+- D150 follow-up: Services’ Talk to us band uses pastel blue; other pages’ bands and all content/actions are preserved.
+
+- D149 refinement requested by the user: noticeably animate the medical cross’s arms/quarter turn and the globe’s unfolding rings, with an expanding outline. One hover/focus sequence, transform/opacity only; reduced motion stays static.
+
+- D149 final clarification: make the whole card the focal interaction, with perspective tilt/forward zoom, a full-surface light sweep and supporting graphic motion. Keyboard focus receives the same response; reduced motion stays static.
+
+### Changed
+- D151: Home quote matches the user’s supplied rounded-panel reference with their pastel-blue background correction: contact tiles left, plain white form right, paired fields and message guidance in placeholders. Existing consent and submission security retained. Main Quote page unchanged; no migration. Validation underway.
+
+### Changed
+- D151 follow-up: add the float shadow to Home’s white form card.
+- D152: Contact message section adopts the reference layout on pastel green, with heading/map/office/address left and the existing white form right; Reach us unchanged. Remove the superseded overlap/token. Existing fields/security retained; no migration. Validation underway.
+
+- D152 follow-up: apply the same float shadow to Contact’s white form card.
+
+- Remove four unused public-label catalogue entries while keeping the unchanged JavaScript budget; the new form placeholders reuse existing words where possible.
+
+### Changed
+- D153: clarify the Contact surface: preserve the green rounded panel and white form; add only a pastel-blue outer backdrop matching Reach us.
+- D154: recognizable WhatsApp mark across public/admin contact icons and shared WhatsApp buttons; retain legacy chat keys and remove unused footer control glyphs. No migration/dependency.
+
+- D154 refinement: replace the custom outline with the standard Font Awesome Free WhatsApp brand SVG, served locally/reused via SVG use. Floating shortcut uses requested WhatsApp green and white logo. Source/license in docs/brand/icons.md.
+- D149 first-visit bug: move GSAP’s entrance transform to the scene wrapper so the article’s hover transforms remain intact, including first visits/client navigation.
+
+- D152 map follow-up: apply the float shadow to the Contact map frame, retaining its attribution and office data.
+
+### Fixed
+- D155: remove the legacy audience filter from Other services, so School nurse staffing and every other detail page sample three distinct other published services across the catalogue. Only show fewer if fewer than three others exist overall. Sampling remains server-side before image collection.
+
+### Validation
+- D145–D155 final source: 1,265 tests across 355 unit/contract/local-MySQL files passed with 100% statements/branches/functions/lines. Limited worker count avoids the interrupted run’s worker saturation; thresholds unchanged.
+- Final standalone build passed; all 20 public initial-JavaScript sizes passed, maximum 174,079 gzip bytes against 174,080. Browser and isolated lab checks remain in progress.
+- Earlier overlapping-database and interrupted-worker runs were discarded; the sequential final suite is green.
+
+### Changed
+- D156: About and main Services opening buttons gain a Pages-editor visibility switch, off by default and for legacy records. Preserve the existing labels/links; save/preview/publish controls visibility. Hide both in the local published preview. Individual service-detail button controls unchanged; no migration.
+
+### Validation — final D145–D156 review build
+- Final source: 1,271 tests across 355 unit/contract/local-MySQL files passed; statements, branches, functions and lines all remain 100%. Lint, typecheck, formatting and standalone build passed.
+- Built-app targeted browser checks: 27 passed, one intentional skip, phone and desktop with axe. Includes first-navigation whole-card Mission/Vision hover, both form layouts/shadows, proper WhatsApp branding, School nurse staffing’s three related cards, optional service header actions, Careers movement/visibility and About/main Services action switches through preview/publish/hide.
+- All 14 isolated performance checks passed on seven affected routes: maximum mobile lab LCP 686 ms, scripted INP bound 56 ms, combined CLS 0.0349, minimum Lighthouse category 100, no scrolling long task at the observer threshold and 0% desktop missed-vsync estimate. Lab limits and remaining physical-device/production-region release checks remain; evidence is recorded in docs/PERFORMANCE.md and the Nov 3 audit artifacts.
+- All 20 initial JavaScript sizes pass on build NeuDoY-tls_g0bBcMQcAE, maximum 174,079 gzip bytes against the unchanged 174,080 limit (one byte headroom). Future shared-client changes require fresh measurement.
+- Local published content: Careers opening hidden; About and main Services opening actions off, with existing content preserved. No SQL migration or production change. Ready for review; nothing staged or committed, as requested.
+
+### Blockers
+- No local implementation blocker. Existing release decisions and physical-device/production checks remain recorded in the audit.
+
+## 2026-11-03 — slider pill and approved blended openings
+
+### Changed
+- D157: Home slider’s photo pill gets a Hide the slider pill switch in Pages → Home → Page header. It preserves its note/icon and uses authenticated draft/preview/publish. Hide it in the local published preview; keep progression bars. No SQL migration.
+- D158: implement the user’s first approved photo/header concept on Home, About and main Services. Full-width dimmed photos, light opening copy, and original coloured logo/nav on a protected light header surface with the shorter fade. Keep existing motion, scroll-away/return header and other routes. No new client route logic, image analyser or dependency.
+- D159: fit and centre mobile WhatsApp/Call action text beside each other; shorten the shared brochure button to Brochure while retaining its download icon.
+
+### Validation
+- In progress; final results appended below. User review remains required before any commit. No production action.
+
+### Changed — latest image-fade refinement
+- D160 supersedes D158’s header-gradient implementation: keep the navbar solid soft white and gently fade the image/overlay at their top through a static 192 px alpha mask into the same light base. Controls and coloured logo never fade. Only Home, About and main Services photo openings; other routes/text-only openings retain their normal header.
+
+### Validation follow-up
+- Initial final-source coverage passed 1,276 tests across 355 files at 100% in every metric; lint/typecheck/build passed. An initial 26-case browser run passed 24 checks and exposed a test setup assumption in the two new mobile brochure checks: launch test content intentionally has no brochure and correctly shows Request a quote. The brochure label/icon assertion is moved to the existing workflow that uploads/publishes a brochure, including its mobile menu; the contact-fit test explicitly checks the no-brochure fallback. No product behavior or assertion threshold is weakened. Browser/performance checks are repeated after D160’s CSS refinement.
+
+### Performance correction
+- The first isolated D160 run passed five of six cases but caught a real About desktop font rewrap: CLS 0.0592 exceeded the unchanged 0.05 budget. Reserve three heading lines in the two photo page openings before font arrival, while allowing longer headings to grow. Add a delayed-font browser regression and repeat the affected checks; no threshold is raised.
+
+### Validation — completed D157–D160
+- Final browser workflow: 27 passed, one intentional skip. Font-stability follow-up after the confirmed CLS correction: seven passed, one intentional skip, including delayed-font geometry and axe. Full source coverage remains 1,276 tests / 355 files at 100% all metrics; 11 token/sidecar/HeaderAction follow-up tests passed. Final lint/typecheck/format/build passed.
+- All six final isolated performance checks passed: maximum mobile lab LCP 754 ms, scripted INP bound 56 ms, CLS 0.0420, minimum Lighthouse category 100, no scrolling long task at the observer threshold and 0% desktop missed-vsync estimate. All 20 initial-JS sizes pass at 174,075 gzip bytes maximum, unchanged 174,080 budget. Local lab/release limits documented in docs/PERFORMANCE.md and the D157–D160 review.
+- Local Home pill hidden/published with content preserved; earlier About/Services actions and Careers opening stay hidden. No migration, dependency, production update, staging or commit. Ready for user review.
+
+## 2026-11-03 — Impeccable Adapt, public mobile website
+
+### Changed
+- D161, user-confirmed scope: public website and mobile menu; desktop/admin retain their styles. Phone-specific heading/body/lead scale and section rhythm, compact image openings/fade, shorter intro/service photo crops, smaller Mission/Vision graphics and related thumbnails, improved form-card space, shorter menu rows, two-column phone footer and short-landscape handling. Preserve all content, approved colours/motion, 44 px targets, 16 px inputs, pyramid rise/timing and stored visibility. No migration/dependency or design controls.
+- Add all-public-template responsive/axe checks, phone/tablet/landscape cases and actual synthesized vertical carousel-scroll coverage alongside its existing horizontal swipe/tap journey. Physical-device/browser-engine limitations remain.
+
+### Validation
+- In progress; final evidence appended below. No production action, staging or commit.
+
+### Changed — non-sticky public navbar
+- D162: keep the navbar at the top in document flow and let it scroll away naturally, without returning on upward scrolling farther down. Remove the hide/show scroll listener, animation-frame bookkeeping, state and retired CSS. Preserve navigation content, page-change pill motion, mobile menu and photo-opening composition. Applies at all widths, as explicitly requested.
+- Restart the source coverage check after this new shipping-code change; the interrupted pre-D162 run is not claimed as final validation.
+
+### Changed — matching white navigation surfaces
+- D163: Careers and Contact headers use the same soft-white card surface as the other main pages; retain the coloured logo and non-sticky placement. Other section colours remain. Server-rendered page identity scopes the CSS, with no new client logic.
+
+### Validation follow-up
+- The first broad adaptation browser pass passed 93 checks with four intentional skips and caught one real 40 px footer-logo target after reducing its image. Keep the image compact and restore an independent 44 px minimum link area; its three focused unit cases passed. No target assertion is weakened.
+- Repeated historical test seeds filled the shared local test-media allowance. Browser checks now use isolated temporary media/CV folders. Reversibly quarantine only old unreferenced image variants that are byte-identical to referenced seed images, preserving every file referenced by either local database and all other user uploads. This recovers 237,742,630 bytes from the preview media folder; no database/production content is deleted, and upload budgets remain unchanged. Quarantine manifest is local temporary data, not committed.
+
+### Changed — shared service-detail photo openings
+- D164: reuse PageSplit’s current fading photo opening for individual services, with the existing service title/summary over the dimmed full-width photo. Preserve optional published header actions and their editor controls, white non-sticky navbar, no-photo fallback, pastel-blue About and three compact related services. Retire the old arch/title CSS; no new field, dependency or migration.
+- Replace the interrupted pre-D164 coverage check with the final source verification after this new requested composition change.
+
+### Validation — completed D161–D164
+- Final source: 1,275 tests across 355 files passed at 100% statements, branches, functions and lines. Lint, typecheck, formatting and standalone build passed. Final built-app browser follow-up: 47 passed, three intentional skips, including all 20 public templates with phone/desktop axe, 320/414 px phones, tablet/landscape, 200% text enlargement, non-sticky/white navigation, fading service openings, optional service buttons, Home pill controls and synthesized horizontal/vertical carousel touch gestures. The earlier broad pass also covered Contact/Quote/CV submission and error journeys; its footer-target finding is fixed.
+- All 40 final isolated performance cases passed across the 20 public templates and desktop scroll counterparts, unchanged budgets and no retries: maximum mobile lab LCP 735.3 ms, scripted INP bound 64 ms, combined CLS 0.04192, minimum Lighthouse category 96, no scrolling long task at the observer threshold, 0% desktop missed-vsync estimate. All initial-JS budgets passed, maximum 173,894 gzip bytes / 174,080. Build Lvrq97SaI_O7gc0qkYK55; evidence and lab/release limits recorded in docs/PERFORMANCE.md and the mobile Adapt audit.
+- R6C.20–R6C.22 ready for user review. No migration, new infrastructure, dependency, client-server action, deployment, staging or commit. Physical-device/other-engine/field/production-region checks remain release checks.
+
+## 2026-11-03 — Careers hidden-opening spacing
+
+### Changed
+- Remove the empty pastel-blue strip above Open jobs when Careers’ opening is hidden or moved below another section. Keep the existing inset when the opening is visible first, and preserve the jobs band’s own padding. No content, visibility setting, colour, migration or dependency changes.
+
+### Validation
+- In progress. No staging, commit, deployment or client-server action.
+
+### Changed — matching navbar spacing
+- Careers and Contact use the same navbar height and vertical spacing token as Home/About/main Services, retaining their white surface and document-flow placement. Photo overlap remains limited to photo openings.
+
+### Validation — completed Careers/navbar spacing follow-up
+- Fourteen focused unit/token tests passed. Lint, typecheck, formatting and standalone build passed. Four built-app phone/desktop browser workflows passed: Careers move/hide/preview/publish/restore and all 20 public templates with axe/readable-type/field/overflow checks plus matching header heights. No database schema or write behavior changed.
+- Actual preview geometry checked at 320, 390, 768 and 1440 px: Home/Careers/Contact navbar heights and logo/control positions match; Open jobs starts directly after the Careers navbar with zero outer top padding. The full performance/coverage run recorded above predates this small spacing follow-up; it was not rerun. No migration, staging, commit, deployment or client-server action.
+
+## 2026-11-03 — Footer contact alignment
+
+### Changed
+- Align Instagram/social icons and labels with footer contact rows: use the same 20 px deep-blue mark and 10 px gap, removing the larger social-only chip that shifted both columns. Preserve contact content, URLs, external-link protections, keyboard focus and 44 px targets. No migration/dependency.
+
+### Validation
+- In progress. No staging, commit, deployment or client-server action.
+
+### Validation — completed footer alignment
+- Three footer unit tests passed; lint, typecheck, formatting and standalone build passed. Both phone/desktop hardening browser workflows passed, including measured icon/text alignment, wrapping and 44 px touch targets. Restored actual preview also verified at 390 and 1440 px with matching icon and label columns and 44 px Instagram link height.
+- No data/write behavior, migration, dependency, staging, commit, deployment or client-server action. Earlier full coverage/performance evidence is unchanged historical evidence; this small presentation follow-up uses focused checks.
+
+## 2026-11-03 — Footer social group
+
+### Changed
+- Add Follow us on under the footer Contact details. One published social network shows icon and name; multiple networks show icons side by side with accessible names and 44 px targets. Omit the group when none are published. Preserve URLs, external-link protections and the existing shared social icons. No schema, migration, dependency or CMS control changes.
+
+### Validation
+- In progress. No staging, commit, deployment or client-server action.
+
+### Changed — footer logo shine
+- D165: add a subtle diagonal highlight masked to the original footer logo. The logo stays stationary; a brief sweep repeats within a seven-second cycle. CSS transform/opacity only, no new client script or image asset. Reduced motion shows the static logo.
+
+### Changed — Instagram optical adjustment
+- Move only the footer Instagram mark 2 px toward the inline start, as requested; retain its label position and 44 px link area.
+
+### Changed — slower logo shine
+- The user approved the shine’s appearance and requested a slower sweep. Extend the travel to 4.5 seconds in a ten-second cycle, with a quiet pause before repeating. The logo remains stationary; reduced motion remains static.
+
+### Validation — completed footer social/shine refinements
+- Thirteen focused footer/token/sidecar tests passed; lint, typecheck, formatting and standalone build passed. Six final built-app phone/desktop workflows passed: zero/one/multiple networks saved/published/restored through the authenticated test API, visible/accessible names, icon-row geometry, keyboard focus, axe, 44 px targets, 2 px Instagram optical offset, logo-mask matching, highlight movement with logo stability, and static reduced motion. The social-layout accessibility check uses steady-state reduced motion; a separate normal-motion workflow tests the shine. Row measurements are relative to the social list to remain stable when keyboard focus scrolls the viewport.
+- The user’s final slow refinement uses a 4.5-second travel and ten-second cycle. Actual local preview restored. No schema/write behavior, new dependency/runtime, migration, staging, commit, deployment or client-server action. Full-site coverage/performance evidence above remains historical; these small presentation follow-ups use focused checks.
+
+## 2026-11-03 — Approved footer line-art background
+
+### Changed
+- D166: implement the two attached pale-blue outline references together: nurse/older-patient care scene and sparse nursing tools behind the existing footer. The user corrected the earlier filled-colour interpretation. Keep all existing content, social behavior, links, spacing, copyright and ten-second logo shine. Static decorative layer, responsive positioning, no pointer/screen-reader interference; local lazy-loaded artwork and existing icon vocabulary. No new data, CMS control, dependency or migration.
+
+### Validation
+- In progress. No staging, commit, deployment or client-server action.
+
+### Changed — user’s exact-artwork fallback
+- The user requires the supplementary nursing tools to match the reference exactly or be removed. Remove all four approximate tool drawings and their unused CSS/tokens; keep only the faint nurse-care scene under the explicitly authorized fallback. The flattened mockups do not provide exact separate source artwork. All footer content, layout, social behavior, copyright, WhatsApp and slow logo shine remain. No claim of pixel-identical generated artwork.
+
+## 2026-11-03 — R6C.27: the phone menu, concept 3 (D167)
+
+### Changed
+- D167: the phone menu is now the user's chosen concept 3 of three: a
+  full-screen sheet in the logo's deep blue, the pages in large white words
+  under faint rules (the current one semibold with a leaf arrow), WhatsApp
+  (leaf) and Call (white) as two side-by-side tiles with their numbers on one
+  line, the brochure (the quote until there is one) on a white button, and a
+  faint white mark as a watermark. The email, the hours and "24/7" are not in
+  it, as asked (the Call tile reads "Call us"). The brochure keeps D159's
+  wording. Modules: `MobileMenu`, `HeaderAction` (a `variant`, `size`),
+  `pill-classes` (`onDeep`), `IconChip` (`onLeaf`, `mist`), `UI_TEXT.callUs`,
+  `logo-mark-white.svg`, `src/app/globals.css` (menu tokens and keyframes).
+  Supersedes D159's outlined pills (its one-line fit stands) and D161's 52 px
+  menu rows (the rows now scale with the screen's height, 48 – 76 px).
+- Open and close: the sheet drops in from the top and lifts away; closing, the
+  dialog waits for the lift to end (`animationend`) before `close()`, so the
+  browser's own focus return, Escape and focus trap still apply; Escape and a
+  chosen page take the same animated way out; with motion reduced it opens and
+  closes at once. Transform and opacity only.
+- The user's follow-up, "the contents … seem a little lag or stuck": measured
+  first (steady 16.7 ms frames, also with the CPU slowed 4×, so not dropped
+  frames); the cause was the motion's design. The rows waited 160 ms and then
+  rose on a steep curve against the sheet's downward movement, so the panel
+  looked empty and then popped. Now the sheet and its rows share one curve
+  (`--ease-settle`), the first row starts at 40 ms and the rows follow the
+  sheet down (settling from 14 px above), the first row is visible at about
+  70 ms (it was about 200 ms) and the cascade ends smoothly by about 550 ms;
+  the menu opens in the tap itself rather than a render later; the watermark is
+  a plain white file instead of a CSS filter.
+
+### Changed — the first-paint JavaScript budget
+- The menu's new code took Home, Contact and the quote page 348 bytes over
+  174,080 (174,428). The small shared pieces the menu uses (`Pictogram`,
+  `IconChip`, `PillLink`, `HeaderAction`) now opt out of the React Compiler's
+  memoising, as the forms and the header already do (reason beside each):
+  172,567 now.
+
+### Validation
+- Format check, typecheck and lint passed.
+- Unit and integration tests passed (1281), coverage 100%
+  (statements 4785/4785, branches 3089/3089, functions 1767/1767, lines
+  4249/4249). The Impeccable sidecar copy of the reduced-motion rule is kept
+  equal to DESIGN.md.
+- Seen in a real browser at 390 × 844 (open, mid-drop, settled, closing) and
+  at 320 × 568, 360 × 640, 414 × 896, 844 × 390 and 768 × 1024: no sideways
+  overflow, both numbers on one line, the sheet scrolls only where the screen is
+  too short. Motion measured frame by frame: steady 16.7 ms frames also with the
+  CPU slowed 4×; the sheet 90% down at about 270 ms with its first row visible
+  from about 70 ms; closing about 420 ms, then the dialog closes, focus back on
+  the menu button, Escape the same way.
+- First paint, JavaScript (gzip, within 174,080 bytes): Home, Contact and the
+  quote page 172,567; the application 169,502; About, Services, Careers,
+  Privacy and Terms 166,209.
+- E2E (phone, desktop): one complete run passed, 228 passed and 46 skipped
+  (one-width journeys). The menu's specs (the sheet and its rows, closing,
+  Escape and a chosen page, reduced motion, the tiles at 320 – 414 px, the long
+  menu, responsive widths) passed in every run after their fixes. Later full
+  runs, made while the Mac was out of memory (swap 23.7 of 24 GB), failed in
+  9 – 17 specs that publish shared content and then reload as a visitor
+  (Home's slider pill, Careers', About's and Services' opening buttons, an edit
+  seen by a visitor, footer social links, the long navigation, the job, client
+  and service editors, the critical journey): a visitor's page still showed the
+  earlier content. They are not the menu's, and all 60 passed when run alone
+  (`pages`, `page-editor`, `settings-editor`, `services-editor`,
+  `clients-editor`, `jobs-editor`, `critical-journey`). Whether they are only
+  slow-machine timing or a real staleness in publishing is not settled here; it
+  needs a clean-machine rerun.
+
+### Blockers
+- None. Left uncommitted with the rest of the Phase 6C refinements (D136 – D166
+  are uncommitted in the same tree); no staging, commit, deployment or
+  client-server action.
+
+## 2026-11-04 — Completed D166 footer review
+
+### Changed
+- Finalize the user-authorized nurse-only fallback: the very faint blue care illustration remains; approximate extra tools are omitted. Existing footer content, destinations, social-count behavior, copyright, responsive layout, WhatsApp and slow ten-second logo shine are preserved. The illustration is not claimed as a pixel-identical extraction of the flattened reference. No new data, migration, dependency or client script.
+
+### Validation
+- Final D166 source checks on Nov 3 passed: 13 focused footer/token/sidecar tests, 100% coverage for the two affected footer components, lint, formatting, typecheck and standalone build. Twelve built-app phone/desktop workflows passed, including all 20 public templates with axe, narrow/tablet/landscape layouts, social states, pointer access, wrapping/44 px targets and the preserved normal/reduced-motion shine. Historical full-codebase coverage was not rerun for this change.
+- Both targeted Home performance cases passed on Nov 3: mobile lab LCP 540.3 ms, scripted INP bound 64 ms, CLS 0, all Lighthouse categories 100, initial JS 173,895 / 174,080 gzip bytes, no observed scrolling long task and 0% desktop missed-vsync estimate. Preserved log rows exported to the audit; these results precede later D167 menu work, and their original build ID was not saved. No new full-route or physical-device result is claimed.
+- Nov 4 preview review: restart the stale local preview after a newer build so CSS/assets match; no source repair needed. Inspect styled phone/desktop screenshots and recheck all eleven footer links at 320/390/768/1440 px: names, hrefs, sizes/positions and footer heights match the original exactly. Later menu work remains intact. R6C.26 ready for review.
+
+### Blockers
+- None for D166. The previous automatic-approval usage interruption is resolved for the final preview check. No staging, commit, deployment or client-server action.
+
+## 2026-11-04 — D168 public Font Manager
+
+### Added
+- Settings → Font Manager and its admin navigation entry: ten fixed, licensed, self-hosted variable fonts with live specimens and twenty independent public text roles. Existing Inter Tight remains every default; the admin retains its current typography. No new font upload or runtime dependency. D168 is the user-authorized narrow exception to the locked-design rule.
+- Independent TYPOGRAPHY draft/published document, authenticated read/save/publish/discard routes, existing page Preview and unsaved-change guard, safe role/font validation, dedicated cache invalidation and readable Settings activity entries. Publishing fonts does not publish unrelated Site Settings drafts.
+- Drizzle-generated migration 0007_typography extends the document-key CHECK and initializes both font copies to the existing family. Applied only to local development/test databases. New fonts retain upstream licenses and version/hash provenance; the deployable bundle includes `/fonts/LICENSES.txt`.
+
+### Changed
+- Public HTML uses semantic font roles scoped to the public world; text-size utilities cannot override a caption/detail/heading/link family's selection. Sizes, weights, spacing, colours, content and motion remain unchanged.
+- The shared admin EditorSelect uses React Hook Form's controlled binding so selecting after a saved/published draft and repeated resets continues to mark changes and enables Save correctly. Regression verified in the compiled app on phone and desktop.
+
+### Validation
+- Lint, formatting, typecheck, production build and whitespace checks passed. Full unit/local-MySQL integration suite: 1,299 tests in 364 files passed with 100% statements, branches, functions and lines.
+- Complete built-app browser run: 233 passed, 49 existing skips. Final font-specific rerun after semantic precedence refinement: 5 passed, 3 duplicate phone-matrix skips; 600 font/template/width cases, twenty mobile-menu cases, twenty mixed semantic roles, all four used weights, draft/private-preview/publish/discard and axe. Native keyboard selection/reversion also verified in the local preview without saving a change.
+- Ten cold, delayed-font contexts: maximum observed CLS 0.003832; one default or two optional-case font requests, including the retained base preload. Home/Contact/school-service performance gates passed: LCP 554.30/683.59/667.76 ms, CLS 0, INP bounds 64/40/32 ms, all Lighthouse categories 100, JS 173,034/173,034/164,020 gzip bytes against 174,080. Build `UrYz8V32qmDEghyuX1Xfm`.
+- Scoped Impeccable audit/polish and screenshots reviewed; no open feature findings. Evidence: `docs/audits/2026-11-04-font-manager-review.md`. Verification uses emulated Chromium widths, not physical-device certification.
+
+### Blockers
+- None for D168. R6C.28 is ready for review. All previous uncommitted work is preserved; nothing staged, committed, pushed, deployed or changed on the client's server.
+
+## 2026-11-04 — Font Manager navigation icon
+
+### Changed
+- Give Font Manager its own typography T pictogram instead of sharing Settings' sliders icon. Use the existing 24-unit grid, round-capped 2-unit strokes and inherited navigation colour. Recorded as the user's D168 refinement; R6C.28 remains ready for review.
+
+### Validation
+- Sixteen existing pictogram/grid/admin-shell tests passed. Lint, focused formatting, typecheck, production build and whitespace checks passed. No data or migration change.
+
+### Blockers
+- None. Left uncommitted for review; no staging, push, deployment or client-server action.
+
+## 2026-11-04 — D169 expressive fonts and D170 footer shine frequency
+
+### Added
+- Five licensed, self-hosted variable faces in the existing public Font Manager: Playfair Display, Cormorant Garamond, Fraunces, Space Grotesk and Syne, retaining the original ten for fifteen total. All twenty text roles keep the existing draft/private-preview/publish/discard flow. Current font choices and defaults remain unchanged. Source versions, file hashes and upstream licenses accompany the files; the public license bundle includes all fifteen. No new migration, upload or dependency.
+
+### Changed
+- Footer logo shine repeats after a 2.75-second quiet gap, half the previous 5.5 seconds. Retain the slow 4.5-second sweep, 0.4-second lead-in, stationary logo, artwork, all footer content and reduced-motion behavior; the complete cycle is now 7.25 seconds.
+
+### Validation
+- Lint, formatting, typecheck and production build passed. Full unit/local-MySQL integration suite: 1,299 tests in 364 files, 100% statements/branches/functions/lines. Font licenses and byte hashes pass the existing contracts.
+- Built-app E2E: 7 passed, 3 duplicate phone-matrix skips; 900 font/template/width cases, thirty narrow-menu cases, all four used weights, twenty mixed semantic roles, phone/desktop save/private-preview/publish/discard with the new families and axe. Fifteen delayed-load contexts: maximum CLS 0.005308 and only the selected optional face plus the retained base preload requested. Footer timing and reduced-motion checks pass on phone and desktop.
+- Home mobile performance gates passed: LCP 555.51 ms, CLS 0, INP bound 64 ms, no observed scroll long task, all Lighthouse categories 100; JS 173,059 / 174,080 gzip bytes. Build `luTUt4WwXV9ddjF9MfVBk`.
+- Font specimens and editor screenshots reviewed; scoped Impeccable typography detector has zero findings. Evidence and verification limits: `docs/audits/2026-11-04-expressive-fonts-and-shine.md`.
+
+### Blockers
+- None for D169/D170; R6C.29/R6C.30 are ready for review. No staging, commit, push, deployment or client-server action; existing uncommitted work is preserved for review.
+
+## 2026-11-04 — D171 match the mobile Home pyramid to laptop
+
+### Changed
+- Home's mobile services pyramid keeps five depth positions, matching the laptop composition, instead of hiding the outer pair. Tighten phone spacing from 36% to 16% of stage width and the centre card from 64 to 60 cqw (still capped at 16 rem). Preserve the 30 px steps, rear scales/dimming, full service labels/links, arrows, swipe, six-second advances, keyboard/visibility pauses and reduced motion. Laptop geometry is unchanged. No data, migration, dependency or admin-control change.
+
+### Validation
+- Full unit/local-MySQL integration suite: 1,299 tests in 364 files passed, 100% coverage in every category. Lint, typecheck, formatting, production build and scoped Impeccable layout scan passed. Phone/laptop screenshots reviewed.
+- Built-app E2E: 4 passed, 2 duplicate-project skips. 624 active-card cases across eight widths, all eight services and all fifteen fonts at phone widths: five layers intersect the viewport; no document or active-label overflow/clipped words; touch target remains at least 44 px. Automatic/manual progression, keyboard pause, reduced motion and axe pass. Synthesized Chromium touch verifies swipe, vertical page scrolling and the following link tap. JavaScript-disabled checks retain all eight service destinations at 390/1440 px.
+- Both Home performance gates passed: mobile LCP 596.83 ms, CLS 0, INP bound 80 ms, all Lighthouse categories 100, JS 173,059 / 174,080 gzip bytes; no observed touch-scroll long task. Laptop scroll CLS 0.001813, no observed long task, 0% missed-vsync estimate. Build `EJwKWwl5_ArglqaSUt2lQ`. Evidence and physical-device/browser limitations: `docs/audits/2026-11-04-mobile-pyramid-review.md`.
+
+### Blockers
+- None for D171; R6C.31 is ready for review. Existing uncommitted work and the user's open unsaved Font Manager choices are preserved. Nothing staged, committed, pushed, deployed or changed on the client's server.
+
+## 2026-11-04 — D172–D179 consistency and approved page refinements
+
+### Changed
+- Public/admin responsive consistency: common public navbar geometry, contain-fit logos and matching shine mask, 44 px controls/links and pagination, no client-logo filter interpolation. Admin controls, reorder actions, fields, switches and logo reflow at doubled text on a narrow screen. Existing data, page order, font assignments and admin/public theme distinction stay.
+- Home quote contact squares: WhatsApp green; Call/Email navy. Contact Reach us: off-white rounded cards, bold terms, whole-card first-hover/focus lift and a static reduced-motion shadow. Reach us and the area behind the rounded message panel share deep blue; green panel and white form remain.
+- Careers: approved concept three nursing photo with a visible two-layer shadow and no white border; green-gradient rounded Open Jobs panel on Before you apply’s mist background, compact outer spacing. The full-width mobile introduction, job links and general application stay. Decorative one/two/three dots fade in a fixed-width reserve over 2.4 seconds, static for reduced motion. The existing page media picker edits the optional photo through draft/preview/publish. Local approved photo backfill preserves unrelated draft/published fields and has a recovery copy. No SQL migration.
+- About/Services Talk to us: three rounded off-white contact cards, navy Phone/Email icon squares, Call us without 24/7. Existing section colours, contact values and reveals stay.
+- About’s approved three-panel Values design reveals in sequence, with a subtle diagonal hover shine and no card lift. Who we are’s description aligns with the top of its image on larger screens, retaining mobile order and Home’s layout.
+- Service categorisation removed from public cards/catalogues, admin selector/list labels and service share images. Stored historical audience data stays compatible and never controls presentation. Services’ catalogue meets the image opening without an extra blank gap.
+- Contact uses the shared navbar background directly and Google’s lazy satellite map inside the existing rounded, shadowed frame. Provider controls/attribution remain visible; confirmed coordinates override the published company/area search. Responsive minimum dimensions include doubled text. Privacy disclosure added in seed and local review copies with backup, preserving unrelated drafts. This user-requested map supersedes D34; no API key, dependency or SQL migration.
+
+### Added
+- Five desktop/mobile What we stand for concept boards with current published statements; Concept one was approved and is implemented as three responsive commitment panels, with sequential reveals and stationary hover shine only (D177). Five Open jobs concepts were delivered and concept three approved.
+- Responsive consistency, first-hover/reduced-motion, dot-cycle, photo-publishing and enlarged-text browser coverage.
+
+### Validation
+- Full unit/DB-contract/local-MySQL integration suite: 1,309 tests in 365 files passed, 100% statements/branches/functions/lines. Lint, typecheck, formatting and production build pass.
+- Responsive matrices: 612 layout states, 405 font/size combinations and 33 doubled-text routes. Final focused browser run: 46 passed with nine duplicate-project skips; the new map matrix caught intrinsic aspect-ratio width on the narrowest phone, corrected with explicit column bounds. Rebuilt Contact follow-up: seven passed, one duplicate-project skip; all sixteen map width/text cases pass. Live phone/desktop satellite imagery and the stronger shadow reviewed.
+- Initial JavaScript: all twenty public routes pass, maximum 173,402 / 174,080 gzip bytes. All twelve final mobile/desktop performance gates pass across six affected routes, with the live map enabled: LCP ≤722.46 ms, scripted INP bound ≤64 ms, combined CLS ≤0.04192, minimum Lighthouse 99 and no observed scroll long task. Build `xi6uZU75_ddlMNiFdwfpo`; evidence and practical limits in docs/audits/2026-11-04-consistency-review.md.
+
+### Blockers
+- None for the approved implementation. Values concept one is approved. No staging, commit, push, deployment or client-server changes; existing uncommitted work and the user’s unsaved Font Manager tab remain.
+
+## 2026-11-05 — Contact map shadow refinement
+
+### Changed
+- User requested a more noticeable map shadow: dedicated two-layer navy map shadow replaces the lighter generic float treatment. Static shadow only, with no animated box-shadow.
+
+### Validation
+- Included in the final D179 unit/coverage and responsive browser checks above. Live 390/1440 px captures confirm both navy shadow layers; all sixteen map width/text cases pass.
+
+### Blockers
+- None. No commit or deployment.
+
+## 2026-11-05 — D180 hydration investigation and regression guards
+
+### Added
+- Phone/desktop hydration checks for public/auth routes and signed-in admin lists/editors. Check server HTML, status, real handlers, console hydration diagnostics and uncaught errors. New development-mode CI command covers React’s development-only attribute warnings. No production runtime, visual, dependency, data or schema change.
+
+### Findings
+- Both supplied logs differ only by browser-added `__gcr…` attributes, absent from source and raw SSR. Clean Home/login are warning-free and interactive; controlled pre-hydration DOM insertion reproduces both warnings. The precise installed browser tool is unknown. Continued annotation by that tool can still warn; use a clean browser context or disable its page annotations. No new warning suppression or DOM scrubber.
+
+### Validation
+- New built-app guard: four tests passed (114 phone/desktop public/auth/admin navigations). Development guard: two passed (46 phone/desktop public/auth navigations). No application hydration diagnostics or uncaught errors. Controlled injection reproduces both supplied warnings; clean Home/login have none and remain interactive. Lint, typecheck and formatting pass.
+- Report and per-route evidence: docs/audits/2026-11-05-hydration-review.md. Application source/build is unchanged; preceding D179 1,309-test/100% unit/local-DB coverage and responsive/performance evidence remains applicable. No remote CI run was triggered.
+
+### Blockers
+- No application blocker. Browser-owned annotation is outside the application’s control. No commit or deployment.
+
+## 2026-11-05 — D181 Impeccable polish
+
+### Changed
+- Compact service thumbnail/title cards now fill their grid row so long titles and supported font choices retain aligned lower edges. Verified existing drift at 640 px: Mother & Newborn card 91.5 px beside Pediatric 88 px. Preserve content, grid, thumbnails, palette, spacing and reveals.
+- Shared editor fields are locked in a named native fieldset during pending writes to prevent edits racing response-driven form resets; controls and values restore on failure. The zero minimum width retains narrow/enlarged-text reflow.
+- Shared admin editor Preview is dimmed, aria-disabled and removed from sequential focus while saving/publishing/discarding. Block normal and auxiliary activation during writes, including publishing a clean saved draft. Restore Preview after completion or failure; preserve save-before-preview and draft data. Shared action styling supports aria-disabled.
+
+### Validation
+- Impeccable context/polish/craft guidance and both surface contracts reviewed. Current public/auth renders inspected at 390/768/1440 px; no horizontal overflow in 27 baseline captures. Red regression reproduced the missing busy state, then targeted unit tests passed (19). Final unit/DB-contract/local-MySQL suite: 1,310 tests, 365 files, 100% coverage in all categories. Lint, typecheck, formatting and build pass.
+- Final built browsers: twenty passed, ten duplicate-project skips; 612 responsive states, 180 card/font/width cases, 900 font/template cases, 33 doubled-text routes and 114 hydration navigations. Native controls lock during writes, failure preserves values/restores controls, and Preview cannot open an outdated draft.
+- All six relevant performance checks pass on build `b5oPv85kuNL77P04KTIWA`: LCP ≤714.85 ms, scripted INP bound ≤64 ms, CLS ≤0.001813, Lighthouse categories 100, no observed scroll long task. All twenty public JS budgets pass, maximum 173,402 / 174,080 gzip bytes. Actual-content card captures reviewed after image decode. Evidence and limits: docs/audits/2026-11-05-polish-review.md.
+
+### Blockers
+- None. No new feature, design control, dependency, migration, data change, commit or deployment. Existing uncommitted changes and the user’s open unsaved editor remain preserved.
+
+## 2026-11-05 — D182/D183 Home points card and faster hero; D184 pyramid proposals
+
+### Changed
+- Home’s existing About points share one full-width off-white rounded card, three columns at tablet/desktop and stacked on phones. Titles/descriptions remain, tick marks and icon spacing are omitted, Read more follows the card. Zero points leaves no empty card; default/About Intro keeps its prior list treatment. No content/schema/admin-control change.
+- Main hero advances in three seconds with simple labelled SVG previous/next chevrons around the progression rails; no Pause or visible count. Manual navigation wraps and restarts the clock, keyboard-visible focus pauses until leaving, pointer/hover does not stick. Reduced motion retains manual navigation. Flexible rail gaps fit eight bars with enlarged text; base pyramid/inner-photo clock stays six seconds.
+
+### Concepts
+- Five cardless service-name concepts and an interactive prototype use real existing photos. The user clarified landscape cards on every screen, with three-vs-five layer comparison and mobile usability as the deciding factor. Production pyramid layout/labels stay pending selection.
+
+### Validation
+- Sub-agent work ran concurrently: Home card implementation/visual review, hero implementation, and concept generation. Focused units passed; full unit/local-DB suite: 1,316 tests in 366 files, 100% coverage. Build/typecheck/lint/format and diff checks pass. Built browser suite: 40 passed, 4 duplicate-project skips; Home About matrix covers 15 fonts at 9 widths, and hero controls/eight rails/enlarged text/reduced motion pass. Home mobile/desktop performance: 2 passed, Lighthouse 100 in all categories, LCP 554 ms, INP upper bound 64 ms, maximum CLS 0.001813, no scroll long tasks; all 20 public routes remain below the 170 KiB initial-JS limit (maximum 173,715 / 174,080 bytes). Scoped Impeccable detector: no findings. Prototype: 320 layout states across five styles, two card counts, eight services and four widths; arrows/swipe/autoplay checked. Evidence: `docs/audits/2026-11-05-home-refinements.md`.
+
+### Blockers
+- No blocker for approved Home changes. Pyramid implementation awaits user selection after viewing the concepts. No commit, push, deployment or client-server operation.
+
+
+## 2026-11-05 — D185 approved landscape Home services pyramid
+
+### Changed
+- Applied the selected soft photo fade with three landscape cards on every screen: centred highlighted front card, smaller/softer symmetric rear pair. Kept the existing site gutters and bounded the complete stack within them. Service titles are modest, bottom-centred white text without arrows or label cards. Other service surfaces, all published names/links and the six-second carousel behavior remain.
+- Final reference clarification preserves the smaller left/right rear pair and centres it vertically around the front, showing upper and lower corner gaps at every width. This replaces the fixed 30 px drop, which extended below short phone photos; equal-height cells prevent title-length drift. A vertical deck interpretation was rejected before completion.
+- The track retains native flex layout boxes and uses transforms for enhancement, avoiding the layout shift found in the performance gate. Intrinsic caption height lets enlarged accessibility text reflow rather than clip. Native scrolling fallback, keyboard focus, swipe and reduced motion remain. No dependency, admin control, schema/content/database change.
+
+### Validation
+- Focused component/controller units: 16 passed. Final full coverage, built browser/font/layout and performance checks in progress.
+
+### Blockers
+- None. No sub-agents used for this task. Nothing committed, pushed or deployed; awaiting user review.
+
+
+## 2026-11-05 — D186 full uncommitted-work Harden and commit-readiness review
+
+### Changed
+- Made hydration guards read raw server HTML through the request context, avoiding Chromium losing a navigation response body during development reloads while retaining every status/annotation/console assertion.
+- Fixed open-menu overflow at 200% text: adaptive contact columns, wrapping phone/navigation text, shrink-safe logo and non-shrinking close/arrow targets. Normal phone layouts retain paired contact tiles. Added all-font menu regression coverage.
+- Updated the keyboard walk to continue through the requested Google map instead of ending before Contact’s fields, retaining the minimum host-stop and focus checks.
+- Fixed the menu remaining open if reduced motion is enabled while its close animation is running; animation cancellation now completes the close and cleans up its listener.
+- Restored native horizontal touch swiping for the no-JavaScript/deferred-chunk-failure service row; `pan-y` is scoped to the enhanced custom carousel only. The old fallback links existed but phone gestures were blocked; added a synthesized-touch regression.
+- Kept the photo-caption fade opaque before the first glyph even for long/doubled text, instead of stretching its transparent region over a taller caption. An empty published-card list reserves no photo-sized gap.
+- Hardened Home’s services gestures against secondary/right-button pointers, mostly vertical page swipes, cancellation, capture loss, window blur, hidden tabs and release outside the carousel. The next gesture works without reload and cleanup removes every listener. No visual redesign or new product feature.
+
+### Review scope
+- Full uncommitted tree: public/admin layouts, font manager, draft/preview/publish controls, uploads, forms, SEO/share images, motion, migration, assets/licenses, tests, CI and documentation. Fixed fonts remain allowlisted, optional and self-hosted; draft-only/auth and published-read boundaries retained.
+- Review inventory covered 423 paths at the start. No private-key/cloud-secret pattern matches or stray environment/private-key/log files; the one new SQL file is the planned typography migration. 243 untracked files total 16.52 MiB, mostly review evidence and licensed font assets. Nothing staged.
+
+### Validation
+- Harden in progress: full browser suite running before the commit-readiness checkpoint and final Polish. Earlier full unit/local-DB suite: 1,317 tests, 100% coverage; final controller simplification will be rechecked. Runtime dependency advisory check: no moderate/high/critical finding in the 97 packages that ship. Scoped scan across all 73 changed UI files found no issues.
+
+### Follow-up validation — 2026-11-06
+- First complete E2E sweep: 262 passed, 61 intentional duplicate-project skips, one outdated Contact keyboard expectation. Updated it to continue past Google’s embedded frame; the targeted phone/desktop rerun passed. Final Harden build and complete regression pass in progress. Live-content pyramid review: 264 service/font/width cases (320–1920 px), no layout failures or uncaught errors.
+
+### Blockers
+- No blocker currently. Physical-device/Safari/Firefox checks are not available in this environment; browser evidence uses Chromium with emulated sizes and synthesized touch. No commit, push, deployment or client-server change.
+
+
+## 2026-11-06 — D185/D186 completed local review
+
+### Changed
+- Finished Home’s three-card landscape pyramid with smaller rear cards on a shared vertical centre, preserving upper/lower corner gaps on phones as on desktop. Names remain modest, bottom-centred and arrow-free. The complete composition stays within the existing gutters.
+- Fixed the measured deferred-enhancement layout shift by retaining the native flex layout boxes and moving cards with transforms only. Explicit zero minimums prevent the track’s content width expanding on small screens. Native horizontal scrolling remains available without enhancement.
+- Completed Impeccable Harden, reviewed all uncommitted code/assets/docs for local commit readiness, then completed visual Polish against actual published local content. No further application changes were needed during Polish.
+
+### Validation
+- Full unit, DB-contract and local-MySQL integration run: 1,318 tests in 366 files, 100% coverage. Current Menu/SiteHeader and pyramid-controller regression coverage also passed at 100%; combined current-source evidence remains 100% (4,910 statements, 3,229 branches, 1,810 functions, 4,365 lines).
+- Broad browser sweep covered 326 cases: 260 passed, 62 deliberate duplicate-project skips and four findings, all resolved and rerun. Affected reruns passed (nine cases plus the final menu case, then seven final pyramid cases); intentional project skips remain. No failed assertion was suppressed or threshold relaxed.
+- Development hydration: two cases/46 navigations passed; production public/admin hydration and broader responsive/axe journeys passed in the complete sweep. Readiness retries handle development reloads while retaining every hydration/uncaught-error assertion.
+- Final relevant performance evidence: 12 mobile/desktop cases across six templates passed; Lighthouse 100 in all four categories, worst LCP 549 ms, INP upper bound 120 ms, maximum CLS 0.04192 and no scroll long tasks. Home’s final mobile CLS is zero and desktop CLS 0.001813. All 20 route statuses/initial-JS budgets pass, maximum 173,839 / 174,080 bytes.
+- Actual-content Polish: 30 page/width layouts and 264 service/font/width states passed at 320–1920 px, with no clipping/overflow or uncaught errors. First-entry Mission and Reach us hover effects, stationary Promise hover, enlarged menu and keyboard-focus return passed. Root visually reviewed the final cards and representative page sections.
+- Runtime advisory check: no moderate-or-higher finding in 97 shipped packages. Changed-UI detector scans had no primary findings. Lint, build/typecheck, formatting and diff checks passed; final documentation-format check follows this entry. Details and scope: `docs/audits/2026-11-06-harden-polish.md`.
+
+### Blockers
+- None for the local code/review task. Evidence uses Chromium viewports and synthesized touch, not physical Safari/Firefox devices. Existing release checks and previously recorded product decisions remain as documented. Local preview restored at localhost:3210 with published content; actual data, private drafts and user browser tabs were not edited. Nothing staged, committed, pushed or deployed.
+
+
+## 2026-11-07 — D187 approved bundle readiness
+
+### Changed
+- Reviewed the complete pending D136–D186 public/admin bundle for user-authorized local commits, preserving approved visuals, content and private drafts. No additional functional application change was required.
+- Aligned the operating guide with the existing three-second hero, non-sticky header, footer shine and Careers dots. Recorded the user's permission to commit the validated bundle in at most three coherent commits, superseding the earlier review hold for this work.
+
+### Validation
+- Fresh lint, formatting, Next/TypeScript and standalone build passed. Full unit/DB-contract/local-MySQL run: 1,318 tests in 366 files, 100% statements/branches/functions/lines. Complete production E2E: 264 passed, 62 intentional duplicate-project skips, zero failures. Development hydration: two cases/46 navigations passed.
+- Full 40-case performance gate passed on build `_QNMIT61o2sag9LiLs039`: maximum initial JS 173,842 / 174,080 gzip bytes, LCP 686.447 ms, scripted INP bound 64 ms, CLS 0.0419191, minimum Lighthouse category 96, no observed scroll long task and 0% desktop missed-vsync estimate. No retries or relaxed thresholds.
+- Current dependency gates passed: no high/critical full-tree advisory, no moderate-or-higher advisory in the 97 shipped packages. The 15 moderate development-tooling advisories remain below the defined full-tree threshold. All 964 source/test/migration file hashes stayed unchanged during verification; credential and diff checks passed.
+
+### Blockers
+- None for local commits. Existing physical-device/browser, manual screen-reader, field/server-region and launch security/product decisions retain their recorded status. Tests used only the separate local test database and temporary uploads; no client-server operation, push or deployment.

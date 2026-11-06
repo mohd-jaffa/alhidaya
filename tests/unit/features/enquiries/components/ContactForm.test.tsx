@@ -21,9 +21,8 @@ describe("ContactForm (plan §10.2)", () => {
     await waitFor(() =>
       expect(field(UI_TEXT.yourName)).toHaveAccessibleDescription(VALIDATION_MESSAGES.required(UI_TEXT.yourName)),
     );
-    expect(field(UI_TEXT.phone)).toHaveAccessibleDescription(
-      `${UI_TEXT.phoneHint} ${VALIDATION_MESSAGES.required(UI_TEXT.phone)}`,
-    );
+    expect(field(UI_TEXT.phone)).toHaveAccessibleDescription(VALIDATION_MESSAGES.required(UI_TEXT.phone));
+    expect(field(UI_TEXT.phone)).toHaveAttribute("placeholder", UI_TEXT.phonePlaceholder);
     expect(field(UI_TEXT.email)).toHaveAttribute("type", "email");
     expect(field(UI_TEXT.message)).toHaveAttribute("maxlength", "2000");
     expect(submit).not.toHaveBeenCalled();

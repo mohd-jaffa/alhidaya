@@ -1,0 +1,68 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "modernGzipBytes": 173775,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/about",
+    "status": 200,
+    "modernGzipBytes": 167411,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/services",
+    "status": 200,
+    "modernGzipBytes": 167411,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/services/home-nursing-care",
+    "status": 200,
+    "modernGzipBytes": 164996,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/careers",
+    "status": 200,
+    "modernGzipBytes": 167411,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/careers/apply",
+    "status": 200,
+    "modernGzipBytes": 171046,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/contact",
+    "status": 200,
+    "modernGzipBytes": 173775,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/request-a-quote",
+    "status": 200,
+    "modernGzipBytes": 173775,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/privacy",
+    "status": 200,
+    "modernGzipBytes": 167411,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/terms",
+    "status": 200,
+    "modernGzipBytes": 167411,
+    "conditionalLegacyGzipBytes": 39627
+  },
+  {
+    "route": "/admin/login",
+    "status": 200,
+    "modernGzipBytes": 230766,
+    "conditionalLegacyGzipBytes": 39627
+  }
+]

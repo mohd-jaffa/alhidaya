@@ -27,6 +27,12 @@ const application = { type: "application", id: "a1", exists: true } as const;
 const image = { type: "media", kind: "IMAGE", name: "A nurse at a bedside" } as const;
 
 const CASES: [string, Partial<ActivityItem>, string, string | null][] = [
+  [
+    "fonts published",
+    { action: "PUBLISH", subject: { type: "typography" } },
+    ADMIN_TEXT.didPublish(ADMIN_TEXT.fontManager),
+    ADMIN_ROUTES.fonts,
+  ],
   ["a sign-in", {}, ADMIN_TEXT.didSignIn, null],
   ["a sign-out", { action: "SIGN_OUT" }, ADMIN_TEXT.didSignOut, null],
   ["a reset asked for", { action: "PASSWORD_RESET_REQUESTED", who: null }, ADMIN_TEXT.didAskReset, null],

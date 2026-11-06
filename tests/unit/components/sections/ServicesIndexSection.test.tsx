@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { ServicesIndexSection } from "@/components/sections/ServicesIndexSection";
@@ -19,10 +19,11 @@ const staffing = publishedFixture(
 const noImage = () => null;
 
 describe("ServicesIndexSection", () => {
-  it("sets each audience's services out as Home's cards under its name, in order, with that audience's actions", () => {
-    const content = { ...contentFixture("SERVICES_INDEX"), intro: en("Care at home, and nurses for institutions.") };
-    render(
+  it("puts every service in published order in one green compact-card catalogue on Services (D150)", () => {
+    const content = { ...contentFixture("SERVICES_INDEX"), intro: en("All our care services.") };
+    const { rerender } = render(
       <ServicesIndexSection
+        unified
         anchor="services"
         content={content}
         services={[homeCare, staffing, elderly]}
@@ -30,37 +31,62 @@ describe("ServicesIndexSection", () => {
         image={noImage}
       />,
     );
-    expect(screen.getByRole("region", { name: "Services" })).toBeInTheDocument();
-    expect(screen.getByText("Care at home, and nurses for institutions.")).toBeInTheDocument();
-
-    const [families, institutions] = screen.getAllByRole("list");
-    expect(
-      within(families)
-        .getAllByRole("link")
-        .map((link) => link.getAttribute("href")),
-    ).toEqual([ROUTES.service("home-nursing-care"), ROUTES.service("elderly-care")]);
-    expect(within(institutions).getByRole("link", { name: /School nurse staffing/ })).toBeInTheDocument();
-
-    expect(screen.getByRole("heading", { level: 3, name: AUDIENCE_LABELS.FAMILIES })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 3, name: AUDIENCE_LABELS.INSTITUTIONS })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: UI_TEXT.whatsapp })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: UI_TEXT.call })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: UI_TEXT.requestQuote })).toHaveAttribute("href", ROUTES.quote);
-  });
-
-  it("leaves out an audience with no published services, and the calls when the numbers are not published", () => {
-    render(
+    expect(screen.getByRole("region", { name: "Services" })).toHaveClass("bg-leaf-pale");
+    expect(screen.getByText("All our care services.")).toBeInTheDocument();
+    expect(screen.getAllByRole("list")).toHaveLength(1);
+    expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
+      ROUTES.service("home-nursing-care"),
+      ROUTES.service("school-nurse-staffing"),
+      ROUTES.service("elderly-care"),
+    ]);
+    expect(screen.queryByRole("heading", { level: 3 })).toBeNull();
+    expect(screen.queryByText(AUDIENCE_LABELS.FAMILIES)).toBeNull();
+    expect(screen.queryByText(AUDIENCE_LABELS.INSTITUTIONS)).toBeNull();
+    expect(screen.queryByRole("link", { name: UI_TEXT.requestQuote })).toBeNull();
+    rerender(
       <ServicesIndexSection
+        unified
         anchor="services"
         content={contentFixture("SERVICES_INDEX")}
-        services={[homeCare]}
+        services={[]}
         site={null}
         image={noImage}
       />,
     );
-    expect(screen.getByRole("heading", { name: AUDIENCE_LABELS.FAMILIES })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: AUDIENCE_LABELS.INSTITUTIONS })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: UI_TEXT.whatsapp })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link")).toBeNull();
     expect(screen.getByRole("region", { name: "Services" }).querySelector(".text-lead")).toBeNull();
+  });
+  it("keeps one ordered collection on every other section placement, without audience labels or actions", () => {
+    render(
+      <ServicesIndexSection
+        anchor="services"
+        content={contentFixture("SERVICES_INDEX")}
+        services={[homeCare, staffing, elderly]}
+        site={siteFixture()}
+        image={noImage}
+      />,
+    );
+    expect(screen.getAllByRole("list")).toHaveLength(1);
+    expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
+      ROUTES.service("home-nursing-care"),
+      ROUTES.service("school-nurse-staffing"),
+      ROUTES.service("elderly-care"),
+    ]);
+    expect(screen.queryByRole("heading", { level: 3 })).toBeNull();
+    expect(screen.queryByText(AUDIENCE_LABELS.FAMILIES)).toBeNull();
+    expect(screen.queryByText(AUDIENCE_LABELS.INSTITUTIONS)).toBeNull();
+    expect(screen.queryByRole("link", { name: UI_TEXT.requestQuote })).toBeNull();
+  });
+  it("keeps the optional introduction on uncategorised section placements", () => {
+    render(
+      <ServicesIndexSection
+        anchor="services"
+        content={{ ...contentFixture("SERVICES_INDEX"), intro: en("Nursing care across Doha.") }}
+        services={[]}
+        site={null}
+        image={noImage}
+      />,
+    );
+    expect(screen.getByText("Nursing care across Doha.")).toBeInTheDocument();
   });
 });

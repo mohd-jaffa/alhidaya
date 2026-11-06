@@ -1,0 +1,128 @@
+[
+  {
+    "id": "inter",
+    "package": "@fontsource-variable/inter",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/inter/-/inter-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 48256,
+    "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+  },
+  {
+    "id": "atkinson-hyperlegible-next",
+    "package": "@fontsource-variable/atkinson-hyperlegible-next",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/atkinson-hyperlegible-next/-/atkinson-hyperlegible-next-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 33996,
+    "sha256": "18b2a1a39a2fa298b0ba5390aca68462669826c90925656f1c1f6796e0e1bbaf"
+  },
+  {
+    "id": "roboto",
+    "package": "@fontsource-variable/roboto",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/roboto/-/roboto-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 43136,
+    "sha256": "1404ca348bd75ef836f4dd8b6f2cc719458642d1237c368296b2fc652dca47dc"
+  },
+  {
+    "id": "open-sans",
+    "package": "@fontsource-variable/open-sans",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/open-sans/-/open-sans-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 48320,
+    "sha256": "d8e4fe0452aa2076429a9bb5d8757d00a994dd95986cf950e9a1a371b9a072a0"
+  },
+  {
+    "id": "source-sans-3",
+    "package": "@fontsource-variable/source-sans-3",
+    "version": "5.3.1",
+    "source": "https://registry.npmjs.org/@fontsource-variable/source-sans-3/-/source-sans-3-5.3.1.tgz",
+    "license": "OFL-1.1",
+    "bytes": 28872,
+    "sha256": "19143dca075972bc84e3fd9eab7416dd40cc565dccb2435a044bdfabe060c7d5"
+  },
+  {
+    "id": "nunito-sans",
+    "package": "@fontsource-variable/nunito-sans",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/nunito-sans/-/nunito-sans-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 31076,
+    "sha256": "29e3890496844a9ea81975c52771c587c872b4eb317026422d1995b88d21b57d"
+  },
+  {
+    "id": "manrope",
+    "package": "@fontsource-variable/manrope",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/manrope/-/manrope-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 24836,
+    "sha256": "a30ddcd349703aff7464c34bef3fffdff405ee50c113440d7c8693c02d210972"
+  },
+  {
+    "id": "dm-sans",
+    "package": "@fontsource-variable/dm-sans",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/dm-sans/-/dm-sans-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 36932,
+    "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543"
+  },
+  {
+    "id": "work-sans",
+    "package": "@fontsource-variable/work-sans",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/work-sans/-/work-sans-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 50316,
+    "sha256": "1dd49afc07fb2231b2ff686cbf007725fb2742271bb1f28ebd98f22a0d817343"
+  },
+  {
+    "id": "playfair-display",
+    "package": "@fontsource-variable/playfair-display",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/playfair-display/-/playfair-display-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 38404,
+    "sha256": "e0c764a8e9e1cce92163c55bac4b2ad6cd4cf8c696ce2289ab5c41565e65b7e2"
+  },
+  {
+    "id": "cormorant-garamond",
+    "package": "@fontsource-variable/cormorant-garamond",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/cormorant-garamond/-/cormorant-garamond-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 37640,
+    "sha256": "d80df8ff5aecd299a61549f9e29ab1ed0b9b05f4ea71d50fe978e07d5240b235"
+  },
+  {
+    "id": "fraunces",
+    "package": "@fontsource-variable/fraunces",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/fraunces/-/fraunces-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 36620,
+    "sha256": "7f9d191d999336d3b9790afa72e1358e50a13b06d4f289341e92a311967a80f9"
+  },
+  {
+    "id": "space-grotesk",
+    "package": "@fontsource-variable/space-grotesk",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/space-grotesk/-/space-grotesk-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 22288,
+    "sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d"
+  },
+  {
+    "id": "syne",
+    "package": "@fontsource-variable/syne",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource-variable/syne/-/syne-5.3.0.tgz",
+    "license": "OFL-1.1",
+    "bytes": 34608,
+    "sha256": "68b623f0e45b905041b2edb9b2e4f563a505f13db1cd06b5f1946eb2e1f47048"
+  }
+]

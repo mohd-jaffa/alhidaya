@@ -8,6 +8,7 @@
  * of every pairing the design uses.
  */
 @theme static {
+  --spacing-map-min: 200px;
   --color-*: initial;
   --font-*: initial;
   --text-*: initial;
@@ -28,6 +29,8 @@
    * only (white on them fails AA). The navy ink is the deep blue, darkened.
    */
   --color-deep: #0f64ac;
+  /* Status semantics keep the original blue when admin actions turn green (D138). */
+  --color-status-new: var(--color-deep);
   --color-sky: #33a0da;
   --color-leaf: #86ae3c;
   --color-navy: #0b2440;
@@ -57,6 +60,8 @@
   --color-ink-soft: #7d8aa0;
   /* Errors only (D63): the one colour outside the logo's, always with an icon and words. */
   --color-error: #b42318;
+  /* User-requested WhatsApp brand colour, only for the floating brand shortcut (D154). */
+  --color-whatsapp: #25d366;
   /* Focus rings: deep blue on light ground, white on a deep-blue or navy panel, navy on the leaf. */
   --color-focus: #0f64ac;
   --color-focus-on-deep: #ffffff;
@@ -72,9 +77,15 @@
   --text-hero: clamp(2.625rem, 1.55rem + 3vw, 3.75rem);
   --text-hero--line-height: 1.06;
   --text-hero--letter-spacing: -0.02em;
+  --text-service-hero: clamp(2.625rem, 1rem + 5vw, 6rem);
+  --text-service-hero--line-height: 0.98;
+  --text-service-hero--letter-spacing: -0.025em;
   --text-display: clamp(2rem, 1.35rem + 2.6vw, 3.25rem);
   --text-display--line-height: 1.1;
   --text-display--letter-spacing: -0.018em;
+  --text-value-title: clamp(1.625rem, 1.2rem + 1vw, 2rem);
+  --text-value-title--line-height: 1.12;
+  --text-value-title--letter-spacing: -0.015em;
   --text-statement: clamp(1.625rem, 1.1rem + 2.2vw, 2.875rem);
   --text-statement--line-height: 1.22;
   --text-statement--letter-spacing: -0.025em;
@@ -100,15 +111,25 @@
   --spacing-gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
   --spacing-section: clamp(3.5rem, 2rem + 6vw, 7rem);
   --spacing-touch: 2.75rem;
+  --spacing-slide-progress-gap: min(0.375rem, 1vw);
+  /* Reserve the desktop slides' shared copy area before the font's first swap. */
+  --spacing-slide-copy: 22rem;
+  --spacing-service-portrait: clamp(22rem, 18rem + 15vw, 37.5rem);
   --container-site: 78rem;
   /* About 70 characters of running text. */
   --container-measure: 60ch;
+  /* Opening measures retain Inter Tight's loaded widths without changing when the font swaps. */
+  --container-hero: 8.7em;
+  --container-split: 9.25em;
+  --container-hero-lede: 19.65em;
+  --container-page-lede: 23.125em;
 
   /* The admin's firm corners; the site's soft cards, photo frames and round pills (D97). */
   --radius-panel: 6px;
   --radius-control: 6px;
   --radius-tag: 4px;
   --radius-card: 1.75rem;
+  --radius-service-arch: 11.25rem;
   --radius-frame: 1.5rem;
   --radius-pill: 999px;
   /* The public site's buttons (D132): rounded corners, not a pill. */
@@ -123,10 +144,14 @@
   --shadow-overlay: 0 24px 56px -16px rgb(11 36 64 / 0.38);
   /* A card floating over a photo (the hero's). */
   --shadow-float: 0 20px 44px -20px rgb(11 36 64 / 0.32);
+  --shadow-careers-photo: 0 18px 32px -8px rgb(11 36 64 / 0.28), 0 6px 14px -4px rgb(11 36 64 / 0.18);
+  --shadow-map: 0 20px 40px -10px rgb(11 36 64 / 0.32), 0 8px 18px -4px rgb(11 36 64 / 0.22);
 
   /* Motion (plan §30.4): an exponential ease-out for arrivals, a symmetric one for moves. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* The phone menu's one curve (D167): the sheet and its rows share it, so they read as one movement. */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* A skeleton waiting for its content: a slow fade, the only looping motion (none with reduced motion). */
   --animate-wait: wait 1.6s var(--ease-in-out) infinite;
@@ -135,6 +160,11 @@
       opacity: 0.55;
     }
   }
+}
+
+/* Keep Google's minimum frame width at enlarged text without shrinking the form's text. */
+.contact-message-container {
+  padding-inline: min(var(--spacing-gutter), 5vw);
 }
 
 @theme inline {
@@ -146,13 +176,57 @@
 :root {
   /* The site header's height (R2.6): the sign bar, taller on a wide screen. */
   --header-height: 4rem;
+  /* D158: the approved first photo/header concept; shared by three openings. */
+  --opening-header-height: 4.75rem;
+  --opening-photo-fade: 12rem;
+  --opening-height: 48.75rem;
+  --opening-photo-inset: 6.125rem;
+  --opening-copy-top: 16.5rem;
+  --opening-copy-width: 43.125rem;
+  --opening-title-space: 3.12em;
+  --opening-copy-align: max(var(--spacing-gutter), calc((100vw - 73rem) / 2));
+  --opening-hero-type: clamp(2.625rem, 1.2rem + 3.4vw, 4.25rem);
+  --opening-highlight: color-mix(in srgb, var(--color-sky) 55%, var(--color-card));
   --duration-press: 120ms;
   --duration-state: 200ms;
   --duration-reveal: 640ms;
+  --duration-typewriter: 6s;
+  --duration-footer-shine: 7.25s;
+  --duration-jobs-dots: 2.4s;
+  --duration-values-shine: 1100ms;
+  --spacing-jobs-photo: 7rem;
+  --spacing-jobs-photo-wide: 15rem;
+  --opacity-footer-shine: 0.65;
+  --opacity-footer-art: 0.12;
+  --footer-care-width: min(42rem, 46vw);
+  --mission-lift: -0.75rem;
+  --mission-scale: 1.035;
+  --mission-depth: 1.5rem;
+  --mission-tilt: 5deg;
+  --mission-perspective: 70rem;
+  --duration-mission-card: 420ms;
+  --duration-mission-hover: 900ms;
+  --mission-arm-travel: 0.75rem;
   /* A headline's letters settling into their words (D97). */
   --duration-settle: 1100ms;
-  /* How long each of Home's slides shows (D128), and one loop of the clients' rows (D133). */
+  /* Retain the pyramid and inner-photo clock; Home's hero advances twice as often. */
   --duration-slide: 6s;
+  --duration-hero-slide: 3s;
+  /* Home's authored sequence (D136): photo, words, supporting line, action, frame. */
+  --duration-slide-wipe: 1100ms;
+  --duration-slide-word: 900ms;
+  /* The phone menu (D167): the sheet drops in and its rows settle after it, at once; it leaves faster than it came. */
+  --duration-sheet-in: 700ms;
+  --duration-sheet-out: 420ms;
+  --duration-sheet-fade: 180ms;
+  --duration-menu-row: 700ms;
+  --delay-menu-rows: 40ms;
+  --stagger-menu-row: 40ms;
+  --stagger-slide-word: 45ms;
+  --delay-slide-word: 160ms;
+  --delay-slide-line: 480ms;
+  --delay-slide-action: 620ms;
+  --delay-slide-frame: 760ms;
   --z-header: 40;
   --z-overlay: 50;
 }
@@ -160,6 +234,303 @@
 @media (width >= 64rem) {
   :root {
     --header-height: 5rem;
+    --opening-header-height: 6.25rem;
+    --opening-copy-top: 18.125rem;
+  }
+}
+
+/* The phone menu's words (D167): rows and words scale with the screen's height, so five pages and the actions fit. */
+.menu-sheet {
+  --menu-row: clamp(3rem, 9dvh, 4.75rem);
+  --menu-word: clamp(1.75rem, 4.9dvh, 2.625rem);
+}
+.menu-contact-tiles {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+}
+
+.menu-word {
+  min-block-size: var(--menu-row);
+  font-size: var(--menu-word);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+/* D166: the static pale-blue care illustration behind unchanged footer content. */
+.footer-main {
+  background: var(--color-ground);
+}
+
+.footer-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--color-deep);
+  opacity: var(--opacity-footer-art);
+  mix-blend-mode: multiply;
+}
+
+.footer-art-care {
+  position: absolute;
+  inset-block-end: -3rem;
+  inset-inline-start: 0;
+  inline-size: var(--footer-care-width);
+  block-size: auto;
+  max-inline-size: none;
+}
+
+/* D165/D170: retain the 0.4 s lead-in and 4.5 s sweep; halve the recurring quiet gap to 2.75 s. */
+.footer-logo-shine {
+  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mask-mode: alpha;
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .footer-logo-shine {
+    display: block;
+    overflow: hidden;
+  }
+
+  .footer-logo-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 36%,
+      color-mix(in srgb, var(--color-ground) 50%, transparent) 46%,
+      var(--color-ground) 50%,
+      color-mix(in srgb, var(--color-ground) 50%, transparent) 54%,
+      transparent 64%
+    );
+    animation: footer-logo-shine var(--duration-footer-shine) var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes footer-logo-shine {
+  0%,
+  5.517241% {
+    transform: translateX(-110%);
+    opacity: 0;
+  }
+  16.551724%,
+  55.172414% {
+    opacity: var(--opacity-footer-shine);
+  }
+  67.586207%,
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+
+/*
+ * D158/D160: the approved full-width photo opening, refined by the user.
+ * The header stays opaque light; only the top of the dimmed image fades in.
+ * The original coloured logo/navigation are independent of the photo. :has keeps
+ * this server-rendered treatment off all other routes without client code.
+ */
+.site-world .site-header {
+  --header-height: var(--opening-header-height);
+}
+
+/* Only photo openings overlap the shared, non-sticky header (D160/D172). */
+.site-world:has(.opening-blend) .site-header {
+  margin-block-end: calc(-1 * var(--opening-header-height));
+  isolation: isolate;
+}
+
+.opening-blend .slides-band,
+.opening-blend--page {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-block-size: var(--opening-height);
+  border: 0;
+  isolation: isolate;
+  background: var(--color-card);
+}
+
+.opening-blend--page {
+  --opening-height: 42.5rem;
+}
+
+.opening-blend .slides-band > div:first-child,
+.opening-blend--page > .page-split {
+  z-index: 2;
+  padding: var(--opening-copy-top) var(--opening-copy-align) 9.5rem;
+  align-content: start;
+}
+
+.opening-blend .slides-band > div:first-child > div:first-child {
+  min-block-size: 0;
+}
+
+.opening-blend .slides-band > div:last-child,
+.opening-blend--page > div:last-child {
+  position: absolute;
+  inset: var(--opening-photo-inset) 0 0;
+  z-index: -1;
+  min-block-size: 0;
+  /* D160: fade the image and its dimming layer, never the navigation. */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(0 0 0 / 0.02) calc(var(--opening-photo-fade) * 0.075),
+    rgb(0 0 0 / 0.08) calc(var(--opening-photo-fade) * 0.18),
+    rgb(0 0 0 / 0.2) calc(var(--opening-photo-fade) * 0.3),
+    rgb(0 0 0 / 0.4) calc(var(--opening-photo-fade) * 0.44),
+    rgb(0 0 0 / 0.62) calc(var(--opening-photo-fade) * 0.58),
+    rgb(0 0 0 / 0.82) calc(var(--opening-photo-fade) * 0.73),
+    rgb(0 0 0 / 0.95) calc(var(--opening-photo-fade) * 0.875),
+    rgb(0 0 0) var(--opening-photo-fade)
+  );
+}
+
+.opening-blend .slides-band > div:last-child::after,
+.opening-blend--page > div:last-child::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-navy) 91%, transparent) 0%,
+      color-mix(in srgb, var(--color-navy) 83%, transparent) 25%,
+      color-mix(in srgb, var(--color-navy) 80%, transparent) 48%,
+      color-mix(in srgb, var(--color-navy) 20%, transparent) 76%,
+      color-mix(in srgb, var(--color-navy) 15%, transparent) 100%
+    ),
+    linear-gradient(to top, color-mix(in srgb, var(--color-navy) 50%, transparent), transparent 45%);
+}
+
+[dir="rtl"] .opening-blend .slides-band > div:last-child::after,
+[dir="rtl"] .opening-blend--page > div:last-child::after {
+  transform: scaleX(-1);
+}
+
+.opening-blend img {
+  object-position: center top;
+}
+
+.opening-blend h1 {
+  max-inline-size: var(--opening-copy-width);
+  font-size: var(--opening-hero-type);
+  line-height: 1.04;
+  color: var(--color-card);
+}
+
+.opening-blend h1 .text-deep {
+  color: var(--opening-highlight);
+}
+
+/* Reserve three title lines before the font arrives; longer titles still grow. */
+.opening-blend--page h1 {
+  min-block-size: var(--opening-title-space);
+}
+
+/* Service names keep their summary close; the shared opening still reserves its photo height. */
+.service-opening.opening-blend h1 {
+  min-block-size: 1.04em;
+}
+
+.opening-blend .slide-line,
+.opening-blend .split-line {
+  max-inline-size: 30.3125rem;
+  color: var(--color-card);
+}
+
+.opening-blend .page-split > p:first-child:not(.split-line) {
+  color: var(--opening-highlight);
+}
+
+.opening-blend .split-line > a {
+  color: var(--color-card);
+  --color-deep: var(--color-card);
+  --color-focus: var(--color-card);
+}
+
+.opening-blend .split-line > a:not(:first-child):hover {
+  background: color-mix(in srgb, var(--color-card) 15%, transparent);
+}
+
+.opening-blend .split-line > a:first-child,
+.opening-blend .slide-action {
+  color: var(--color-navy);
+  background: var(--color-card);
+  --color-focus: var(--color-card);
+}
+
+.opening-blend .slide-progress {
+  position: absolute;
+  inset-block-end: 4rem;
+  inset-inline-start: var(--opening-copy-align);
+  padding: 0;
+  background: transparent;
+  max-inline-size: calc(100% - var(--opening-copy-align) * 2);
+  color: var(--color-card);
+  --color-focus: var(--color-card);
+}
+
+.opening-blend .slide-bar {
+  inline-size: 3.25rem;
+}
+
+.opening-blend .slide-rail {
+  background: color-mix(in srgb, var(--color-card) 32%, transparent);
+}
+
+.opening-blend .slide-fill {
+  background: var(--color-card);
+}
+
+.opening-blend .slide-note {
+  inset-block-end: 6.375rem;
+  inset-inline-start: auto;
+  inset-inline-end: var(--opening-copy-align);
+  z-index: 4;
+  max-inline-size: 23.125rem;
+}
+
+.opening-blend .slides-band:focus-visible {
+  outline: 2px solid var(--color-focus-on-deep);
+  outline-offset: -4px;
+}
+
+@media (width < 64rem) {
+  .opening-blend .slides-band > div:first-child {
+    padding-block-end: 14rem;
+  }
+
+  .opening-blend .slides-band > div:last-child::after,
+  .opening-blend--page > div:last-child::after {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-navy) 88%, transparent),
+      color-mix(in srgb, var(--color-navy) 78%, transparent)
+    );
+  }
+
+  .opening-blend img {
+    object-position: 58% center;
+  }
+
+  .opening-blend .slide-note {
+    inset-inline: var(--opening-copy-align);
+    max-inline-size: none;
+  }
+
+  .opening-blend h1 {
+    max-inline-size: 38rem;
   }
 }
 
@@ -199,14 +570,33 @@
   background: var(--color-page);
 }
 
-/* The header slides away as the page goes down and comes back as it goes up (D132). */
-@media (prefers-reduced-motion: no-preference) {
-  .site-header {
-    transition:
-      transform var(--duration-reveal) var(--ease-out),
-      box-shadow var(--duration-state) var(--ease-out);
-  }
+/* The same full menu remains usable when editable labels exceed the desktop pill. */
+.site-header[data-compact] .header-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
 
+.site-header[data-compact] .desktop-nav,
+.site-header[data-compact] .header-action {
+  display: none;
+}
+
+.site-header[data-compact] .mobile-nav {
+  display: block;
+}
+
+.site-header[data-compact] .mobile-nav > button {
+  display: grid;
+}
+
+/* The admin's green action/focus roles are local; the public site keeps its blue (D138). */
+.admin-world {
+  --color-deep: var(--color-forest);
+  --color-focus: var(--color-forest);
+  --color-on-deep-2: var(--color-leaf-pale);
+}
+
+/* The active navigation pill retains its page-change motion (D134). */
+@media (prefers-reduced-motion: no-preference) {
   /* The menu's deep-blue pill slides to the page just opened, from the last one's link (D134). */
   .nav-pill {
     transform-origin: 0 50%;
@@ -220,10 +610,6 @@
   }
 }
 
-.site-header[data-hidden] {
-  transform: translateY(-100%);
-}
-
 /*
  * Home's slides (D128): each new photo wipes across the last from the end
  * side and settles from a slow zoom (the first only settles); its headline's words rise from behind
@@ -232,8 +618,15 @@
  */
 @keyframes wipe {
   from {
-    clip-path: inset(0 0 0 100%);
+    clip-path: var(--slide-wipe-start, inset(0 0 0 100%));
   }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+[dir="rtl"] .slides-band {
+  --slide-wipe-start: inset(0 100% 0 0);
 }
 
 @keyframes drift {
@@ -258,6 +651,7 @@
 /* A word that rises from behind its own line: clipped just below its descenders. */
 .rise-word {
   display: inline-block;
+  max-inline-size: 100%;
   overflow: clip;
   vertical-align: top;
   padding-bottom: 0.1em;
@@ -266,10 +660,16 @@
 
 .rise-word > span {
   display: inline-block;
+  max-inline-size: 100%;
+}
+
+.slides-band {
+  --duration-slide: var(--duration-hero-slide);
 }
 
 .slide-photo {
   visibility: hidden;
+  overflow: clip;
 }
 
 .slide-photo[data-current],
@@ -294,37 +694,60 @@
   transform-origin: left;
 }
 
+.slide-rail {
+  transform: scaleX(0.55);
+}
+
+.slide-bar[data-current] .slide-rail {
+  transform: none;
+}
+
 .slide-bar[data-done] .slide-fill {
   transform: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The first photo is the page's first paint: it only settles; every later one wipes in. */
-  .slide-photo[data-current] {
+  /* Keep the outgoing photo's zoom at its last frame, beneath the incoming wipe. */
+  .slide-photo[data-current] .slide-image,
+  .slide-photo[data-was] .slide-image {
     animation: drift var(--duration-slide) linear both;
   }
 
   .slides-band[data-moved] .slide-photo[data-current] {
-    animation:
-      wipe 1.3s var(--ease-out) both,
-      drift var(--duration-slide) linear both;
+    animation: wipe var(--duration-slide-wipe) var(--ease-out) both;
   }
 
   .slide-text[data-current] .rise-word > span {
-    animation: word-rise 1s var(--ease-out) both;
-    animation-delay: calc(var(--i) * 60ms + 120ms);
+    animation: word-rise var(--duration-slide-word) var(--ease-out) both;
+    animation-delay: calc(var(--i) * var(--stagger-slide-word) + var(--delay-slide-word));
   }
 
   .slide-text[data-current] .slide-line {
-    animation: rise-in var(--duration-reveal) 0.45s var(--ease-out) both;
+    animation: rise-in var(--duration-reveal) var(--delay-slide-line) var(--ease-out) both;
+  }
+
+  .slide-text[data-current] .slide-action {
+    animation-delay: var(--delay-slide-action);
+  }
+
+  .slide-progress,
+  .slide-note {
+    animation: rise-in var(--duration-reveal) var(--delay-slide-frame) var(--ease-out) backwards;
+  }
+
+  .slide-rail {
+    transition: transform var(--duration-reveal) var(--ease-out);
   }
 
   .slide-bar[data-current] .slide-fill {
     animation: run-bar var(--duration-slide) linear both;
   }
 
-  .slides-band[data-paused] .slide-bar[data-current] .slide-fill,
-  .slides-band[data-paused] .slide-photo[data-current] {
+  .slides-band:focus-visible .slide-bar[data-current] .slide-fill,
+  .slides-band:focus-visible .slide-photo[data-current] .slide-image,
+  .slides-band:has(:focus-visible) .slide-bar[data-current] .slide-fill,
+  .slides-band:has(:focus-visible) .slide-photo[data-current] .slide-image,
+  .slide-photo[data-was] .slide-image {
     animation-play-state: paused;
   }
 
@@ -398,7 +821,6 @@
 .logo-item img {
   mix-blend-mode: multiply;
   filter: grayscale(1) opacity(0.45) contrast(1.1);
-  transition: filter 0.4s var(--ease-out);
 }
 
 .logo-item:hover img,
@@ -427,34 +849,54 @@
   }
 }
 
+/*
+ * The phone menu (D167): the deep-blue sheet drops in from the top edge and its
+ * rows settle after it, one after another; closing, the rows fade as the sheet lifts away,
+ * and only then does the dialog close (MobileMenu waits for `menu-out`).
+ * Transform and opacity alone. With motion reduced it appears and goes at once.
+ */
+@keyframes menu-in {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes menu-out {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+/* The rows follow the sheet down: they start a little above their place and settle into it, the same way it moves. */
+@keyframes menu-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.875rem);
+  }
+}
+
+@keyframes menu-fade {
+  to {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .menu-sheet[open] {
-    transition: opacity var(--duration-state) var(--ease-out);
-  }
-
-  @starting-style {
-    .menu-sheet[open] {
-      opacity: 0;
-    }
+    animation: menu-in var(--duration-sheet-in) var(--ease-settle) both;
   }
 
   .menu-sheet[open] .menu-row {
-    animation: rise var(--duration-reveal) var(--ease-out) both;
-    animation-delay: calc(var(--i) * 45ms + 60ms);
+    animation: menu-row-in var(--duration-menu-row) var(--ease-settle) both;
+    animation-delay: calc(var(--delay-menu-rows) + var(--i) * var(--stagger-menu-row));
   }
 
-  @supports (overlay: auto) {
-    .menu-sheet {
-      opacity: 0;
-      transition:
-        opacity var(--duration-state) var(--ease-out),
-        overlay var(--duration-state) allow-discrete,
-        display var(--duration-state) allow-discrete;
-    }
+  .menu-sheet[open][data-closing] {
+    animation: menu-out var(--duration-sheet-out) var(--ease-in-out) both;
+  }
 
-    .menu-sheet[open] {
-      opacity: 1;
-    }
+  .menu-sheet[open][data-closing] .menu-row {
+    animation: menu-fade var(--duration-sheet-fade) var(--ease-in-out) both;
   }
 }
 
@@ -470,6 +912,7 @@
     font-family: var(--font-sans);
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
+    overflow-wrap: anywhere;
     caret-color: var(--color-deep);
   }
 
@@ -535,4 +978,850 @@ html.lenis body {
 
 .lenis.lenis-smooth iframe {
   pointer-events: none;
+}
+
+/* D185: three landscape cards, centred within the site's existing gutters; native row without enhancement. */
+.home-services-pyramid {
+  --pyramid-card-width: min(42rem, 76cqw);
+  --pyramid-caption-fade: 2.5rem;
+  container-type: inline-size;
+  grid-template-columns: minmax(0, 1fr);
+}
+.pyramid-track {
+  position: relative;
+  display: flex;
+  gap: 1.25rem;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: var(--container-site);
+  min-block-size: calc(var(--pyramid-card-width) * 5 / 8 + 4rem);
+  margin-inline: auto;
+  padding-block: 1rem 3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pyramid-track > li {
+  position: relative;
+  inline-size: var(--pyramid-card-width);
+  transform-origin: center;
+}
+.pyramid-track:empty,
+.home-services-pyramid[data-pyramid] .pyramid-track:empty {
+  display: none;
+}
+.home-services-pyramid[data-pyramid] .pyramid-track {
+  overflow: clip;
+  touch-action: pan-y;
+}
+.home-services-pyramid[data-pyramid] .pyramid-track > li {
+  transition:
+    transform var(--duration-reveal) var(--ease-out),
+    opacity var(--duration-reveal) var(--ease-out);
+}
+.home-services-pyramid[data-pyramid] .pyramid-track > li[aria-hidden="true"] {
+  pointer-events: none;
+}
+.home-services-pyramid[data-pyramid] .pyramid-track img {
+  opacity: var(--pyramid-photo-opacity, 1);
+  transition: opacity var(--duration-reveal) var(--ease-out);
+}
+.pyramid-service {
+  display: grid;
+  block-size: 100%;
+  /* Preserve the landscape crop, allowing enlarged accessibility text to grow rather than clip. */
+  aspect-ratio: auto;
+  min-block-size: calc(var(--pyramid-card-width) * 5 / 8);
+  background: var(--color-navy);
+}
+.pyramid-service-name {
+  position: relative;
+  align-self: end;
+  padding: var(--pyramid-caption-fade) 1rem 1rem;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--color-navy) 88%, transparent) var(--pyramid-caption-fade),
+    var(--color-navy)
+  );
+  color: var(--color-on-deep);
+  font-size: var(--text-body);
+  line-height: var(--text-title--line-height);
+  font-weight: 600;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.home-services-pyramid[data-pyramid] .pyramid-track > li > a:hover img {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-services-pyramid[data-pyramid] .pyramid-track > li,
+  .home-services-pyramid[data-pyramid] .pyramid-track img {
+    transition: none;
+  }
+}
+
+.home-services-pyramid .pyramid-controls {
+  visibility: hidden;
+}
+.home-services-pyramid[data-pyramid] .pyramid-controls {
+  visibility: visible;
+}
+.typewriter [data-type-caret] {
+  position: absolute;
+  inset-block-start: 0.1em;
+  inset-inline-end: -0.07em;
+  block-size: 0.88em;
+  border-inline-start: 2px solid currentColor;
+  opacity: 0;
+}
+/* The user explicitly chose a white Contact opening and form controls (D145). */
+.contact-page {
+  --color-ground: #ffffff;
+}
+
+/*
+ * D161 / Impeccable Adapt: phones get their own reading rhythm and crops.
+ * Scoped to the public world; desktop and admin roles stay unchanged.
+ */
+@media (width < 48rem) {
+  .site-world {
+    --text-hero: clamp(2rem, 1.25rem + 3vw, 2.5rem);
+    --text-display: clamp(1.75rem, 1.25rem + 2vw, 2rem);
+    --text-title: 1.125rem;
+    --text-lead: 1.0625rem;
+    --text-body: 1rem;
+    --spacing-section: 2.5rem;
+    --opening-header-height: 4rem;
+    --opening-photo-inset: 4rem;
+    --opening-photo-fade: 7.5rem;
+    --opening-copy-top: 12.5rem;
+    --opening-height: 38.75rem;
+    --opening-hero-type: var(--text-hero);
+    font-size: var(--text-body);
+  }
+
+  .site-world .opening-blend--page {
+    --opening-height: 33rem;
+  }
+
+  .site-world .opening-blend .slides-band > div:first-child {
+    gap: 1.5rem;
+    padding-block-end: 7.5rem;
+  }
+
+  .site-world .opening-blend .slides-band:has(.slide-note) > div:first-child {
+    padding-block-end: 13rem;
+  }
+
+  .site-world .opening-blend .slide-progress {
+    inset-block-end: 2.5rem;
+  }
+
+  .site-world .opening-blend .slide-note {
+    inset-block-end: 5.5rem;
+  }
+
+  .site-world .intro-section,
+  .site-world .contact-message-layout {
+    gap: 2rem;
+  }
+
+  .site-world .intro-section figure > div {
+    aspect-ratio: 4 / 3;
+  }
+
+  .site-world .contact-opening > .page-split {
+    padding-block: 2rem;
+    gap: 1.25rem;
+  }
+
+  .site-world .page-split--plain .page-split,
+  .site-world .career-document,
+  .site-world .page-sections.pt-16 {
+    padding-block-start: 2rem;
+  }
+
+  .site-world .mission-panel {
+    padding: 1.5rem;
+  }
+
+  .site-world .mission-panel > div[aria-hidden] {
+    margin-block-end: 1.25rem;
+  }
+
+  .site-world .mission-panel h2 {
+    margin-block-end: 1rem;
+  }
+
+  .site-world .mission-emblem > svg {
+    inline-size: 6rem;
+    block-size: 6rem;
+  }
+
+  .site-world .service-summary {
+    min-block-size: 5.5rem;
+    gap: 0.75rem;
+  }
+
+  .site-world .service-summary > span:first-child:not(:only-child) {
+    inline-size: 4rem;
+    block-size: 4rem;
+  }
+
+  .site-world .form-card {
+    padding: 1.25rem;
+  }
+
+  .site-world .menu-sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block-end: env(safe-area-inset-bottom);
+  }
+
+  .site-world .footer-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1rem;
+    padding-block: 2.5rem;
+  }
+
+  .site-world .footer-content > div {
+    grid-column: 1 / -1;
+  }
+
+  .site-world .footer-logo img {
+    block-size: 2.5rem;
+    inline-size: auto;
+  }
+
+  .site-world .footer-art {
+    --opacity-footer-art: 0.1;
+    --footer-care-width: 28rem;
+  }
+
+  .site-world .footer-art-care {
+    inset-block-end: 0;
+    inset-inline-start: auto;
+    inset-inline-end: -6rem;
+  }
+}
+
+/* Short landscape phones still get a compact, scrollable opening/menu. */
+@media (width < 64rem) and (height < 32rem) {
+  .site-world {
+    --opening-height: 30rem;
+    --opening-copy-top: 10.5rem;
+    --opening-photo-fade: 6rem;
+    --opening-hero-type: 2rem;
+    --text-lead: 1.0625rem;
+    --text-hero: 2rem;
+    --spacing-section: 2.5rem;
+  }
+
+  .site-world .opening-blend--page {
+    --opening-height: 30rem;
+  }
+
+  .site-world .opening-blend .slides-band > div:first-child {
+    padding-block-end: 6rem;
+  }
+
+  .site-world .opening-blend .slides-band:has(.slide-note) > div:first-child {
+    padding-block-end: 13rem;
+  }
+
+  .site-world .menu-sheet {
+    --menu-row: 3.25rem;
+    --menu-word: 1.75rem;
+  }
+}
+
+/* D149: a raised statement panel; only transforms and the shadow layer's opacity move. */
+.mission-panel::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--shadow-float);
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+}
+
+.mission-scene {
+  perspective: var(--mission-perspective);
+}
+
+.mission-panel--vision {
+  --mission-tilt: -5deg;
+}
+
+.mission-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.mission-sheen::before {
+  position: absolute;
+  inset-block: -50%;
+  inset-inline-start: 0;
+  width: 40%;
+  background: var(--color-on-deep);
+  content: "";
+  opacity: 0;
+}
+
+@keyframes mission-card-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  25%,
+  65% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: translateX(400%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+.mission-panel:focus-visible::after {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mission-panel:hover::after {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mission-panel {
+    transition:
+      translate var(--duration-mission-card) var(--ease-out),
+      scale var(--duration-mission-card) var(--ease-out),
+      rotate var(--duration-mission-card) var(--ease-out);
+  }
+
+  .mission-panel::after {
+    transition: opacity var(--duration-state) var(--ease-out);
+  }
+
+  .mission-panel:focus-visible {
+    translate: 0 var(--mission-lift) var(--mission-depth);
+    scale: var(--mission-scale);
+    rotate: 1 -1 0 var(--mission-tilt);
+  }
+
+  .mission-panel:focus-visible .mission-sheen::before {
+    animation: mission-card-sweep var(--duration-mission-hover) var(--ease-in-out) both;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .mission-panel:hover {
+    translate: 0 var(--mission-lift) var(--mission-depth);
+    scale: var(--mission-scale);
+    rotate: 1 -1 0 var(--mission-tilt);
+  }
+
+  .mission-panel:hover .mission-sheen::before {
+    animation: mission-card-sweep var(--duration-mission-hover) var(--ease-in-out) both;
+  }
+}
+
+.mission-emblem::before {
+  position: absolute;
+  inset: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+}
+
+.mission-emblem--mission [data-from-y="-24"] {
+  --arm-x: 0px;
+  --arm-y: calc(-1 * var(--mission-arm-travel));
+}
+.mission-emblem--mission [data-from-x="24"] {
+  --arm-x: var(--mission-arm-travel);
+  --arm-y: 0px;
+}
+.mission-emblem--mission [data-from-y="24"] {
+  --arm-x: 0px;
+  --arm-y: var(--mission-arm-travel);
+}
+.mission-emblem--mission [data-from-x="-24"] {
+  --arm-x: calc(-1 * var(--mission-arm-travel));
+  --arm-y: 0px;
+}
+
+@keyframes mission-cross-turn {
+  35% {
+    rotate: -12deg;
+    scale: 1.12;
+  }
+  100% {
+    rotate: 90deg;
+    scale: 1;
+  }
+}
+
+@keyframes mission-cross-arm {
+  35%,
+  55% {
+    translate: var(--arm-x) var(--arm-y);
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes vision-globe-turn {
+  45% {
+    rotate: -24deg;
+    scale: 1.12;
+  }
+  100% {
+    rotate: 0deg;
+    scale: 1;
+  }
+}
+
+@keyframes vision-ring-unfold {
+  35% {
+    scale: 0.15 1;
+    rotate: -30deg;
+  }
+  70% {
+    scale: 1.2 1;
+    rotate: 12deg;
+  }
+  100% {
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+
+@keyframes mission-highlight {
+  0% {
+    scale: 0.55;
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.35;
+  }
+  100% {
+    scale: 1.55;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mission-emblem svg,
+  .mission-emblem [data-art-part] {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .mission-panel:focus-visible .mission-emblem::before {
+    animation: mission-highlight var(--duration-mission-hover) var(--ease-out) both;
+  }
+  .mission-panel:focus-visible .mission-emblem--mission svg {
+    animation: mission-cross-turn var(--duration-mission-hover) var(--ease-out) both;
+  }
+  .mission-panel:focus-visible .mission-emblem--mission [data-art-part] {
+    animation: mission-cross-arm var(--duration-mission-hover) var(--ease-in-out) both;
+  }
+  .mission-panel:focus-visible .mission-emblem--vision svg {
+    animation: vision-globe-turn var(--duration-mission-hover) var(--ease-out) both;
+  }
+  .mission-panel:focus-visible .mission-emblem--vision g:nth-of-type(n + 2) {
+    animation: vision-ring-unfold var(--duration-mission-hover) var(--ease-in-out) both;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .mission-panel:hover .mission-emblem::before {
+    animation: mission-highlight var(--duration-mission-hover) var(--ease-out) both;
+  }
+  .mission-panel:hover .mission-emblem--mission svg {
+    animation: mission-cross-turn var(--duration-mission-hover) var(--ease-out) both;
+  }
+  .mission-panel:hover .mission-emblem--mission [data-art-part] {
+    animation: mission-cross-arm var(--duration-mission-hover) var(--ease-in-out) both;
+  }
+  .mission-panel:hover .mission-emblem--vision svg {
+    animation: vision-globe-turn var(--duration-mission-hover) var(--ease-out) both;
+  }
+  .mission-panel:hover .mission-emblem--vision g:nth-of-type(n + 2) {
+    animation: vision-ring-unfold var(--duration-mission-hover) var(--ease-in-out) both;
+  }
+}
+
+.home-quote {
+  --color-ground: var(--color-card);
+}
+
+.home-quote .quote-contact-icon,
+.contact-card-icon {
+  border-radius: var(--radius-control);
+}
+
+/* D177: the card stays stationary; only its decorative shine moves on hover. */
+@media (min-width: 64rem) {
+  .intro-align-photo {
+    row-gap: calc(var(--spacing) * 8);
+  }
+  .intro-align-photo > .intro-heading-photo {
+    display: contents;
+  }
+  .intro-align-photo .intro-heading-photo > h2 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .intro-align-photo .intro-photo {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .intro-align-photo .intro-copy {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+.promise-card::after {
+  content: "";
+  position: absolute;
+  inline-size: calc(var(--spacing) * 45);
+  aspect-ratio: 1;
+  inset-inline-end: calc(var(--spacing) * -16);
+  inset-block-end: calc(var(--spacing) * -26);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.promise-card::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    color-mix(in srgb, var(--color-on-deep) 45%, transparent) 50%,
+    transparent 65%
+  );
+  transform: translateX(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes value-card-shine {
+  0% {
+    transform: translateX(-110%);
+    opacity: 0;
+  }
+  15%,
+  75% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+
+@media (min-width: 48rem) {
+  .promise-card {
+    min-block-size: calc(var(--spacing) * 88);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .promise-card:hover::before {
+    animation: value-card-shine var(--duration-values-shine) var(--ease-in-out) both;
+  }
+}
+
+/* D174: the approved photo accent; content and job actions keep their existing order. */
+.careers-jobs {
+  background-image: linear-gradient(110deg, var(--color-leaf-pale) 50%, var(--color-mist));
+}
+
+.jobs-introduction-with-photo {
+  grid-template-columns: minmax(0, 1fr) min(var(--spacing-jobs-photo), 28vw);
+  align-items: center;
+}
+
+.jobs-introduction-with-photo .jobs-heading {
+  grid-column: 1;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.jobs-photo {
+  grid-column: 2;
+  grid-row: 1;
+  inline-size: 100%;
+  aspect-ratio: 1;
+}
+
+.jobs-photo picture {
+  display: contents;
+}
+
+.jobs-intro-copy {
+  grid-column: 1 / -1;
+}
+
+.jobs-dots {
+  display: inline-flex;
+  inline-size: 0.9em;
+  white-space: nowrap;
+}
+
+.jobs-dots > span {
+  inline-size: 0.3em;
+}
+
+@keyframes jobs-second-dot {
+  0%,
+  28%,
+  100% {
+    opacity: 0;
+  }
+  36%,
+  94% {
+    opacity: 1;
+  }
+}
+
+@keyframes jobs-third-dot {
+  0%,
+  61%,
+  100% {
+    opacity: 0;
+  }
+  69%,
+  94% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .jobs-dots > span:nth-child(2) {
+    animation: jobs-second-dot var(--duration-jobs-dots) var(--ease-in-out) infinite;
+  }
+  .jobs-dots > span:nth-child(3) {
+    animation: jobs-third-dot var(--duration-jobs-dots) var(--ease-in-out) infinite;
+  }
+}
+
+@media (min-width: 48rem) {
+  .jobs-introduction-with-photo {
+    grid-template-columns: minmax(0, 1fr) min(var(--spacing-jobs-photo-wide), 25vw);
+    column-gap: calc(var(--spacing) * 12);
+    row-gap: calc(var(--spacing) * 4);
+  }
+  .jobs-introduction-with-photo .jobs-heading {
+    align-self: end;
+  }
+  .jobs-introduction-with-photo .jobs-intro-copy {
+    grid-column: 1;
+    align-self: start;
+  }
+  .jobs-photo {
+    grid-row: 1 / span 2;
+    aspect-ratio: 5 / 4;
+  }
+}
+
+/* D173: independent translate composes with the scroll reveal's transform from the first visit. */
+.contact-reach .contact-reach-brochure {
+  color: var(--color-on-deep);
+  --color-focus: var(--color-focus-on-deep);
+}
+
+.contact-reach-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.contact-reach-card::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--shadow-float);
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+}
+
+.contact-reach-card:focus-within::after {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-reach-card:hover::after {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .contact-reach-card {
+    transition: translate var(--duration-state) var(--ease-out);
+  }
+
+  .contact-reach-card::after {
+    transition: opacity var(--duration-state) var(--ease-out);
+  }
+
+  .contact-reach-card:focus-within {
+    translate: 0 calc(var(--spacing) * -2);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .contact-reach-card:hover {
+    translate: 0 calc(var(--spacing) * -2);
+  }
+}
+
+/* D168: public font roles only. The admin retains Inter Tight; font choices never change sizes or weights. */
+:where(.site-world) {
+  font-family: var(--type-paragraph, var(--font-inter-tight)), Arial, sans-serif;
+}
+:where(.site-world) :where(p) {
+  font-family: var(--type-paragraph);
+}
+:where(.site-world) :where(small, .text-small) {
+  font-family: var(--type-small);
+}
+:where(.site-world) :where(.text-lead) {
+  font-family: var(--type-lead);
+}
+:where(.site-world) :where(li, li p) {
+  font-family: var(--type-list);
+}
+:where(.site-world) :where(dt, dd, dt p, dd p) {
+  font-family: var(--type-detail);
+}
+:where(.site-world) :where(figcaption, caption) {
+  font-family: var(--type-caption);
+}
+:where(.site-world) :where(label) {
+  font-family: var(--type-label);
+}
+:where(.site-world) :where(legend) {
+  font-family: var(--type-legend);
+}
+:where(.site-world) :where(input, textarea, select) {
+  font-family: var(--type-input);
+}
+:where(.site-world) :where(summary) {
+  font-family: var(--type-summary);
+}
+:where(.site-world) :where(strong, b) {
+  font-family: var(--type-emphasis);
+}
+:where(.site-world) :where(a) {
+  font-family: var(--type-link);
+}
+:where(.site-world) :where(button, [role="button"], .font-role-button) {
+  font-family: var(--type-button);
+}
+:where(.site-world) :where(h1) {
+  font-family: var(--type-h1);
+}
+:where(.site-world) :where(h2) {
+  font-family: var(--type-h2);
+}
+:where(.site-world) :where(h3) {
+  font-family: var(--type-h3);
+}
+:where(.site-world) :where(h4) {
+  font-family: var(--type-h4);
+}
+:where(.site-world) :where(input, textarea)::placeholder {
+  font-family: var(--type-placeholder);
+}
+:where(.site-world) [data-font-role="h1"] {
+  font-family: var(--type-h1);
+}
+:where(.site-world) [data-font-role="h2"] {
+  font-family: var(--type-h2);
+}
+:where(.site-world) [data-font-role="h3"] {
+  font-family: var(--type-h3);
+}
+:where(.site-world) [data-font-role="h4"] {
+  font-family: var(--type-h4);
+}
+:where(.site-world) [data-font-role="lead"] {
+  font-family: var(--type-lead);
+}
+:where(.site-world) [data-font-role="paragraph"] {
+  font-family: var(--type-paragraph);
+}
+:where(.site-world) [data-font-role="small"] {
+  font-family: var(--type-small);
+}
+:where(.site-world) [data-font-role="caption"] {
+  font-family: var(--type-caption);
+}
+:where(.site-world) [data-font-role="label"] {
+  font-family: var(--type-label);
+}
+:where(.site-world) [data-font-role="legend"] {
+  font-family: var(--type-legend);
+}
+:where(.site-world) [data-font-role="input"] {
+  font-family: var(--type-input);
+}
+:where(.site-world) [data-font-role="placeholder"] {
+  font-family: var(--type-placeholder);
+}
+:where(.site-world) [data-font-role="button"] {
+  font-family: var(--type-button);
+}
+:where(.site-world) [data-font-role="link"] {
+  font-family: var(--type-link);
+}
+:where(.site-world) [data-font-role="list"] {
+  font-family: var(--type-list);
+}
+:where(.site-world) [data-font-role="status"] {
+  font-family: var(--type-status);
+}
+:where(.site-world) [data-font-role="error"] {
+  font-family: var(--type-error);
+}
+:where(.site-world) [data-font-role="detail"] {
+  font-family: var(--type-detail);
+}
+:where(.site-world) [data-font-role="emphasis"] {
+  font-family: var(--type-emphasis);
+}
+:where(.site-world) [data-font-role="summary"] {
+  font-family: var(--type-summary);
+}
+:where(.site-world) [data-font-role="status"] :is(p, span, strong) {
+  font-family: inherit;
+}
+:where(.site-world) [data-font-role="error"] :is(p, span, strong) {
+  font-family: inherit;
+}
+:where(.site-world) [role="status"] {
+  font-family: var(--type-status);
+}
+:where(.site-world) [role="status"] p {
+  font-family: inherit;
 }

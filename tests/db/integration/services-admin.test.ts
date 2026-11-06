@@ -147,3 +147,25 @@ describe("the admin's services, against the local MySQL (D92)", () => {
     await expect(getServiceForAdmin(crypto.randomUUID())).rejects.toMatchObject({ code: "RECORD_NOT_FOUND" });
   });
 });
+
+it("keeps header button edits private until publish and rejects an unsafe saved destination", async () => {
+  const item = await createService(serviceFixture({ slug: "button-care" }), actor);
+  await publishService(item.id, actor);
+  const buttons = [{ label: { en: "Contact us" }, href: "/contact" }];
+  await saveServiceDraft(item.id, serviceFixture({ slug: "button-care", headerButtons: buttons }), actor);
+  const before = await findPublishedService("button-care");
+  expect(before && "record" in before ? before.record.published.headerButtons : null).toEqual([]);
+  expect((await getServiceForAdmin(item.id)).draft.headerButtons).toEqual(buttons);
+  await publishService(item.id, actor);
+  const after = await findPublishedService("button-care");
+  expect(after && "record" in after ? after.record.published.headerButtons : null).toEqual(buttons);
+  await saveRecordDraft(
+    "SERVICES",
+    item.id,
+    serviceFixture({ slug: "button-care", headerButtons: [{ label: { en: "Bad" }, href: "javascript:alert(1)" }] }),
+    actor,
+  );
+  await expect(publishService(item.id, actor)).rejects.toBeInstanceOf(ZodError);
+  const safe = await findPublishedService("button-care");
+  expect(safe && "record" in safe ? safe.record.published.headerButtons : null).toEqual(buttons);
+});

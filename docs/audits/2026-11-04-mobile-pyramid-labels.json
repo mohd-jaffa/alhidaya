@@ -1,0 +1,3122 @@
+[
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "inter",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "atkinson-hyperlegible-next",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "roboto",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "open-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "source-sans-3",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "nunito-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "manrope",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "dm-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "work-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "playfair-display",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "cormorant-garamond",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "fraunces",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "space-grotesk",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "Child care"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "Palliative care"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "Elderly care"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 320,
+    "font": "syne",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "inter",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "atkinson-hyperlegible-next",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "roboto",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "open-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "source-sans-3",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "nunito-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "manrope",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "dm-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "work-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "playfair-display",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "cormorant-garamond",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "fraunces",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "space-grotesk",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "Child care"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "Palliative care"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "Elderly care"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 360,
+    "font": "syne",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "inter",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "atkinson-hyperlegible-next",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "roboto",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "open-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "source-sans-3",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "nunito-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "manrope",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "dm-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "work-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "playfair-display",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "cormorant-garamond",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "fraunces",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "space-grotesk",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "Child care"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "Palliative care"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "Elderly care"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 390,
+    "font": "syne",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "inter",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "atkinson-hyperlegible-next",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "roboto",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "open-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "source-sans-3",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "nunito-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "manrope",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "dm-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "work-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "playfair-display",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "cormorant-garamond",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "fraunces",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "space-grotesk",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "Child care"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "Palliative care"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "Elderly care"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 414,
+    "font": "syne",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "inter",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "atkinson-hyperlegible-next",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "roboto",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "open-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "source-sans-3",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "nunito-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "manrope",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "dm-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "work-sans",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "playfair-display",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "cormorant-garamond",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "fraunces",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "space-grotesk",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "Child care"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "Palliative care"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "Elderly care"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 640,
+    "font": "syne",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 768,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 1024,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "Home nursing care"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "Chronic condition care"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "Child care"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "Maternity and newborn care"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "Palliative care"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "Elderly care"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "Nurse staffing for hospitals and clinics"
+  },
+  {
+    "width": 1440,
+    "font": "inter-tight",
+    "service": "School nurse staffing"
+  }
+]

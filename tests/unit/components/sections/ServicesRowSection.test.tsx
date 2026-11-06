@@ -7,6 +7,7 @@ import { ROUTES } from "@/constants/routes";
 import { AUDIENCE_LABELS } from "@/constants/statuses";
 import { contentFixture, imageFixture, publishedFixture, serviceFixture } from "@tests/support/fixtures/content";
 
+vi.mock("@/lib/motion/services-pyramid", () => ({ mountServicesPyramid: () => () => undefined }));
 vi.mock("@/components/motion/MotionProvider", () => ({ useMotion: () => ({ engine: null }) }));
 
 const home = { ...imageFixture("A nurse at home"), id: "home" };
@@ -24,6 +25,7 @@ describe("ServicesRowSection (D131)", () => {
   it("names itself by its heading and words on the mist band, every service a card opening its page", () => {
     render(
       <ServicesRowSection
+        pyramid
         anchor="our-services"
         content={{ heading: { en: "What we do" }, text: { en: "Care at home, and nurses for institutions." } }}
         services={services}
@@ -36,10 +38,16 @@ describe("ServicesRowSection (D131)", () => {
     const cards = within(section).getAllByRole("listitem");
     expect(cards).toHaveLength(2);
     expect(within(cards[0]).getByRole("link")).toHaveAttribute("href", ROUTES.service("home-nursing-care"));
-    expect(within(cards[0]).getByText(AUDIENCE_LABELS.FAMILIES)).toHaveClass("text-forest");
-    expect(within(cards[1]).getByText(AUDIENCE_LABELS.INSTITUTIONS)).toHaveClass("text-deep");
+    expect(within(cards[0]).queryByText(AUDIENCE_LABELS.FAMILIES)).toBeNull();
+    expect(within(cards[1]).queryByText(AUDIENCE_LABELS.INSTITUTIONS)).toBeNull();
     expect(cards[0].querySelector("img")).toHaveAttribute("alt", "");
     expect(cards[1].querySelector("img")).toBeNull();
+    for (const card of cards) {
+      const link = within(card).getByRole("link");
+      expect(link).toHaveClass("pyramid-service", "aspect-[8/5]");
+      expect(link.querySelector(".pyramid-service-name")).toHaveTextContent(/nurs/);
+      expect(link.querySelector("svg")).toBeNull();
+    }
   });
 
   it("ends with the way to all services, centred as a plain link, its words optional", () => {

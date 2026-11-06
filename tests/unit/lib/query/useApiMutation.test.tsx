@@ -11,6 +11,30 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 describe("useApiMutation", () => {
+  it("locks immediately against concurrent submits and allows another operation once it finishes", async () => {
+    let finish!: (value: string) => void;
+    const run = vi
+      .fn<() => Promise<string>>()
+      .mockImplementationOnce(() => new Promise<string>((resolve) => (finish = resolve)))
+      .mockResolvedValue("next");
+    const { result } = renderHook(() => useApiMutation(run), { wrapper });
+    let first!: Promise<string | undefined>;
+    let duplicate!: Promise<string | undefined>;
+    act(() => {
+      first = result.current.submit(undefined);
+      duplicate = result.current.submit(undefined);
+    });
+    expect(run).toHaveBeenCalledOnce();
+    await expect(duplicate).resolves.toBeUndefined();
+    await act(async () => {
+      finish("saved");
+      await first;
+    });
+    await act(async () => {
+      expect(await result.current.submit(undefined)).toBe("next");
+    });
+    expect(run).toHaveBeenCalledTimes(2);
+  });
   it("hands back what came back and tells the caller it worked", async () => {
     const onSuccess = vi.fn();
     const onError = vi.fn();

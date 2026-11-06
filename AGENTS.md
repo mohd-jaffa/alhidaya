@@ -214,7 +214,8 @@ Turnstile, rate limiting, audit, the error log and SEO are infrastructure in
 - Preview uses Next.js draft mode, entered only by the signed-in admin.
 - Hiding or removing something from a section never deletes the record.
 - **The design is locked** (plan D12): never add colour, font, size, spacing,
-  layout or animation controls to the admin.
+  layout or animation controls to the admin. The user-authorized D168 Font Manager
+  is the narrow exception: fixed tested font families per public text type only.
 - Content is stored per locale (`{ "en": … }`, plan §33).
 
 ---
@@ -452,14 +453,16 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 - **Reduced motion:** Lenis off, everything shown in place, no scrub, no reveals.
 - **Nothing moves on its own** (WCAG 2.2.2): motion follows the scroll or
   arrives once. The exceptions are Home's slides (D128), which move on every
-  six seconds with a pause button, and the clients' two rows (D133), endless
+  three seconds with progression bars and plain Previous/Next chevrons (D183; deliberate keyboard focus pauses them, while hover and clicks do not), Home’s services pyramid (D143/D185), which advances every six seconds with Previous/Next and no pause button, Contact’s explicitly requested typewriter (D147), which stops offscreen/hidden and is still with reduced motion, and the clients' two rows (D133), endless
   CSS loops that stop under the pointer, on focus and on a chosen logo (the
   user chose no pause button for them); both still with motion reduced.
+  The stationary footer logo's shine (D165/D170) and Careers' decorative dots
+  (D174) are also explicitly requested loops, disabled with reduced motion.
 - Durations and eases are tokens. One motion grammar (Theme 6, D132: the
   slides wiping in, headings' words rising from behind their line, every
   block rising in as it scrolls into view, the clients' rows running, the
-  header sliding away and back, the menu's pill sliding to the page opened,
-  D134; an inner page's opening arriving as Home's first slide does, D135), restrained reveals, nothing scattered.
+  non-sticky header staying in document flow (D162), the menu's pill sliding to the page opened,
+  D134; an inner page's opening arriving as Home's first slide does, D135; the phone menu's sheet dropping in and lifting away, its rows following it, D167), restrained reveals, nothing scattered.
 
 ---
 
@@ -699,3 +702,13 @@ resolution entry.
 run (Next 16). Keep it: it tells an agent to read node_modules/next/dist/docs
 before writing Next.js code, because APIs differ from older training data.
 -->
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

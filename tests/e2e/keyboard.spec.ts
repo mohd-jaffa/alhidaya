@@ -1,11 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 import { ROUTES } from "@/constants/routes";
+import { GOOGLE_MAPS } from "@/constants/site";
 
 /**
  * The keyboard's way through the public pages (plan §32, AGENTS.md §18,
  * R6B.5): every stop the Tab key reaches is on the page and shows its focus
- * ring. The walk ends at the bot check's frame, which draws its own.
+ * ring. Google's map draws its own focus while the walk continues through
+ * that frame; it ends at the bot check's frame, which draws its own.
  */
 const STOPS = 40;
 
@@ -21,10 +23,13 @@ for (const path of [
     let visited = 0;
     for (let stop = 0; stop < STOPS; stop++) {
       await page.keyboard.press("Tab");
-      const focused = await page.evaluate(() => {
+      const focused = await page.evaluate((mapsEmbed) => {
         const element = document.activeElement as HTMLElement | null;
         if (!element || element === document.body) return { done: true } as const;
-        if (element.tagName === "IFRAME") return { done: true } as const;
+        if (element.tagName === "IFRAME") {
+          if (element.getAttribute("src")?.startsWith(mapsEmbed)) return { done: false, external: true } as const;
+          return { done: true } as const;
+        }
         const style = getComputedStyle(element);
         const box = element.getBoundingClientRect();
         return {
@@ -33,8 +38,9 @@ for (const path of [
           ring: style.outlineStyle !== "none" && parseFloat(style.outlineWidth) >= 2,
           drawn: box.width > 0 && box.height > 0,
         } as const;
-      });
+      }, GOOGLE_MAPS.embed);
       if (focused.done) break;
+      if ("external" in focused) continue;
       expect(focused.ring, `focus ring on ${focused.name}`).toBe(true);
       expect(focused.drawn, `${focused.name} is drawn`).toBe(true);
       visited++;

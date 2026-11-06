@@ -1,9 +1,22 @@
 import { describe, expect, it } from "vitest";
 
-import { isHere, visibleLinks } from "@/components/site/navigation";
+import { isHere, needsCompactMenu, visibleLinks } from "@/components/site/navigation";
 import { siteFixture } from "@tests/support/fixtures/content";
 
 describe("the navigation", () => {
+  it("keeps ordinary navigation in the pill and uses the full menu for long labels or extra links", () => {
+    const links = visibleLinks(siteFixture());
+    expect(needsCompactMenu(links)).toBe(false);
+    expect(needsCompactMenu([])).toBe(false);
+    expect(needsCompactMenu([{ ...links[0], label: { en: "Nursing care for hospitals, clinics and schools" } }])).toBe(
+      true,
+    );
+    expect(
+      needsCompactMenu(
+        Array.from({ length: 6 }, (_, at) => ({ ...links[0], href: `/page-${at}`, label: { en: "A" } })),
+      ),
+    ).toBe(true);
+  });
   it("shows the links the admin left showing, and none without published content", () => {
     const site = siteFixture({
       navigation: [

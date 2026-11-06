@@ -5,6 +5,7 @@ import sharp from "sharp";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_API_ROUTES, ADMIN_ROUTES } from "@/constants/admin-routes";
+import { UPLOAD_LIMITS } from "@/constants/limits";
 import { closeDb, getDb } from "@/db/client";
 import { authUser } from "@/db/schema";
 import { createAdmin } from "@/features/auth/createAdmin";
@@ -38,6 +39,60 @@ async function signIn(page: Page) {
 }
 
 const axe = async (page: Page) => expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+
+test("the upload endpoint refuses disguised programs, forged image signatures and oversized files", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "server security has no viewport-specific behaviour");
+  const details = JSON.stringify({
+    alt: "Rejected upload test",
+    decorative: false,
+    source: { provider: "", url: "", licence: "" },
+  });
+  const post = (buffer: Buffer) =>
+    page.request.post(ADMIN_API_ROUTES.adminMedia, {
+      headers: { origin: E2E_ORIGIN },
+      multipart: { fields: details, file: { name: "image.png", mimeType: "image/png", buffer } },
+    });
+  // Authentication is checked before untrusted file processing.
+  expect((await post(Buffer.from("MZ harmless executable-signature fixture"))).status()).toBe(401);
+  await signIn(page);
+  const library = async () =>
+    (await (await page.request.get(ADMIN_API_ROUTES.adminMedia)).json()).data as LibraryImageItem[];
+  const before = (await library()).map((image) => image.id).sort();
+  const jpeg = await sharp({ create: { width: 20, height: 20, channels: 3, background: "#ffffff" } })
+    .jpeg()
+    .toBuffer();
+  for (const buffer of [
+    Buffer.from("MZ harmless executable-signature fixture"),
+    Buffer.from("<?php echo 'harmless upload fixture'; ?>"),
+    Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><script>invalid</script></svg>'),
+    Buffer.from("%PDF-1.7 not an image"),
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    jpeg.subarray(0, Math.floor(jpeg.length * 0.75)),
+  ]) {
+    const response = await post(buffer);
+    expect(response.status()).toBe(400);
+    expect((await response.json()).error.code).toBe("UPLOAD_TYPE_NOT_ALLOWED");
+  }
+  const oversizedImage = Buffer.alloc(UPLOAD_LIMITS.imageBytes + 1);
+  jpeg.copy(oversizedImage);
+  const response = await post(oversizedImage);
+  expect(response.status()).toBe(400);
+  expect((await response.json()).error.code).toBe("UPLOAD_TOO_LARGE");
+  for (const [buffer, code] of [
+    [Buffer.from("MZ harmless executable-signature fixture"), "UPLOAD_TYPE_NOT_ALLOWED"],
+    [Buffer.concat([Buffer.from("%PDF-1.7\n"), Buffer.alloc(UPLOAD_LIMITS.brochureBytes)]), "UPLOAD_TOO_LARGE"],
+  ] as const) {
+    const brochure = await page.request.post(ADMIN_API_ROUTES.adminSiteBrochure, {
+      headers: { origin: E2E_ORIGIN },
+      multipart: { fields: "{}", file: { name: "brochure.pdf", mimeType: "application/pdf", buffer } },
+    });
+    expect(brochure.status()).toBe(400);
+    expect((await brochure.json()).error.code).toBe(code);
+  }
+  expect((await library()).map((image) => image.id).sort()).toEqual(before);
+});
 
 test("Media shows the library, and an image in use says where and offers no Delete", async ({ page }) => {
   await signIn(page);

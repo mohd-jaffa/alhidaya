@@ -49,12 +49,12 @@ afterAll(async () => {
 });
 
 describe("a service's page, against the local MySQL", () => {
-  it("reads the service with the site's numbers, the others for its audience only, and their photos", async () => {
+  it("reads the service with the site's numbers, other services across the full catalogue, and their photos", async () => {
     const home = await published(serviceFixture({ image: { mediaId: photo } }));
     const elderly = await published(
       serviceFixture({ name: en("Elderly care"), slug: "elderly-care", image: { mediaId: photo } }),
     );
-    await published(
+    const school = await published(
       serviceFixture({ name: en("School nurse staffing"), slug: "school-nurse-staffing", audience: "INSTITUTIONS" }),
     );
     await saveDocumentDraft("SITE", siteFixture(), actor);
@@ -63,7 +63,7 @@ describe("a service's page, against the local MySQL", () => {
     const page = await getPublishedServicePage("home-nursing-care");
     if (!page || "movedTo" in page) throw new Error("the service is published");
     expect(page.service.id).toBe(home);
-    expect(page.related.map((service) => service.id)).toEqual([elderly]);
+    expect(page.related.map((service) => service.id)).toEqual([elderly, school]);
     expect(page.site?.contact.phone).toBe("+97431306555");
     expect(page.images.get(photo)?.alt).toBe("A nurse at home");
 
@@ -73,7 +73,11 @@ describe("a service's page, against the local MySQL", () => {
     expect(photoGone && "service" in photoGone ? photoGone.images.has(gone) : "missing").toBe(false);
 
     const staffing = await getPublishedServicePage("school-nurse-staffing");
-    expect(staffing && "service" in staffing ? [staffing.related, staffing.images.size] : null).toEqual([[], 0]);
+    if (!staffing || !("service" in staffing)) throw Error("published staffing service expected");
+    expect(staffing.related).toHaveLength(3);
+    expect(staffing.related.some((service) => service.id === school)).toBe(false);
+    expect(staffing.related.some((service) => service.published.audience === "FAMILIES")).toBe(true);
+    expect(staffing.images.size).toBe(1);
   });
 
   it("answers where a renamed service moved to, and nothing for an address it never had", async () => {
@@ -127,4 +131,13 @@ describe("a service's page, against the local MySQL", () => {
       expect(image.headers.get("content-type"), slug).toBe("image/png");
     }
   });
+});
+
+it("selects at most three distinct published services across audiences, excluding the current service", async () => {
+  for (let index = 0; index < 4; index++) await published(serviceFixture({ slug: `related-care-${index}` }));
+  const result = await getPublishedServicePage("home-nursing-care");
+  if (!result || "movedTo" in result) throw Error("published service expected");
+  expect(result.related).toHaveLength(3);
+  expect(new Set(result.related.map((s) => s.id)).size).toBe(3);
+  expect(result.related.every((s) => s.id !== result.service.id)).toBe(true);
 });

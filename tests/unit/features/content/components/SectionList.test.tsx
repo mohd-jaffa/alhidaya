@@ -34,6 +34,17 @@ const rows = () => screen.getAllByRole("listitem").filter((item) => item.querySe
 const dataTransfer = () => ({ effectAllowed: "", setData: vi.fn(), setDragImage: vi.fn() });
 
 describe("SectionList", () => {
+  it("can move Careers' header down and drag it back to the first position (D148)", async () => {
+    const { types } = list("CAREERS");
+    await userEvent.click(
+      screen.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.moveDown, "Page header") }),
+    );
+    expect(types()).toEqual(["JOBS_LIST", "SIGN"]);
+    fireEvent.dragStart(rows()[1].querySelector<HTMLElement>("[draggable]")!, { dataTransfer: dataTransfer() });
+    fireEvent.dragOver(rows()[0]);
+    fireEvent.drop(rows()[0]);
+    expect(types()).toEqual(["SIGN", "JOBS_LIST"]);
+  });
   it("lists a page's sections in order, opening the one asked for", async () => {
     const page = pageFixture("HOME");
     const { onOpen } = list("HOME");

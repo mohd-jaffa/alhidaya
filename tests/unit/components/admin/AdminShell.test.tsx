@@ -101,7 +101,7 @@ describe("AdminShell", () => {
     expect(within(inbox as HTMLElement).getByText(ADMIN_TEXT.inbox)).toHaveClass("font-bold", "text-body");
     const today = within(rail).getByRole("link", { name: /Dashboard/ });
     // Marked by its highlight alone, never in bold (D115).
-    expect(today).toHaveClass("bg-on-deep/10");
+    expect(today).toHaveClass("bg-leaf", "text-navy");
     expect(today).not.toHaveClass("font-bold");
     expect(today).toHaveAttribute("aria-current", "page");
     expect(today).toHaveAttribute("href", ADMIN_ROUTES.overview);

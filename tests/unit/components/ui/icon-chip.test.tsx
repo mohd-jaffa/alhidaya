@@ -19,4 +19,11 @@ describe("IconChip (D97)", () => {
     rerender(<IconChip name="clock" tone="ground" size="lg" />);
     expect(container.firstElementChild).toHaveClass("bg-ground", "size-14");
   });
+
+  it("sits on the phone menu's tiles in a faint navy disc, or the mist (D167)", () => {
+    const { container, rerender } = render(<IconChip name="chat" tone="onLeaf" />);
+    expect(container.firstElementChild).toHaveClass("bg-on-leaf/10", "text-on-leaf");
+    rerender(<IconChip name="phone" tone="mist" />);
+    expect(container.firstElementChild).toHaveClass("bg-mist", "text-deep");
+  });
 });

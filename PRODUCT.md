@@ -110,7 +110,9 @@ Confirmed by the user (2026-10-28); the plan holds the full decision log.
   applications, the brochure, contact details, navigation and footer links,
   and SEO. Edits are drafts until **Publish**, with a preview. One admin
   account, email and password.
-- **The design is locked:** no colour, font, layout or theme controls in the
+- **The design is locked:** D168 permits only fixed-library font-family choices
+  per public text type, with independent draft/preview/publish. No font uploads,
+  size, weight, spacing, colour, layout or theme controls in the
   admin.
 - **Light theme only** on the public site.
 - **The server is small:** 1 GB of disk, 5 GB of bandwidth a month and 1 GB

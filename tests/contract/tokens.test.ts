@@ -49,6 +49,7 @@ describe("the design tokens (plan §30.2)", () => {
         "focus-on-deep",
         "focus-on-leaf",
         "error",
+        "whatsapp",
       ].sort(),
     );
     expect(colours).toMatchObject({ deep: "#0f64ac", sky: "#33a0da", leaf: "#86ae3c" });
@@ -76,6 +77,7 @@ describe("the design tokens (plan §30.2)", () => {
       ["ink-2", "mist"],
       ["deep", "ground"],
       ["on-deep", "deep"],
+      ["on-deep", "forest"],
       ["on-deep-2", "deep"],
       ["on-deep", "navy"],
       ["navy", "sky"],

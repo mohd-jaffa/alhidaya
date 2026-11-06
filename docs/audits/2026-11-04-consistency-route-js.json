@@ -1,0 +1,122 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "total": 173402,
+    "limit": 174080
+  },
+  {
+    "route": "/about",
+    "status": 200,
+    "total": 166969,
+    "limit": 174080
+  },
+  {
+    "route": "/services",
+    "status": 200,
+    "total": 166969,
+    "limit": 174080
+  },
+  {
+    "route": "/careers",
+    "status": 200,
+    "total": 166969,
+    "limit": 174080
+  },
+  {
+    "route": "/contact",
+    "status": 200,
+    "total": 173402,
+    "limit": 174080
+  },
+  {
+    "route": "/request-a-quote",
+    "status": 200,
+    "total": 173402,
+    "limit": 174080
+  },
+  {
+    "route": "/privacy",
+    "status": 200,
+    "total": 166969,
+    "limit": 174080
+  },
+  {
+    "route": "/terms",
+    "status": 200,
+    "total": 166969,
+    "limit": 174080
+  },
+  {
+    "route": "/services/hospital-and-clinic-staffing",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/services/school-nurse-staffing",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/services/home-nursing-care",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/services/chronic-condition-care",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/services/child-care",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/services/maternity-and-newborn-care",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/services/palliative-care",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/services/elderly-care",
+    "status": 200,
+    "total": 164373,
+    "limit": 174080
+  },
+  {
+    "route": "/careers/registered-general-nurse-home-care",
+    "status": 200,
+    "total": 163612,
+    "limit": 174080
+  },
+  {
+    "route": "/careers/apply",
+    "status": 200,
+    "total": 170328,
+    "limit": 174080
+  },
+  {
+    "route": "/careers/registered-general-nurse-home-care/apply",
+    "status": 200,
+    "total": 170328,
+    "limit": 174080
+  },
+  {
+    "route": "/performance-page-that-does-not-exist",
+    "status": 404,
+    "total": 162914,
+    "limit": 174080
+  }
+]

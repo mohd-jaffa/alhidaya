@@ -10,7 +10,7 @@ describe("ContactAction", () => {
     const link = screen.getByRole("link", { name: UI_TEXT.whatsapp });
     expect(link.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/97431306555\?text=Hello/);
     expect(link).toHaveClass("ring-deep", "rounded-button", "w-full", "min-h-13");
-    expect(link.querySelector("svg")).toBeInTheDocument();
+    expect(link.querySelectorAll("svg")).toHaveLength(2);
   });
 
   it("calls and emails, in deep blue unless told otherwise, with no arrow", () => {

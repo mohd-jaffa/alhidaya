@@ -1,4 +1,6 @@
 import { ROUTES } from "@/constants/routes";
+import { UI_TEXT } from "@/constants/messages";
+import { GOOGLE_MAPS } from "@/constants/site";
 import type { PageKey, SectionType } from "@/constants/sections";
 import {
   type JobDocument,
@@ -216,6 +218,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
         section("JOBS_LIST", {
           intro: en("Each opening lists what it asks for. If none fits, you can send us a general application."),
           emptyText: en("There are no openings right now. You can still send us a general application."),
+          image: photos.currentStaffingTeam,
         }),
         // What the application form asks (plan §6.5, §9.2): the site's own facts, never a claim about nursing in Qatar.
         section("RICH_TEXT", {
@@ -285,6 +288,9 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
             paragraph(
               "Enquiries and applications are deleted automatically after a period we set, never longer than one year. CVs may be deleted sooner. Your IP address is kept only as a scrambled code, for a few minutes, to stop repeated submissions.",
             ),
+            heading(UI_TEXT.mapPrivacyHeading),
+            paragraph(UI_TEXT.mapPrivacyText),
+            { type: "link", label: en(UI_TEXT.mapPrivacyLink), href: GOOGLE_MAPS.privacy },
             heading("Your choices"),
             paragraph(
               "To see, correct or delete what we hold about you, email info@alhidaya.qa and we will reply as soon as we can.",
@@ -338,6 +344,7 @@ const service = (
   summary: en(summary),
   description: description.map(paragraph),
   included: [],
+  headerButtons: [],
   forWhom: en(forWhom),
   image: null,
   seo: noSeo,

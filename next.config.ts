@@ -21,7 +21,9 @@ const nextConfig: NextConfig = {
   // Every error report can name the build it came from.
   env: { NEXT_PUBLIC_APP_VERSION: version },
   // The share pictures read the typeface from disk (plan §19), so the standalone folder carries it.
-  outputFileTracingIncludes: { "/**/opengraph-image": ["./src/assets/fonts/inter-tight/share/*.woff"] },
+  outputFileTracingIncludes: {
+    "/**/opengraph-image": ["./src/assets/fonts/inter-tight/share/*.woff", "./src/assets/brand/logo.svg"],
+  },
   // The current site's addresses, moved for good (plan §5.3): 301, as the old site's links expect.
   async redirects() {
     return OLD_SITE_REDIRECTS.map((redirect) => ({ ...redirect, statusCode: 301 as const }));

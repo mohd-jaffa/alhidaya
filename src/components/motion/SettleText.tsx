@@ -35,8 +35,8 @@ function pieces(text: string, highlight: string | null | undefined) {
  * page opens (plan §30.1, D97). CSS alone draws it, so it costs no script and
  * runs before motion loads; reduced motion shows it in place. A screen reader
  * reads the words once, whole; `highlight`, words of the text as written
- * there, sits on the pale-green highlight, kept on one line (so a highlight
- * is a word or two) and drawn under the letters.
+ * there, sits on the pale-green highlight. Short phrases stay together;
+ * longer copy can wrap within the heading, with the mark under its letters.
  */
 export function SettleText({ text, highlight }: { text: string; highlight?: string | null }) {
   const { total, marked } = pieces(text, highlight);
@@ -49,7 +49,7 @@ export function SettleText({ text, highlight }: { text: string; highlight?: stri
             typeof word === "string" ? (
               word
             ) : (
-              <span key={w} className="inline-block whitespace-nowrap">
+              <span key={w} className="inline-block max-w-full">
                 {word.map(({ letter, index }) => (
                   <span
                     key={index}
@@ -63,7 +63,10 @@ export function SettleText({ text, highlight }: { text: string; highlight?: stri
             ),
           );
           return mark ? (
-            <span key={at} className="box-decoration-clone rounded-highlight bg-leaf-pale px-[0.1em] whitespace-nowrap">
+            <span
+              key={at}
+              className="inline-block max-w-full box-decoration-clone rounded-highlight bg-leaf-pale px-[0.1em]"
+            >
               {content}
             </span>
           ) : (

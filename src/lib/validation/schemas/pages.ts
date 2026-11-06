@@ -51,6 +51,10 @@ export const NO_HERO = { slides: [], note: { pictogram: null, text: { en: null }
 /** What each section type holds (plan §7.2). */
 const SECTION_CONTENT = {
   SIGN: z.object({
+    // About/Services opening actions: absent legacy values stay hidden (D156).
+    showActions: z.boolean().optional(),
+    // Home's photo pill can be hidden without clearing its text/icon (D157).
+    hideNote: z.boolean().optional(),
     headline: localized(requiredLine("Headline", { max: TEXT_LIMITS.heading })),
     lede: shortText("Supporting line"),
     image: imageRefSchema.nullable(),
@@ -100,6 +104,7 @@ const SECTION_CONTENT = {
   JOBS_LIST: z.object({
     intro: localized(optionalLines("Introduction", TEXT_LIMITS.sectionText)),
     emptyText: localized(requiredLines("When there are no jobs", { max: TEXT_LIMITS.lede })),
+    image: imageRefSchema.nullable().optional(),
   }),
   CONTACT_BAND: z.object({ heading, text: shortText("Text") }),
   CONTACT_DETAILS: z.object({ heading }),
@@ -144,8 +149,8 @@ export type PageDocumentInput = z.input<typeof pageShape>;
 
 /**
  * A page as one document (plan D58), held to its page's rules (plan §7.1): the
- * sign first and visible, only the types the page allows, at most as many of
- * each as allowed, what it cannot work without present and visible, no
+ * retained Careers sign movable/hideable, other signs first and visible,
+ * allowed types and counts, what it cannot work without present and visible, no
  * section twice, and Home's hero with a slide.
  */
 export function pageDocumentSchema(page: PageKey) {
@@ -153,7 +158,10 @@ export function pageDocumentSchema(page: PageKey) {
   return pageShape.superRefine(({ sections }, context) => {
     const issue = (message: string) => context.addIssue({ code: "custom", message, path: ["sections"] });
     const [first, ...rest] = sections;
-    if (
+    if (rule.movableSign) {
+      if (!sections.some((section) => section.type === FIXED_FIRST_SECTION))
+        issue(VALIDATION_MESSAGES.sectionRequired(SECTION_NAMES.SIGN));
+    } else if (
       first.type !== FIXED_FIRST_SECTION ||
       !first.visible ||
       rest.some((section) => section.type === FIXED_FIRST_SECTION)

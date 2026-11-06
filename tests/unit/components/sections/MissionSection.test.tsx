@@ -12,5 +12,11 @@ describe("MissionSection", () => {
     expect(screen.getByRole("heading", { level: 2, name: UI_TEXT.vision })).toBeInTheDocument();
     expect(screen.getByText("Our mission.")).toBeInTheDocument();
     expect(screen.getByText("Our vision.")).toBeInTheDocument();
+    for (const name of [UI_TEXT.mission, UI_TEXT.vision]) {
+      expect(screen.getByRole("article", { name })).toHaveAttribute("tabindex", "0");
+      expect(screen.getByRole("article", { name })).toHaveClass("mission-panel");
+      expect(screen.getByRole("article", { name })).not.toHaveAttribute("data-mission-panel");
+      expect(screen.getByRole("article", { name }).parentElement).toHaveAttribute("data-mission-panel");
+    }
   });
 });

@@ -165,14 +165,16 @@ test("the general application refuses a file that is not a PDF or Word file by i
   );
 
   await fill(page, email);
-  await cv(page, "cv.pdf", PNG);
-  await checked(page);
-  await page.getByRole("button", { name: UI_TEXT.sendApplication }).click();
-  await expect(page.getByLabel(UI_TEXT.cv)).toHaveAccessibleDescription(
-    new RegExp(VALIDATION_MESSAGES.cvType.replace(/[.()]/g, "\\$&")),
-  );
-  await expect(field(page, UI_TEXT.fullName)).toHaveValue("Mariam Ali");
-  expect(await kept(email)).toEqual([]);
+  for (const disguised of [PNG, Buffer.from("MZ harmless executable-signature fixture")]) {
+    await cv(page, "cv.pdf", disguised);
+    await checked(page);
+    await page.getByRole("button", { name: UI_TEXT.sendApplication }).click();
+    await expect(page.getByLabel(UI_TEXT.cv)).toHaveAccessibleDescription(
+      new RegExp(VALIDATION_MESSAGES.cvType.replace(/[.()]/g, "\\$&")),
+    );
+    await expect(field(page, UI_TEXT.fullName)).toHaveValue("Mariam Ali");
+    expect(await kept(email)).toEqual([]);
+  }
 
   await cv(page, "Mariam CV.docx", DOCX, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   await checked(page);

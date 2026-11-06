@@ -69,4 +69,16 @@ describe("HeroSection (D128)", () => {
     expect(screen.getByText("Day and night").previousElementSibling).toBeNull();
     expect(container.querySelector(".slide-photo")).not.toBeNull();
   });
+
+  it("hides the slider pill without clearing its content and shows legacy content (D157)", () => {
+    const content = hero({ hideNote: true });
+    const { container, rerender } = render(<HeroSection anchor="start" content={content} image={image} />);
+    expect(screen.queryByText("Nurses around the clock")).toBeNull();
+    expect(content.note.text.en).toBe("Nurses around the clock");
+    expect(container.firstElementChild).toHaveClass("opening-blend");
+    expect(container.querySelector("img")).toHaveAttribute("sizes", "100vw");
+    delete content.hideNote;
+    rerender(<HeroSection anchor="start" content={content} image={image} />);
+    expect(screen.getByText("Nurses around the clock")).toBeInTheDocument();
+  });
 });

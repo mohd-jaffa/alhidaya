@@ -55,6 +55,8 @@ export const SECTION_PICTOGRAMS = [
 export type SectionPictogram = (typeof SECTION_PICTOGRAMS)[number];
 
 export interface PageRule {
+  /** Careers alone can move and hide its retained opening (D148). */
+  movableSign?: boolean;
   /** The types the page may hold, each at most once unless `max` says more. */
   allowed: readonly SectionType[];
   max?: Partial<Record<SectionType, number>>;
@@ -86,6 +88,7 @@ export const PAGE_RULES: Record<PageKey, PageRule> = {
   },
   SERVICES: { allowed: ["SIGN", "SERVICES_INDEX", "INSTITUTIONS", "CONTACT_BAND"], required: ["SERVICES_INDEX"] },
   CAREERS: {
+    movableSign: true,
     allowed: ["SIGN", "JOBS_LIST", "RICH_TEXT", "CONTACT_BAND"],
     max: { RICH_TEXT: 2 },
     required: ["JOBS_LIST"],
@@ -104,11 +107,16 @@ export type OrderedCollection = (typeof ORDERED_COLLECTIONS)[number];
 export const pageDocumentKey = (page: PageKey) => `PAGE:${page}` as const;
 export const orderingDocumentKey = (collection: OrderedCollection) => `ORDER:${collection}` as const;
 export const SITE_DOCUMENT_KEY = "SITE";
+export const TYPOGRAPHY_DOCUMENT_KEY = "TYPOGRAPHY";
 
 export const DOCUMENT_KEYS: readonly string[] = [
   ...PAGE_KEYS.map(pageDocumentKey),
   SITE_DOCUMENT_KEY,
+  TYPOGRAPHY_DOCUMENT_KEY,
   ...ORDERED_COLLECTIONS.map(orderingDocumentKey),
 ];
 export type DocumentKey =
-  ReturnType<typeof pageDocumentKey> | ReturnType<typeof orderingDocumentKey> | typeof SITE_DOCUMENT_KEY;
+  | ReturnType<typeof pageDocumentKey>
+  | ReturnType<typeof orderingDocumentKey>
+  | typeof SITE_DOCUMENT_KEY
+  | typeof TYPOGRAPHY_DOCUMENT_KEY;

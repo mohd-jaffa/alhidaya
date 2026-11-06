@@ -5,6 +5,15 @@ import { PageSplit } from "@/components/sections/PageSplit";
 import { imageFixture } from "@tests/support/fixtures/content";
 
 describe("PageSplit (D135)", () => {
+  it("uses the full-width image for the approved blended opening only when a photo exists (D158)", () => {
+    const { container, rerender } = render(
+      <PageSplit anchor="start" label="About" headline="Care in Doha" image={imageFixture()} blend />,
+    );
+    expect(container.querySelector("section")).toHaveClass("opening-blend", "opening-blend--page");
+    expect(screen.getByRole("img")).toHaveAttribute("sizes", "100vw");
+    rerender(<PageSplit anchor="start" label="About" headline="Care in Doha" blend />);
+    expect(container.querySelector(".opening-blend")).toBeNull();
+  });
   it("opens under a rule: the page's name, the headline with its phrase in deep blue, the line, the actions and the photo first", () => {
     const { container } = render(
       <PageSplit

@@ -15,7 +15,7 @@ describe("the round actions (D97)", () => {
     expect(pressed).toHaveBeenCalledOnce();
 
     rerender(
-      <Pill variant="line" type="submit" pending arrow onClick={pressed}>
+      <Pill variant="line" type="submit" pending disabled={false} aria-busy={false} arrow onClick={pressed}>
         Send
       </Pill>,
     );

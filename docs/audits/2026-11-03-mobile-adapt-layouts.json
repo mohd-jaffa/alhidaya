@@ -1,0 +1,2104 @@
+{
+  "measuredAt": "2026-11-03T15:30:27.514832+00:00",
+  "scope": "D161–D164 local Chromium viewport measurements. The D164 service-detail opening is an explicitly requested desktop/mobile composition replacement; other desktop reading/image metrics stay unchanged. Navbar positioning changes explicitly under D162. No physical-device evidence is claimed.",
+  "beforeBuildId": "QvfYL86b51-oAOeXb9ROz",
+  "afterBuildId": "Lvrq97SaI_O7gc0qkYK55",
+  "before": [
+    {
+      "width": 320,
+      "route": "/",
+      "h1": {
+        "font": 42,
+        "height": 131.015625,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "43.68px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 70.375,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 121.75,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 780,
+        "width": 320,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 208,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/about",
+      "h1": {
+        "font": 42,
+        "height": 174.6875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "43.68px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 121.75,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 787.625,
+        "width": 320,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 17,
+        "height": 469.8125,
+        "width": 288,
+        "padding": "28px",
+        "lineHeight": "27.2px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/services",
+      "h1": {
+        "font": 42,
+        "height": 131.03125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "43.68px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 713.53125,
+        "width": 320,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 42,
+        "height": 82.3125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "41.16px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": {
+        "font": 17,
+        "height": 352,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/contact",
+      "h1": {
+        "font": 42,
+        "height": 89.03125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "44.52px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 126.953125,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 208,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/careers",
+      "h1": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 42,
+        "height": 89.03125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "44.52px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 248,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/",
+      "h1": {
+        "font": 42,
+        "height": 131.015625,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "43.68px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 70.375,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 121.75,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 780,
+        "width": 390,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 274.5,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/about",
+      "h1": {
+        "font": 42,
+        "height": 131.03125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "43.68px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 713.53125,
+        "width": 390,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 17,
+        "height": 469.8125,
+        "width": 354.5,
+        "padding": "28px",
+        "lineHeight": "27.2px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/services",
+      "h1": {
+        "font": 42,
+        "height": 131.03125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "43.68px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 713.53125,
+        "width": 390,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 42,
+        "height": 41.15625,
+        "width": 338.484375,
+        "padding": "0px",
+        "lineHeight": "41.16px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": {
+        "font": 17,
+        "height": 352,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/contact",
+      "h1": {
+        "font": 42,
+        "height": 89.03125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "44.52px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 126.953125,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 274.5,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/careers",
+      "h1": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 42,
+        "height": 89.03125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "44.52px"
+      },
+      "h2": {
+        "font": 32,
+        "height": 35.1875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "35.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 314.5,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/",
+      "h1": {
+        "font": 45.312,
+        "height": 94.25,
+        "width": 608,
+        "padding": "0px",
+        "lineHeight": "47.1245px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 780,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 298.8125,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/about",
+      "h1": {
+        "font": 45.312,
+        "height": 141.359375,
+        "width": 608,
+        "padding": "0px",
+        "lineHeight": "47.1245px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 693.421875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 17,
+        "height": 520.34375,
+        "width": 346.8125,
+        "padding": "40px",
+        "lineHeight": "27.2px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/services",
+      "h1": {
+        "font": 45.312,
+        "height": 141.359375,
+        "width": 608,
+        "padding": "0px",
+        "lineHeight": "47.1245px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 693.421875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 54.4,
+        "height": 53.3125,
+        "width": 438.421875,
+        "padding": "0px",
+        "lineHeight": "53.312px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": {
+        "font": 17,
+        "height": 403.1875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/contact",
+      "h1": {
+        "font": 47.84,
+        "height": 101.40625,
+        "width": 442.515625,
+        "padding": "0px",
+        "lineHeight": "50.7104px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 164.875,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 296.8125,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/careers",
+      "h1": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 47.84,
+        "height": 101.40625,
+        "width": 442.515625,
+        "padding": "0px",
+        "lineHeight": "50.7104px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 649.625,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/",
+      "h1": {
+        "font": 68,
+        "height": 141.4375,
+        "width": 690,
+        "padding": "0px",
+        "lineHeight": "70.72px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 114.375,
+        "width": 462.390625,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 780,
+        "width": 1440,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 263.796875,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/about",
+      "h1": {
+        "font": 68,
+        "height": 212.15625,
+        "width": 690,
+        "padding": "0px",
+        "lineHeight": "70.72px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 462.390625,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 790.21875,
+        "width": 1440,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 17,
+        "height": 456.5,
+        "width": 572,
+        "padding": "48px",
+        "lineHeight": "27.2px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/services",
+      "h1": {
+        "font": 68,
+        "height": 212.15625,
+        "width": 690,
+        "padding": "0px",
+        "lineHeight": "70.72px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 790.21875,
+        "width": 1440,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 88,
+        "height": 172.46875,
+        "width": 618.234375,
+        "padding": "0px",
+        "lineHeight": "86.24px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 441.59375,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": {
+        "font": 17,
+        "height": 504,
+        "width": 485.765625,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/contact",
+      "h1": {
+        "font": 60,
+        "height": 127.1875,
+        "width": 555,
+        "padding": "0px",
+        "lineHeight": "63.6px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 206.28125,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 401.453125,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 261.796875,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/careers",
+      "h1": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 1168,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 30.4375,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 60,
+        "height": 127.1875,
+        "width": 555,
+        "padding": "0px",
+        "lineHeight": "63.6px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 444.796875,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 587.203125,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    }
+  ],
+  "after": [
+    {
+      "width": 320,
+      "route": "/",
+      "h1": {
+        "font": 32,
+        "height": 66.53125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 61.59375,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 98.5625,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 620,
+        "width": 320,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 16,
+        "height": 48,
+        "width": 216,
+        "padding": "0px 16px",
+        "lineHeight": "25.6px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/about",
+      "h1": {
+        "font": 32,
+        "height": 99.828125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 73.921875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 599.34375,
+        "width": 320,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 16,
+        "height": 358.640625,
+        "width": 288,
+        "padding": "24px",
+        "lineHeight": "25.6px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/services",
+      "h1": {
+        "font": 32,
+        "height": 99.828125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 73.921875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 599.34375,
+        "width": 320,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 32,
+        "height": 33.265625,
+        "width": 260.640625,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 528,
+        "width": 320,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/contact",
+      "h1": {
+        "font": 32,
+        "height": 67.8125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "33.92px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 111.078125,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 16,
+        "height": 48,
+        "width": 216,
+        "padding": "0px 16px",
+        "lineHeight": "25.6px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/careers",
+      "h1": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 73.921875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 32,
+        "height": 67.8125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "33.92px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 288,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 16,
+        "height": 48,
+        "width": 248,
+        "padding": "0px 16px",
+        "lineHeight": "25.6px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/",
+      "h1": {
+        "font": 32,
+        "height": 66.53125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 61.59375,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 73.921875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 620,
+        "width": 390,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 16,
+        "height": 48,
+        "width": 282.5,
+        "padding": "0px 16px",
+        "lineHeight": "25.6px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/about",
+      "h1": {
+        "font": 32,
+        "height": 99.828125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 73.921875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 599.34375,
+        "width": 390,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 16,
+        "height": 309.359375,
+        "width": 354.5,
+        "padding": "24px",
+        "lineHeight": "25.6px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/services",
+      "h1": {
+        "font": 32,
+        "height": 99.828125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 574.703125,
+        "width": 390,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 32,
+        "height": 33.265625,
+        "width": 260.640625,
+        "padding": "0px",
+        "lineHeight": "33.28px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": {
+        "font": 16,
+        "height": 528,
+        "width": 390,
+        "padding": "0px",
+        "lineHeight": "25.6px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/contact",
+      "h1": {
+        "font": 32,
+        "height": 67.8125,
+        "width": 296,
+        "padding": "0px",
+        "lineHeight": "33.92px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 111.078125,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 16,
+        "height": 48,
+        "width": 282.5,
+        "padding": "0px 16px",
+        "lineHeight": "25.6px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/careers",
+      "h1": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 32,
+        "height": 67.8125,
+        "width": 296,
+        "padding": "0px",
+        "lineHeight": "33.92px"
+      },
+      "h2": {
+        "font": 28,
+        "height": 30.796875,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "30.8px"
+      },
+      "lede": {
+        "font": 17,
+        "height": 49.28125,
+        "width": 354.5,
+        "padding": "0px",
+        "lineHeight": "24.65px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 16,
+        "height": 48,
+        "width": 314.5,
+        "padding": "0px 16px",
+        "lineHeight": "25.6px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/",
+      "h1": {
+        "font": 45.312,
+        "height": 94.25,
+        "width": 608,
+        "padding": "0px",
+        "lineHeight": "47.1245px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 780,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 298.8125,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/about",
+      "h1": {
+        "font": 45.312,
+        "height": 141.359375,
+        "width": 608,
+        "padding": "0px",
+        "lineHeight": "47.1245px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 693.421875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 17,
+        "height": 520.34375,
+        "width": 346.8125,
+        "padding": "40px",
+        "lineHeight": "27.2px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/services",
+      "h1": {
+        "font": 45.312,
+        "height": 141.359375,
+        "width": 608,
+        "padding": "0px",
+        "lineHeight": "47.1245px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 693.421875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 45.312,
+        "height": 47.125,
+        "width": 369.03125,
+        "padding": "0px",
+        "lineHeight": "47.1245px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 680,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/contact",
+      "h1": {
+        "font": 47.84,
+        "height": 101.40625,
+        "width": 442.515625,
+        "padding": "0px",
+        "lineHeight": "50.7104px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 164.875,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 296.8125,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/careers",
+      "h1": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 47.84,
+        "height": 101.40625,
+        "width": 442.515625,
+        "padding": "0px",
+        "lineHeight": "50.7104px"
+      },
+      "h2": {
+        "font": 41.568,
+        "height": 45.71875,
+        "width": 713.625,
+        "padding": "0px",
+        "lineHeight": "45.7248px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 649.625,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/",
+      "h1": {
+        "font": 68,
+        "height": 141.4375,
+        "width": 690,
+        "padding": "0px",
+        "lineHeight": "70.72px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 114.375,
+        "width": 462.390625,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 91.3125,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 780,
+        "width": 1440,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 263.796875,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/about",
+      "h1": {
+        "font": 68,
+        "height": 212.15625,
+        "width": 690,
+        "padding": "0px",
+        "lineHeight": "70.72px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 462.390625,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 790.21875,
+        "width": 1440,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": {
+        "font": 17,
+        "height": 456.5,
+        "width": 572,
+        "padding": "48px",
+        "lineHeight": "27.2px"
+      },
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/services",
+      "h1": {
+        "font": 68,
+        "height": 212.15625,
+        "width": 690,
+        "padding": "0px",
+        "lineHeight": "70.72px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 790.21875,
+        "width": 1440,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/services/home-nursing-care",
+      "h1": {
+        "font": 68,
+        "height": 70.71875,
+        "width": 553.796875,
+        "padding": "0px",
+        "lineHeight": "70.72px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 441.59375,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": {
+        "font": 17,
+        "height": 680,
+        "width": 1440,
+        "padding": "0px",
+        "lineHeight": "27.2px"
+      },
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/contact",
+      "h1": {
+        "font": 60,
+        "height": 127.1875,
+        "width": 555,
+        "padding": "0px",
+        "lineHeight": "63.6px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 206.28125,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 401.453125,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 261.796875,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/careers",
+      "h1": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 1168,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 30.4375,
+        "width": 768,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": null,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "route": "/request-a-quote",
+      "h1": {
+        "font": 60,
+        "height": 127.1875,
+        "width": 555,
+        "padding": "0px",
+        "lineHeight": "63.6px"
+      },
+      "h2": {
+        "font": 52,
+        "height": 57.1875,
+        "width": 444.796875,
+        "padding": "0px",
+        "lineHeight": "57.2px"
+      },
+      "lede": {
+        "font": 21,
+        "height": 60.875,
+        "width": 485.625,
+        "padding": "0px",
+        "lineHeight": "30.45px"
+      },
+      "opening": null,
+      "portrait": null,
+      "mission": null,
+      "form": {
+        "font": 17,
+        "height": 48,
+        "width": 587.203125,
+        "padding": "0px 16px",
+        "lineHeight": "27.2px"
+      },
+      "overflow": false
+    }
+  ],
+  "desktopMetricComparison": [
+    {
+      "route": "/",
+      "changedMetrics": []
+    },
+    {
+      "route": "/about",
+      "changedMetrics": []
+    },
+    {
+      "route": "/services",
+      "changedMetrics": []
+    },
+    {
+      "route": "/services/home-nursing-care",
+      "changedMetrics": ["h1", "lede", "opening", "portrait"]
+    },
+    {
+      "route": "/contact",
+      "changedMetrics": []
+    },
+    {
+      "route": "/careers",
+      "changedMetrics": []
+    },
+    {
+      "route": "/request-a-quote",
+      "changedMetrics": []
+    }
+  ]
+}

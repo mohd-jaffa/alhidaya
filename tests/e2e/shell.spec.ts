@@ -56,6 +56,24 @@ test("the footer carries the contact details, the social links and the admin's c
   for (const column of SEED_SITE.footer) {
     await expect(footer.getByRole("navigation", { name: column.heading.en })).toBeVisible();
   }
+  const artwork = footer.locator(".footer-art");
+  await expect(artwork).toHaveAttribute("aria-hidden", "true");
+  await expect(artwork).toHaveCSS("pointer-events", "none");
+  await expect(artwork).toHaveCSS("animation-name", "none");
+  await expect(artwork.locator("svg")).toHaveCount(0);
+  const scene = artwork.locator("img");
+  await expect(scene).toHaveAttribute("alt", "");
+  await expect(scene).toHaveAttribute("loading", "lazy");
+  await footer.scrollIntoViewIfNeeded();
+  await expect.poll(() => scene.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  const email = footer.getByRole("link", { name: SEED_SITE.contact.email });
+  await email.scrollIntoViewIfNeeded();
+  expect(
+    await email.evaluate((link) => {
+      const box = link.getBoundingClientRect();
+      return document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)?.closest("a") === link;
+    }),
+  ).toBe(true);
 });
 
 test("nothing scrolls sideways, down to a 320 px phone", async ({ page }) => {

@@ -55,7 +55,7 @@ export function Words({ text, highlight }: { text: string; highlight?: string | 
           return (
             <Fragment key={run[0].index}>
               {at > 0 ? " " : null}
-              {run.length > 1 ? <span className="whitespace-nowrap">{boxes}</span> : boxes}
+              {run.length > 1 ? <span className="inline-block max-w-full">{boxes}</span> : boxes}
             </Fragment>
           );
         })}

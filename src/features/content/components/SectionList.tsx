@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
 import { ADMIN_TEXT, SECTION_NAMES } from "@/constants/admin-messages";
-import type { PageKey, SectionType } from "@/constants/sections";
+import { PAGE_RULES, type PageKey, type SectionType } from "@/constants/sections";
 import type { PageDocumentInput } from "@/lib/validation";
 
 import { addableTypes, blankSection } from "../editor";
@@ -54,7 +54,7 @@ function AddSection({ page, onAdd }: { page: PageKey; onAdd: (type: SectionType)
  * A page's sections in order (D88, D90): dragged by their handles with the
  * browser's own drag and drop, the sky line marking where one will land, or
  * moved with Move up and Move down; each move is said aloud. Nothing can go
- * above the sign.
+ * above the sign, except on Careers (D148).
  */
 export function SectionList({
   page,
@@ -75,7 +75,7 @@ export function SectionList({
     move(index, to);
     setSaid(ADMIN_TEXT.movedTo(SECTION_NAMES[fields[index].type], to + 1, fields.length));
   };
-  const drag = useDragOrder({ first: 1, onMove: moveTo });
+  const drag = useDragOrder({ first: PAGE_RULES[page].movableSign ? 0 : 1, onMove: moveTo });
 
   return (
     <div className="grid gap-6">

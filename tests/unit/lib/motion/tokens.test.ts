@@ -8,10 +8,16 @@ const css = readFileSync("src/app/globals.css", "utf8");
 const token = (name: string) => css.match(new RegExp(`--${name}:\\s*([^;]+);`))?.[1];
 
 describe("the motion tokens (plan §30.4)", () => {
+  it("halves the hero clock while keeping the pyramid and other photo drift at six seconds", () => {
+    expect(token("duration-slide")).toBe("6s");
+    expect(token("duration-hero-slide")).toBe("3s");
+    expect(css).toContain(".slides-band {\n  --duration-slide: var(--duration-hero-slide);");
+  });
   it("are the CSS durations, in seconds", () => {
     expect(`${MOTION.duration.press * 1000}ms`).toBe(token("duration-press"));
     expect(`${MOTION.duration.state * 1000}ms`).toBe(token("duration-state"));
     expect(`${MOTION.duration.reveal * 1000}ms`).toBe(token("duration-reveal"));
+    expect(`${MOTION.duration.typewriter}s`).toBe(token("duration-typewriter"));
   });
 
   it("name GSAP's versions of the CSS curves", () => {

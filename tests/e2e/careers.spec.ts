@@ -58,6 +58,44 @@ test("Careers lists the open jobs as cards, offers a general application, and pa
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
+test("Open Jobs keeps its photo shadow and cycles only the dots without shifting the heading", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto(ROUTES.careers);
+  const panel = page.getByRole("region", { name: UI_TEXT.openJobs });
+  const photo = panel.locator(".jobs-photo");
+  await expect(photo.locator("img")).toBeVisible();
+  await expect(photo).toHaveCSS("border-top-width", "0px");
+  await expect(photo).not.toHaveCSS("box-shadow", "none");
+  await expect(panel).toHaveCSS("background-color", "rgb(238, 245, 226)");
+  await expect(panel.locator("..")).toHaveCSS("background-color", "rgb(241, 246, 251)");
+  const dots = panel.locator(".jobs-dots");
+  await expect(dots).toHaveAttribute("aria-hidden", "true");
+  await expect(dots.locator("span")).toHaveCount(3);
+  const states = await dots.evaluate((el) => {
+    const animations = el.getAnimations({ subtree: true });
+    animations.forEach((animation) => animation.pause());
+    return [100, 1100, 2100, 2500].map((time) => {
+      animations.forEach((animation) => {
+        animation.currentTime = time;
+      });
+      return {
+        opacity: [...el.children].map((dot) => Number(getComputedStyle(dot).opacity)),
+        width: el.getBoundingClientRect().width,
+      };
+    });
+  });
+  expect(states.map((state) => state.opacity)).toEqual([
+    [1, 0, 0],
+    [1, 1, 0],
+    [1, 1, 1],
+    [1, 0, 0],
+  ]);
+  expect(new Set(states.map((state) => state.width)).size).toBe(1);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(dots.locator("span").nth(2)).toHaveCSS("animation-name", "none");
+  await expect(dots.locator("span").nth(2)).toHaveCSS("opacity", "1");
+});
+
 test("an open job shows in full under Careers' pill, with Apply and its posting for search engines", async ({
   page,
 }) => {

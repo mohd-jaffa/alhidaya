@@ -127,6 +127,8 @@ export {
   type ServiceDocumentInput,
 } from "./schemas/records";
 
+export { typographySchema, type TypographyInput, type TypographyPayload } from "./schemas/typography";
+
 export {
   operationsSchema,
   orderingDocumentSchema,

@@ -11,7 +11,7 @@ describe("FloatingWhatsApp", () => {
     const link = screen.getByRole("link", { name: UI_TEXT.whatsappButton });
     expect(link.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/97431306555\?text=Hello/);
     expect(link).toHaveAttribute("target", "_blank");
-    expect(link).toHaveClass("fixed");
+    expect(link).toHaveClass("fixed", "bg-whatsapp");
   });
 
   it("is gone when the admin turns it off, or before the site content is published", () => {

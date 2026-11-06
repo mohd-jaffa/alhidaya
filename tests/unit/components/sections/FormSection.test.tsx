@@ -39,7 +39,7 @@ describe("FormSection", () => {
     expect(screen.getByRole("region").querySelector("p")).toBeNull();
   });
 
-  it("sets the short quote on its band, the ways to reach the company beside the card under its strip (D130)", () => {
+  it("matches the short quote reference with a rounded blue panel, contact tiles and a plain white card (D151)", () => {
     const content = {
       ...contentFixture("FORM"),
       heading: en("Get a free quote"),
@@ -56,7 +56,8 @@ describe("FormSection", () => {
       />,
     );
     const band = screen.getByRole("region", { name: "Get a free quote" });
-    expect(band).toHaveClass("bg-leaf-pale");
+    expect(band).toHaveClass("bg-mist");
+    expect(band.parentElement).toHaveClass("rounded-card");
     const site = siteFixture();
     expect(within(band).getByRole("link", { name: new RegExp(UI_TEXT.whatsappUs) })).toHaveAttribute(
       "href",
@@ -71,7 +72,9 @@ describe("FormSection", () => {
       `mailto:${site.contact.email}`,
     );
     expect(within(band).getByText("Tell us who needs care.")).toBeInTheDocument();
-    expect(within(band).getByText(UI_TEXT.quoteCardTitle)).toBeInTheDocument();
+    expect(band.querySelectorAll("a.bg-deep\\/10")).toHaveLength(3);
+    expect(band.querySelector("p.bg-deep")).toBeNull();
+    expect(within(band).getByRole("form", { name: "Short quote" }).parentElement).toHaveClass("shadow-float");
     expect(within(band).getByRole("form", { name: "Short quote" })).toBeInTheDocument();
   });
 
@@ -82,7 +85,7 @@ describe("FormSection", () => {
     expect(screen.getByRole("region", { name: "Get a free quote" }).querySelector("p.text-lead")).toBeNull();
   });
 
-  it("on the Contact page, sets the form on Home's pale-green band and card, its strip naming it (D135)", () => {
+  it("on Contact, keeps the message panel and office on the pale-green band (D145)", () => {
     render(
       <FormSection
         anchor="form"
@@ -94,8 +97,9 @@ describe("FormSection", () => {
       />,
     );
     const band = screen.getByRole("region", { name: "Send a message" });
-    expect(band).toHaveClass("bg-leaf-pale");
-    expect(within(band).getByText(UI_TEXT.messageCardTitle)).toBeInTheDocument();
+    expect(band).toHaveClass("bg-deep");
+    expect(band.querySelector(".contact-message-panel")).toHaveClass("bg-leaf-pale");
+    expect(within(band).getByRole("heading", { name: UI_TEXT.visitOffice })).toBeInTheDocument();
     expect(within(band).getByRole("form", { name: "Contact form" })).toBeInTheDocument();
   });
 });

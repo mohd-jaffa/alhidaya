@@ -7,7 +7,9 @@ import {
   PAGE_KEYS,
   pageDocumentKey,
   SITE_DOCUMENT_KEY,
+  TYPOGRAPHY_DOCUMENT_KEY,
 } from "@/constants/sections";
+import { DEFAULT_TYPOGRAPHY } from "@/constants/typography";
 import { findImageBySource, type ImageSource, storeImage } from "@/features/media/api";
 import type { Actor } from "@/lib/content/actor";
 import { readDocumentDraft, saveDocumentDraft } from "@/lib/content/documents";
@@ -94,6 +96,7 @@ export async function seedContent(actor: Actor = SEED_ACTOR, today: string = doh
   const pages = seedPages(photos);
   for (const page of PAGE_KEYS) await saveIfMissing(pageDocumentKey(page), pageDocumentSchema(page).parse(pages[page]));
   await saveIfMissing(SITE_DOCUMENT_KEY, siteDocumentSchema.parse(SEED_SITE));
+  await saveIfMissing(TYPOGRAPHY_DOCUMENT_KEY, DEFAULT_TYPOGRAPHY);
 
   if (noServices) {
     const ids: string[] = [];

@@ -5,6 +5,9 @@
 
 const MB = 1024 * 1024;
 
+/** Beyond this desktop header capacity, reuse the existing full menu (D142). */
+export const HEADER_NAVIGATION_LIMITS = { links: 5, characters: 42 } as const;
+
 /** How long each kind of text may be, in characters. */
 export const TEXT_LIMITS = {
   name: 100,
@@ -44,6 +47,7 @@ export const LIST_LIMITS = {
   richBlocks: 60,
   values: 6,
   included: 12,
+  serviceButtons: 2,
   jobPoints: 20,
   navigation: 10,
   footerColumns: 4,
@@ -55,6 +59,9 @@ export const LIST_LIMITS = {
   /** Home's slides (D128). */
   slides: 8,
 } as const;
+
+/** The approved compact related-service section shows up to three distinct published services. */
+export const RELATED_SERVICE_COUNT = 3;
 
 /** How many rows an admin inbox shows a page (plan §9.5, §10.5), and how much of an answer a row shows. */
 export const INBOX_PAGE_SIZE = 25;

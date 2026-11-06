@@ -1,0 +1,491 @@
+{
+  "measuredAt": "2026-11-02T18:06:38.575Z",
+  "scope": "D143: final local standalone build. Targeted Home and shared-largest-bundle Contact lab run, phone and desktop, unchanged budgets and no retries. All 20 initial JS budgets are recorded separately. Historical D142 full-route evidence is preserved. Physical-device/compositor and server-region checks remain.",
+  "buildId": "xIApxph_gBS1wViJ7yUpx",
+  "routes": [
+    {
+      "route": "/",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 174080,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/3kft5o0sfnrp1.js",
+            "gzip": 9633
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51426,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0j6gudepbiaoo.js",
+            "gzip": 1181
+          },
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          }
+        ]
+      },
+      "lcp": 526.8109999999999,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 88,
+        "interactionCount": 26,
+        "interactions": [88, 48, 48, 32, 32, 32, 32, 32, 32, 32, 24, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.006802721088435374,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 585
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.03482787216877251,
+        "shifts": [
+          {
+            "start": 271.5,
+            "value": 0.03482787216877251,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 190.5,
+                  "width": 500.296875,
+                  "height": 72,
+                  "top": 190.5,
+                  "right": 636.296875,
+                  "bottom": 262.5,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 249.09375,
+                  "width": 500.296875,
+                  "height": 72,
+                  "top": 249.09375,
+                  "right": 636.296875,
+                  "bottom": 321.09375,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a aria-current=\"page\" class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-m",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 185.5,
+                  "width": 500.296875,
+                  "height": 72,
+                  "top": 185.5,
+                  "right": 636.296875,
+                  "bottom": 257.5,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 185.5,
+                  "width": 500.296875,
+                  "height": 72,
+                  "top": 185.5,
+                  "right": 636.296875,
+                  "bottom": 257.5,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 249.09375,
+                  "width": 500.296875,
+                  "height": 72,
+                  "top": 249.09375,
+                  "right": 636.296875,
+                  "bottom": 321.09375,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 249.09375,
+                  "width": 500.296875,
+                  "height": 72,
+                  "top": 249.09375,
+                  "right": 636.296875,
+                  "bottom": 321.09375,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:5\">doorstep.</span></span>",
+                "before": {
+                  "x": 320.9375,
+                  "y": 254.09375,
+                  "width": 232.375,
+                  "height": 69.59375,
+                  "top": 254.09375,
+                  "right": 553.3125,
+                  "bottom": 323.6875,
+                  "left": 320.9375
+                },
+                "after": {
+                  "x": 136,
+                  "y": 317.6875,
+                  "width": 250.53125,
+                  "height": 69.59375,
+                  "top": 317.6875,
+                  "right": 386.53125,
+                  "bottom": 387.28125,
+                  "left": 136
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 457
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/contact",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 174080,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/44cuy5_0ur68l.js",
+            "gzip": 5788
+          },
+          {
+            "url": "/_next/static/chunks/1xpqxd8rm_lni.js",
+            "gzip": 8515
+          },
+          {
+            "url": "/_next/static/chunks/0jjzhru4dmnwf.js",
+            "gzip": 13454
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/3kft5o0sfnrp1.js",
+            "gzip": 9633
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 50245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          }
+        ]
+      },
+      "lcp": 505.68625,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 40,
+        "interactionCount": 26,
+        "interactions": [40, 32, 32, 32, 32, 32, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.0022371364653243847,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 447
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.00038278249314128944,
+        "shifts": [
+          {
+            "start": 262.89999997615814,
+            "value": 0.00038278249314128944,
+            "sources": [
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 282.96875,
+                  "width": 522,
+                  "height": 72,
+                  "top": 282.96875,
+                  "right": 658,
+                  "bottom": 354.96875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 282.96875,
+                  "width": 522,
+                  "height": 72,
+                  "top": 282.96875,
+                  "right": 658,
+                  "bottom": 354.96875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<span class=\"inline-block max-w-full\"><span class=\"settle-letter\" style=\"--i:15;--spread:0.250\">n</span><span class=\"settle-letter\" style=\"--i:16;--spread:0.300\">i</span><span class=\"settle-letter\" st",
+                "before": {
+                  "x": 356.25,
+                  "y": 351.5625,
+                  "width": 120.53125,
+                  "height": 63.59375,
+                  "top": 351.5625,
+                  "right": 476.78125,
+                  "bottom": 415.15625,
+                  "left": 356.25
+                },
+                "after": {
+                  "x": 353.015625,
+                  "y": 351.5625,
+                  "width": 123.25,
+                  "height": 63.59375,
+                  "top": 351.5625,
+                  "right": 476.265625,
+                  "bottom": 415.15625,
+                  "left": 353.015625
+                }
+              },
+              {
+                "node": "<a href=\"tel:+97431306555\" class=\"group inline-flex items-center justify-center gap-2 rounded-button font-semibold leading-tight no-underline transition-[background-color,color,transform] duration-(--",
+                "before": {
+                  "x": 326.171875,
+                  "y": 540.03125,
+                  "width": 91.171875,
+                  "height": 56,
+                  "top": 540.03125,
+                  "right": 417.34375,
+                  "bottom": 596.03125,
+                  "left": 326.171875
+                },
+                "after": {
+                  "x": 332.640625,
+                  "y": 540.03125,
+                  "width": 91.5625,
+                  "height": 56,
+                  "top": 540.03125,
+                  "right": 424.203125,
+                  "bottom": 596.03125,
+                  "left": 332.640625
+                }
+              },
+              {
+                "node": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"size-5 shrink-0 rtl:-scale-x-100 transition-transform duration-(--dura",
+                "before": {
+                  "x": 266.171875,
+                  "y": 558.03125,
+                  "width": 20,
+                  "height": 20,
+                  "top": 558.03125,
+                  "right": 286.171875,
+                  "bottom": 578.03125,
+                  "left": 266.171875
+                },
+                "after": {
+                  "x": 272.640625,
+                  "y": 558.03125,
+                  "width": 20,
+                  "height": 20,
+                  "top": 558.03125,
+                  "right": 292.640625,
+                  "bottom": 578.03125,
+                  "left": 272.640625
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 341
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    }
+  ]
+}

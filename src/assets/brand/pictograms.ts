@@ -21,7 +21,8 @@ export const PICTOGRAMS = {
   phone: [
     "M4.5 3.5h3.4l1.7 4.4-2.3 1.5a11.5 11.5 0 0 0 7.3 7.3l1.5-2.3 4.4 1.7v3.4a2 2 0 0 1-2.1 2A17 17 0 0 1 2.5 5.6a2 2 0 0 1 2-2.1Z",
   ],
-  chat: ["M4 5.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-4.5 4v-4H6a2 2 0 0 1-2-2Z"],
+  // The proper brand mark is a shared static SVG; retain this CMS key (D154).
+  chat: [],
   mail: ["M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z", "M3.5 6.5 12 13l8.5-6.5"],
   location: ["M12 21.5s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12Z", "M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"],
   clock: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 7v5l3.5 2"],
@@ -94,10 +95,6 @@ export const PICTOGRAMS = {
     "M8.5 13.5l2 2 4.5-4.5",
   ],
 
-  // Stopping and starting the footer's running words.
-  pause: ["M9 5.5v13", "M15 5.5v13"],
-  play: ["M8 5.5v13l10.5-6.5Z"],
-
   // The social networks the site links to (plan §13): plain line marks beside each name.
   instagram: [
     "M7.5 3.5h9a4 4 0 0 1 4 4v9a4 4 0 0 1-4 4h-9a4 4 0 0 1-4-4v-9a4 4 0 0 1 4-4Z",
@@ -120,6 +117,7 @@ export const PICTOGRAMS = {
   document: ["M6 3.5h8l4.5 4.5v12.5H6Z", "M14 3.5V8h4.5", "M9 12.5h6", "M9 16h6"],
   briefcase: ["M3.5 7.5h17v12h-17Z", "M8.5 7.5V5a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2.5", "M3.5 12.5h17"],
   image: ["M3.5 5h17v14h-17Z", "M8.5 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z", "M3.5 17l5-5 4 4 3-3 5 5"],
+  typography: ["M4 7V4h16v3", "M12 4v16", "M8 20h8"],
   settings: [
     "M4 6.5h10",
     "M18 6.5h2",
@@ -138,4 +136,7 @@ export const PICTOGRAMS = {
 export type PictogramName = keyof typeof PICTOGRAMS;
 
 /** The pictograms that point somewhere, mirrored when the page reads right to left (plan §33). */
-export const DIRECTIONAL_PICTOGRAMS: readonly PictogramName[] = ["arrow", "external", "play", "logout"];
+export const DIRECTIONAL_PICTOGRAMS: readonly PictogramName[] = ["arrow", "external", "logout"];
+
+/** Shared standard WhatsApp brand SVG (Font Awesome Free, CC BY 4.0). */
+export const WHATSAPP_MARK = "/brand/whatsapp.svg#mark";

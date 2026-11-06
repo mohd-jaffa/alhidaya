@@ -1,0 +1,761 @@
+{
+  "verifiedOn": "2026-11-04",
+  "currentPreviewBuildId": "JMhRCwJyamWbpXQWz11Lh",
+  "scope": "Original footer geometry measured 2026-11-03, rechecked on the styled current local preview 2026-11-04. All footer heights and all eleven links retain their names, destinations, positions and dimensions at all four widths. No claim of a pixel-identical illustration.",
+  "before": [
+    {
+      "width": 320,
+      "height": 916.15625,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 16,
+          "y": 41,
+          "width": 265.625,
+          "height": 44
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 16,
+          "y": 251.375,
+          "width": 41.453125,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 16,
+          "y": 295.375,
+          "width": 59.03125,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 16,
+          "y": 339.375,
+          "width": 53.984375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 16,
+          "y": 383.375,
+          "width": 54.953125,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 16,
+          "y": 427.375,
+          "width": 112.28125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 168,
+          "y": 251.375,
+          "width": 49.90625,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 168,
+          "y": 295.375,
+          "width": 42.78125,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 46,
+          "y": 540.96875,
+          "width": 123,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 46,
+          "y": 584.96875,
+          "width": 116.640625,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 16,
+          "y": 670.5625,
+          "width": 100.703125,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 916.15625,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 17.75,
+          "y": 41,
+          "width": 265.625,
+          "height": 44
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 17.75,
+          "y": 251.375,
+          "width": 41.453125,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 17.75,
+          "y": 295.375,
+          "width": 59.03125,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 17.75,
+          "y": 339.375,
+          "width": 53.984375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 17.75,
+          "y": 383.375,
+          "width": 54.953125,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 17.75,
+          "y": 427.375,
+          "width": 112.28125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 203,
+          "y": 251.375,
+          "width": 49.90625,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 203,
+          "y": 295.375,
+          "width": 42.78125,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 47.75,
+          "y": 540.96875,
+          "width": 123,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 47.75,
+          "y": 584.96875,
+          "width": 116.640625,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 17.75,
+          "y": 670.5625,
+          "width": 100.703125,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 719.859375,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 27.1875,
+          "y": 65,
+          "width": 318.765625,
+          "height": 48
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 408,
+          "y": 104.1875,
+          "width": 44.046875,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 408,
+          "y": 148.1875,
+          "width": 62.734375,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 408,
+          "y": 192.1875,
+          "width": 57.359375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 408,
+          "y": 236.1875,
+          "width": 58.390625,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 408,
+          "y": 280.1875,
+          "width": 119.3125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 27.1875,
+          "y": 411.375,
+          "width": 53.03125,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 27.1875,
+          "y": 455.375,
+          "width": 45.46875,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 438,
+          "y": 411.375,
+          "width": 130.6875,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 438,
+          "y": 455.375,
+          "width": 123.9375,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 408,
+          "y": 542.5625,
+          "width": 105.109375,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "height": 489.484375,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 136,
+          "y": 81,
+          "width": 318.765625,
+          "height": 48
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 509.8125,
+          "y": 120.1875,
+          "width": 44.046875,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 509.8125,
+          "y": 164.1875,
+          "width": 62.734375,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 509.8125,
+          "y": 208.1875,
+          "width": 57.359375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 509.8125,
+          "y": 252.1875,
+          "width": 58.390625,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 509.8125,
+          "y": 296.1875,
+          "width": 119.3125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 790.53125,
+          "y": 120.1875,
+          "width": 53.03125,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 790.53125,
+          "y": 164.1875,
+          "width": 45.46875,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 1101.265625,
+          "y": 120.1875,
+          "width": 130.6875,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 1101.265625,
+          "y": 164.1875,
+          "width": 123.9375,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 1071.265625,
+          "y": 251.375,
+          "width": 105.109375,
+          "height": 44
+        }
+      ]
+    }
+  ],
+  "after": [
+    {
+      "width": 320,
+      "height": 916.15625,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 16,
+          "y": 41,
+          "width": 265.625,
+          "height": 44
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 16,
+          "y": 251.375,
+          "width": 41.453125,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 16,
+          "y": 295.375,
+          "width": 59.03125,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 16,
+          "y": 339.375,
+          "width": 53.984375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 16,
+          "y": 383.375,
+          "width": 54.953125,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 16,
+          "y": 427.375,
+          "width": 112.28125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 168,
+          "y": 251.375,
+          "width": 49.90625,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 168,
+          "y": 295.375,
+          "width": 42.78125,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 46,
+          "y": 540.96875,
+          "width": 123,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 46,
+          "y": 584.96875,
+          "width": 116.640625,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 16,
+          "y": 670.5625,
+          "width": 100.703125,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 916.15625,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 17.75,
+          "y": 41,
+          "width": 265.625,
+          "height": 44
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 17.75,
+          "y": 251.375,
+          "width": 41.453125,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 17.75,
+          "y": 295.375,
+          "width": 59.03125,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 17.75,
+          "y": 339.375,
+          "width": 53.984375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 17.75,
+          "y": 383.375,
+          "width": 54.953125,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 17.75,
+          "y": 427.375,
+          "width": 112.28125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 203,
+          "y": 251.375,
+          "width": 49.90625,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 203,
+          "y": 295.375,
+          "width": 42.78125,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 47.75,
+          "y": 540.96875,
+          "width": 123,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 47.75,
+          "y": 584.96875,
+          "width": 116.640625,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 17.75,
+          "y": 670.5625,
+          "width": 100.703125,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 719.859375,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 27.1875,
+          "y": 65,
+          "width": 318.765625,
+          "height": 48
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 408,
+          "y": 104.1875,
+          "width": 44.046875,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 408,
+          "y": 148.1875,
+          "width": 62.734375,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 408,
+          "y": 192.1875,
+          "width": 57.359375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 408,
+          "y": 236.1875,
+          "width": 58.390625,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 408,
+          "y": 280.1875,
+          "width": 119.3125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 27.1875,
+          "y": 411.375,
+          "width": 53.03125,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 27.1875,
+          "y": 455.375,
+          "width": 45.46875,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 438,
+          "y": 411.375,
+          "width": 130.6875,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 438,
+          "y": 455.375,
+          "width": 123.9375,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 408,
+          "y": 542.5625,
+          "width": 105.109375,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "height": 489.484375,
+      "links": [
+        {
+          "name": "Al Hidaya Health Care Service",
+          "href": "/",
+          "x": 136,
+          "y": 81,
+          "width": 318.765625,
+          "height": 48
+        },
+        {
+          "name": "About",
+          "href": "/about",
+          "x": 509.8125,
+          "y": 120.1875,
+          "width": 44.046875,
+          "height": 44
+        },
+        {
+          "name": "Services",
+          "href": "/services",
+          "x": 509.8125,
+          "y": 164.1875,
+          "width": 62.734375,
+          "height": 44
+        },
+        {
+          "name": "Careers",
+          "href": "/careers",
+          "x": 509.8125,
+          "y": 208.1875,
+          "width": 57.359375,
+          "height": 44
+        },
+        {
+          "name": "Contact",
+          "href": "/contact",
+          "x": 509.8125,
+          "y": 252.1875,
+          "width": 58.390625,
+          "height": 44
+        },
+        {
+          "name": "Request a quote",
+          "href": "/request-a-quote",
+          "x": 509.8125,
+          "y": 296.1875,
+          "width": 119.3125,
+          "height": 44
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy",
+          "x": 790.53125,
+          "y": 120.1875,
+          "width": 53.03125,
+          "height": 44
+        },
+        {
+          "name": "Terms",
+          "href": "/terms",
+          "x": 790.53125,
+          "y": 164.1875,
+          "width": 45.46875,
+          "height": 44
+        },
+        {
+          "name": "+974 3130 6555",
+          "href": "tel:+97431306555",
+          "x": 1101.265625,
+          "y": 120.1875,
+          "width": 130.6875,
+          "height": 44
+        },
+        {
+          "name": "info@alhidaya.qa",
+          "href": "mailto:info@alhidaya.qa",
+          "x": 1101.265625,
+          "y": 164.1875,
+          "width": 123.9375,
+          "height": 44
+        },
+        {
+          "name": "Instagram",
+          "href": "https://www.instagram.com/alhidayanursingcompany_wll",
+          "x": 1071.265625,
+          "y": 251.375,
+          "width": 105.109375,
+          "height": 44
+        }
+      ]
+    }
+  ]
+}

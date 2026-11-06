@@ -5,6 +5,13 @@ import { PICTOGRAMS } from "@/assets/brand/pictograms";
 import { Pictogram } from "@/components/ui/pictogram";
 
 describe("Pictogram", () => {
+  it("uses the proper shared WhatsApp brand SVG for the retained chat key", () => {
+    const { container } = render(<Pictogram name="chat" />);
+    expect(container.querySelector("use")).toHaveAttribute("href", "/brand/whatsapp.svg#mark");
+    expect(container.querySelector("use")).toHaveAttribute("fill", "currentColor");
+    expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
   it("is decoration, hidden from screen readers, when words beside it say what it means", () => {
     const { container } = render(<Pictogram name="phone" />);
     const svg = container.querySelector("svg")!;

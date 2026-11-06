@@ -7,6 +7,29 @@ import { contentFixture } from "@tests/support/fixtures/content";
 const en = <T,>(value: T) => ({ en: value });
 
 describe("ValuesSection", () => {
+  it("renders About's approved three-panel commitments without list markers (D177)", () => {
+    const content = {
+      ...contentFixture("VALUES"),
+      items: [
+        { title: en("Our patients"), text: en("Care with dignity.") },
+        { title: en("Leadership"), text: en("Our people and relationships.") },
+        { title: en("Excellence"), text: en(null) },
+      ],
+    };
+    render(<ValuesSection anchor="values" content={content} panels />);
+    expect(screen.queryByRole("list")).toBeNull();
+    const cards = screen.getAllByRole("article");
+    expect(cards).toHaveLength(3);
+    for (const [index, tone] of ["bg-deep", "bg-leaf-pale", "bg-mist"].entries()) {
+      expect(cards[index]).toHaveClass("promise-card", "rounded-card", tone);
+      expect(
+        within(cards[index]).getByRole("heading", { level: 3, name: content.items[index].title.en }),
+      ).toBeInTheDocument();
+    }
+    expect(within(cards[0]).getByText("Care with dignity.")).toHaveClass("text-on-deep-2");
+    expect(within(cards[1]).getByText("Our people and relationships.")).toHaveClass("text-ink-2");
+    expect(cards[2].querySelector("p")).toBeNull();
+  });
   it("lists each value, its title as a heading and its line when it has one", () => {
     const content = contentFixture("VALUES");
     content.items.push({ title: en("Compassion and dignity"), text: en("Every patient, with respect.") });

@@ -92,12 +92,15 @@ async function signIn(page: Page, email: string) {
 
 const axe = async (page: Page) => expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
-test("signing in: the way in, a refusal in plain words, then on to where the admin was headed", async ({ page }) => {
+test("signing in: the way in, a refusal in plain words, then on to where the admin was headed", async ({
+  page,
+}, testInfo) => {
   const email = await admin("Fatima");
   await page.goto(ADMIN_ROUTES.enquiries);
   await expect(page).toHaveURL(`${ADMIN_ROUTES.login}?next=${encodeURIComponent(ADMIN_ROUTES.enquiries)}`);
   await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.signInTitle })).toBeVisible();
   await axe(page);
+  await page.screenshot({ path: testInfo.outputPath("pastel-green-sign-in.png"), fullPage: true });
 
   await page.getByRole("textbox", { name: ADMIN_TEXT.email }).fill(email);
   await page.getByLabel(ADMIN_TEXT.password, { exact: true }).fill("not the password at all");
@@ -110,6 +113,7 @@ test("signing in: the way in, a refusal in plain words, then on to where the adm
   await page.getByRole("button", { name: ADMIN_TEXT.signIn }).click();
   await expect(page).toHaveURL(ADMIN_ROUTES.enquiries);
   await expect(page.getByRole("heading", { level: 1, name: ADMIN_TEXT.enquiries })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("pastel-green-admin.png"), fullPage: true });
 });
 
 test("the password's way back: a link asked for, and a reset page without one", async ({ page }) => {
@@ -237,6 +241,8 @@ test("on a phone the sections open as a menu; signing out leaves the admin behin
   await signIn(page, email);
   await page.goto(ADMIN_ROUTES.overview);
   await expect(page.getByRole("banner")).toContainText(ADMIN_TEXT.dashboard);
+  const home = page.getByRole("banner").getByRole("link", { name: ADMIN_TEXT.dashboard, exact: true });
+  expect((await home.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   await page.getByRole("button", { name: ADMIN_TEXT.menu }).click();
   const menu = page.getByRole("dialog", { name: ADMIN_TEXT.menu });
   await axe(page);

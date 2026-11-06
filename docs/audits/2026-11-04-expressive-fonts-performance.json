@@ -1,0 +1,114 @@
+{
+  "build": "luTUt4WwXV9ddjF9MfVBk",
+  "summary": {
+    "route": "/",
+    "profile": {
+      "cpuSlowdownMultiplier": 4,
+      "rttMs": 40,
+      "throughputKbps": 9216,
+      "requestLatencyMs": 40,
+      "downloadThroughputKbps": 9216,
+      "uploadThroughputKbps": 1536
+    },
+    "initial": {
+      "total": 173059,
+      "files": [
+        {
+          "url": "/_next/static/chunks/0tekk_hu_1tg8.js",
+          "gzip": 7586
+        },
+        {
+          "url": "/_next/static/chunks/05ag8rqhwn73b.js",
+          "gzip": 73535
+        },
+        {
+          "url": "/_next/static/chunks/259vj9h2rx8xo.js",
+          "gzip": 46615
+        },
+        {
+          "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+          "gzip": 4390
+        },
+        {
+          "url": "/_next/static/chunks/0a-rekt06v0sv.js",
+          "gzip": 3537
+        },
+        {
+          "url": "/_next/static/chunks/2zjs9_id7pocz.js",
+          "gzip": 5793
+        },
+        {
+          "url": "/_next/static/chunks/08ctqnva_-haq.js",
+          "gzip": 274
+        },
+        {
+          "url": "/_next/static/chunks/0raqgbjj2bt_0.js",
+          "gzip": 19762
+        },
+        {
+          "url": "/_next/static/chunks/21ehq1xqvo37b.js",
+          "gzip": 243
+        },
+        {
+          "url": "/_next/static/chunks/0bu2orico-9wg.js",
+          "gzip": 10230
+        },
+        {
+          "url": "/_next/static/chunks/0o_iu04f6t0e7.js",
+          "gzip": 271
+        },
+        {
+          "url": "/_next/static/chunks/22s8ett297gig.js",
+          "gzip": 823
+        }
+      ]
+    },
+    "deferred": {
+      "total": 52436,
+      "files": [
+        {
+          "url": "/_next/static/chunks/2wuhbapzt95zx.js",
+          "gzip": 1183
+        },
+        {
+          "url": "/_next/static/chunks/061onl4k16__e.js",
+          "gzip": 27312
+        },
+        {
+          "url": "/_next/static/chunks/42d_j2uu2fkig.js",
+          "gzip": 17490
+        },
+        {
+          "url": "/_next/static/chunks/0htbnhaxh56yd.js",
+          "gzip": 5448
+        },
+        {
+          "url": "/_next/static/chunks/3ar48x0-3_6vs.js",
+          "gzip": 1003
+        }
+      ]
+    },
+    "lcp": 555.5070000000001,
+    "cls": 0,
+    "categories": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    },
+    "intentionalExceptions": []
+  },
+  "runtime": {
+    "inpUpperBound": 64,
+    "interactionCount": 26,
+    "interactions": [64, 64, 64, 48, 40, 32, 32, 32, 32, 32, 32, 24, 24, 24, 24, 24, 24, 24, 16, 16],
+    "slowEvents": [],
+    "cls": 0,
+    "shifts": [],
+    "scrollLongTasks": [],
+    "maxScrollTask": 0,
+    "droppedFrameRatio": 0.005940594059405941,
+    "refreshInterval": 16.69999999999891,
+    "frameCount": 503
+  }
+}

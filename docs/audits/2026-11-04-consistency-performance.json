@@ -1,0 +1,1081 @@
+{
+  "measuredAt": "2026-11-04T18:40:09.480Z",
+  "buildId": "xi6uZU75_ddlMNiFdwfpo",
+  "scope": "D172–D179 local standalone Home/About/Services/Careers/Contact/Privacy; live Google iframe requests are not blocked. Phone Lighthouse/runtime and desktop scroll; all-route initial JS measured separately. Existing physical-browser/device/region checks remain.",
+  "routes": [
+    {
+      "route": "/",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 173402,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0tekk_hu_1tg8.js",
+            "gzip": 7586
+          },
+          {
+            "url": "/_next/static/chunks/05ag8rqhwn73b.js",
+            "gzip": 73535
+          },
+          {
+            "url": "/_next/static/chunks/259vj9h2rx8xo.js",
+            "gzip": 46615
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0a-rekt06v0sv.js",
+            "gzip": 3537
+          },
+          {
+            "url": "/_next/static/chunks/0bkolilz2cf4t.js",
+            "gzip": 5942
+          },
+          {
+            "url": "/_next/static/chunks/08ctqnva_-haq.js",
+            "gzip": 274
+          },
+          {
+            "url": "/_next/static/chunks/1hg0_4a6pbb4x.js",
+            "gzip": 19941
+          },
+          {
+            "url": "/_next/static/chunks/3v717lafwd5d0.js",
+            "gzip": 243
+          },
+          {
+            "url": "/_next/static/chunks/2t4digks5q2no.js",
+            "gzip": 10245
+          },
+          {
+            "url": "/_next/static/chunks/0o_iu04f6t0e7.js",
+            "gzip": 271
+          },
+          {
+            "url": "/_next/static/chunks/22s8ett297gig.js",
+            "gzip": 823
+          }
+        ]
+      },
+      "deferred": {
+        "total": 52427,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3tdv93r9-v_x8.js",
+            "gzip": 1174
+          },
+          {
+            "url": "/_next/static/chunks/061onl4k16__e.js",
+            "gzip": 27312
+          },
+          {
+            "url": "/_next/static/chunks/42d_j2uu2fkig.js",
+            "gzip": 17490
+          },
+          {
+            "url": "/_next/static/chunks/0htbnhaxh56yd.js",
+            "gzip": 5448
+          },
+          {
+            "url": "/_next/static/chunks/3ar48x0-3_6vs.js",
+            "gzip": 1003
+          }
+        ]
+      },
+      "lcp": 722.4554999999999,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 64,
+        "interactionCount": 26,
+        "interactions": [64, 64, 64, 32, 32, 32, 32, 32, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.005964214711729622,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 501
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0018122578687628599,
+        "shifts": [
+          {
+            "start": 283.5999999642372,
+            "value": 0.0018122578687628599,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 690,
+                  "height": 82,
+                  "top": 284,
+                  "right": 826,
+                  "bottom": 366,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 690,
+                  "height": 82,
+                  "top": 284,
+                  "right": 826,
+                  "bottom": 366,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 354.71875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 354.71875,
+                  "right": 826,
+                  "bottom": 436.71875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 354.71875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 354.71875,
+                  "right": 826,
+                  "bottom": 436.71875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a aria-current=\"page\" class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-m",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:5\">doorstep.</span></span>",
+                "before": {
+                  "x": 345.609375,
+                  "y": 360.71875,
+                  "width": 263.375,
+                  "height": 77.515625,
+                  "top": 360.71875,
+                  "right": 608.984375,
+                  "bottom": 438.234375,
+                  "left": 345.609375
+                },
+                "after": {
+                  "x": 351.25,
+                  "y": 360.71875,
+                  "width": 283.9375,
+                  "height": 77.515625,
+                  "top": 360.71875,
+                  "right": 635.1875,
+                  "bottom": 438.234375,
+                  "left": 351.25
+                }
+              },
+              {
+                "node": "<span class=\"rise-word text-deep\"><span data-word=\"true\" style=\"--i:1\">nursing</span></span>",
+                "before": {
+                  "x": 349.234375,
+                  "y": 290,
+                  "width": 207.28125,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 556.515625,
+                  "bottom": 367.515625,
+                  "left": 349.234375
+                },
+                "after": {
+                  "x": 355.5,
+                  "y": 290,
+                  "width": 221.640625,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 577.140625,
+                  "bottom": 367.515625,
+                  "left": 355.5
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 456
+      }
+    },
+    {
+      "route": "/about",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 166969,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0tekk_hu_1tg8.js",
+            "gzip": 7586
+          },
+          {
+            "url": "/_next/static/chunks/05ag8rqhwn73b.js",
+            "gzip": 73535
+          },
+          {
+            "url": "/_next/static/chunks/259vj9h2rx8xo.js",
+            "gzip": 46615
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0a-rekt06v0sv.js",
+            "gzip": 3537
+          },
+          {
+            "url": "/_next/static/chunks/0bkolilz2cf4t.js",
+            "gzip": 5942
+          },
+          {
+            "url": "/_next/static/chunks/08ctqnva_-haq.js",
+            "gzip": 274
+          },
+          {
+            "url": "/_next/static/chunks/1hg0_4a6pbb4x.js",
+            "gzip": 19941
+          },
+          {
+            "url": "/_next/static/chunks/22s8ett297gig.js",
+            "gzip": 823
+          },
+          {
+            "url": "/_next/static/chunks/1s4nkhkl2nscd.js",
+            "gzip": 4055
+          },
+          {
+            "url": "/_next/static/chunks/0o_iu04f6t0e7.js",
+            "gzip": 271
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51253,
+        "files": [
+          {
+            "url": "/_next/static/chunks/061onl4k16__e.js",
+            "gzip": 27312
+          },
+          {
+            "url": "/_next/static/chunks/42d_j2uu2fkig.js",
+            "gzip": 17490
+          },
+          {
+            "url": "/_next/static/chunks/0htbnhaxh56yd.js",
+            "gzip": 5448
+          },
+          {
+            "url": "/_next/static/chunks/3ar48x0-3_6vs.js",
+            "gzip": 1003
+          }
+        ]
+      },
+      "lcp": 550.866,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 40,
+        "interactionCount": 2,
+        "interactions": [40, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 469
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.04191906624415937,
+        "shifts": [
+          {
+            "start": 274,
+            "value": 0.04191906624415937,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 476.625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 476.625,
+                  "right": 826,
+                  "bottom": 558.625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 341.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 341.1875,
+                  "right": 826,
+                  "bottom": 423.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word text-deep\"><span data-word=\"true\" style=\"--i:3\">compassion</span></span>",
+                "before": {
+                  "x": 136,
+                  "y": 411.90625,
+                  "width": 339.109375,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 475.109375,
+                  "bottom": 489.421875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 276.453125,
+                  "y": 411.90625,
+                  "width": 359.671875,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 636.125,
+                  "bottom": 489.421875,
+                  "left": 276.453125
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 469
+      }
+    },
+    {
+      "route": "/careers",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 166969,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0tekk_hu_1tg8.js",
+            "gzip": 7586
+          },
+          {
+            "url": "/_next/static/chunks/05ag8rqhwn73b.js",
+            "gzip": 73535
+          },
+          {
+            "url": "/_next/static/chunks/259vj9h2rx8xo.js",
+            "gzip": 46615
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0a-rekt06v0sv.js",
+            "gzip": 3537
+          },
+          {
+            "url": "/_next/static/chunks/0bkolilz2cf4t.js",
+            "gzip": 5942
+          },
+          {
+            "url": "/_next/static/chunks/08ctqnva_-haq.js",
+            "gzip": 274
+          },
+          {
+            "url": "/_next/static/chunks/1hg0_4a6pbb4x.js",
+            "gzip": 19941
+          },
+          {
+            "url": "/_next/static/chunks/22s8ett297gig.js",
+            "gzip": 823
+          },
+          {
+            "url": "/_next/static/chunks/1s4nkhkl2nscd.js",
+            "gzip": 4055
+          },
+          {
+            "url": "/_next/static/chunks/0o_iu04f6t0e7.js",
+            "gzip": 271
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51253,
+        "files": [
+          {
+            "url": "/_next/static/chunks/061onl4k16__e.js",
+            "gzip": 27312
+          },
+          {
+            "url": "/_next/static/chunks/42d_j2uu2fkig.js",
+            "gzip": 17490
+          },
+          {
+            "url": "/_next/static/chunks/0htbnhaxh56yd.js",
+            "gzip": 5448
+          },
+          {
+            "url": "/_next/static/chunks/3ar48x0-3_6vs.js",
+            "gzip": 1003
+          }
+        ]
+      },
+      "lcp": 528.2275,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 40,
+        "interactionCount": 2,
+        "interactions": [40, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 274
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 268
+      }
+    },
+    {
+      "route": "/contact",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 173402,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0tekk_hu_1tg8.js",
+            "gzip": 7586
+          },
+          {
+            "url": "/_next/static/chunks/05ag8rqhwn73b.js",
+            "gzip": 73535
+          },
+          {
+            "url": "/_next/static/chunks/259vj9h2rx8xo.js",
+            "gzip": 46615
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0a-rekt06v0sv.js",
+            "gzip": 3537
+          },
+          {
+            "url": "/_next/static/chunks/0bkolilz2cf4t.js",
+            "gzip": 5942
+          },
+          {
+            "url": "/_next/static/chunks/08ctqnva_-haq.js",
+            "gzip": 274
+          },
+          {
+            "url": "/_next/static/chunks/1hg0_4a6pbb4x.js",
+            "gzip": 19941
+          },
+          {
+            "url": "/_next/static/chunks/22s8ett297gig.js",
+            "gzip": 823
+          },
+          {
+            "url": "/_next/static/chunks/3v717lafwd5d0.js",
+            "gzip": 243
+          },
+          {
+            "url": "/_next/static/chunks/2t4digks5q2no.js",
+            "gzip": 10245
+          },
+          {
+            "url": "/_next/static/chunks/0o_iu04f6t0e7.js",
+            "gzip": 271
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51253,
+        "files": [
+          {
+            "url": "/_next/static/chunks/061onl4k16__e.js",
+            "gzip": 27312
+          },
+          {
+            "url": "/_next/static/chunks/42d_j2uu2fkig.js",
+            "gzip": 17490
+          },
+          {
+            "url": "/_next/static/chunks/0htbnhaxh56yd.js",
+            "gzip": 5448
+          },
+          {
+            "url": "/_next/static/chunks/3ar48x0-3_6vs.js",
+            "gzip": 1003
+          }
+        ]
+      },
+      "lcp": 526.0145,
+      "cls": 0,
+      "categories": {
+        "performance": 0.99,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 40,
+        "interactionCount": 26,
+        "interactions": [40, 32, 32, 32, 32, 24, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.0057306590257879654,
+        "refreshInterval": 16.69999999999891,
+        "frameCount": 348
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 246
+      }
+    },
+    {
+      "route": "/privacy",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 166969,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0tekk_hu_1tg8.js",
+            "gzip": 7586
+          },
+          {
+            "url": "/_next/static/chunks/05ag8rqhwn73b.js",
+            "gzip": 73535
+          },
+          {
+            "url": "/_next/static/chunks/259vj9h2rx8xo.js",
+            "gzip": 46615
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0a-rekt06v0sv.js",
+            "gzip": 3537
+          },
+          {
+            "url": "/_next/static/chunks/0bkolilz2cf4t.js",
+            "gzip": 5942
+          },
+          {
+            "url": "/_next/static/chunks/08ctqnva_-haq.js",
+            "gzip": 274
+          },
+          {
+            "url": "/_next/static/chunks/1hg0_4a6pbb4x.js",
+            "gzip": 19941
+          },
+          {
+            "url": "/_next/static/chunks/22s8ett297gig.js",
+            "gzip": 823
+          },
+          {
+            "url": "/_next/static/chunks/1s4nkhkl2nscd.js",
+            "gzip": 4055
+          },
+          {
+            "url": "/_next/static/chunks/0o_iu04f6t0e7.js",
+            "gzip": 271
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51253,
+        "files": [
+          {
+            "url": "/_next/static/chunks/061onl4k16__e.js",
+            "gzip": 27312
+          },
+          {
+            "url": "/_next/static/chunks/42d_j2uu2fkig.js",
+            "gzip": 17490
+          },
+          {
+            "url": "/_next/static/chunks/0htbnhaxh56yd.js",
+            "gzip": 5448
+          },
+          {
+            "url": "/_next/static/chunks/3ar48x0-3_6vs.js",
+            "gzip": 1003
+          }
+        ]
+      },
+      "lcp": 246.587,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 303
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 253
+      }
+    },
+    {
+      "route": "/services",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 166969,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0tekk_hu_1tg8.js",
+            "gzip": 7586
+          },
+          {
+            "url": "/_next/static/chunks/05ag8rqhwn73b.js",
+            "gzip": 73535
+          },
+          {
+            "url": "/_next/static/chunks/259vj9h2rx8xo.js",
+            "gzip": 46615
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0a-rekt06v0sv.js",
+            "gzip": 3537
+          },
+          {
+            "url": "/_next/static/chunks/0bkolilz2cf4t.js",
+            "gzip": 5942
+          },
+          {
+            "url": "/_next/static/chunks/08ctqnva_-haq.js",
+            "gzip": 274
+          },
+          {
+            "url": "/_next/static/chunks/1hg0_4a6pbb4x.js",
+            "gzip": 19941
+          },
+          {
+            "url": "/_next/static/chunks/22s8ett297gig.js",
+            "gzip": 823
+          },
+          {
+            "url": "/_next/static/chunks/1s4nkhkl2nscd.js",
+            "gzip": 4055
+          },
+          {
+            "url": "/_next/static/chunks/0o_iu04f6t0e7.js",
+            "gzip": 271
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51253,
+        "files": [
+          {
+            "url": "/_next/static/chunks/061onl4k16__e.js",
+            "gzip": 27312
+          },
+          {
+            "url": "/_next/static/chunks/42d_j2uu2fkig.js",
+            "gzip": 17490
+          },
+          {
+            "url": "/_next/static/chunks/0htbnhaxh56yd.js",
+            "gzip": 5448
+          },
+          {
+            "url": "/_next/static/chunks/3ar48x0-3_6vs.js",
+            "gzip": 1003
+          }
+        ]
+      },
+      "lcp": 531.595,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 48,
+        "interactionCount": 2,
+        "interactions": [48, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 398
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0012675839522247943,
+        "shifts": [
+          {
+            "start": 273.19999998807907,
+            "value": 0.0012675839522247943,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:7\">institutions</span></span>",
+                "before": {
+                  "x": 433.34375,
+                  "y": 411.90625,
+                  "width": 295.984375,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 729.328125,
+                  "bottom": 489.421875,
+                  "left": 433.34375
+                },
+                "after": {
+                  "x": 444.1875,
+                  "y": 411.90625,
+                  "width": 324.28125,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 768.46875,
+                  "bottom": 489.421875,
+                  "left": 444.1875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:4\">and</span></span>",
+                "before": {
+                  "x": 554.25,
+                  "y": 341.1875,
+                  "width": 106.21875,
+                  "height": 77.515625,
+                  "top": 341.1875,
+                  "right": 660.46875,
+                  "bottom": 418.703125,
+                  "left": 554.25
+                },
+                "after": {
+                  "x": 559.765625,
+                  "y": 341.1875,
+                  "width": 111.484375,
+                  "height": 77.515625,
+                  "top": 341.1875,
+                  "right": 671.25,
+                  "bottom": 418.703125,
+                  "left": 559.765625
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 348
+      }
+    }
+  ]
+}

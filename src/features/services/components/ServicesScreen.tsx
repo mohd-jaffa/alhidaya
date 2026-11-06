@@ -23,9 +23,7 @@ function ServiceLink({ service }: { service: ServiceSummaryItem }) {
       className="grid min-w-0 flex-1 basis-56 gap-0.5 rounded-control px-2 py-2 hover:bg-mist"
     >
       <span className="font-semibold">{service.name || ADMIN_TEXT.unnamed}</span>
-      <span className="text-small text-ink-2">
-        {ADMIN_TEXT.audienceNames[service.audience]} · {ROUTES.service(service.slug)}
-      </span>
+      <span className="text-small text-ink-2">{ROUTES.service(service.slug)}</span>
     </Link>
   );
 }

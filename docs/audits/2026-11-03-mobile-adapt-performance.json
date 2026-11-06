@@ -1,0 +1,3544 @@
+{
+  "measuredAt": "2026-11-03T15:37:57.832Z",
+  "scope": "D161–D164 final combined standalone build. All 20 public routes and their desktop scroll counterparts (40 serial cases), unchanged budgets, no retries, isolated local test media/CV folders. All initial JS budgets also recorded separately. Physical-device/compositor, other browser engines and server-region checks remain.",
+  "buildId": "Lvrq97SaI_O7gc0qkYK55",
+  "routes": [
+    {
+      "route": "/",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 173894,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/01xqwjlpj2g-a.js",
+            "gzip": 9823
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          }
+        ]
+      },
+      "deferred": {
+        "total": 52426,
+        "files": [
+          {
+            "url": "/_next/static/chunks/0j6gudepbiaoo.js",
+            "gzip": 1181
+          },
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 735.3025,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 64,
+        "interactionCount": 26,
+        "interactions": [64, 56, 48, 48, 32, 32, 32, 32, 32, 32, 32, 24, 24, 24, 24, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.003976143141153081,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 502
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0018122578687628599,
+        "shifts": [
+          {
+            "start": 283.2999999523163,
+            "value": 0.0018122578687628599,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 690,
+                  "height": 82,
+                  "top": 284,
+                  "right": 826,
+                  "bottom": 366,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 690,
+                  "height": 82,
+                  "top": 284,
+                  "right": 826,
+                  "bottom": 366,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 354.71875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 354.71875,
+                  "right": 826,
+                  "bottom": 436.71875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 354.71875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 354.71875,
+                  "right": 826,
+                  "bottom": 436.71875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a aria-current=\"page\" class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-m",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:5\">doorstep.</span></span>",
+                "before": {
+                  "x": 345.609375,
+                  "y": 360.71875,
+                  "width": 263.375,
+                  "height": 77.515625,
+                  "top": 360.71875,
+                  "right": 608.984375,
+                  "bottom": 438.234375,
+                  "left": 345.609375
+                },
+                "after": {
+                  "x": 351.25,
+                  "y": 360.71875,
+                  "width": 283.9375,
+                  "height": 77.515625,
+                  "top": 360.71875,
+                  "right": 635.1875,
+                  "bottom": 438.234375,
+                  "left": 351.25
+                }
+              },
+              {
+                "node": "<span class=\"rise-word text-deep\"><span data-word=\"true\" style=\"--i:1\">nursing</span></span>",
+                "before": {
+                  "x": 349.234375,
+                  "y": 290,
+                  "width": 207.28125,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 556.515625,
+                  "bottom": 367.515625,
+                  "left": 349.234375
+                },
+                "after": {
+                  "x": 355.5,
+                  "y": 290,
+                  "width": 221.640625,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 577.140625,
+                  "bottom": 367.515625,
+                  "left": 355.5
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 456
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/about",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 167868,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/02i2rwpyx_hh6.js",
+            "gzip": 4036
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 681.285,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 48,
+        "interactionCount": 2,
+        "interactions": [48, 48],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 440
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.04191906624415937,
+        "shifts": [
+          {
+            "start": 287.5999999642372,
+            "value": 0.04191906624415937,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 476.625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 476.625,
+                  "right": 826,
+                  "bottom": 558.625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 341.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 341.1875,
+                  "right": 826,
+                  "bottom": 423.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word text-deep\"><span data-word=\"true\" style=\"--i:3\">compassion</span></span>",
+                "before": {
+                  "x": 136,
+                  "y": 411.90625,
+                  "width": 339.109375,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 475.109375,
+                  "bottom": 489.421875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 276.453125,
+                  "y": 411.90625,
+                  "width": 359.671875,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 636.125,
+                  "bottom": 489.421875,
+                  "left": 276.453125
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 447
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/careers",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 167868,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/02i2rwpyx_hh6.js",
+            "gzip": 4036
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 466.38500000000005,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.0038314176245210726,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 261
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 263
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/careers/apply",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 170818,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/2ex8s0eq9oxer.js",
+            "gzip": 6986
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 243.51,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": ["is-crawlable: this page is intentionally noindex"],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 32,
+        "interactions": [
+          32, 32, 32, 32, 32, 32, 32, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16
+        ],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.005509641873278237,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 362
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.00037763430748456793,
+        "shifts": [
+          {
+            "start": 283.2999999523163,
+            "value": 0.00037763430748456793,
+            "sources": [
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 199,
+                  "width": 519.765625,
+                  "height": 72,
+                  "top": 199,
+                  "right": 655.765625,
+                  "bottom": 271,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 199,
+                  "width": 511.875,
+                  "height": 72,
+                  "top": 199,
+                  "right": 647.875,
+                  "bottom": 271,
+                  "left": 136
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 326
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/careers/registered-general-nurse-home-care",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 164526,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/184jz70a-lbqm.js",
+            "gzip": 694
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 244.01600000000002,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.007692307692307693,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 259
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0006840830359439301,
+        "shifts": [
+          {
+            "start": 283.39999997615814,
+            "value": 0.0006840830359439301,
+            "sources": [
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 199,
+                  "width": 522,
+                  "height": 72,
+                  "top": 199,
+                  "right": 658,
+                  "bottom": 271,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 199,
+                  "width": 522,
+                  "height": 72,
+                  "top": 199,
+                  "right": 658,
+                  "bottom": 271,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 262.59375,
+                  "width": 522,
+                  "height": 72,
+                  "top": 262.59375,
+                  "right": 658,
+                  "bottom": 334.59375,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 262.59375,
+                  "width": 522,
+                  "height": 72,
+                  "top": 262.59375,
+                  "right": 658,
+                  "bottom": 334.59375,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<a class=\"group inline-flex items-center justify-center gap-2 rounded-button font-semibold leading-tight no-underline transition-[background-color,color,transform] duration-(--duration-state) ease-out",
+                "before": {
+                  "x": 382.890625,
+                  "y": 425.625,
+                  "width": 172.875,
+                  "height": 56,
+                  "top": 425.625,
+                  "right": 555.765625,
+                  "bottom": 481.625,
+                  "left": 382.890625
+                },
+                "after": {
+                  "x": 390.515625,
+                  "y": 425.625,
+                  "width": 176.296875,
+                  "height": 56,
+                  "top": 425.625,
+                  "right": 566.8125,
+                  "bottom": 481.625,
+                  "left": 390.515625
+                }
+              },
+              {
+                "node": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"size-5 shrink-0 rtl:-scale-x-100 transition-transform duration-(--dura",
+                "before": {
+                  "x": 322.890625,
+                  "y": 443.625,
+                  "width": 20,
+                  "height": 20,
+                  "top": 443.625,
+                  "right": 342.890625,
+                  "bottom": 463.625,
+                  "left": 322.890625
+                },
+                "after": {
+                  "x": 330.515625,
+                  "y": 443.625,
+                  "width": 20,
+                  "height": 20,
+                  "top": 443.625,
+                  "right": 350.515625,
+                  "bottom": 463.625,
+                  "left": 330.515625
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 201
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/careers/registered-general-nurse-home-care/apply",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 170818,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2ex8s0eq9oxer.js",
+            "gzip": 6986
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 244.154,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": ["is-crawlable: this page is intentionally noindex"],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 32,
+        "interactions": [
+          32, 32, 32, 32, 32, 32, 24, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16
+        ],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.005479452054794521,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 364
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0007564581725823046,
+        "shifts": [
+          {
+            "start": 278.30000001192093,
+            "value": 0.0007564581725823046,
+            "sources": [
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 199,
+                  "width": 522,
+                  "height": 72,
+                  "top": 199,
+                  "right": 658,
+                  "bottom": 271,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 199,
+                  "width": 522,
+                  "height": 72,
+                  "top": 199,
+                  "right": 658,
+                  "bottom": 271,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 262.59375,
+                  "width": 522,
+                  "height": 72,
+                  "top": 262.59375,
+                  "right": 658,
+                  "bottom": 334.59375,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 262.59375,
+                  "width": 522,
+                  "height": 72,
+                  "top": 262.59375,
+                  "right": 658,
+                  "bottom": 334.59375,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 707.25,
+                  "width": 444.796875,
+                  "height": 55.4375,
+                  "top": 707.25,
+                  "right": 580.796875,
+                  "bottom": 762.6875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 707.25,
+                  "width": 444.796875,
+                  "height": 55.4375,
+                  "top": 707.25,
+                  "right": 580.796875,
+                  "bottom": 762.6875,
+                  "left": 136
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 331
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/contact",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 173894,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/01xqwjlpj2g-a.js",
+            "gzip": 9823
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 523.55,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 64,
+        "interactionCount": 26,
+        "interactions": [64, 40, 40, 32, 32, 32, 32, 32, 32, 32, 24, 16, 16, 16, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.005917159763313609,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 337
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.000803649199057999,
+        "shifts": [
+          {
+            "start": 266.10000002384186,
+            "value": 0.000803649199057999,
+            "sources": [
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 139,
+                  "width": 555,
+                  "height": 72,
+                  "top": 139,
+                  "right": 691,
+                  "bottom": 211,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 139,
+                  "width": 555,
+                  "height": 72,
+                  "top": 139,
+                  "right": 691,
+                  "bottom": 211,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 202.59375,
+                  "width": 555,
+                  "height": 72,
+                  "top": 202.59375,
+                  "right": 691,
+                  "bottom": 274.59375,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 202.59375,
+                  "width": 555,
+                  "height": 72,
+                  "top": 202.59375,
+                  "right": 691,
+                  "bottom": 274.59375,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:3\">message</span></span>",
+                "before": {
+                  "x": 368.328125,
+                  "y": 756.671875,
+                  "width": 198.53125,
+                  "height": 62.375,
+                  "top": 756.671875,
+                  "right": 566.859375,
+                  "bottom": 819.046875,
+                  "left": 368.328125
+                },
+                "after": {
+                  "x": 364.8125,
+                  "y": 756.671875,
+                  "width": 207.5625,
+                  "height": 62.375,
+                  "top": 756.671875,
+                  "right": 572.375,
+                  "bottom": 819.046875,
+                  "left": 364.8125
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 242
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/performance-page-that-does-not-exist",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 163832,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 162.1945,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 0.96,
+        "seo": 1
+      },
+      "intentionalExceptions": [
+        "is-crawlable: this page is intentionally noindex",
+        "http-status-code: the missing-page template must return 404"
+      ],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.005649717514124294,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 177
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 151
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/privacy",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 167868,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/02i2rwpyx_hh6.js",
+            "gzip": 4036
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 244.558,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.0072992700729927005,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 273
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.002883529349119084,
+        "shifts": [
+          {
+            "start": 282.5999999642372,
+            "value": 0.002883529349119084,
+            "sources": [
+              {
+                "node": "<div><div class=\"grid max-w-measure gap-5\"><h2 class=\"pt-4 text-section font-medium\">Where it goes</h2><ul class=\"grid list-disc gap-2 ps-6 marker:text-forest\"><li>Your details are stored on our own w",
+                "before": {
+                  "x": 136,
+                  "y": 824.03125,
+                  "width": 1168,
+                  "height": 75.96875,
+                  "top": 824.03125,
+                  "right": 1304,
+                  "bottom": 900,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 796.84375,
+                  "width": 1168,
+                  "height": 103.15625,
+                  "top": 796.84375,
+                  "right": 1304,
+                  "bottom": 900,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 140,
+                  "width": 346.25,
+                  "height": 72,
+                  "top": 140,
+                  "right": 482.25,
+                  "bottom": 212,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 140,
+                  "width": 362.921875,
+                  "height": 72,
+                  "top": 140,
+                  "right": 498.921875,
+                  "bottom": 212,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:1\">notice</span></span>",
+                "before": {
+                  "x": 333.8125,
+                  "y": 145,
+                  "width": 148.4375,
+                  "height": 69.59375,
+                  "top": 145,
+                  "right": 482.25,
+                  "bottom": 214.59375,
+                  "left": 333.8125
+                },
+                "after": {
+                  "x": 337.84375,
+                  "y": 145,
+                  "width": 161.078125,
+                  "height": 69.59375,
+                  "top": 145,
+                  "right": 498.921875,
+                  "bottom": 214.59375,
+                  "left": 337.84375
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 230
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/request-a-quote",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 173894,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+            "gzip": 239
+          },
+          {
+            "url": "/_next/static/chunks/01xqwjlpj2g-a.js",
+            "gzip": 9823
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 617.3880000000001,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 32,
+        "interactions": [32, 32, 32, 32, 32, 32, 32, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.005970149253731343,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 334
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0006190346297903807,
+        "shifts": [
+          {
+            "start": 281.9000000357628,
+            "value": 0.0006190346297903807,
+            "sources": [
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 191.1875,
+                  "width": 555,
+                  "height": 72,
+                  "top": 191.1875,
+                  "right": 691,
+                  "bottom": 263.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 191.1875,
+                  "width": 555,
+                  "height": 72,
+                  "top": 191.1875,
+                  "right": 691,
+                  "bottom": 263.1875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 254.78125,
+                  "width": 555,
+                  "height": 72,
+                  "top": 254.78125,
+                  "right": 691,
+                  "bottom": 326.78125,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 254.78125,
+                  "width": 555,
+                  "height": 72,
+                  "top": 254.78125,
+                  "right": 691,
+                  "bottom": 326.78125,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 593.25,
+                  "width": 444.796875,
+                  "height": 63,
+                  "top": 593.25,
+                  "right": 580.796875,
+                  "bottom": 656.25,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 593.25,
+                  "width": 444.796875,
+                  "height": 63,
+                  "top": 593.25,
+                  "right": 580.796875,
+                  "bottom": 656.25,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 676.796875,
+                  "y": 670.4375,
+                  "width": 587.203125,
+                  "height": 20,
+                  "top": 670.4375,
+                  "right": 1264,
+                  "bottom": 690.4375,
+                  "left": 676.796875
+                },
+                "after": {
+                  "x": 676.796875,
+                  "y": 670.4375,
+                  "width": 587.203125,
+                  "height": 20,
+                  "top": 670.4375,
+                  "right": 1264,
+                  "bottom": 690.4375,
+                  "left": 676.796875
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 301
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 167868,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/02i2rwpyx_hh6.js",
+            "gzip": 4036
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 681.5775,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.002551020408163265,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 392
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0012675839522247943,
+        "shifts": [
+          {
+            "start": 273.9000000357628,
+            "value": 0.0012675839522247943,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 335.1875,
+                  "width": 690,
+                  "height": 82,
+                  "top": 335.1875,
+                  "right": 826,
+                  "bottom": 417.1875,
+                  "left": 136
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 405.90625,
+                  "width": 690,
+                  "height": 82,
+                  "top": 405.90625,
+                  "right": 826,
+                  "bottom": 487.90625,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:7\">institutions</span></span>",
+                "before": {
+                  "x": 433.34375,
+                  "y": 411.90625,
+                  "width": 295.984375,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 729.328125,
+                  "bottom": 489.421875,
+                  "left": 433.34375
+                },
+                "after": {
+                  "x": 444.1875,
+                  "y": 411.90625,
+                  "width": 324.28125,
+                  "height": 77.515625,
+                  "top": 411.90625,
+                  "right": 768.46875,
+                  "bottom": 489.421875,
+                  "left": 444.1875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:4\">and</span></span>",
+                "before": {
+                  "x": 554.25,
+                  "y": 341.1875,
+                  "width": 106.21875,
+                  "height": 77.515625,
+                  "top": 341.1875,
+                  "right": 660.46875,
+                  "bottom": 418.703125,
+                  "left": 554.25
+                },
+                "after": {
+                  "x": 559.765625,
+                  "y": 341.1875,
+                  "width": 111.484375,
+                  "height": 77.515625,
+                  "top": 341.1875,
+                  "right": 671.25,
+                  "bottom": 418.703125,
+                  "left": 559.765625
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 352
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/child-care",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 507.86300000000006,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.00784313725490196,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 254
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 236
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/chronic-condition-care",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 643.7909999999999,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.007751937984496124,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 257
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.001707813404224537,
+        "shifts": [
+          {
+            "start": 265.5999999642372,
+            "value": 0.001707813404224537,
+            "sources": [
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 627.796875,
+                  "height": 82,
+                  "top": 284,
+                  "right": 763.796875,
+                  "bottom": 366,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 284,
+                  "width": 658.734375,
+                  "height": 82,
+                  "top": 284,
+                  "right": 794.734375,
+                  "bottom": 366,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 6,
+                  "width": 502.3125,
+                  "height": 104,
+                  "top": 6,
+                  "right": 971.15625,
+                  "bottom": 110,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 6,
+                  "width": 509.890625,
+                  "height": 104,
+                  "top": 6,
+                  "right": 974.9375,
+                  "bottom": 110,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:1\">condition</span></span>",
+                "before": {
+                  "x": 371.265625,
+                  "y": 290,
+                  "width": 252.359375,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 623.625,
+                  "bottom": 367.515625,
+                  "left": 371.265625
+                },
+                "after": {
+                  "x": 379.46875,
+                  "y": 290,
+                  "width": 273.6875,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 653.15625,
+                  "bottom": 367.515625,
+                  "left": 379.46875
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:2\">care</span></span>",
+                "before": {
+                  "x": 640.640625,
+                  "y": 290,
+                  "width": 123.15625,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 763.796875,
+                  "bottom": 367.515625,
+                  "left": 640.640625
+                },
+                "after": {
+                  "x": 666.140625,
+                  "y": 290,
+                  "width": 128.59375,
+                  "height": 77.515625,
+                  "top": 290,
+                  "right": 794.734375,
+                  "bottom": 367.515625,
+                  "left": 666.140625
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 236
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/elderly-care",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 487.947,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.007751937984496124,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 257
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 236
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/home-nursing-care",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 488.943,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.007547169811320755,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 264
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 240
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/hospital-and-clinic-staffing",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 645.816,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 48,
+        "interactionCount": 2,
+        "interactions": [48, 48],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.007751937984496124,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 257
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 236
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/maternity-and-newborn-care",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 507.11300000000006,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.007751937984496124,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 257
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 236
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/palliative-care",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 645.8699999999999,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 48,
+        "interactionCount": 2,
+        "interactions": [48, 48],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.0038910505836575876,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 257
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 236
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/services/school-nurse-staffing",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 165283,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/2s5ehqawovr1d.js",
+            "gzip": 1451
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 624.1625,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.00784313725490196,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 254
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 237
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    },
+    {
+      "route": "/terms",
+      "profile": {
+        "cpuSlowdownMultiplier": 4,
+        "rttMs": 40,
+        "throughputKbps": 9216,
+        "requestLatencyMs": 40,
+        "downloadThroughputKbps": 9216,
+        "uploadThroughputKbps": 1536
+      },
+      "initial": {
+        "total": 167868,
+        "files": [
+          {
+            "url": "/_next/static/chunks/3koyarw6rgz08.js",
+            "gzip": 7542
+          },
+          {
+            "url": "/_next/static/chunks/0r2ussxykh9je.js",
+            "gzip": 73476
+          },
+          {
+            "url": "/_next/static/chunks/3c46b63_1amd9.js",
+            "gzip": 46442
+          },
+          {
+            "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+            "gzip": 4390
+          },
+          {
+            "url": "/_next/static/chunks/0umf92h1sb77c.js",
+            "gzip": 3514
+          },
+          {
+            "url": "/_next/static/chunks/18tghtrwaxrgb.js",
+            "gzip": 5758
+          },
+          {
+            "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+            "gzip": 8362
+          },
+          {
+            "url": "/_next/static/chunks/3kc0m6h42h68t.js",
+            "gzip": 13261
+          },
+          {
+            "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+            "gzip": 819
+          },
+          {
+            "url": "/_next/static/chunks/02i2rwpyx_hh6.js",
+            "gzip": 4036
+          },
+          {
+            "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+            "gzip": 268
+          }
+        ]
+      },
+      "deferred": {
+        "total": 51245,
+        "files": [
+          {
+            "url": "/_next/static/chunks/2khblt934m9wm.js",
+            "gzip": 27310
+          },
+          {
+            "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+            "gzip": 17488
+          },
+          {
+            "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+            "gzip": 5447
+          },
+          {
+            "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+            "gzip": 1000
+          }
+        ]
+      },
+      "lcp": 244.058,
+      "cls": 0,
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "intentionalExceptions": [],
+      "mobileRuntime": {
+        "inpUpperBound": 32,
+        "interactionCount": 2,
+        "interactions": [32, 32],
+        "slowEvents": [],
+        "cls": 0,
+        "shifts": [],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0.004273504273504274,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 234
+      },
+      "desktopScroll": {
+        "inpUpperBound": 16,
+        "interactionCount": 0,
+        "interactions": [],
+        "slowEvents": [],
+        "cls": 0.0005470951535574202,
+        "shifts": [
+          {
+            "start": 282.2000000476837,
+            "value": 0.0005470951535574202,
+            "sources": [
+              {
+                "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-medium text-navy not-",
+                "before": {
+                  "x": 468.84375,
+                  "y": 0,
+                  "width": 502.3125,
+                  "height": 100,
+                  "top": 0,
+                  "right": 971.15625,
+                  "bottom": 100,
+                  "left": 468.84375
+                },
+                "after": {
+                  "x": 465.046875,
+                  "y": 0,
+                  "width": 509.890625,
+                  "height": 100,
+                  "top": 0,
+                  "right": 974.9375,
+                  "bottom": 100,
+                  "left": 465.046875
+                }
+              },
+              {
+                "node": "#text",
+                "before": {
+                  "x": 136,
+                  "y": 140,
+                  "width": 319.484375,
+                  "height": 72,
+                  "top": 140,
+                  "right": 455.484375,
+                  "bottom": 212,
+                  "left": 136
+                },
+                "after": {
+                  "x": 136,
+                  "y": 140,
+                  "width": 333.53125,
+                  "height": 72,
+                  "top": 140,
+                  "right": 469.53125,
+                  "bottom": 212,
+                  "left": 136
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:2\">use</span></span>",
+                "before": {
+                  "x": 365.046875,
+                  "y": 145,
+                  "width": 90.4375,
+                  "height": 69.59375,
+                  "top": 145,
+                  "right": 455.484375,
+                  "bottom": 214.59375,
+                  "left": 365.046875
+                },
+                "after": {
+                  "x": 375.015625,
+                  "y": 145,
+                  "width": 94.515625,
+                  "height": 69.59375,
+                  "top": 145,
+                  "right": 469.53125,
+                  "bottom": 214.59375,
+                  "left": 375.015625
+                }
+              },
+              {
+                "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:1\">of</span></span>",
+                "before": {
+                  "x": 303.78125,
+                  "y": 145,
+                  "width": 46.25,
+                  "height": 69.59375,
+                  "top": 145,
+                  "right": 350.03125,
+                  "bottom": 214.59375,
+                  "left": 303.78125
+                },
+                "after": {
+                  "x": 311.234375,
+                  "y": 145,
+                  "width": 52.3125,
+                  "height": 69.59375,
+                  "top": 145,
+                  "right": 363.546875,
+                  "bottom": 214.59375,
+                  "left": 311.234375
+                }
+              }
+            ]
+          }
+        ],
+        "scrollLongTasks": [],
+        "maxScrollTask": 0,
+        "droppedFrameRatio": 0,
+        "refreshInterval": 16.699999999999818,
+        "frameCount": 202
+      },
+      "lighthouseVersion": "13.6.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import type { Audience } from "@/constants/statuses";
 import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
-import { AUDIENCE_LABELS } from "@/constants/statuses";
+import { chooseRelatedServices } from "./related";
 import { orderingDocumentKey } from "@/constants/sections";
 import { assertImagesKept, getImages } from "@/features/media/api";
 import type { SiteImage } from "@/features/media/types";
@@ -61,7 +61,7 @@ export function findPublishedService(slug: string) {
 /**
  * A service's page (plan §6.4), published copies only, in two round trips:
  * the service (or where it moved to), every service for the others for the
- * same audience, and the site's numbers together; then their photos.
+ * full catalogue, and the site's numbers together; then their photos.
  */
 export async function getPublishedServicePage(
   slug: string,
@@ -84,9 +84,7 @@ export async function getPublishedServicePage(
   ]);
   if (!found || "movedTo" in found) return found;
   const { record: service } = found;
-  const related = services.filter(
-    (other) => other.id !== service.id && other.published.audience === service.published.audience,
-  );
+  const related = chooseRelatedServices(services.filter((other) => other.id !== service.id));
   const images = await getImages([...mediaIds([service, ...related].map((shown) => shown.published.image))]);
   return { service, related, site, images };
 }
@@ -107,12 +105,12 @@ export async function getServiceMetadata(slug: string): Promise<Metadata> {
   };
 }
 
-/** A service's share picture (plan §19): its name under who it is for; the services' own for an address it does not have. */
+/** A service's share picture (plan §19): its name with the Services label; the services' own for an address it does not have. */
 export async function getServiceShareImage(slug: string) {
   const found = await findPublishedService(slug);
   if (!found || "movedTo" in found) return renderShareImage({ title: PAGE_NAMES.SERVICES });
-  const { name, audience } = found.record.published;
-  return renderShareImage({ title: name.en, label: AUDIENCE_LABELS[audience] });
+  const { name } = found.record.published;
+  return renderShareImage({ title: name.en, label: PAGE_NAMES.SERVICES });
 }
 
 /** A service in the admin's list (D92): what its row says, and where it stands. */

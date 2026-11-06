@@ -17,3 +17,9 @@ export const SITE = {
     applications: "hr@alhidaya.qa",
   },
 } as const;
+
+/** The user-approved Contact map provider (D179); never accept an arbitrary iframe URL. */
+export const GOOGLE_MAPS = {
+  embed: "https://maps.google.com/maps",
+  privacy: "https://policies.google.com/privacy",
+} as const;

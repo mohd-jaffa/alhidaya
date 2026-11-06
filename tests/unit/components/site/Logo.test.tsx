@@ -9,7 +9,7 @@ describe("Logo", () => {
     render(<Logo className="h-10" priority />);
     const logo = screen.getByRole("img", { name: UI_TEXT.siteName });
     expect(logo.getAttribute("src")).toMatch(/logo\.svg/);
-    expect(logo).toHaveClass("h-10");
+    expect(logo).toHaveClass("h-10", "object-contain");
   });
 
   it("is in white on navy", () => {

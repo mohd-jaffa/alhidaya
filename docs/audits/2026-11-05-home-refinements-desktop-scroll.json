@@ -1,0 +1,138 @@
+{
+  "route": "/",
+  "runtime": {
+    "inpUpperBound": 16,
+    "interactionCount": 0,
+    "interactions": [],
+    "slowEvents": [],
+    "cls": 0.0018122578687628599,
+    "shifts": [
+      {
+        "start": 280.10000002384186,
+        "value": 0.0018122578687628599,
+        "sources": [
+          {
+            "node": "#text",
+            "before": {
+              "x": 136,
+              "y": 284,
+              "width": 690,
+              "height": 82,
+              "top": 284,
+              "right": 826,
+              "bottom": 366,
+              "left": 136
+            },
+            "after": {
+              "x": 136,
+              "y": 284,
+              "width": 690,
+              "height": 82,
+              "top": 284,
+              "right": 826,
+              "bottom": 366,
+              "left": 136
+            }
+          },
+          {
+            "node": "#text",
+            "before": {
+              "x": 136,
+              "y": 354.71875,
+              "width": 690,
+              "height": 82,
+              "top": 354.71875,
+              "right": 826,
+              "bottom": 436.71875,
+              "left": 136
+            },
+            "after": {
+              "x": 136,
+              "y": 354.71875,
+              "width": 690,
+              "height": 82,
+              "top": 354.71875,
+              "right": 826,
+              "bottom": 436.71875,
+              "left": 136
+            }
+          },
+          {
+            "node": "<ul class=\"relative isolate flex items-center gap-1 rounded-pill bg-card p-1.5 shadow-raised\"><li><a aria-current=\"page\" class=\"nav-link relative flex min-h-touch items-center rounded-pill px-4 font-m",
+            "before": {
+              "x": 468.84375,
+              "y": 6,
+              "width": 502.3125,
+              "height": 104,
+              "top": 6,
+              "right": 971.15625,
+              "bottom": 110,
+              "left": 468.84375
+            },
+            "after": {
+              "x": 465.046875,
+              "y": 6,
+              "width": 509.890625,
+              "height": 104,
+              "top": 6,
+              "right": 974.9375,
+              "bottom": 110,
+              "left": 465.046875
+            }
+          },
+          {
+            "node": "<span class=\"rise-word\"><span data-word=\"true\" style=\"--i:5\">doorstep.</span></span>",
+            "before": {
+              "x": 345.609375,
+              "y": 360.71875,
+              "width": 263.375,
+              "height": 77.515625,
+              "top": 360.71875,
+              "right": 608.984375,
+              "bottom": 438.234375,
+              "left": 345.609375
+            },
+            "after": {
+              "x": 351.25,
+              "y": 360.71875,
+              "width": 283.9375,
+              "height": 77.515625,
+              "top": 360.71875,
+              "right": 635.1875,
+              "bottom": 438.234375,
+              "left": 351.25
+            }
+          },
+          {
+            "node": "<span class=\"rise-word text-deep\"><span data-word=\"true\" style=\"--i:1\">nursing</span></span>",
+            "before": {
+              "x": 349.234375,
+              "y": 290,
+              "width": 207.28125,
+              "height": 77.515625,
+              "top": 290,
+              "right": 556.515625,
+              "bottom": 367.515625,
+              "left": 349.234375
+            },
+            "after": {
+              "x": 355.5,
+              "y": 290,
+              "width": 221.640625,
+              "height": 77.515625,
+              "top": 290,
+              "right": 577.140625,
+              "bottom": 367.515625,
+              "left": 355.5
+            }
+          }
+        ]
+      }
+    ],
+    "scrollLongTasks": [],
+    "maxScrollTask": 0,
+    "droppedFrameRatio": 0,
+    "refreshInterval": 16.699999999999818,
+    "frameCount": 451
+  }
+}

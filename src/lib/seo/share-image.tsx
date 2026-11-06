@@ -4,15 +4,16 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 
 import { UI_TEXT } from "@/constants/messages";
+import { SITE } from "@/constants/site";
 
 /** The size every share picture is made at (plan §19): the size Open Graph and X expect. */
 export const SHARE_IMAGE_SIZE = { width: 1200, height: 630 } as const;
 
-/** The redesign's colours (plan §30.2, D98), as the renderer needs them written out. */
+/** Theme 6 tokens (DESIGN.md), written out for the server image renderer. */
 const COLOURS = {
   ground: "#ffffff",
   navy: "#0b2440",
-  forest: "#5b7628",
+  deep: "#0f64ac",
   leaf: "#86ae3c",
   leafPale: "#eef5e2",
 } as const;
@@ -20,13 +21,14 @@ const COLOURS = {
 const FONT = "src/assets/fonts/inter-tight/share/inter-tight-latin-400-normal.woff";
 
 /**
- * The picture a page shows when it is shared (plan §19, D97): on white, what
- * the page is on a pale-green pill and its headline, large and light, in the
- * site's typeface; across its foot, the company's name on the leaf band,
- * as the footer carries it.
+ * A self-contained, branded share card (plan §19): the original logo, the
+ * published headline and the site's domain. No remote images or browser JS.
  */
 export async function renderShareImage({ title, label }: { title: string; label?: string }): Promise<ImageResponse> {
-  const regular = await readFile(path.join(process.cwd(), FONT));
+  const [regular, logo] = await Promise.all([
+    readFile(path.join(process.cwd(), FONT)),
+    readFile(path.join(process.cwd(), "src/assets/brand/logo.svg")),
+  ]);
   return new ImageResponse(
     <div
       style={{
@@ -36,28 +38,38 @@ export async function renderShareImage({ title, label }: { title: string; label?
         height: "100%",
         background: COLOURS.ground,
         fontFamily: "Inter Tight",
+        padding: "56px 72px 48px",
+        position: "relative",
       }}
     >
+      {/* The image renderer needs an embedded original, not a browser image loader. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`data:image/svg+xml;base64,${logo.toString("base64")}`}
+        width={480}
+        height={73}
+        alt={UI_TEXT.siteName}
+      />
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          gap: 36,
+          gap: 20,
           flexGrow: 1,
-          padding: "0 80px",
+          padding: "28px 0",
         }}
       >
         {label ? (
           <div
             style={{
               display: "flex",
-              padding: "10px 26px",
-              borderRadius: 999,
+              padding: "8px 18px",
+              borderRadius: 12,
               background: COLOURS.leafPale,
-              color: COLOURS.forest,
-              fontSize: 28,
+              color: COLOURS.navy,
+              fontSize: 24,
             }}
           >
             {label}
@@ -66,11 +78,12 @@ export async function renderShareImage({ title, label }: { title: string; label?
         <div
           style={{
             display: "flex",
-            maxWidth: 1000,
-            fontSize: 84,
-            lineHeight: 1.04,
-            letterSpacing: -3,
-            color: COLOURS.navy,
+            maxWidth: 1056,
+            fontSize: Math.max(44, Math.min(72, 600 / Math.sqrt(Math.max(1, title.length)))),
+            lineHeight: 1.1,
+            letterSpacing: -1.5,
+            color: COLOURS.deep,
+            wordBreak: "break-word",
           }}
         >
           {title}
@@ -80,15 +93,15 @@ export async function renderShareImage({ title, label }: { title: string; label?
         style={{
           display: "flex",
           alignItems: "center",
-          height: 132,
-          padding: "0 80px",
-          background: COLOURS.leaf,
           color: COLOURS.navy,
-          fontSize: 40,
-          letterSpacing: -1,
+          fontSize: 26,
         }}
       >
-        {UI_TEXT.siteName}
+        {SITE.domain}
+      </div>
+      <div style={{ display: "flex", position: "absolute", bottom: 0, left: 0, right: 0, height: 14 }}>
+        <div style={{ width: "72%", background: COLOURS.deep }} />
+        <div style={{ flexGrow: 1, background: COLOURS.leaf }} />
       </div>
     </div>,
     { ...SHARE_IMAGE_SIZE, fonts: [{ name: "Inter Tight", data: regular, weight: 400, style: "normal" }] },

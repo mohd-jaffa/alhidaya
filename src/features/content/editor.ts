@@ -17,7 +17,7 @@ import type { SectionInput } from "@/lib/validation";
  */
 export type SectionField =
   | { kind: "line" | "lines"; name: string; label: string; max: number; required: boolean; hint?: string }
-  | { kind: "photo" | "rich" | "values" | "form" | "pictogram"; name: string; label: string }
+  | { kind: "photo" | "rich" | "values" | "form" | "pictogram" | "toggle"; name: string; label: string }
   | { kind: "group"; name: string; label: string; fields: readonly SectionField[] }
   | {
       kind: "list";
@@ -83,6 +83,7 @@ export const HERO_FIELDS: readonly SectionField[] = [
       } as SectionField,
     ],
   },
+  { kind: "toggle", name: "hideNote", label: ADMIN_TEXT.hideSliderPill },
   group("note", ADMIN_TEXT.heroNote, [icon(), line("text", ADMIN_TEXT.note, TEXT_LIMITS.label, false)]),
 ];
 
@@ -124,6 +125,7 @@ export const SECTION_FIELDS: Record<SectionType, readonly SectionField[]> = {
   JOBS_LIST: [
     lines("intro", ADMIN_TEXT.introduction, TEXT_LIMITS.sectionText),
     lines("emptyText", ADMIN_TEXT.emptyJobs, TEXT_LIMITS.lede, true),
+    photo,
   ],
   CONTACT_BAND: [heading, lines("text", ADMIN_TEXT.text, TEXT_LIMITS.lede)],
   CONTACT_DETAILS: [heading],
@@ -138,6 +140,8 @@ export const SECTION_FIELDS: Record<SectionType, readonly SectionField[]> = {
 
 /** A section's fields on its page: Home's sign is its hero, its slides in place of a page header's words (D128). */
 export function sectionFields(page: PageKey, type: SectionType): readonly SectionField[] {
+  if (type === "SIGN" && (page === "ABOUT" || page === "SERVICES"))
+    return [...SECTION_FIELDS.SIGN, { kind: "toggle", name: "showActions", label: ADMIN_TEXT.showOpeningButtons }];
   return type === "SIGN" && page === "HOME" ? HERO_FIELDS : SECTION_FIELDS[type];
 }
 
@@ -153,6 +157,8 @@ export function blankItem(page: PageKey, fields: readonly SectionField[]): unkno
  */
 export function blankValue(page: PageKey, field: SectionField): unknown {
   switch (field.kind) {
+    case "toggle":
+      return false;
     case "photo":
     case "pictogram":
       return null;
@@ -187,15 +193,16 @@ export function addableTypes(page: PageKey, types: readonly SectionType[]): Sect
 
 /**
  * Why a section may not be changed (plan §7.1, D87): the sign is first and
- * fixed; a section the page cannot work without stays visible and stays,
+ * fixed except Careers’ retained opening (D148); required sections stay visible,
  * unless another visible one of its type is there.
  */
 export function sectionLock(
   page: PageKey,
   sections: readonly Pick<SectionInput, "type" | "visible">[],
   index: number,
-): "fixed" | "needed" | null {
+): "fixed" | "needed" | "retained" | null {
   const section = sections[index];
+  if (PAGE_RULES[page].movableSign && section.type === FIXED_FIRST_SECTION) return "retained";
   if (index === 0 && section.type === FIXED_FIRST_SECTION) return "fixed";
   if (!PAGE_RULES[page].required?.includes(section.type)) return null;
   const others = sections.filter((other, at) => at !== index && other.type === section.type && other.visible);

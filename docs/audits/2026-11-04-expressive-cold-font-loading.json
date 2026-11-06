@@ -1,0 +1,77 @@
+[
+  {
+    "font": "inter-tight",
+    "cls": 0.0013148242326870812,
+    "requests": 1
+  },
+  {
+    "font": "inter",
+    "cls": 0.0005121507792670874,
+    "requests": 2
+  },
+  {
+    "font": "atkinson-hyperlegible-next",
+    "cls": 0.0018317820675880986,
+    "requests": 2
+  },
+  {
+    "font": "roboto",
+    "cls": 4.274431912425079e-5,
+    "requests": 2
+  },
+  {
+    "font": "open-sans",
+    "cls": 0.0018089933089052185,
+    "requests": 2
+  },
+  {
+    "font": "source-sans-3",
+    "cls": 0.003831701801699457,
+    "requests": 2
+  },
+  {
+    "font": "nunito-sans",
+    "cls": 0.0026646703592125066,
+    "requests": 2
+  },
+  {
+    "font": "manrope",
+    "cls": 0.0032876777953100783,
+    "requests": 2
+  },
+  {
+    "font": "dm-sans",
+    "cls": 0.0013768403066343226,
+    "requests": 2
+  },
+  {
+    "font": "work-sans",
+    "cls": 0.0002421625774843217,
+    "requests": 2
+  },
+  {
+    "font": "playfair-display",
+    "cls": 0.0012561700436742901,
+    "requests": 2
+  },
+  {
+    "font": "cormorant-garamond",
+    "cls": 0.0011460817823330564,
+    "requests": 2
+  },
+  {
+    "font": "fraunces",
+    "cls": 0.003353441245531495,
+    "requests": 2
+  },
+  {
+    "font": "space-grotesk",
+    "cls": 0.0011739202300959674,
+    "requests": 2
+  },
+  {
+    "font": "syne",
+    "cls": 0.005307744991883692,
+    "requests": 2
+  }
+]

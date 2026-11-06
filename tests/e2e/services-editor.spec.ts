@@ -82,6 +82,15 @@ test("a new service is made, previewed, published, seen by a visitor, and archiv
     await page
       .getByRole("textbox", { name: "Paragraph 1" })
       .fill("A nurse takes over at home for a few hours or days.");
+    const buttons = page.getByRole("region", { name: ADMIN_TEXT.serviceButtons });
+    await buttons.getByRole("button", { name: ADMIN_TEXT.addServiceButton }).click();
+    await buttons.getByRole("button", { name: ADMIN_TEXT.addServiceButton }).click();
+    const primary = buttons.getByRole("group", { name: "Header button 1" });
+    const secondary = buttons.getByRole("group", { name: "Header button 2" });
+    await primary.getByRole("textbox", { name: ADMIN_TEXT.buttonLabel }).fill("Ask about this service");
+    await primary.getByRole("textbox", { name: ADMIN_TEXT.buttonLink }).fill("/contact");
+    await secondary.getByRole("textbox", { name: ADMIN_TEXT.buttonLabel }).fill("Message care team");
+    await secondary.getByRole("textbox", { name: ADMIN_TEXT.buttonLink }).fill("https://wa.me/97431306555");
     const bar = page.locator("form").filter({ has: page.getByRole("heading", { level: 1 }) });
     await bar.getByRole("button", { name: ADMIN_TEXT.saveDraft }).click();
     await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
@@ -94,6 +103,10 @@ test("a new service is made, previewed, published, seen by a visitor, and archiv
     ]);
     await expect(preview).toHaveURL(ROUTES.service(slug));
     await expect(preview.getByRole("heading", { level: 1, name })).toBeVisible();
+    await expect(preview.locator("#start").getByRole("link", { name: "Ask about this service" })).toHaveAttribute(
+      "href",
+      "/contact",
+    );
     await expect(preview.getByRole("status").filter({ hasText: UI_TEXT.previewBar })).toBeVisible();
     await preview.close();
     expect((await visitor.goto(ROUTES.service(slug)))?.status()).toBe(404);
@@ -106,6 +119,23 @@ test("a new service is made, previewed, published, seen by a visitor, and archiv
     await expect(page.getByText(ADMIN_TEXT.isPublished(name))).toBeVisible();
     expect((await visitor.goto(ROUTES.service(slug)))?.status()).toBe(200);
     await expect(visitor.getByRole("heading", { level: 1, name })).toBeVisible();
+
+    await expect(visitor.locator("#start").getByRole("link", { name: "Ask about this service" })).toBeVisible();
+    await primary.getByRole("textbox", { name: ADMIN_TEXT.buttonLabel }).fill("Draft header action");
+    await bar.getByRole("button", { name: ADMIN_TEXT.saveDraft }).click();
+    await visitor.reload();
+    await expect(visitor.locator("#start").getByRole("link", { name: "Ask about this service" })).toBeVisible();
+    await expect(visitor.getByRole("link", { name: "Draft header action" })).toHaveCount(0);
+    await buttons.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.remove, "Header button 2") }).click();
+    await buttons.getByRole("button", { name: ADMIN_TEXT.actionOn(ADMIN_TEXT.remove, "Header button 1") }).click();
+    await bar.getByRole("button", { name: ADMIN_TEXT.publish }).click();
+    await page
+      .getByRole("dialog", { name: ADMIN_TEXT.publishTitle(name) })
+      .getByRole("button", { name: ADMIN_TEXT.publish })
+      .click();
+    await expect(page.getByText(ADMIN_TEXT.isPublished(name))).toBeVisible();
+    await visitor.reload();
+    await expect(visitor.locator("#start").getByRole("link")).toHaveCount(0);
 
     const site = page.getByRole("region", { name: ADMIN_TEXT.onTheSite });
     await site.getByRole("button", { name: ADMIN_TEXT.archive }).click();

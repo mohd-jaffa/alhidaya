@@ -44,14 +44,14 @@ const currentStation = (pathname: string, stations: Station[]) =>
 
 /** A row of the column: a station, the profile, the way out. */
 const ROW = "flex min-h-touch w-full items-center gap-3 rounded-control px-3 text-start";
-const ROW_IDLE = "text-on-deep-2 hover:bg-on-deep/5 hover:text-on-deep";
+const ROW_IDLE = "text-ink-2 hover:bg-leaf/20 hover:text-navy";
 // The current row is marked by its highlight alone, never by a heavier weight (D115).
-const ROW_HERE = "bg-on-deep/10 text-on-deep";
+const ROW_HERE = "bg-leaf text-navy";
 
 /**
  * The admin's sections as a plain list in groups (R6.1, D101, D115): each
  * with its mark, the groups under bold headings and parted by a light rule,
- * the current one marked, and what waits shown in a sky count. No line and no
+ * the current one marked, and what waits shown in a green count. No line and no
  * station dots since the redesign.
  */
 function Stations({
@@ -70,9 +70,9 @@ function Stations({
       {groups.map((group, at) => (
         <div
           key={group.label ?? "home"}
-          className={`grid gap-1 ${at > 0 ? "mt-4 border-t border-on-deep/15 pt-4" : ""}`}
+          className={`grid gap-1 ${at > 0 ? "mt-4 border-t border-forest/20 pt-4" : ""}`}
         >
-          {group.label ? <p className="mb-1 px-3 text-body font-bold text-on-deep">{group.label}</p> : null}
+          {group.label ? <p className="mb-1 px-3 text-body font-bold text-navy">{group.label}</p> : null}
           <ul className="grid gap-1">
             {group.stations.map((station) => {
               const here = station === current;
@@ -87,7 +87,7 @@ function Stations({
                     <Pictogram name={station.pictogram} size="sm" />
                     <span className="grow">{station.label}</span>
                     {station.count && station.count.value > 0 ? (
-                      <span className="rounded-full bg-sky px-2 text-small font-bold text-navy tabular-nums">
+                      <span className="rounded-full bg-leaf/30 px-2 text-small font-bold text-navy tabular-nums">
                         <span aria-hidden="true">{station.count.value}</span>
                         <span className="sr-only">{station.count.said}</span>
                       </span>
@@ -111,8 +111,8 @@ function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: ()
   const leave = () => router.replace(ADMIN_ROUTES.login);
   const { submit, submitting } = useApiMutation(AuthClient.signOut, { onSuccess: leave, onError: leave });
   return (
-    <div className="grid gap-1 border-t border-on-deep/15 pt-4">
-      <p className="px-3 pb-1 text-small text-on-deep-2">{ADMIN_TEXT.signedInAs(adminName)}</p>
+    <div className="grid gap-1 border-t border-forest/20 pt-4">
+      <p className="px-3 pb-1 text-small text-ink-2">{ADMIN_TEXT.signedInAs(adminName)}</p>
       <Link
         href={ADMIN_ROUTES.profile}
         aria-current={here ? "page" : undefined}
@@ -144,8 +144,8 @@ function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: ()
 }
 
 /**
- * The admin's frame (plan §16, R6.1): a column of links in the logo's deep
- * blue (D123) on a wide screen; on a phone a deep-blue bar naming the
+ * The admin's frame (plan §16, R6.1): a column of links in pastel
+ * green (D138) on a wide screen; on a phone a pastel-green bar naming the
  * section, with the links in a menu. The page beside it is white and quiet.
  * No smooth scroll, no motion of the public site's.
  */
@@ -228,6 +228,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
           ),
         },
         { label: ADMIN_TEXT.media, href: ADMIN_ROUTES.media, pictogram: "image" },
+        { label: ADMIN_TEXT.fontManager, href: ADMIN_ROUTES.fonts, pictogram: "typography" },
         {
           label: ADMIN_TEXT.settings,
           href: ADMIN_ROUTES.settings,
@@ -254,10 +255,10 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
     <div className="min-h-dvh bg-ground lg:grid lg:grid-cols-[15.5rem_1fr]">
       <SkipLink />
       {/* The column scrolls on its own; reaching its end never carries on into the page (D115). */}
-      <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto overscroll-contain bg-deep px-5 py-6 lg:flex">
-        <Link href={ADMIN_ROUTES.overview} className="grid gap-1 text-on-deep">
-          <Logo variant="white" priority className="h-9 w-auto" />
-          <span className="text-small text-on-deep-2">{ADMIN_TEXT.admin}</span>
+      <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto overscroll-contain border-e border-forest/15 bg-leaf-pale px-5 py-6 lg:flex">
+        <Link href={ADMIN_ROUTES.overview} className="grid gap-1 text-navy">
+          <Logo priority className="h-9 w-auto" />
+          <span className="text-small text-ink-2">{ADMIN_TEXT.admin}</span>
         </Link>
         <Stations groups={groups} />
         <div className="mt-auto">
@@ -265,22 +266,26 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
         </div>
       </aside>
 
-      <header className="sticky top-0 z-10 flex items-center gap-3 bg-deep px-gutter py-2 text-on-deep lg:hidden">
-        <Link href={ADMIN_ROUTES.overview} aria-label={ADMIN_TEXT.dashboard} className="shrink-0">
-          <Logo variant="white" priority className="h-8 w-auto" />
+      <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-forest/15 bg-leaf-pale px-gutter py-2 text-navy lg:hidden">
+        <Link
+          href={ADMIN_ROUTES.overview}
+          aria-label={ADMIN_TEXT.dashboard}
+          className="inline-flex min-h-touch min-w-0 max-w-[70%] items-center"
+        >
+          <Logo priority className="h-8 w-auto" />
         </Link>
         <span className="ms-auto truncate font-semibold">{current?.label}</span>
         <button
           type="button"
           onClick={() => setMenu(true)}
-          className="grid size-touch place-items-center rounded-control hover:bg-on-deep/10"
+          className="grid size-touch shrink-0 place-items-center rounded-control hover:bg-leaf/20"
           aria-label={ADMIN_TEXT.menu}
         >
           <Pictogram name="menu" size="md" />
         </button>
       </header>
       <Dialog open={menu} onClose={() => setMenu(false)} title={ADMIN_TEXT.menu}>
-        <div className="grid gap-6 rounded-panel bg-deep p-5">
+        <div className="grid gap-6 rounded-panel bg-leaf-pale p-5">
           <Stations groups={groups} onNavigate={() => setMenu(false)} />
           <Account adminName={adminName} onNavigate={() => setMenu(false)} />
         </div>

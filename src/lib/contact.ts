@@ -1,3 +1,5 @@
+import { GOOGLE_MAPS } from "@/constants/site";
+
 /**
  * The links that reach the company (plan §6.7, D9): a WhatsApp chat with its
  * first line written (Q14), a call, an email; and the admin's way back to a
@@ -21,4 +23,16 @@ export function mailtoHref(email: string): string {
 export function displayPhone(e164: string): string {
   const qatar = e164.match(/^\+974(\d{4})(\d{4})$/);
   return qatar ? `+974 ${qatar[1]} ${qatar[2]}` : e164;
+}
+
+/** Confirmed coordinates win; otherwise Google resolves the published business and area. */
+export function googleSatelliteEmbed(query: string, pin: { lat: number; lon: number } | null): string {
+  const parameters = new URLSearchParams({
+    q: pin ? `${pin.lat},${pin.lon}` : query,
+    hl: "en",
+    z: "18",
+    t: "k",
+    output: "embed",
+  });
+  return `${GOOGLE_MAPS.embed}?${parameters}`;
 }

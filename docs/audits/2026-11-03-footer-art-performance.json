@@ -1,0 +1,137 @@
+{
+  "measuredAt": "2026-11-03T16:52:46.735749+00:00",
+  "scope": "D166 final nurse-only footer: Home mobile Lighthouse/runtime and desktop scroll checks, two isolated serial cases, unchanged budgets and no retries. Recorded on 2026-11-03 before later D167 mobile-menu work. Exported from the preserved JSON log rows on 2026-11-04; the original Playwright output was subsequently cleared. Original build ID was not captured, so the newer current build is not attributed to this measurement. Physical-device, compositor, field and production-region checks are outside this evidence.",
+  "buildId": null,
+  "asset": {
+    "file": "src/assets/brand/illustrations/footer-care.webp",
+    "width": 1320,
+    "height": 489,
+    "bytes": 67854,
+    "loading": "lazy",
+    "decorative": true
+  },
+  "summary": {
+    "route": "/",
+    "profile": {
+      "cpuSlowdownMultiplier": 4,
+      "rttMs": 40,
+      "throughputKbps": 9216,
+      "requestLatencyMs": 40,
+      "downloadThroughputKbps": 9216,
+      "uploadThroughputKbps": 1536
+    },
+    "initial": {
+      "total": 173895,
+      "files": [
+        {
+          "url": "/_next/static/chunks/3koyarw6rgz08.js",
+          "gzip": 7542
+        },
+        {
+          "url": "/_next/static/chunks/0r2ussxykh9je.js",
+          "gzip": 73476
+        },
+        {
+          "url": "/_next/static/chunks/3c46b63_1amd9.js",
+          "gzip": 46442
+        },
+        {
+          "url": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+          "gzip": 4390
+        },
+        {
+          "url": "/_next/static/chunks/0umf92h1sb77c.js",
+          "gzip": 3514
+        },
+        {
+          "url": "/_next/static/chunks/34fawmg_mzc86.js",
+          "gzip": 5758
+        },
+        {
+          "url": "/_next/static/chunks/2q5w64pfsfplu.js",
+          "gzip": 8362
+        },
+        {
+          "url": "/_next/static/chunks/0xjcbl-5-75qt.js",
+          "gzip": 13262
+        },
+        {
+          "url": "/_next/static/chunks/2v7m278s9cfhl.js",
+          "gzip": 239
+        },
+        {
+          "url": "/_next/static/chunks/01xqwjlpj2g-a.js",
+          "gzip": 9823
+        },
+        {
+          "url": "/_next/static/chunks/2_xf99yxhp4od.js",
+          "gzip": 268
+        },
+        {
+          "url": "/_next/static/chunks/1_a4fdmntkkvb.js",
+          "gzip": 819
+        }
+      ]
+    },
+    "deferred": {
+      "total": 52426,
+      "files": [
+        {
+          "url": "/_next/static/chunks/0j6gudepbiaoo.js",
+          "gzip": 1181
+        },
+        {
+          "url": "/_next/static/chunks/2khblt934m9wm.js",
+          "gzip": 27310
+        },
+        {
+          "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+          "gzip": 17488
+        },
+        {
+          "url": "/_next/static/chunks/2j1qdg6u05qhu.js",
+          "gzip": 5447
+        },
+        {
+          "url": "/_next/static/chunks/3rvuxo0nyhzxa.js",
+          "gzip": 1000
+        }
+      ]
+    },
+    "lcp": 540.2725,
+    "cls": 0,
+    "categories": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    },
+    "intentionalExceptions": []
+  },
+  "mobileRuntime": {
+    "inpUpperBound": 64,
+    "interactionCount": 26,
+    "interactions": [64, 40, 40, 32, 32, 32, 24, 24, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+    "slowEvents": [],
+    "cls": 0,
+    "shifts": [],
+    "scrollLongTasks": [],
+    "maxScrollTask": 0,
+    "droppedFrameRatio": 0.003952569169960474,
+    "refreshInterval": 16.699999999999818,
+    "frameCount": 505
+  },
+  "desktopScroll": {
+    "inpUpperBound": 16,
+    "interactionCount": 0,
+    "interactions": [],
+    "slowEvents": [],
+    "cls": 0,
+    "shifts": [],
+    "scrollLongTasks": [],
+    "maxScrollTask": 0,
+    "droppedFrameRatio": 0,
+    "refreshInterval": 16.699999999999818,
+    "frameCount": 456
+  }
+}

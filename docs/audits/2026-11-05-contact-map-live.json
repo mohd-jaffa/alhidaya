@@ -1,0 +1,30 @@
+[
+  {
+    "width": 390,
+    "src": "https://maps.google.com/maps?q=Al+Hidaya+Health+Care+Service%2C+Al+Sadd%2C+Doha%2C+Qatar&hl=en&z=18&t=k&output=embed",
+    "box": {
+      "x": 33.75,
+      "y": 392.21875,
+      "width": 322.5,
+      "height": 215
+    },
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(11, 36, 64, 0.32) 0px 20px 40px -10px, rgba(11, 36, 64, 0.22) 0px 8px 18px -4px",
+    "provider": [
+      "https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1sAl+Hidaya+Health+Care+Service,+Al+Sadd,+Doha,+Qatar!5e1!6i18!3m1!1sen!5m1!1sen"
+    ]
+  },
+  {
+    "width": 1440,
+    "src": "https://maps.google.com/maps?q=Al+Hidaya+Health+Care+Service%2C+Al+Sadd%2C+Doha%2C+Qatar&hl=en&z=18&t=k&output=embed",
+    "box": {
+      "x": 136,
+      "y": 666.859375,
+      "width": 500.390625,
+      "height": 333.59375
+    },
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(11, 36, 64, 0.32) 0px 20px 40px -10px, rgba(11, 36, 64, 0.22) 0px 8px 18px -4px",
+    "provider": [
+      "https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1sAl+Hidaya+Health+Care+Service,+Al+Sadd,+Doha,+Qatar!5e1!6i18!3m1!1sen!5m1!1sen"
+    ]
+  }
+]

@@ -1,0 +1,36 @@
+// @vitest-environment node
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { stubServerEnv } from "@tests/support/env";
+
+const ADMIN = { adminId: "admin-1", email: "admin@alhidaya.qa", name: "Admin" };
+const getAdminSession = vi.fn<() => Promise<typeof ADMIN | null>>(async () => ADMIN);
+vi.mock("@/lib/auth/session", () => ({ getAdminSession }));
+vi.mock("@/lib/audit/errorLog", () => ({ captureError: vi.fn() }));
+
+const publishTypography = vi.fn(async () => ({ done: true }));
+vi.mock("@/features/settings/typography", () => ({ publishTypography }));
+
+const { POST } = await import("@/app/api/admin/typography/publish/route");
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.clearAllMocks();
+});
+
+const call = (origin = "http://localhost:3000") =>
+  new Request("http://localhost:3000/api/admin/typography/publish", { method: "POST", headers: { origin } });
+
+describe("/api/admin/typography/publish", () => {
+  it("publishes the site's content as the admin, and refuses another site's request or no session", async () => {
+    stubServerEnv();
+    expect(await (await POST(call())).json()).toEqual({ success: true, data: { done: true } });
+    expect(publishTypography).toHaveBeenCalledWith(
+      expect.objectContaining({ adminId: "admin-1", requestId: expect.stringMatching(/^req_/) }),
+    );
+    expect((await POST(call("https://evil.example"))).status).toBe(403);
+    getAdminSession.mockResolvedValueOnce(null);
+    expect((await POST(call())).status).toBe(401);
+    expect(publishTypography).toHaveBeenCalledOnce();
+  });
+});

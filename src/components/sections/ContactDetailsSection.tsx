@@ -1,38 +1,53 @@
-import type { ReactNode } from "react";
-
 import type { PictogramName } from "@/assets/brand/pictograms";
 import { Reveal } from "@/components/motion/Reveal";
+import { RiseWords } from "@/components/motion/RiseWords";
 import { ArrowLink } from "@/components/ui/arrow-link";
-import { IconChip } from "@/components/ui/icon-chip";
-import { StaticMap } from "@/components/ui/static-map";
+import { Pictogram } from "@/components/ui/pictogram";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { displayPhone, mailtoHref, telHref, whatsappHref } from "@/lib/contact";
 import type { Section, SiteDocument } from "@/lib/validation";
 
-import { SectionBand, SectionHeading } from "./SectionFrame";
+import { headingId } from "./SectionFrame";
 
 type ContactDetailsContent = Extract<Section, { type: "CONTACT_DETAILS" }>["content"];
 
-const LINK = "font-medium text-forest underline decoration-transparent underline-offset-4 hover:decoration-current";
-
-/** One way to reach the company on its white card (D135): its icon in a pale chip, what it is, and it. */
-function Detail({ pictogram, term, children }: { pictogram: PictogramName; term: string; children: ReactNode }) {
+/** A labelled channel on the deep-blue ribbon, retaining a full touch target. */
+function Detail({
+  pictogram,
+  term,
+  value,
+  href,
+  order,
+}: {
+  pictogram: PictogramName;
+  term: string;
+  value: string;
+  href: string;
+  order: number;
+}) {
   return (
-    <div className="grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 gap-y-1 rounded-card bg-card p-5 sm:p-6">
-      <IconChip name={pictogram} tone="pale" className="row-span-2" />
-      <dt className="text-small text-ink-2">{term}</dt>
-      <dd className="grid justify-items-start gap-1">{children}</dd>
-    </div>
+    <Reveal
+      order={order}
+      className="contact-reach-card grid min-w-0 content-start gap-1 rounded-card bg-card p-5 sm:p-6"
+    >
+      <dt className="flex items-center gap-3 text-small font-bold text-ink-2">
+        <Pictogram name={pictogram} size="sm" className="text-deep" />
+        {term}
+      </dt>
+      <dd className="ms-8">
+        <a
+          href={href}
+          className="inline-flex min-h-touch items-center py-1 text-title font-semibold text-navy tabular-nums underline decoration-transparent underline-offset-4 hover:decoration-current"
+        >
+          {value}
+        </a>
+      </dd>
+    </Reveal>
   );
 }
 
-/**
- * Every way to reach the company (plan §6.7), from the site content, on
- * Home's pastel-blue band (D135), each on its own card: WhatsApp, the phone,
- * the email, the office with the way to it on Google Maps, the hours, and the
- * brochure when there is one; beside them, the static map.
- */
+/** Contact's deep-blue Reach us ribbon (D174); office and map follow beside the form. */
 export function ContactDetailsSection({
   anchor,
   content,
@@ -43,57 +58,54 @@ export function ContactDetailsSection({
   site: SiteDocument | null;
 }) {
   return (
-    <SectionBand anchor={anchor} tone="mist" className="grid gap-10">
-      <Reveal>
-        <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
-      </Reveal>
-      {site ? (
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-start">
-          <Reveal>
-            <dl className="grid gap-4 sm:grid-cols-2">
-              <Detail pictogram="chat" term={UI_TEXT.whatsapp}>
-                <a
-                  href={whatsappHref(site.contact.whatsapp, UI_TEXT.whatsappPrefill)}
-                  className={`${LINK} whitespace-nowrap tabular-nums`}
-                >
-                  {displayPhone(site.contact.whatsapp)}
-                </a>
-              </Detail>
-              <Detail pictogram="phone" term={UI_TEXT.phone}>
-                <a href={telHref(site.contact.phone)} className={`${LINK} whitespace-nowrap tabular-nums`}>
-                  {displayPhone(site.contact.phone)}
-                </a>
-              </Detail>
-              <Detail pictogram="mail" term={UI_TEXT.email}>
-                <a href={mailtoHref(site.contact.email)} className={LINK}>
-                  {site.contact.email}
-                </a>
-              </Detail>
-              <Detail pictogram="location" term={UI_TEXT.address}>
-                <address className="grid not-italic">
-                  {site.contact.address.map((line) => (
-                    <span key={line.en}>{line.en}</span>
-                  ))}
-                </address>
-                <ArrowLink href={site.contact.mapUrl}>{UI_TEXT.openInMaps}</ArrowLink>
-              </Detail>
-              {site.contact.hours.en ? (
-                <Detail pictogram="clock" term={UI_TEXT.hours}>
-                  <span>{site.contact.hours.en}</span>
-                </Detail>
-              ) : null}
-              {site.brochure ? (
-                <Detail pictogram="download" term={UI_TEXT.brochure}>
-                  <ArrowLink href={ROUTES.brochure}>{UI_TEXT.downloadBrochure}</ArrowLink>
-                </Detail>
-              ) : null}
-            </dl>
-          </Reveal>
-          <Reveal order={1}>
-            <StaticMap pin={site.contact.mapPin} office={site.contact.address[0].en} />
-          </Reveal>
+    <section
+      id={anchor}
+      aria-labelledby={headingId(anchor)}
+      className="contact-reach scroll-mt-8 bg-deep pt-12 pb-20 text-on-deep sm:pt-14 sm:pb-24"
+    >
+      <div className="mx-auto grid w-full max-w-site gap-8 px-gutter">
+        <div className="flex flex-wrap items-center justify-between gap-5">
+          <h2 id={headingId(anchor)} className="text-display font-semibold text-balance">
+            <RiseWords text={content.heading.en} />
+          </h2>
+          {site?.contact.hours.en ? (
+            <Reveal className="flex items-center gap-3 text-on-deep-2">
+              <Pictogram name="clock" size="sm" />
+              <span>{site.contact.hours.en}</span>
+            </Reveal>
+          ) : null}
         </div>
-      ) : null}
-    </SectionBand>
+        {site ? (
+          <dl className="grid gap-7 md:grid-cols-3 md:gap-8">
+            <Detail
+              pictogram="chat"
+              term={UI_TEXT.whatsapp}
+              value={displayPhone(site.contact.whatsapp)}
+              href={whatsappHref(site.contact.whatsapp, UI_TEXT.whatsappPrefill)}
+              order={0}
+            />
+            <Detail
+              pictogram="phone"
+              term={UI_TEXT.phone}
+              value={displayPhone(site.contact.phone)}
+              href={telHref(site.contact.phone)}
+              order={1}
+            />
+            <Detail
+              pictogram="mail"
+              term={UI_TEXT.email}
+              value={site.contact.email}
+              href={mailtoHref(site.contact.email)}
+              order={2}
+            />
+          </dl>
+        ) : null}
+        {site?.brochure ? (
+          <ArrowLink href={ROUTES.brochure} className="contact-reach-brochure">
+            {UI_TEXT.downloadBrochure}
+          </ArrowLink>
+        ) : null}
+      </div>
+    </section>
   );
 }

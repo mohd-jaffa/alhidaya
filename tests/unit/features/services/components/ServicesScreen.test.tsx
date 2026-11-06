@@ -87,7 +87,7 @@ describe("ServicesScreen (D92)", () => {
     render(<ServicesScreen />, { wrapper: WithSWR });
     const elderly = await screen.findByRole("link", { name: /Elderly care/ });
     expect(elderly).toHaveAttribute("href", ADMIN_ROUTES.service("s1"));
-    expect(elderly).toHaveTextContent(`${ADMIN_TEXT.audienceNames.FAMILIES} · ${ROUTES.service("elderly-care")}`);
+    expect(elderly).toHaveTextContent(ROUTES.service("elderly-care"));
     expect(names()).toEqual(["Elderly care", "School nurse staffing", "Child care"]);
     expect(screen.getByRole("link", { name: ADMIN_TEXT.newService })).toHaveAttribute("href", ADMIN_ROUTES.newService);
     const archived = screen.getByText(ADMIN_TEXT.archivedCount(1)).closest("details")!;

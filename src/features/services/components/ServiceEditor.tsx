@@ -8,7 +8,6 @@ import { AskedAction } from "@/components/admin/AskedAction";
 import { DraftEditor } from "@/components/admin/editor/DraftEditor";
 import { EditorGroup } from "@/components/admin/editor/EditorGroup";
 import { EditorLoading } from "@/components/admin/editor/EditorLoading";
-import { EditorSelect } from "@/components/admin/editor/EditorSelect";
 import { EditorText } from "@/components/admin/editor/EditorText";
 import { PhotoField } from "@/components/admin/editor/PhotoField";
 import { PointsField } from "@/components/admin/editor/PointsField";
@@ -21,7 +20,6 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_API_ROUTES, ADMIN_ROUTES } from "@/constants/admin-routes";
 import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
 import { ROUTES } from "@/constants/routes";
-import { AUDIENCES } from "@/constants/statuses";
 import { errorMessage } from "@/lib/errors/errorMessage";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 import { useRevalidate } from "@/lib/query/useRevalidate";
@@ -29,6 +27,7 @@ import { type ServiceDocument, type ServiceDocumentInput, serviceDocumentSchema 
 
 import { ServicesClient } from "../api.client";
 import type { ServiceDraftItem } from "../types";
+import { ServiceHeaderButtons } from "./ServiceHeaderButtons";
 
 /** A new service, blank for the admin to fill: refused until it is. */
 const BLANK: ServiceDocumentInput = {
@@ -38,12 +37,11 @@ const BLANK: ServiceDocumentInput = {
   summary: { en: "" },
   description: [{ type: "paragraph", text: { en: "" } }],
   included: [],
+  headerButtons: [],
   forWhom: { en: "" },
   image: null,
   seo: { title: { en: "" }, description: { en: "" } },
 };
-
-const AUDIENCE_OPTIONS = AUDIENCES.map((audience) => [audience, ADMIN_TEXT.audienceNames[audience]] as const);
 
 /**
  * A service in the editor (D92): what it is and its address, its
@@ -91,7 +89,6 @@ function ServiceForm({ initial }: { initial: ServiceDraftItem | null }) {
       <EditorGroup title={ADMIN_TEXT.aboutService}>
         <EditorText name="name.en" label={ADMIN_TEXT.serviceName} max={TEXT_LIMITS.name} required />
         <SlugField from="name.en" address={ROUTES.service} follow={!item?.publishedAt} />
-        <EditorSelect name="audience" label={ADMIN_TEXT.audience} options={AUDIENCE_OPTIONS} />
         <EditorText
           name="summary.en"
           label={ADMIN_TEXT.summary}
@@ -101,8 +98,10 @@ function ServiceForm({ initial }: { initial: ServiceDraftItem | null }) {
           multiline
           rows={3}
         />
-        <EditorText name="forWhom.en" label={ADMIN_TEXT.forWhom} max={TEXT_LIMITS.lede} multiline rows={2} />
         <PhotoField name="image" label={ADMIN_TEXT.photo} />
+      </EditorGroup>
+      <EditorGroup title={ADMIN_TEXT.serviceButtons} hint={ADMIN_TEXT.serviceButtonsHint}>
+        <ServiceHeaderButtons />
       </EditorGroup>
       <EditorGroup title={ADMIN_TEXT.description}>
         <RichTextField name="description" label={ADMIN_TEXT.description} hideLabel />

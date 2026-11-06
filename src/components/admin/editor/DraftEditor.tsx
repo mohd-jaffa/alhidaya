@@ -75,7 +75,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
   children,
 }: DraftEditorProps<TInput, TOutput>) {
   const { isDirty, errors } = useFormState({ control: form.control });
-  const root = useRef<HTMLDivElement>(null);
+  const root = useRef<HTMLFieldSetElement>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [failure, setFailure] = useState<{ title: string; message: string } | null>(null);
   const [publishFailed, setPublishFailed] = useState(false);
@@ -133,10 +133,12 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
    * draft fails its checks or is refused, which are said here as on saving.
    */
   const previewSaved = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (phase !== "idle") {
+      event.preventDefault();
+      return;
+    }
     if (!isDirty) return;
     event.preventDefault();
-    // A save already under way finishes first; the click after it previews.
-    if (phase !== "idle") return;
     const preview = event.currentTarget.href;
     const tab = window.open("", "_blank");
     if (tab) tab.opener = null;
@@ -214,7 +216,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
           {back ? (
             <Link
               href={back.href}
-              className="justify-self-start text-small font-semibold text-deep underline-offset-4 hover:underline"
+              className="inline-flex min-h-touch min-w-touch items-center justify-self-start text-small font-semibold text-deep underline-offset-4 hover:underline"
             >
               {back.label}
             </Link>
@@ -235,7 +237,12 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
                   href={`${API_ROUTES.preview}?path=${encodeURIComponent(path)}`}
                   target="_blank"
                   rel="noopener"
+                  aria-disabled={busy || undefined}
+                  tabIndex={busy ? -1 : undefined}
                   onClick={previewSaved}
+                  onAuxClick={(event) => {
+                    if (busy) event.preventDefault();
+                  }}
                   className={buttonClasses({ variant: "quiet" })}
                 >
                   <span>{ADMIN_TEXT.preview}</span>
@@ -260,7 +267,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
         </div>
       </form>
 
-      <div ref={root} className="mt-6 grid max-w-5xl gap-6">
+      <fieldset ref={root} disabled={busy} aria-label={name} className="mt-6 grid min-w-0 max-w-5xl gap-6">
         {errorCount > 0 ? (
           <Notice tone="error" title={ADMIN_TEXT.fieldsNeedAttention(errorCount)}>
             <p>{ruleError ?? ADMIN_TEXT.fieldsNeedAttentionBody}</p>
@@ -286,7 +293,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
           </Notice>
         ) : null}
         {children}
-      </div>
+      </fieldset>
 
       <Dialog open={asking === "publish"} onClose={() => setAsking(null)} title={ADMIN_TEXT.publishTitle(name)}>
         <div className="grid gap-5">

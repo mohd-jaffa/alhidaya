@@ -7,7 +7,7 @@ import { siteFixture } from "@tests/support/fixtures/content";
 
 describe("ContactWays (D130, D135)", () => {
   it("lists WhatsApp, a call at any hour and the email, each with what it is and the number or address", () => {
-    render(<ContactWays site={siteFixture()} className="mt-4" />);
+    const { rerender } = render(<ContactWays site={siteFixture()} className="mt-4" />);
     expect(screen.getByRole("list")).toHaveClass("mt-4");
     expect(screen.getAllByText("+974 3130 6555")).toHaveLength(2);
     expect(screen.getByRole("link", { name: new RegExp(UI_TEXT.whatsappUs) })).toHaveAttribute(
@@ -22,5 +22,14 @@ describe("ContactWays (D130, D135)", () => {
       "href",
       "mailto:info@alhidaya.qa",
     );
+    rerender(<ContactWays site={siteFixture()} tiles />);
+    expect(
+      screen.getByRole("link", { name: new RegExp(UI_TEXT.whatsappUs) }).querySelector(".quote-contact-icon"),
+    ).toHaveClass("bg-whatsapp", "text-navy");
+    for (const label of [UI_TEXT.callUs247, UI_TEXT.emailUs])
+      expect(screen.getByRole("link", { name: new RegExp(label) }).querySelector(".quote-contact-icon")).toHaveClass(
+        "bg-navy",
+        "text-on-deep",
+      );
   });
 });

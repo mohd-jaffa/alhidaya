@@ -1,0 +1,13 @@
+{
+  "inpUpperBound": 64,
+  "interactionCount": 26,
+  "interactions": [64, 64, 64, 64, 32, 32, 32, 32, 32, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 16, 16, 16, 16],
+  "slowEvents": [],
+  "cls": 0,
+  "shifts": [],
+  "scrollLongTasks": [],
+  "maxScrollTask": 0,
+  "droppedFrameRatio": 0.02178217821782178,
+  "refreshInterval": 16.69999999999891,
+  "frameCount": 495
+}

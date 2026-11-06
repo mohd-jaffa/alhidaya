@@ -33,6 +33,28 @@ function fields(type: SectionType, page: PageKey = "ABOUT", content: object = co
 }
 
 describe("SectionFields", () => {
+  it("hides and restores Home's slider pill without changing the note (D157)", async () => {
+    const content = { ...contentFixture("SIGN"), slides: [slideFixture()] };
+    fields("SIGN", "HOME", content);
+    const toggle = screen.getByRole("switch", { name: ADMIN_TEXT.hideSliderPill });
+    await userEvent.click(toggle);
+    expect(form.getValues("sections.0.content.hideNote")).toBe(true);
+    expect(form.getValues("sections.0.content.note")).toEqual(content.note);
+    await userEvent.click(toggle);
+    expect(form.getValues("sections.0.content.hideNote")).toBe(false);
+  });
+  it.each(["ABOUT", "SERVICES"] as const)(
+    "lets %s toggle its opening buttons without changing their content (D156)",
+    async (page) => {
+      fields("SIGN", page);
+      const toggle = screen.getByRole("switch", { name: ADMIN_TEXT.showOpeningButtons });
+      expect(toggle).not.toBeChecked();
+      await userEvent.click(toggle);
+      expect(form.getValues("sections.0.content.showActions")).toBe(true);
+      await userEvent.click(toggle);
+      expect(form.getValues("sections.0.content.showActions")).toBe(false);
+    },
+  );
   it("lays out the sign's headline, its highlighted words, supporting line and photo, and no slides (D109)", () => {
     fields("SIGN");
     expect(screen.getByRole("textbox", { name: ADMIN_TEXT.headline })).toHaveValue("Nursing care, at your doorstep");

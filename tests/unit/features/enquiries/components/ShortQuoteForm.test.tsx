@@ -19,7 +19,10 @@ describe("ShortQuoteForm (D130)", () => {
     const user = userEvent.setup();
     render(<ShortQuoteForm services={SERVICES} whatsapp={null} siteKey="site-key" />);
     expect(field(UI_TEXT.yourName).closest(".sm\\:grid-cols-2")).not.toBeNull();
-    expect(field(UI_TEXT.message)).toHaveAccessibleDescription(UI_TEXT.shortQuoteMessageHint);
+    expect(field(UI_TEXT.message)).toHaveAttribute("placeholder", UI_TEXT.shortQuoteMessageHint);
+    expect(field(UI_TEXT.yourName)).toHaveAttribute("placeholder", UI_TEXT.fullName);
+    expect(field(UI_TEXT.mobile)).toHaveAttribute("placeholder", UI_TEXT.countryCodePlaceholder);
+    expect(field(UI_TEXT.email)).toHaveAttribute("placeholder", UI_TEXT.emailPlaceholder);
     expect(screen.getByRole("combobox")).toHaveValue("");
     expect(screen.queryByRole("radio")).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: UI_TEXT.sendShortQuote }));

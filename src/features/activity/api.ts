@@ -1,8 +1,8 @@
-import { and, count, desc, eq, inArray, ne, or, type SQL, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, notInArray, or, type SQL, sql } from "drizzle-orm";
 
 import type { ActivityKind } from "@/constants/admin-routes";
 import { ACTIVITY_PAGE_SIZE } from "@/constants/limits";
-import { type OrderedCollection, type PageKey, SITE_DOCUMENT_KEY } from "@/constants/sections";
+import { type OrderedCollection, type PageKey, SITE_DOCUMENT_KEY, TYPOGRAPHY_DOCUMENT_KEY } from "@/constants/sections";
 import {
   AUDIT_ENTITIES,
   type AuditAction,
@@ -19,6 +19,7 @@ export type ActivitySubject =
   | { type: "page"; page: PageKey }
   | { type: "order"; collection: OrderedCollection }
   | { type: "settings" }
+  | { type: "typography" }
   | { type: "operations" }
   | { type: "record"; collection: RecordCollection; id: string; name: string | null }
   /** `kind` is null once the file is deleted. */
@@ -65,13 +66,19 @@ const isCollection = (type: string): type is RecordCollection =>
 const KINDS: Record<ActivityKind, () => SQL | undefined> = {
   CONTENT: () =>
     or(
-      and(eq(auditLog.entityType, AUDIT_ENTITIES.documents), ne(auditLog.entityId, SITE_DOCUMENT_KEY)),
+      and(
+        eq(auditLog.entityType, AUDIT_ENTITIES.documents),
+        notInArray(auditLog.entityId, [SITE_DOCUMENT_KEY, TYPOGRAPHY_DOCUMENT_KEY]),
+      ),
       inArray(auditLog.entityType, [...RECORD_COLLECTIONS, AUDIT_ENTITIES.media]),
     ),
   INBOX: () => inArray(auditLog.entityType, [AUDIT_ENTITIES.enquiry, AUDIT_ENTITIES.application]),
   SETTINGS: () =>
     or(
-      and(eq(auditLog.entityType, AUDIT_ENTITIES.documents), eq(auditLog.entityId, SITE_DOCUMENT_KEY)),
+      and(
+        eq(auditLog.entityType, AUDIT_ENTITIES.documents),
+        inArray(auditLog.entityId, [SITE_DOCUMENT_KEY, TYPOGRAPHY_DOCUMENT_KEY]),
+      ),
       eq(auditLog.entityType, AUDIT_ENTITIES.operations),
     ),
   SIGN_INS: () => eq(auditLog.entityType, AUDIT_ENTITIES.account),
@@ -139,6 +146,7 @@ async function namesOf(rows: Row[]): Promise<Names> {
 function subjectOf({ entityType: type, entityId }: Row, names: Names): ActivitySubject {
   const id = entityId ?? "";
   if (type === AUDIT_ENTITIES.documents) {
+    if (id === TYPOGRAPHY_DOCUMENT_KEY) return { type: "typography" };
     if (id === SITE_DOCUMENT_KEY) return { type: "settings" };
     const [prefix, key] = id.split(":");
     return prefix === "PAGE"

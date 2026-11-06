@@ -217,6 +217,76 @@ question (§41) the user may overturn.
 | D133 | **The clients' rows** (the user, 2026-10-31: "for clients, https://nahrdev.com/ … need the same to same type animation and working"; "no need of pause as clicking a client logo highlights it and pauses the animation"). The logos run in two rows in opposite directions, faded at their ends, grey until the pointer is on one, when it turns to its colours and grows and its row stops; a click or tap does the same until it is clicked again or the visitor clicks elsewhere; a logo with a site opens it instead. No pause button, as the user chose: a chosen logo stops only its own row (WCAG 2.2.2 asks for a way to stop everything that moves on its own; recorded, the user's call). With motion reduced the rows stand still. | 2026-10-31 |
 | D134 | **The menu's sliding pill and the admin's switches** (the user, 2026-11-01: "the blue pill which is on the selected page should transition from one to another … animation of the pill shifting should be there"; "for enabling or disabling elements in the admin panel, just a blue box is given, instead keep a toggle pill … with a small text enable or disable"). The header's deep-blue pill slides from the last page's link to the new one's as a page opens (a transform from where it was, at its width; with motion reduced it simply appears). In the admin, what turns something on or off (the floating WhatsApp button, a menu link shown in the menu) is a switch: a pill whose knob slides to the end, deep blue when on, with a small "Enabled" or "Disabled" beside it. A yes-or-no that turns nothing on (a photo is decorative) and the forms' consent stay boxes to tick. | 2026-11-01 |
 | D135 | **The other pages in Theme 6** (the user, 2026-11-01: "fix other pages too, for now, contact page let it be as it is now. also the careers page i like the current ui"; answers: the inner pages open in straight lines like Home; a job's page and the Apply page stay like Careers; "Talk to us" like Home's quote band; the services as Home's rounded cards in a grid; the quote page keeps its form layout; About's mission and vision on rounded cards on a mist band, its values a ruled list with checks; then, for Contact: "form element in contact make the same as in home page … just the form rounded corner card", "the form section in the contact page, make the bg color as same as in the home page form sections bg color", "for the reach us section give bg the pastel blue"; and for Careers: "open jobs section in careers page give pastel green bg. for before you apply section give pastel blue bg"). About, Services, a service's page, the quote page, Privacy, Terms and the missing page open with Home's slide in straight lines, still: under a rule, the page's name in deep blue, the headline with its phrase in deep blue rising word by word, the line and the actions, the photo edge to edge (words alone without one). Contact, Careers, a job's page and Apply keep their opening (D109). "Talk to us" sits on Home's pale-green band with WhatsApp, a call at any hour and the email as rows; the Services page and a service's other services show Home's rounded cards in a grid (four, two, one across); the staffing card, the services list and a service's page take Theme 6's headings; mission and vision are white cards with deep-blue icons on the mist band; the values a ruled list with checks beside their heading. On Contact, its ways to reach sit on the mist band (white cards), its form on the pale-green band on Home's card (its strip: "Your message"). On Careers, Open jobs sits on the pale-green band (its jobs on white cards) and its text (Before you apply) on the mist band; its opening stays. Two bands in a row meet; a page ending on a band meets the footer. *(Agent defaults: the missing page's opening; the staffing card's and a service page's headings; the Contact card's strip wording.)* | 2026-11-01 |
+| D136 | **Home’s cinematic automatic hero** (the user, 2026-11-01: `/impeccable overdrive the portfolio home page`; chose Cinematic hero; then the client no longer wanted Previous, Next or Pause, and the user removed the count too). Keep Theme 6 and its existing content and section order. Coordinate the photo wipe, rising headline, supporting words, optional action, note and progress indicators as one sequence. Slides advance automatically every six seconds; only the progress bars remain, on phones too. The wipe and photo drift use separate layers, so the outgoing photo holds its last frame beneath the next one; each returning slide starts a fresh drift. Reduced motion keeps the first slide still. **Agent defaults:** the timing tokens and a deliberate keyboard-focus stop with a screen-reader hint (Q48); hovering or clicking never stops automatic playback, after the user reported the slider sticking. The user reviews before any commit; no push or deployment. | 2026-11-01 |
+| D137 | **About’s Mission and Vision** (the user, 2026-11-01: asked for Impeccable to improve the dull section visually and in motion, before the admin colours). Chose distinct paired panels: deep-blue Mission with white words, pale-green Vision with navy words, larger headings and restrained line art. Rejected the heart and asked for a stronger focal animation; then chose an assembling medical cross: its four logo-colour arms meet as the section enters, while Vision’s globe unfolds, followed by the masked headings and statements. Existing statements unchanged. One scoped GSAP sequence per panel, transform and opacity only, no loop; motion reduced shows the finished art and words in place. | 2026-11-01 |
+| D138 | **Pastel-green admin theme** (the user, 2026-11-01: asked for the blue admin to become pastel green, after Home and then Mission and Vision; chose pastel-green navigation and green accents). The sidebar, mobile bar/menu and sign-in panel use the existing pale leaf with navy text and the colour logo. The active row is leaf with navy words; primary actions, links, focus and switches use forest. Work areas stay white; New keeps its original blue, in-progress sky, resolved leaf and errors red. Theme roles are scoped to `/admin`; the public site remains blue-led. Layout, content and behaviour stay as they are. No commit before the user reviews. | 2026-11-01 |
+| D139 | **Audit findings 3 and 4 only** (the user, 2026-11-01: corrected “p2 and p3” to “p3 and p4”, interpreted as the report’s numbered performance and sidecar findings). Add the missing local/CI performance measurements under §31 and refresh `.impeccable/design.json` from the approved built world, preserving `DESIGN.md`. Leave automatic-playback controls and touch targets unchanged. **Agent default (Q50):** a pinned development-only Lighthouse runner, mobile 4× CPU with Fast 4G (40 ms RTT, 9 × 1,024 Kbps down / 1.5 × 1,024 Kbps up), real scripted Event Timing interactions and native touch/wheel scroll probes; intentional noindex application pages skip only the crawlability audit; the deliberate 404 case also skips the conflicting HTTP-status SEO audit while asserting its 404 response separately. The runner uses Playwright’s default Chromium headless shell, as the functional suite does. No product feature, production-server change or commit before review. | 2026-11-01 |
+| D140 | **Shared-link previews** (the user, 2026-11-01: “also make sure the preview we see when link is shared in whatsapp or other social media is good”). Verify server-rendered Open Graph and large Twitter cards for all published launch routes. **Agent default (Q51), for review:** update the existing 1200 × 630 renderer to Theme 6: original colour logo, published page headline in deep blue, optional pale-green page label, domain and blue/leaf baseline, with generous inset spacing and adaptive headline size. Keep published-only content and self-hosted assets; no added service, remote image, CMS control or client script. Actual platform-cache refresh is checked after an authorized deployment. | 2026-11-01 |
+| D141 | **Upload security review** (the user, 2026-11-01: check maximum size, supported types and disguised programs). Verify existing image/brochure/CV boundaries under §9, §15 and §26.5; normalize complete image-decoder failures before storage and add harmless adversarial endpoint tests. PDF/Word signatures are identification hints, not full document validation or malware scanning. The user chose to harden and verify current controls now, and decide malware scanning before launch (Q52). No scanner or external file transfer is added in this task. | 2026-11-01 |
+
+| D142 | **Impeccable harden and polish** (the user, 2026-11-01). Refine the current public/admin world under §10, §30–§33: repair confirmed duplicate-submit races and pending-state overrides, resilient long-content wrapping, existing 44 px target requirements, and the phone sign-in band’s layout. **Agent defaults, for review:** reuse the existing menu when editable desktop navigation exceeds the header’s safe capacity; preserve Theme 6, statements, section order, green admin palette, automatic progression-only hero and reduced motion. No new product feature, infrastructure, translation, factual copy, server change, commit or push. Persistent-motion decision Q49 remains unresolved; do not restore rejected slider controls. | 2026-11-01 |
+
+| D143 | **Home services pyramid** (the user, 2026-11-02; approved the interactive concept). Home alone: a raised centre service and smaller stepped rear cards, a 30 px step, every card retaining its audience/title/link panel, softer rear photos, the existing Previous/Next arrows, native touch navigation, and no pause button. The latest timing instruction supersedes the preview’s eight seconds: use the same six-second duration as the main Home slider. Preserve published order, links, content and Theme 6. Reduced motion is static with manual navigation; stop automatic advances offscreen, in a hidden tab and during deliberate keyboard focus. Content stays usable without enhancement. No new dependency, CMS design control, production change or commit before review. Q49’s persistent-stop decision remains open. | 2026-11-02 |
+
+| D144 | **Service and Contact design concepts only** (the user, 2026-11-02). Show five reusable service-detail layouts using existing service content, rather than 40 separate directions; also show five distinct compositions for Contact’s Reach us and Send us a message. Deliver shareable images for both requests. Retain company facts, audience-specific actions and existing contact fields. The chosen designs require user review before implementation. No new service/Contact source change, product feature or commit is authorized by the concept request. | 2026-11-02 |
+
+| D145 | **Contact: fifth concept, with the user’s colours and animation** (the user, 2026-11-02). Apply Blue ribbon across Contact’s body: a white headline/lede opening without its old hero photograph, a pastel-blue Reach us band with three contact channels and hours, and the white message panel overlapping the pastel-green section beside the existing map and office details. Navigation and footer stay unchanged. Keep published text, existing fields, consent, bot check and submission behavior; retain optional brochure and missing-content states. Use the existing word rise/reveal grammar, transform and opacity only, once on arrival/scroll with a still reduced-motion path. Service concepts remain unchosen. No new dependency, schema, CMS design setting, production action or commit before review. | 2026-11-02 |
+
+| D146 | **Service-detail concept two and optional header buttons** (the user, 2026-11-02). Apply Care editorial to individual service pages: large blue heading, summary and tall rounded portrait; preserve navigation/footer; Other services follows concept two’s pastel-green band, three random distinct related services in compact thumbnail-and-title cards and All services link (clarified by the user; fewer when fewer are available for the audience). Keep About the service content on a pastel-blue band; omit Who it is for and the 24/7 block. The user chose up to two optional header buttons, editable labels and destinations, hidden by default and governed by draft/preview/publish. Use existing safe internal/HTTPS link rules. Retain stored audience/forWhom content for compatibility and existing service categorisation; no destructive rewrite. Existing motion grammar is required. No new table, migration, dependency, infrastructure, design controls, production action or commit before review. | 2026-11-02 |
+
+| D147 | **Contact opening typewriter loop and aligned fields** (the user, 2026-11-02). The published opening headline types repeatedly (the current words: We are here day and night), with stable reserved geometry and a single screen-reader copy. Native opacity animation on the deferred motion path; pause offscreen/hidden and cancel to plain text for reduced motion. Agent timing default: a six-second cycle with typing, a reading hold, progressive deletion from the end, and a short blank interval (the user clarified full typing then full deletion before retyping), available for review. Keep visible field labels; move Contact’s extra phone guidance into a placeholder so the two top inputs align. Other form help stays unchanged. This is another explicit motion exception; Q49 remains open before release. | 2026-11-02 |
+| D148 | **Careers opening can move and hide** (the user, 2026-11-03). The Nursing in Doha page header is retained exactly once, but the Careers editor may reorder it, hide it and show it through the existing draft/preview/publish flow. Hide it now in the local preview; keep its words/photo. Other pages retain the fixed visible first header. When hidden, Open positions becomes the semantic page heading. No migration or new design controls. | 2026-11-03 |
+| D149 | **Mission and Vision hover emphasis** (the user, 2026-11-03). Both About cards react as a whole on fine-pointer hover or keyboard focus: a 12 px lift, 24 px forward depth, 1.035 scale and opposing 5-degree perspective tilts, with a shadow layer fading in and a translucent sweep across the full card. The user clarified that whole-card movement is the focal effect, rather than icons alone. The user then requested a more noticeable graphic sequence: Mission’s cross arms separate, turn and reassemble; Vision’s rings fold/unfold and rotate, with an expanding outline highlight. One 900 ms sequence per hover/focus, no loop. Transform and opacity only; reduced motion keeps a static highlight. Preserve the assembling cross/globe entrance, content and colours. | 2026-11-03 |
+| D150 | **Only the main Services page’s All services section** (the user, 2026-11-03, clarified section scope): pastel-green band with all published services together in admin order, using the same compact thumbnail/title cards as Other services. No For families / For hospitals, clinics & schools category headings or audience actions in this section. The user subsequently requested pastel blue for Talk to us on this page. Preserve the rest of the page, Home, navigation and footer; stored audience data remains compatible. Existing heading/card reveals remain. | 2026-11-03 |
+| D151 | **Home quote section follows the supplied screenshot** (the user, 2026-11-03): inset rounded section, heading/supporting text and three contact tiles on the left; plain white rounded form card on the right, no blue title strip. The user immediately changed the outer background to pastel blue; keep navy text for contrast. Retain the name/mobile and email/service rows, full-width message with guidance in its placeholder, existing consent, Turnstile, validation and submission behavior. Main quote page and other Home sections stay unchanged. | 2026-11-03 |
+| D152 | **Contact message section follows Home’s reference form layout** (the user, 2026-11-03). Keep Reach us untouched. The section below is pastel green, with Send us a message, then the published map, Visit our office and office address/directions at the left; the existing Contact form is in a white rounded card at the right. Retain current fields/validation/consent/bot protection. Supersedes the overlapping left form from D145; retire the overlap. Both Home and Contact white form cards receive the user’s requested float shadow. | 2026-11-03 |
+| D153 | **Contact backdrop clarification** (the user, 2026-11-03). Keep the rounded message panel pastel green and all element colours unchanged; only the background behind the rounded panel becomes pastel blue, continuous with Reach us. The white form and its shadow remain. | 2026-11-03 |
+| D154 | **WhatsApp logo throughout** (the user, 2026-11-03). Use the standard Font Awesome Free WhatsApp brand SVG (CC BY 4.0), replacing the custom approximation, retaining the existing `chat` storage key for compatibility. The floating shortcut uses the user’s requested WhatsApp green (#25d366) with a white brand mark (explicit logo-colour exception). All public/admin WhatsApp icons share it; text-only shared WhatsApp buttons now include the mark too. Remove the unused retired footer play/pause drawings to retain the JavaScript budget. No dependencies or migration. | 2026-11-03 |
+| D155 | **Three other services across the full catalogue** (the user, 2026-11-03: School nurse staffing showed only one). Remove the legacy audience restriction when sampling Other services. Choose three distinct published services from the full catalogue, exclude the current service, and show fewer only when fewer than three others exist overall. This supersedes D146’s audience-limited related selection. | 2026-11-03 |
+| D156 | **About and main Services opening buttons are optional and hidden now** (the user, 2026-11-03). Pages → About/Services → Page header has one Show the opening buttons switch for the existing WhatsApp/Request a quote pair. Off by default, including legacy records; preserve wording/destinations. Save/Preview/Publish visibility through the existing page workflow. Keep both off in the local published content. Individual service-detail optional label/link buttons remain as D146. No design control or SQL migration. | 2026-11-03 |
+| D157 | **Home slider photo pill may hide without losing its content** (the user, 2026-11-03). Add Hide the slider pill to Pages → Home → Page header, using the existing draft/preview/publish workflow. Keep the note/icon stored; absent legacy flags remain visible. Hide it in the local published content now. This is the note pill, not the progression bars. No migration. | 2026-11-03 |
+| D158 | **Use the first photo/header blend concept** (the user, 2026-11-03, explicitly choosing the first image over the subsequent softer fade). Home, About and main Services: full-width opening photograph behind a navy dimming layer and opening copy; original coloured logo and navy navigation protected by an opaque light header surface that fades below the controls. Use the first concept’s short fade, not the later extended fade. Preserve existing navigation, automatic slides/progression-only controls, draft actions and reduced motion. Other routes retain their openings. No image-brightness detector, dependency or CMS design control. | 2026-11-03 |
+| D159 | **Mobile menu contact text must fit; brochure button wording is Brochure** (the user, 2026-11-03). Keep WhatsApp and Call side by side, their text centred without overflow at phone widths; retain the proper WhatsApp mark. Shorten the shared download-button label to Brochure, retaining its download icon and behavior. | 2026-11-03 |
+| D160 | **Fade the image gradually, keep the navbar solid** (the user’s latest refinement, 2026-11-03). Supersede D158’s header-gradient implementation: keep the original coloured logo and navy navigation on solid soft white. Gradually fade in the top of the photo together with its dimming overlay, into the same soft-white base. Home, About and main Services only, and only while their opening has a photo. Other routes and text-only openings keep the normal header/opening. Static image mask, no extra animation or script. | 2026-11-03 |
+| D161 | **Impeccable Adapt: public website and mobile menu only** (the user, 2026-11-03; confirmed scope). Fix oversized mobile elements while preserving Theme 6, content, section order, colours, motion, admin and desktop. Agent defaults for review: phone headline scale starts at 32 px, supporting text 17 px, body/forms 16 px minimum, 40 px section rhythm; compact image-opening height/top spacing and gradual image fade; shorter intro/service photo crops, 96 px Mission/Vision artwork, compact related-service thumbnails, roomier form fields through smaller card insets, 52 px menu rows, a two-column phone footer, short-landscape handling. Keep at least 44 px touch targets, all links/content, the approved 30 px service-pyramid rise, stored visibility and reduced motion. Validate touch swipes and vertical scroll over the carousel using synthesized Chromium touch; physical iOS/Android remain release checks. No new feature, dependency or CMS design control. | 2026-11-03 |
+| D162 | **Navbar stays at the page top; never sticky or returning on scroll-up** (the user, 2026-11-03). On the public site, keep the existing logo/navigation/menu/brochure and opening-image composition, but let the header scroll away in normal document flow. Remove the hide/show-on-scroll listener and state; the navbar appears again only on returning to the page top. Applies at all widths and reduced motion. Supersedes the D132 return-on-scroll behavior. | 2026-11-03 |
+| D163 | **Careers and Contact navbar backgrounds match the white main-page headers** (the user, 2026-11-03). Use the same soft-white card surface and navbar height/vertical spacing as Home/About/Services, preserving their original logo/navigation and the non-sticky behavior of D162. Other section colours remain. | 2026-11-03 |
+| D164 | **Individual service openings use the same fading image composition** (the user, 2026-11-03). Replace D146’s editorial title/arched portrait opening with the shared About/main Services photo opening: full-width dimmed photo, service title/summary over it, top of the image fading gradually into the solid white navbar. Preserve the optional published header buttons and admin controls. No-photo services retain a text-only opening. Keep pastel-blue About and three compact related services unchanged. Navbar stays non-sticky. No new CMS field or migration. | 2026-11-03 |
+| D165 | **Footer logo shine** (the user, 2026-11-03). Keep the original coloured logo stationary; a subtle diagonal highlight begins at its top-left and travels across its actual shapes, repeating after a short quiet interval. The user’s slower refinement: a 4.5-second sweep within a ten-second cycle, with a quiet pause before repeating. Decorative CSS transform/opacity only, no added client runtime; reduced motion keeps the static logo. Explicit exception to the no-automatic-motion default, limited to the footer. | 2026-11-03 |
+| D166 | **Footer care illustration, preserving all existing content** (the user, 2026-11-03). The approved references use extremely faint pale-blue line art. Latest clarification: the extra nursing-tool illustrations must be exact matches or omitted. The available references are flattened mockups; use the user-authorized fallback and keep only the nurse/older-patient care illustration. Remove the approximate tool drawings. Preserve every existing footer item, content/layout, social-link behavior, copyright, floating WhatsApp and the slow D165 logo shine. Decoration stays static, hidden from assistive technology and pointer-transparent, with responsive placement. No new CMS control, data field or dependency. | 2026-11-03 |
+| D167 | **The phone menu: deep-blue sheet, smooth open and close** (the user, 2026-11-03, choosing concept 3 of three: "go with concept 3, but no need of the mail id and 24x7 written. also need a proper menu open and close animation, it should be smooth"; then "the opening of the menu seems smooth but the contents in the menu seems like a little lag or stuck type. they should be smooth"). The phone menu is a full-screen sheet in the logo's deep blue: the pages in large white words under faint rules, the current one semibold with a leaf arrow; WhatsApp (leaf tile) and Call (white tile) side by side, each with its number on one line; the brochure (the quote until there is one) on a white button; a faint white mark as a watermark. The email, the hours and "24/7" are not in the menu (the Call tile reads "Call us"); the brochure keeps D159's wording, Brochure. Motion: the sheet drops in from the top and its rows settle after it, all on one curve, the first row starting at once and following the sheet down (not waiting, not rising against it); closing, the rows fade and the sheet lifts away faster, and the dialog closes when it has gone, Escape and a chosen page included; with motion reduced it appears and goes at once. Transform and opacity only. Supersedes D159's two outlined pills in the menu (its fit on one line at 320 – 414 px stands) and D161's 52 px menu rows (the rows scale with the screen's height). *(Agent defaults: the Call tile's wording; the brochure kept as Brochure.)* | 2026-11-03 |
+| D168 | **Font Manager, public website only** (the user, 2026-11-04): a fixed library of ten bundled, tested fonts; independent font choices per semantic text type; Save draft → authenticated page Preview → Publish, and Discard. No admin font uploads, no change to the admin's own text. This is an explicit narrow exception to D12's ban on font controls; sizes, weights, colours, layout and motion stay locked. Typography has its own document and cache tag, so publishing fonts cannot publish unrelated Settings drafts. Font Manager uses a dedicated typography T navigation icon, distinct from Settings (user refinement, 2026-11-04). Existing Inter Tight remains every role's default. Agent defaults: the ten readable variable sans faces and the twenty semantic roles documented in DESIGN.md; all assets self-hosted with licenses, optional faces not preloaded. | 2026-11-04 |
+| D169 | **Five more expressive fonts** (the user, 2026-11-04): retain the original ten and add five distinctive faces to the existing Font Manager, for fifteen total. No automatic change to selected/published families, role scales or publishing behavior. Agent defaults for review: Playfair Display, Cormorant Garamond, Fraunces, Space Grotesk and Syne; licensed, self-hosted variable fonts with weights 400–700, tested for all existing text roles and responsive templates. No font upload or new runtime dependency. | 2026-11-04 |
+| D170 | **Footer logo shine: halve the wait** (the user, 2026-11-04). Keep the existing slow 4.5-second sweep and stationary logo; halve the recurring quiet gap from 5.5 to 2.75 seconds, producing a 7.25-second cycle. Preserve the initial 0.4-second lead-in, opacity timing, transform-only movement of the shine and the static reduced-motion path. Supersedes only D165's repeat interval. | 2026-11-04 |
+
+| D171 | **Match Home’s mobile pyramid to its laptop composition** (the user, 2026-11-04). Keep five visible depth positions on phones too, with the same raised centre, 30 px steps, 88%/76% rear scales, softened rear photos and existing linked panels. Use tighter phone overlap rather than dropping the outer pair. Agent default for review: 60 cqw centre width, capped at 16 rem, and 16% stage-width spacing below 640 px. Preserve desktop geometry, six-second advances, arrows, swipe/page-scroll behavior, reduced motion and all content. No new feature, dependency or CMS control. | 2026-11-04 |
+
+| D172 | **App-wide responsive consistency review** (the user, 2026-11-04): examine the public site and admin across narrow phones, tablets, landscape and laptops; fix verified layout, typography, touch-target, content/action parity and motion inconsistencies within the existing approved design. Preserve all content, visibility settings, font choices, admin workflows and the public/admin theme distinction. No redesign, new feature, dependency or CMS control. Initial verified fixes: common public navbar height/surface on every route, undistorted brand logos and a matching footer-shine mask. Additional findings and evidence are recorded in the review. Leave everything uncommitted for review. | 2026-11-04 |
+
+| D173 | **Home contact-square colours and Contact Reach us cards** (the user, 2026-11-04): Home’s quote-area WhatsApp square uses WhatsApp green; the Call and Email squares use navy. Retain the existing marks and all other tile/form colours. Each of Contact’s three Reach us channels sits inside an off-white rounded card, on the existing pastel-blue ribbon. Follow-up: make the WhatsApp/Phone/Email terms bold and lift/highlight the whole card on hover or keyboard focus; use an independent translate so the first-visit scroll reveal cannot override it, and a static highlight for reduced motion. Preserve existing contact values, links, motion, form behavior and all other page elements. | 2026-11-04 |
+
+| D174 | **Approved Open jobs concept three and continuous dots; deep-blue Contact backdrop** (the user, 2026-11-04). Apply the nurse-photo accent concept to Careers: preserve all jobs, introduction, empty state and application actions; add the approved existing nurse-team photo with a clearly visible two-layer navy shadow and no white border, responsive heading/photo pairing and pale-green-to-mist panel. The photo uses the existing media picker and page draft/preview/publish workflow, with an optional backward-compatible image reference and no SQL migration. Heading reads Open Jobs with decorative dots cycling one → two → three, smoothly fading only the punctuation in a fixed-width reserve; no typewriter or moving words. Agent timing default: 2.4 seconds per cycle. Reduced motion keeps three static dots. This explicitly requested loop is a narrow motion exception. First change Reach us to the existing deep-blue token; retain off-white cards and readable navy details. Extend the same deep blue behind the rounded Send us a message panel, whose pastel-green fill, white form and shadows remain unchanged. Follow-up: extend Before you apply’s pastel-blue background behind the Open Jobs card, retaining the green gradient card and compact outer spacing (16 px phone, 24 px larger screens) above and below it. No commit before review. | 2026-11-04 |
+
+| D175 | **About Talk to us channel cards** (the user, 2026-11-04). Place WhatsApp, Call and Email in individual rounded off-white cards on About, preserving the existing band, icons, values, links and reveals. Shorten the call label to Call us on this variant only, omitting 24/7. Follow-up: Phone and Email icon squares use navy with white marks; apply the same rounded cards and shorter call label to Services’ Talk to us, retaining its pastel-blue band. Other pages retain their labels and styles. No CMS control or migration. | 2026-11-04 |
+
+| D176 | **No service categorisation in the app; remove Services’ empty opening gap** (the user, 2026-11-04). Remove audience labels from Home’s services slider and all service cards, grouped catalogue headings/actions, the admin audience selector/list labels and category wording on service share images. Preserve every service, name, photo, link, order and publish workflow. Historical audience values remain internal for backward compatibility; they no longer control presentation or related selection. No destructive content migration. Remove the redundant inter-section gap between Services’ image opening and All services; hidden sections already leave no wrapper in published or preview reads. No commit before review. | 2026-11-04 |
+
+| D177 | **About Values: approved Promise triptych, hover shine only** (the user, 2026-11-04). Replace About’s What we stand for points with concept one: equal rounded deep-blue, pastel-green and mist panels using the existing commitment headings and statements, three columns on larger screens and stacked on phones. Retain the subtle circular outline decoration and sequential scroll reveals. Follow-up: a subtle diagonal sheen sweeps across the entire card once per fine-pointer hover; no lift, scale, tilt or movement of the card. Reduced motion is static. Other placements retain their existing layout. No new content, CMS control, dependency, data change or commit before review. | 2026-11-04 |
+
+| D178 | **About Who we are description aligns with the photo** (the user, 2026-11-04). On larger screens put the description and photo in the same grid row below the heading, so their top edges align. Keep the existing phone order, all wording, image, reveals and Home layout; without a photo retain the ordinary text layout. No CMS control or data change. | 2026-11-04 |
+
+| D179 | **Contact navbar consistency and Google Maps satellite view** (the user, 2026-11-04). Set the shared navbar’s soft-white card background directly on the component so Contact and every public page share the same base style. Replace Contact’s authored street drawing with a lazy Google Maps satellite iframe, retaining the rounded frame/shadow, published office address, editable pin when set and Open in Google Maps link. Use Google’s public embedded-map route without a new API key or dependency; validate its satellite rendering directly. With no confirmed coordinates, search the published company/address rather than guessing a pin. This explicitly requested Google embed supersedes D34’s no-embed choice for Contact and is a narrow third-party exception. Disclose the Google map in Privacy, preserve unrelated drafts, use an accessible iframe title and stable responsive geometry at least 200 px in both dimensions on supported screens, and verify phone/tablet/laptop plus enlarged text. No design setting, SQL migration, commit or deployment. Follow-up: use a stronger static two-layer navy map shadow, as requested. | 2026-11-04 |
+| D180 | **Hydration warning investigation and regression checks** (the user, 2026-11-05). Investigate Home and admin sign-in reports containing browser-added `__gcrremoteframetoken`/`__gcruniqueid` attributes. Compare raw SSR HTML with a clean development browser and a controlled pre-hydration DOM annotation reproduction. Add public/auth and signed-in admin hydration checks, including a development-mode CI pass because React’s detailed attribute warnings are development-only. Preserve real error reporting; do not add annotation scrubbers, client-only forms, new warning suppression or extension-dependent app code. Test/config/docs only unless a genuine app mismatch is reproduced; no UI change, commit or deployment. | 2026-11-05 |
+| D181 | **Impeccable polish without redesign** (the user, 2026-11-05). Preserve all approved content/layouts, palette, fonts, motion and draft workflows. Correct verified compact service-card row-height drift for longer titles, and make the shared editor Preview visibly/semantically unavailable during save/publish/discard so it cannot open stale content. Lock the editor’s native controls during these writes so edits cannot race with response-driven form resets. Review phone/tablet/laptop, keyboard and reduced-motion paths; keep runtime and performance budgets. No new controls, dependencies, migration, commit or deployment. | 2026-11-05 |
+| D182 | **Home About commitments in one card** (the user, 2026-11-05). Home’s three existing intro points share one full-width off-white rounded card below the description, side by side from tablet width and stacked on narrow screens. Keep headings/descriptions and Read more after the card; omit tick marks and icon spacing. Only Home changes; existing About-page list/values stay. Empty points leave no card/gap, and up to six stored points remain supported. No content/data, CMS-control or schema change. | 2026-11-05 |
+| D183 | **Home hero: three-second advance and plain arrows** (the user, 2026-11-05). Halve the main slider interval from six to three seconds; place simple previous/next SVG chevrons before/after the existing progression bars, no Pause or visible count. Wrap manually, restart the slide clock, preserve note visibility and existing reveal/wipe treatment. Scope the three-second token to the hero: services pyramid and other photo openings retain six seconds. Keyboard-visible focus pauses playback, including the new controls; pointer/hover do not stick. Reduced motion remains static with manual navigation. Verify 2–8 slides, narrow/large screens and the public budgets. | 2026-11-05 |
+| D184 | **Cardless pyramid label concepts and mobile crop comparison** (the user, 2026-11-05). Show five image concepts using existing service photos/titles without rounded label cards. Use landscape cards on EVERY screen (latest correction), with a three-card proposal (two behind/below, one front/above) and a five-versus-three landscape comparison. Supply a responsive interactive prototype, not only static boards, with particular attention to mobile usability. User selects before any production pyramid layout/label changes; existing live pyramid stays. | 2026-11-05 |
+
+| D185 | **Approved Home landscape pyramid** (the user, 2026-11-05). Apply soft photo fade with three landscape cards on every screen. Keep the front card centred and the two rear cards smaller/softer and symmetrically behind. Contain the complete composition within the current site gutters; no edge bleed. Final screenshot clarification: rear cards remain equally offset left/right and scale around their centre, sharing the front’s vertical centre. Both upper/lower corner gaps stay visible at every width; this supersedes the fixed 30 px drop, which protruded beneath shorter mobile cards. Equal-height native flex items preserve geometry across titles; transforms alone compose the pyramid, retaining layout boxes during deferred enhancement. No vertical deck. Titles sit at the bottom of each photo, centred horizontally in modest text, without a name arrow or rounded label card. Preserve every published service/link, order, manual controls/swipe, six-second automatic advance, keyboard pause, reduced motion and native fallback. Other service surfaces stay unchanged. No new admin control, content write, dependency or migration. No commit before review. | 2026-11-05 |
+
+| D186 | **Full uncommitted-work Harden, commit-readiness review, then Polish** (the user, 2026-11-05). Sweep today’s changes and the complete uncommitted tree for functional, security, draft/preview, edge-case and responsive regressions. Use Impeccable Harden first; resolve confirmed defects and review all unstaged assets/code/docs for commit readiness before Impeccable Polish. Preserve approved visuals/content, no speculative redesign or new features. Verify phone/tablet/wide screens, text enlargement, keyboard/touch/reduced motion, test/build/coverage and runtime budgets. User’s no-commit-before-review requirement persists; this is readiness review only. No extra sub-agents. | 2026-11-05 |
+
+| D187 | **Readiness review and at most two or three commits** (the user, 2026-11-06; verification continued after local midnight). Recheck the complete uncommitted bundle and, only when the local readiness gates pass, commit it in at most three coherent commits. This explicitly lifts the earlier no-commit-before-review restriction for this bundle. Preserve approved visuals, content, private drafts and credentials; use the required author, do not push or deploy. Local commit readiness does not close the remaining launch/device/security decisions. | 2026-11-06 |
 
 ## 3. Audiences and the admin
 
@@ -341,6 +411,8 @@ content from the record.
 
 ### 6.1 Home — `/`
 
+D158/D160 supersede the split opening below with the approved photo/header blend: full-width dimmed photo, white/light-blue copy, original coloured logo on a solid light header; only the photo’s top fades gradually into its light base. D157 allows the note pill to hide independently of the progression bars; it is hidden locally.
+
 As Theme 6, the client's choice (D132):
 
 1. **The slides** (fixed, first, D128): the admin's slides, five at launch from
@@ -363,26 +435,40 @@ in its catalogue (§7.1) for the admin to add.
 
 ### 6.2 About — `/about`
 
+Its photo opening uses the blended photo opening (D158/D160), with the original coloured logo and readable navy navigation. Without a photo, retain the readable text-only opening.
+
 Page sign; the company's story; mission and vision (rewritten, D6); values;
 clients; the contact section.
 
 ### 6.3 Services — `/services`
 
-Page sign; the full services index (§8), each service a photo card under its
-audience's pill with that audience's actions (D111); the institutions section;
-the contact section.
+The main page’s photo opening follows the same blended photo opening (D158/D160); individual service details retain D146. Without a photo, retain the text-only opening.
+
+Page sign; the full services index (§8), every service together in admin order
+on a pastel-green band using compact thumbnail/title cards, without audience
+groups or audience actions (D150); the unchanged institutions section; the
+Talk to us section on pastel blue. Other sections, navigation and footer stay.
 
 ### 6.4 A service — `/services/[slug]`
 
-The service's opening under its audience's pill, with its photo (D109); who
-it is for; the description; **what the care includes**; the other services
-for the same audience as photo cards (D111); the audience's actions (WhatsApp
-and Call for families; Request a Quote for institutions, with the service
-preselected).
+D164 supersedes the editorial title/arched photo opening below: use the shared full-width fading photo opening with the service title and summary over it, as About/main Services. Keep the existing optional buttons and all following sections. No-photo records remain text-only.
+
+Care editorial, the approved second concept (D146): a large blue title,
+summary and tall rounded portrait, with up to two optional published header
+buttons (label/destination), hidden by default. The admin adds, edits,
+reorders or removes them through draft/preview/publish; internal/HTTPS safe
+links only. About the service keeps the description and confirmed inclusions
+on a pastel-blue band. Who it is for and the 24/7 panel are omitted, retaining
+legacy stored content. Other services uses concept two’s compact thumbnail/title cards on pale green,
+with All services, rather than Home’s portrait cards or duplicate audience
+actions. D155 chooses three distinct published services across the full catalogue,
+excluding the current service; fewer only if fewer than three others exist overall.
+Navigation and footer stay. Opening and scroll animations are required, with
+the existing reduced-motion path. The main listing follows §6.3 (D150).
 
 ### 6.5 Careers — `/careers`
 
-Page sign; the introduction; the open jobs (title, location, type, closing
+Optional, movable page sign (D148; currently hidden locally). Its outer top spacing applies only while it is the first visible section; hiding or moving it removes the empty pastel-blue strip. The introduction; the open jobs (title, location, type, closing
 date); what Al Hidaya asks of nurses in Qatar (from job requirements, never
 generalised into a claim: the seed's *Before you apply* says what the form
 asks for); a general application (Q7). **Empty state:** no open jobs says so
@@ -399,10 +485,23 @@ open job (§19).
 
 ### 6.7 Contact — `/contact`
 
-Page sign; WhatsApp, phone, email (`info@`), the address (Retaj Building, Bin
-Naifaa 80, near Asmakh Mall, first floor, door 109, Al Sadd, Doha); "available
-24/7" (the company's own claim); **the styled static map** with the location
-marked and **Open in Google Maps** (D34, §30.6); the Contact form (§10).
+The approved fifth concept (D145), with the user’s colours: a white opening,
+pastel-blue Reach us ribbon and pastel-green message band. The headline types
+fully, holds, deletes from the end, then repeats (D147); it pauses hidden or
+offscreen and becomes complete still text with reduced motion. The published
+lede remains. The old opening image is retained in content but not shown.
+
+WhatsApp, phone and email span the ribbon; the company’s published hours and
+optional brochure remain, untouched by D152. The rounded pastel-green message section
+sits on a pastel-blue backdrop matching Reach us (D153) and
+puts Send us a message, then the existing styled static map and office details
+at the left, and the white form card with a float shadow at the right. No overlap.
+Office details: Retaj Building, Bin Naifaa 80,
+near Asmakh Mall, first floor, door 109, Al Sadd, Doha, with Open in Google Maps.
+The existing Contact fields, consent, bot check and send behavior remain;
+name/phone align and extra phone guidance is a placeholder. Keep admin section
+order and visibility, with no overlap. The
+navigation/footer stay unchanged. Existing word/reveal motion supports the page.
 
 ### 6.8 Request a Quote — `/request-a-quote`
 
@@ -439,7 +538,7 @@ says where the visitor is and the way back.
 
 | Type | Content | Used on |
 |---|---|---|
-| `SIGN` | headline, the highlighted words (D109), supporting line, photo; on Home it is the slides instead (D128): one to eight, each a photo, a headline, its highlighted words, its words and an optional button (wording and link, both or neither), and the card on the photo (an icon and a note); on every other page the page's sign (D109), the page's name and actions fixed | every page (fixed, first) |
+| `SIGN` | headline, the highlighted words (D109), supporting line, photo; on Home it is the slides instead (D128): one to eight, each a photo, a headline, its highlighted words, its words and an optional button (wording and link, both or neither), and the card on the photo (an icon and a note); on every other page the page's sign (D109), the page's name and actions fixed | every page (fixed, first except Careers: movable/hideable, D148) |
 | `INTRO` | heading, its highlighted words, rich text, optional photo, up to six points (title, line) (D129); on Home it ends on Read more about us | Home, About |
 | `SERVICES_INDEX` | heading, intro; shows every published service, in order | Home, Services |
 | `VALUES` | heading, up to six items (title, line) | Home, About |
@@ -447,12 +546,12 @@ says where the visitor is and the way back.
 | `INSTITUTIONS` | heading, text, photo; ends on Request a Quote | Home, Services |
 | `CLIENTS` | heading; shows every published client logo, in order | Home, About |
 | `CAREERS_BAND` | heading, text; shows the three most recent open jobs and a link to all (D72) | Home |
-| `JOBS_LIST` | intro, empty-state text | Careers |
+| `JOBS_LIST` | intro, empty-state text, optional photo (D174) | Careers |
 | `CONTACT_BAND` | heading, text; reads the contact details (§13) | most pages |
 | `CONTACT_DETAILS` | heading; contact details and the static map | Contact |
 | `FORM` | heading, text; which form (Quote, Contact or the short quote, D130); the short quote on its band beside the ways to reach us, any other beside the site's email as a chip | Home (the short quote, D130), Contact, Quote |
 | `RICH_TEXT` | headings, paragraphs, lists, links (no raw HTML) | About, Privacy, Terms |
-| `SERVICES_ROW` | heading, text; every published service as a rounded photo card in a row to scroll, each opening its page, and All services (D131) | Home |
+| `SERVICES_ROW` | heading, text; every published service as a rounded photo card in a row to scroll, each opening its page, and All services; Home enhances this into the approved 30 px pyramid, automatically advancing every six seconds (D143) | Home |
 
 Rich text is stored as structured blocks (heading, paragraph, list, link),
 never HTML; links must be internal routes or validated `https` URLs.
@@ -649,7 +748,13 @@ admin (D10). `/brochure` redirects to it; `/profile.pdf` redirects to
 
 ## 13. Site content and settings
 
-Two kinds, kept apart:
+Footer background D166: retain only the faint pale-blue nurse-care scene under the user’s authorized fallback; extra tool drawings are omitted because their exact source artwork is unavailable. Keep the plain copyright strip, all existing content/layout and the slow logo shine.
+
+Footer logo D165: a masked diagonal shine repeats over the stationary logo, with a static reduced-motion path.
+
+Footer social refinement (the user, 2026-11-03): show Follow us on beneath the Contact details when at least one social link is published. One link shows its icon and name, aligned with the contact rows. Multiple links show icons only, side by side with wrapping as needed; each retains an accessible network name and a 44 px target. With no links, omit the heading and list. Preserve URLs and external-link protections. The user’s optical refinement moves only Instagram’s mark 2 px toward the inline start while retaining the label alignment and full target.
+
+Three independent areas:
 
 **Site content** (draft and published, D32): company name and short
 description; contact details (phone, WhatsApp, email, address lines, map
@@ -657,6 +762,13 @@ link, the office's spot on the map (D74), "available 24/7" line); social links (
 WhatsApp button, on or off (D67); header navigation
 (labels, order, visibility, from a fixed set of destinations: pages, services,
 approved external URLs); footer columns and the footer's running words (D106); SEO defaults; the brochure.
+
+**Font Manager** (D168): public font families only, in an independent `TYPOGRAPHY`
+document with its own draft, published copy and cache tag. Twenty text roles
+choose from fifteen bundled, licensed faces (D169 adds five to D168's ten). Existing sizes, weights, colours and
+layout remain fixed. Save draft, authenticated Preview, Publish and Discard use
+the shared editor; publishing typography leaves the Site content draft alone.
+The admin's own font stays unchanged, and no font upload is offered.
 
 **Operations** (take effect on save, audited): the enquiries recipient(s),
 the applications recipient(s), **retention days (1 – 365, D24)** for enquiries
@@ -924,8 +1036,14 @@ the map, brand marks) are SVG or pre-made at build.
 
 Self-hosted with `next/font/local` (no third-party font requests), variable
 WOFF2, subset, with metric-matched fallbacks so text never shifts on load:
-Atkinson Hyperlegible Next (D61), one 34 KB file for every weight, preloaded,
-with an Arial fallback sized to its metrics (`src/assets/fonts/`).
+Inter Tight is the default (D108). D168/D169 provide fourteen optional Latin variable sans and serif
+faces, with fixed allowlisted assignments per public text type. All are bundled
+with their licenses and metric-adjusted Arial or Times New Roman fallbacks (`src/assets/fonts/`).
+The existing Inter Tight preload remains; optional faces are not preloaded and
+load when selected content uses them. Typography has an independent draft and
+published document, administered under Settings → Font Manager. The admin
+panel keeps Inter Tight. Font sizes, weights, spacing and all other design
+controls remain locked.
 
 ## 23. Technology stack
 
@@ -1261,6 +1379,8 @@ system with its coloured lines, stations and "You are here", built in Phases
 
 The user's binding requirement: **very smooth, no lag or jank anywhere.**
 
+- **Home’s cinematic slides (D136):** CSS coordinates a 1.1 s photo wipe, the headline’s words, the supporting line and optional action, then the note and progress. The outgoing photo’s drift freezes beneath the incoming wipe. The photo drift and progress share a six-second clock; deliberate keyboard focus on the hero stops both; hovering or clicking never pauses it. No navigation or Pause buttons and no count; reduced motion keeps the first slide still. The wipe is the single-photo clip-path exception to the rule below.
+- **Home services (D143):** the centre card leads a 30 px stepped pyramid, retaining every title/link panel while rear photos soften. The existing arrows and swipe move through the published services. A deferred native controller uses the hero’s six-second CSS duration, pauses offscreen/in hidden tabs/during deliberate keyboard focus, and cleans up on navigation; reduced motion keeps static manual navigation. No pause button, as approved. A native row remains usable if enhancement fails.
 - **Lenis** for smooth wheel scrolling on desktop, synced to **GSAP's ticker**
   so there is **one animation frame loop**; ScrollTrigger updates from Lenis.
   Touch devices keep native scrolling (no scroll-jacking on phones).
@@ -1282,6 +1402,8 @@ The user's binding requirement: **very smooth, no lag or jank anywhere.**
 - Verified by the performance checks in §31.
 
 ### 30.5 The admin's look
+
+> **D138 (2026-11-01) updates the palette below:** pastel-green navigation, mobile menu and sign-in panel with navy text and the colour logo; forest actions, links, focus and switches; a leaf active row and counts. White work areas and original status/error colours stay. These roles are scoped to `/admin`; the public site stays blue-led.
 
 The same tokens, type and pictograms, quieter: Operate mode, dense where it
 helps. Shaped with `/impeccable shape` (R6.1, brought forward, D80) as **the
@@ -1517,7 +1639,7 @@ one commit (D27).
 | R3.4 | About; Services; a service | §6.2 – §6.4 | — | DONE (2026-10-29; photos wait on Q41) |
 | R3.5 | Contact with the static map; Request a Quote page shell; Privacy; Terms | §6.7 – §6.9, §30.6 | Q18 | DONE (2026-10-29; the office's spot on the map waits on the client, D74) |
 | R3.6 | Caching with tags; draft-mode preview | §22, §14 | — | DONE (2026-10-29; Publish's revalidation is wired by the admin's publish route, R6) |
-| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DONE (2026-10-29; `JobPosting` and the closed jobs' `noindex` come with the job page, R5.1; the preview's `noindex` with R3.6) |
+| R3.7 | SEO: metadata, OG images, JSON-LD, sitemap, robots; the 301 map | §19, §5.3 | Q9 | DONE (2026-10-29; `JobPosting` and the closed jobs' `noindex` come with the job page, R5.1; the preview's `noindex` with R3.6; shared-link cards refreshed and all 19 launch routes crawler-verified for review under D140, 2026-11-01) |
 | R3.8 | E2E + axe on every public page, phone and desktop; performance numbers recorded | §34, §31 | — | DONE (2026-10-29; every public page of Phase 3 has its journeys with axe at both widths; numbers in the changelog) |
 
 ### Phase 4 — Enquiries
@@ -1571,21 +1693,91 @@ one commit (D27).
 | R6B.9 | The user's review of publishing: a publish never lost when the app restarts (D119); Preview saves first (D120); the admin column's logo loaded first | D119, D120 | R6B.8 | DONE (2026-10-31) |
 | R6B.10 | The user's review of the look: the company named as its logo reads (D121); the logo's green as the primary, with navy words (D122); the admin in the logo's blue (D123); how it works in the families' card and Our services in its place, both looping (D124); every block revealed as it scrolls in (D125); deleting an image in red (D126) | D121 – D126 | R6B.9 | DONE (2026-10-31) |
 
-### Phase 6C — Theme 6, the client's look (D128 – D135)
+### Phase 6C — Theme 6, the client's look (D128 – D138)
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R6C.1 | Home as Theme 6: the slides (D128); About and headings rising (D129); the short quote (D130); What we do (D131); the header, the footer, the colours, the soft whites and the buttons (D132); the clients' rows (D133); the four old Home sections removed; the menu's sliding pill and the admin's switches (D134); the seed and the journeys | D128 – D134 | R6B.10 | DONE (2026-11-01) |
 | R6C.2 | Every other public page in Theme 6: the inner pages' straight-lined opening, Talk to us, the services' cards, About's mission, vision and values, Contact's and Careers' bands and Contact's card; Contact's and Careers' openings, a job's page and Apply kept as they are (D135) | D132, D135 | R6C.1 | DONE (2026-11-01) |
 
+| R6C.3 | Home’s cinematic automatic hero: layered photo wipe, coordinated text and frame, progress only; no Previous, Next, Pause or count; reduced motion and deliberate keyboard focus; no pause on hover or click | D136 | R6C.2 | READY FOR REVIEW — all local checks passed (2026-11-01), uncommitted |
+
+| R6C.4 | About’s Mission and Vision as distinct paired panels: assembling medical cross, unfolding globe, masked headings and statements, reduced motion | D137 | R6C.3 | READY FOR REVIEW — phone and desktop browser checks passed, uncommitted |
+
+| R6C.5 | Pastel-green admin navigation and sign-in, forest actions and switches, original status colours, public palette isolated | D138 | R6C.4 | READY FOR REVIEW — all local checks passed (2026-11-01), uncommitted |
+
+| R6C.6 | Home-only services pyramid, 30 px steps, six-second advance, rear labels and softened photos, manual arrows/swipe and reduced motion | D143 | R6C.5 | READY FOR REVIEW (2026-11-02): full coverage 100%, full E2E plus final focused journeys, all 20 initial-JS budgets and four targeted performance cases passed; uncommitted |
+| R6C.7 | Five service-detail and five Reach us/message-form image concepts; implement only after the user chooses | D144 | — | CONCEPTS CHOSEN (2026-11-03): Contact five (D145/D147) and service two (D146), with the user’s section-colour, compact related-card and header-action changes; implementation in R6C.8 |
+| R6C.8 | Implement approved Contact ribbon/typewriter and service editorial pages with optional published header buttons | D145, D146, D147 | R6C.7 | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.9 | Careers opening: move, hide, restore; hide the current local opening and its unused top spacing | D148 | — | READY FOR REVIEW (2026-11-03): spacing follow-up verified, uncommitted |
+| R6C.10 | Mission/Vision hover lift and highlight | D149 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.11 | Main Services All services section: unified green compact cards | D150 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.12 | Home quote reference layout with pastel-blue background | D151 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.13 | Contact message reference layout, map/office left and form right; preserve Reach us | D152, D153 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.14 | Standard WhatsApp brand mark everywhere and green floating shortcut | D154 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.15 | Three distinct Other services across the full published catalogue, excluding current | D155 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.16 | About and main Services opening-action visibility controls; hide both now | D156 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.17 | Home slider pill visibility switch; hide the local published pill | D157 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.18 | Approved photo opening with gradual image fade and solid navbar on Home, About and main Services | D158, D160 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.19 | Mobile menu contact-label fit and shorter Brochure download label | D159 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.20 | Impeccable Adapt: public site and mobile menu proportions, touch/landscape/desktop verification | D161 | — | READY FOR REVIEW (2026-11-03), uncommitted |
+| R6C.21 | Public navbar in normal flow; white Careers/Contact navigation surfaces | D162, D163 | — | READY FOR REVIEW (2026-11-03), uncommitted |
+| R6C.22 | Individual service photo openings match About/main Services; retain optional buttons | D164 | — | READY FOR REVIEW (2026-11-03), uncommitted |
+| R6C.23 | Footer Instagram/social icon and label align with contact rows | §13 | — | READY FOR REVIEW (2026-11-03): phone/desktop verified, uncommitted |
+| R6C.24 | Footer Follow us on: one network with name, multiple icons in a row | §13 | — | READY FOR REVIEW (2026-11-03): phone/desktop verified, uncommitted |
+| R6C.25 | Subtle diagonal shine over the stationary footer logo | D165 | — | READY FOR REVIEW (2026-11-03): slow sweep and reduced motion verified, uncommitted |
+| R6C.26 | Faint nurse-care footer background; omit approximate tool art, preserve all content and shine | D166 | — | READY FOR REVIEW (2026-11-04): nurse-only fallback, local checks passed, uncommitted |
+| R6C.27 | Phone menu: concept 3 deep-blue sheet, no email or 24/7; smooth open and close, its rows following the sheet | D167 | — | READY FOR REVIEW (2026-11-03): local checks passed, uncommitted |
+| R6C.28 | Public Font Manager: fixed ten-font library, role assignments, isolated drafts/preview/publish, responsive validation | D168 | — | READY FOR REVIEW (2026-11-04): 100% coverage, complete browser regression, 600-case font matrix and targeted performance passed; uncommitted |
+| R6C.29 | Expand Font Manager with five expressive fonts, retain all existing choices and validate responsive/font-loading behavior | D169 | — | READY FOR REVIEW (2026-11-04): 15 fonts, 100% coverage, 900 layout cases, delayed-load and Home performance gates passed; uncommitted |
+| R6C.30 | Halve the footer logo shine pause, preserving the existing slow sweep and reduced motion | D170 | — | READY FOR REVIEW (2026-11-04): 4.5 s sweep / 2.75 s wait, phone/desktop and reduced motion passed; uncommitted |
+
+| R6C.31 | Match the mobile Home pyramid to the five-card laptop composition, preserving readable cards and touch behavior | D171 | R6C.6 | READY FOR REVIEW (2026-11-04): five layers, 624 active-card cases, touch/fallback, 100% coverage and Home performance passed; uncommitted |
+
+| R6C.32 | App-wide responsive/visual consistency review and verified fixes across public and admin screens | D172 | R6C.31 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.33 | Requested Home contact-square colours and off-white Contact Reach us channel cards | D173 | R6C.32 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.34 | Five Open jobs refinement concept images with existing content, desktop/mobile and proposed motion; no implementation before selection | User, 2026-11-04 | R6C.32 | DONE (2026-11-04): five separate boards; concept three approved by the user, implementation tracked in R6C.35 |
+
+| R6C.35 | Approved Careers nurse-photo accent, smooth looping heading dots and continuous deep-blue Contact backdrop | D174 | R6C.34 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.36 | About Talk to us rounded contact cards and shorter call label | D175 | R6C.35 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.37 | Remove service categorisation throughout the app and redundant Services opening gap | D176 | R6C.36 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.38 | Five non-list concepts for About’s What we stand for, with current statements and desktop/mobile images | User, 2026-11-04 | R6C.36 | DONE (2026-11-04): five boards delivered; concept one approved, implementation in R6C.39 |
+
+| R6C.39 | About Promise triptych with sequential reveals and stationary hover shine | D177 | R6C.38 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.40 | About Who we are description aligned with its photo | D178 | R6C.39 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.41 | Contact shared navbar surface and responsive Google satellite map | D179 | R6C.40 | DONE (2026-11-05; local review, 1,309 tests/100% coverage, responsive matrices and performance gates passed; no commit) |
+
+| R6C.42 | Hydration diagnostics and public/admin development/production regression gates | D180 | R6C.41 | DONE (2026-11-05; controlled reproduction, 160 clean route/screen checks, lint/typecheck/format; no app mismatch reproduced, no commit) |
+
+| R6C.43 | Impeccable polish: compact card alignment, pending-preview state and edit protection during writes | D181 | R6C.42 | DONE (2026-11-05; 1,310 tests/100% coverage, responsive/font/hydration matrices and performance passed; uncommitted for review) |
+
+| R6C.44 | Home About full-width three-column points card without check marks | D182 | R6C.43 | DONE (2026-11-05) |
+
+| R6C.45 | Hero three-second clock and simple manual chevrons around the progress bars | D183 | R6C.43 | DONE (2026-11-05) |
+
+| R6C.46 | Five cardless service-title concept images and mobile three-landscape-card crop comparison | D184 | R6C.43 | DONE (2026-11-05; concepts/prototype delivered; selected soft photo fade with three cards is implemented under D185) |
+
+| R6C.47 | Approved three-card landscape Home pyramid, soft photo fade and modest centred bottom titles within existing gutters | D185 | R6C.46 | DONE (2026-11-06; local checks and review evidence passed; uncommitted) |
+
+| R6C.48 | Full uncommitted-work Harden, commit-readiness review and then Polish | D186 | R6C.47 | DONE (2026-11-06; local checks and review evidence passed; uncommitted) |
+
+| R6C.49 | Final complete-bundle readiness review and user-authorized commits | D187 | R6C.48 | LOCAL GATES PASSED (2026-11-07): fresh build/static checks, 1,318 tests/100% coverage, 264 E2E cases, development hydration and 40 performance cases; recording the authorized two commits; no push or deployment |
+
 ### Phase 7 — Performance, accessibility and the finish
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R7.1 | Performance budgets in CI; fixes until every page meets them | §31 | — | TODO |
-| R7.2 | Accessibility: axe everywhere plus a manual keyboard and screen-reader pass | §32 | — | TODO |
-| R7.3 | Security review against OWASP ASVS level 2 (sign-in, sessions, uploads, file access, input, headers and CSP, secrets, logging); fixes; `npm run verify` and the pre-push hook | §26, §35.4, D55 | — | TODO |
-| R7.4 | Impeccable finish review of the public site; fixes; `DESIGN.md` and `.impeccable/design.json` from the built world | §30.1 | — | TODO |
+| R7.1 | Performance budgets in CI; fixes until every page meets them | §31, D139 | — | LAB GATES READY FOR REVIEW (2026-11-01): final D139 run and subsequent D142 hardened build each passed all 40 serial Lighthouse/JS/interaction/touch/wheel/cadence cases; CI gates implemented, reports retained. Real-device/compositor and server-region checks remain release work (`docs/PERFORMANCE.md`) |
+| R7.2 | Accessibility: axe everywhere plus a manual keyboard and screen-reader pass | §32, D142 | — | IN PROGRESS (2026-11-01): automated axe, responsive/long-content/text-enlargement and keyboard/menu checks passed; identified 44 px targets fixed. Manual screen-reader speech and Q49 remain open |
+| R7.3 | Security review against OWASP ASVS level 2 (sign-in, sessions, uploads, file access, input, headers and CSP, secrets, logging); fixes; `npm run verify` and the pre-push hook | §26, §35.4, D55 | — | IN PROGRESS (2026-11-01): focused upload review and fixes D141 ready for review (`docs/audits/2026-11-01-upload-security.md`); broader ASVS review, verify command and hook remain TODO. Malware scanning deferred to a before-launch decision by the user (Q52) |
+| R7.4 | Impeccable finish review of the public site; fixes; `DESIGN.md` and `.impeccable/design.json` from the built world | §30.1 | — | AUDIT COMPLETE (2026-11-01), entire codebase: `docs/audits/2026-11-01-impeccable-audit.md`; 15/20 at audit; findings 3/4 local fixes READY FOR REVIEW (D139; 40 performance cases passed, sidecar refreshed); finding 2 identified targets fixed by D142; finding 1/Q49 remains open. D142 harden/polish READY FOR REVIEW (`docs/audits/2026-11-01-impeccable-harden-polish.md`) |
 | R7.5 | Client sign-off: copy, images, logos, legal pages | D6, Q18 | Client (§40) | TODO |
 
 ### Phase 8 — Deploy and go-live
@@ -1695,6 +1887,15 @@ Each carries the **default** built if no answer arrives before its row starts.
 | Q45 | ~~Send an enquiry's alert after the visitor's answer (fast; a restart in that moment leaves it for Retry), or before it (the visitor waits about a second on the mail server)?~~ | **Answered by D91:** After (D79). |
 | Q46 | ~~When an applicant's CV cannot be saved: keep nothing and ask them to send it again, keep the application and ask for the CV, or keep it as now?~~ | **Answered by D84:** (a), tried 3 times, then nothing kept and "Something went wrong with your CV upload. Please send it again." |
 | Q47 | ~~How a failed automated email is sent again: a cron job, quick tries in the request, or both? Does the password reset take part?~~ | **Answered by D85:** (a), a cron job every 10 minutes, up to 3 more tries, each recorded; the password reset left out. |
+| Q48 | Home’s cinematic hero timings and its deliberate keyboard-focus stop, without a Pause button? | **Agent default (D136), for review:** a 1.1 s wipe, 900 ms words 45 ms apart from 160 ms, supporting line at 480 ms, optional action at 620 ms, note and progress at 760 ms; the six-second clock stops only on deliberate keyboard focus and resumes on leaving. Hover and mouse-focus pauses were removed after the user reported sticking. |
+| Q49 | A persistent stop mechanism for Home’s hero/services, Contact’s looping headline and both client-logo rows, while retaining the user’s progression-only slider? | **OPEN after the 2026-11-01 audit:** deliberate keyboard focus and the single chosen logo do not provide a persistent stop while the page remains usable (WCAG 2.2.2). The user chooses any new mechanism; none was added by the audit. |
+| Q50 | Performance lab tooling and exact Fast 4G profile? | **Agent default (D139), for review:** Lighthouse 13.6.0 as a development dependency; 4× CPU, 40 ms RTT, 9 × 1,024 Kbps down / 1.5 × 1,024 Kbps up. Lab interactions use actual Event Timing and scroll probes; physical-device and server-region evidence is separate. |
+| Q51 | Share-preview composition? | **Agent default (D140), for review:** the current Theme 6 logo/headline card, with page-specific published words and crawler checks; no new editable design controls. |
+| Q52 | Malware scanning for PDFs and Word CVs? | **Current task answered by the user (D141), 2026-11-01:** harden and verify existing checks now; decide malware scanning before launch. The launch decision remains open; no scanner or confidential-file transfer to an external service is enabled. |
+
+| Q53 | Hardening/polish layout defaults? | **Agent default (D142), for review:** reuse the existing menu beyond five visible links or 42 total label characters; content-sized phone sign-in band; preserve the current design and content. These defaults can be overturned at review. The 44 px target floor is the existing requirement. |
+| Q54 | Which service-detail and Contact compositions should replace the current sections? | **RESOLVED (D145, D146):** Contact’s fifth concept (Blue ribbon) is approved with a white opening, pastel-blue Reach us and pastel-green message section, unchanged navigation/footer and animation. Service concept two (Care editorial) is also approved under D146, with two optional editable header buttons. |
+| Q55 | Font Manager library and text-role vocabulary? | **Scope answered by the user (D168/D169):** public website only, fixed bundled library, no font uploads; retain the original ten and add five expressive fonts for fifteen total. **Agent defaults, for review:** the fifteen families and twenty semantic text roles listed in DESIGN.md; the user may replace these choices. Existing font/size/weight/spacing defaults are preserved. |
 
 ## 42. Later (unscheduled)
 

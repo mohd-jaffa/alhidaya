@@ -46,6 +46,7 @@ describe("the editor's fields", () => {
 
   it("start Home's hero with one blank slide and no button, and its services with their heading (D128, D131)", () => {
     expect(blankSection("HOME", "SIGN").content).toEqual({
+      hideNote: false,
       slides: [
         {
           image: null,
@@ -87,6 +88,8 @@ describe("the editor's fields", () => {
     expect(sectionLock("PRIVACY", [privacy[0], privacy[1], section("RICH_TEXT", false)], 1)).toBe("needed");
     expect(sectionLock("HOME", pageFixture("HOME").sections, 1)).toBeNull();
     expect(sectionLock("HOME", [section("INTRO"), section("SIGN")], 0)).toBeNull();
+    expect(sectionLock("CAREERS", pageFixture("CAREERS").sections, 0)).toBe("retained");
+    expect(sectionLock("CAREERS", [section("JOBS_LIST"), section("SIGN", false)], 1)).toBe("retained");
   });
 
   it("word a row by what its section says first", () => {

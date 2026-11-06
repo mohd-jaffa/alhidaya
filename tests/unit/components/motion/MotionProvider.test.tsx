@@ -20,6 +20,12 @@ function Probe() {
 }
 
 let fonts: () => void;
+function motionEngine() {
+  const fake = fakeEngine();
+  fake.engine.startSmoothScroll = state.start;
+  return fake;
+}
+
 beforeEach(() => {
   state.pathname = "/";
   state.start.mockReturnValue(state.smooth);
@@ -35,7 +41,7 @@ afterEach(() => {
 
 describe("MotionProvider", () => {
   it("loads motion only once the page is idle, then smooths a wheel's scrolling", async () => {
-    const { engine, ScrollTrigger } = fakeEngine();
+    const { engine, ScrollTrigger } = motionEngine();
     state.load.mockResolvedValue(engine);
     mockMedia({ [WHEEL_QUERY]: true });
     const idle = vi.fn((callback: () => void) => {
@@ -60,7 +66,7 @@ describe("MotionProvider", () => {
   });
 
   it("keeps a touch screen's own scrolling", async () => {
-    state.load.mockResolvedValue(fakeEngine().engine);
+    state.load.mockResolvedValue(motionEngine().engine);
     mockMedia({ [WHEEL_QUERY]: false });
     render(
       <MotionProvider>
@@ -73,7 +79,7 @@ describe("MotionProvider", () => {
   });
 
   it("loads nothing when the visitor asks for less motion, and lets go of it when they change their mind", async () => {
-    const { engine } = fakeEngine();
+    const { engine } = motionEngine();
     state.load.mockResolvedValue(engine);
     const media = mockMedia({ [REDUCED_MOTION_QUERY]: true, [WHEEL_QUERY]: true });
     render(
@@ -94,7 +100,7 @@ describe("MotionProvider", () => {
   });
 
   it("starts a new page at its top with its triggers measured afresh, but never jumps on load", async () => {
-    const { engine, ScrollTrigger } = fakeEngine();
+    const { engine, ScrollTrigger } = motionEngine();
     state.load.mockResolvedValue(engine);
     mockMedia({ [WHEEL_QUERY]: true });
     const { rerender } = render(
@@ -133,7 +139,7 @@ describe("MotionProvider", () => {
     );
     await waitFor(() => expect(state.load).toHaveBeenCalled());
     unmount();
-    await act(async () => resolve(fakeEngine().engine));
+    await act(async () => resolve(motionEngine().engine));
     expect(state.start).not.toHaveBeenCalled();
 
     render(

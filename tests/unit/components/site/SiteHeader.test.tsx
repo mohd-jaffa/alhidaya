@@ -1,9 +1,13 @@
-import { act, render, screen, within } from "@testing-library/react";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { render, screen, within } from "@testing-library/react";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { UI_TEXT } from "@/constants/messages";
 import { siteFixture } from "@tests/support/fixtures/content";
+import { mockMedia } from "@tests/support/motion";
+beforeEach(() => {
+  mockMedia({});
+});
 
 const nav = vi.hoisted(() => ({ pathname: "/services/elderly-care" }));
 vi.mock("next/navigation", () => ({ usePathname: () => nav.pathname }));
@@ -44,34 +48,9 @@ describe("SiteHeader", () => {
     expect(screen.getAllByRole("link", { name: UI_TEXT.requestQuote })[0]).toHaveAttribute("href", "/request-a-quote");
     const main = screen.getByRole("navigation", { name: UI_TEXT.mainNavigation });
     expect(within(main).getByRole("list")).toHaveClass("rounded-pill");
-    expect(screen.getByRole("banner")).toHaveClass("sticky");
-  });
-
-  it("slides away as the page goes down past its top, and comes back as it goes up (D132)", () => {
-    const frames: FrameRequestCallback[] = [];
-    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => frames.push(callback));
-    const cancel = vi.spyOn(window, "cancelAnimationFrame");
-    const { unmount } = render(<SiteHeader site={site} />);
-    const banner = screen.getByRole("banner");
-    const scrollTo = (y: number) => {
-      Object.defineProperty(window, "scrollY", { configurable: true, value: y });
-      act(() => {
-        window.dispatchEvent(new Event("scroll"));
-        window.dispatchEvent(new Event("scroll"));
-        frames.splice(0).forEach((frame) => frame(0));
-      });
-    };
-    scrollTo(100);
-    expect(banner).not.toHaveAttribute("data-hidden");
-    scrollTo(400);
-    expect(banner).toHaveAttribute("data-hidden");
-    scrollTo(400);
-    expect(banner).toHaveAttribute("data-hidden");
-    scrollTo(300);
-    expect(banner).not.toHaveAttribute("data-hidden");
-    unmount();
-    expect(cancel).toHaveBeenCalled();
-    vi.restoreAllMocks();
+    expect(screen.getByRole("banner")).toHaveClass("relative");
+    expect(screen.getByRole("banner")).toHaveClass("bg-card");
+    expect(screen.getByRole("banner")).not.toHaveClass("sticky");
   });
 
   it("slides the deep-blue pill from the last page's link to the new one's, then lets it go (D134)", () => {

@@ -8,6 +8,7 @@ import { AUDIENCES, EMPLOYMENT_TYPES } from "@/constants/statuses";
 import { optionalLine, optionalLines, requiredLine, requiredLines } from "../primitives";
 
 import {
+  hrefSchema,
   httpsUrlSchema,
   imageRefSchema,
   isoDateSchema,
@@ -28,6 +29,15 @@ export const serviceDocumentSchema = z.object({
   summary: localized(requiredLines("Summary", { max: TEXT_LIMITS.lede })),
   description: richTextSchema.min(1, VALIDATION_MESSAGES.atLeastOne("The description")),
   included: points("What's included", LIST_LIMITS.included),
+  headerButtons: z
+    .array(
+      z.object({
+        label: localized(requiredLine("Button wording", { max: TEXT_LIMITS.label })),
+        href: hrefSchema,
+      }),
+    )
+    .max(LIST_LIMITS.serviceButtons, VALIDATION_MESSAGES.atMost("Header buttons", LIST_LIMITS.serviceButtons))
+    .default([]),
   forWhom: localized(optionalLines("Who it's for", TEXT_LIMITS.lede)),
   image: imageRefSchema.nullable(),
   seo: seoSchema,
