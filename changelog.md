@@ -4681,3 +4681,17 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None for local commits. Existing physical-device/browser, manual screen-reader, field/server-region and launch security/product decisions retain their recorded status. Tests used only the separate local test database and temporary uploads; no client-server operation, push or deployment.
+
+
+## 2026-11-07 — D187 verification gates and local commits
+
+### Added
+- Committed the pinned development-only Lighthouse runner, shared performance probes/contracts, twenty-route mobile and desktop suites, development hydration configuration and their npm scripts. CI runs the gates serially with the existing thresholds and retains success/failure artifacts; coverage uses one worker for the real photo encodes.
+- Recorded the final full-run summary and all-route performance evidence in `docs/audits/2026-11-07-readiness*`, with method, source-hash provenance, migration/commit boundaries and remaining release limits. Updated the tracker and performance guide.
+
+### Validation
+- All D187 gates above passed against the exact source/test/migration tree committed here; final formatting and diff/credential scans passed. Feature commit: `d90c605`. The companion verification commit completes the user-authorized two-commit bundle as jaFFa, with no attribution trailer.
+- Restored the review app on port 3210 from an isolated copy of the tested standalone build and verified the replacement temporary Cloudflare link. Existing actual content/drafts and local environment credentials remain outside the test writes and commits.
+
+### Blockers
+- None for local commits. No push, deployment or client-server change. Existing launch-only checks and decisions remain documented in the readiness review.

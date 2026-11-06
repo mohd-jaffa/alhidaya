@@ -1764,17 +1764,17 @@ one commit (D27).
 
 | R6C.46 | Five cardless service-title concept images and mobile three-landscape-card crop comparison | D184 | R6C.43 | DONE (2026-11-05; concepts/prototype delivered; selected soft photo fade with three cards is implemented under D185) |
 
-| R6C.47 | Approved three-card landscape Home pyramid, soft photo fade and modest centred bottom titles within existing gutters | D185 | R6C.46 | DONE (2026-11-06; local checks and review evidence passed; uncommitted) |
+| R6C.47 | Approved three-card landscape Home pyramid, soft photo fade and modest centred bottom titles within existing gutters | D185 | R6C.46 | DONE (2026-11-07; local checks/review passed; included in the user-authorized D187 commits) |
 
-| R6C.48 | Full uncommitted-work Harden, commit-readiness review and then Polish | D186 | R6C.47 | DONE (2026-11-06; local checks and review evidence passed; uncommitted) |
+| R6C.48 | Full uncommitted-work Harden, commit-readiness review and then Polish | D186 | R6C.47 | DONE (2026-11-07; local checks/review passed; included in the user-authorized D187 commits) |
 
-| R6C.49 | Final complete-bundle readiness review and user-authorized commits | D187 | R6C.48 | LOCAL GATES PASSED (2026-11-07): fresh build/static checks, 1,318 tests/100% coverage, 264 E2E cases, development hydration and 40 performance cases; recording the authorized two commits; no push or deployment |
+| R6C.49 | Final complete-bundle readiness review and user-authorized commits | D187 | R6C.48 | DONE (2026-11-07): 1,318 tests/100% coverage, 264 E2E cases, development hydration, 40 performance cases and static/build gates passed; bundle recorded in two local commits; no push or deployment |
 
 ### Phase 7 — Performance, accessibility and the finish
 
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
-| R7.1 | Performance budgets in CI; fixes until every page meets them | §31, D139 | — | LAB GATES READY FOR REVIEW (2026-11-01): final D139 run and subsequent D142 hardened build each passed all 40 serial Lighthouse/JS/interaction/touch/wheel/cadence cases; CI gates implemented, reports retained. Real-device/compositor and server-region checks remain release work (`docs/PERFORMANCE.md`) |
+| R7.1 | Performance budgets in CI; fixes until every page meets them | §31, D139 | — | LOCAL GATES VERIFIED (2026-11-07; D187): fresh full 40-case Lighthouse/JS/interaction/touch/wheel/cadence suite passed on the final bundle, with CI gates and evidence committed. Real-device/compositor, field and server-region checks remain release work (`docs/PERFORMANCE.md`) |
 | R7.2 | Accessibility: axe everywhere plus a manual keyboard and screen-reader pass | §32, D142 | — | IN PROGRESS (2026-11-01): automated axe, responsive/long-content/text-enlargement and keyboard/menu checks passed; identified 44 px targets fixed. Manual screen-reader speech and Q49 remain open |
 | R7.3 | Security review against OWASP ASVS level 2 (sign-in, sessions, uploads, file access, input, headers and CSP, secrets, logging); fixes; `npm run verify` and the pre-push hook | §26, §35.4, D55 | — | IN PROGRESS (2026-11-01): focused upload review and fixes D141 ready for review (`docs/audits/2026-11-01-upload-security.md`); broader ASVS review, verify command and hook remain TODO. Malware scanning deferred to a before-launch decision by the user (Q52) |
 | R7.4 | Impeccable finish review of the public site; fixes; `DESIGN.md` and `.impeccable/design.json` from the built world | §30.1 | — | AUDIT COMPLETE (2026-11-01), entire codebase: `docs/audits/2026-11-01-impeccable-audit.md`; 15/20 at audit; findings 3/4 local fixes READY FOR REVIEW (D139; 40 performance cases passed, sidecar refreshed); finding 2 identified targets fixed by D142; finding 1/Q49 remains open. D142 harden/polish READY FOR REVIEW (`docs/audits/2026-11-01-impeccable-harden-polish.md`) |

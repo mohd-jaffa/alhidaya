@@ -6,7 +6,8 @@
 #            at moderate or above; plan D55)
 #   app      MySQL 8.0.46 and Mailpit from compose.yaml, as on a laptop →
 #            unit + integration tests with coverage at 100% → build → the
-#            browser journeys on that build, phone and desktop, axe
+#            browser journeys on that build, phone and desktop, axe →
+#            mobile Lighthouse / interaction / touch-scroll budgets and desktop scroll
 #
 # A release runs the same gates again on its tag before it deploys (the release
 # workflow, Phase 8, after full payment: plan D48), calling this one with `ref`.
@@ -65,10 +66,10 @@ jobs:
         run: npm run audit:shipped
 
   app:
-    name: Coverage, build and journeys
+    name: Coverage, build, journeys and performance
     needs: checks
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
         with:
@@ -93,7 +94,9 @@ jobs:
       - name: Point the app at them
         run: cp .env.example .env.local
 
-      - run: npm run test:coverage
+      # The photo seed performs real AVIF encoding; serial workers avoid the
+      # CPU contention reproduced locally while keeping the same coverage gates.
+      - run: npm run test:coverage -- --maxWorkers=1
 
       - run: npm run build
 
@@ -102,8 +105,14 @@ jobs:
 
       - run: npm run test:e2e
 
+      # React only reports attribute-only hydration mismatches in development mode.
+      - run: npm run test:hydration
+
+      # A fresh seeded server/browser; strict §31 limits, no retries or threshold relaxation.
+      - run: npm run test:performance
+
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
           name: playwright-${{ github.run_number }}
           path: |
