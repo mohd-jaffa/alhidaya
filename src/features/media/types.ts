@@ -5,6 +5,18 @@ export interface ImageSource {
   mime: string;
 }
 
+/** A subject's position in the original photograph, in physical percentages. */
+export interface FocalPoint {
+  x: number;
+  y: number;
+}
+
+/** Content owns its framing; the same library photo can have several placements. */
+export interface ImageRef {
+  mediaId: string;
+  focalPoint?: FocalPoint;
+}
+
 /** An uploaded image as a page shows it (plan §15, §22.3): its made sizes, its shape and its words. */
 export interface SiteImage {
   id: string;
@@ -13,6 +25,7 @@ export interface SiteImage {
   /** What it shows; empty for an image marked decorative. */
   alt: string;
   sources: ImageSource[];
+  focalPoint?: FocalPoint;
 }
 
 /** A place that uses a file, as the library names it, opening its editor (plan §15). */

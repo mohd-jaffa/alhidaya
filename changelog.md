@@ -4742,3 +4742,21 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None for this local commit. Existing launch-only checks remain as previously recorded.
+
+
+## 2026-11-07 — D190 per-placement image focal points
+
+### Added
+- User-approved inline framing in existing page/service photo fields: click/tap the uncropped photo, use labelled keyboard-accessible x/y ranges, reset, and compare wide/square/portrait crops. Optional whole-percentage coordinates belong to the content reference and its Save → private Preview → Publish/Discard flow. Service references carry framing into the opening, cards and Home pyramid.
+- Existing photos without an override retain their desktop/mobile defaults; logos have no framing control. No new uploads, image variants, resizer, table, migration, external service or dependency.
+
+### Fixed
+- Preserve framing when the same library photo is reselected; reset it when a different photo is chosen. Keep the editor thumbnail and crop captions contained at narrow/enlarged text sizes.
+- Full regression exposed stale published reads in focal points and existing page/font/footer/client workflows. The installed Next expiry handler mixes wall and monotonic clocks; a deterministic local reproduction missed immediate expiry. Add process-shared per-tag revisions to the existing bounded, memory-only cache keys before the normal tag revalidation. This preserves D119's single-process architecture and refreshes only affected content; no timer, disabled cache, new handler or infrastructure.
+
+### Validation
+- All 1,388 unit/DB-contract/local-MySQL tests passed with 100% statements, branches, functions and lines. Complete production E2E: 274 passed, 62 intentional skips, zero failures. Targeted publishing regressions: 13 passed / one intentional skip. Development hydration: two cases / 46 navigations passed.
+- Native touch/mouse/keyboard, preview/publish/discard, independent same-photo placements, malformed-point/auth rejection, responsive widths, doubled text and axe passed. All 40 performance cases passed with unchanged budgets and no retries. Lint, types, formatting, standalone build, diff/secret checks and Impeccable scan passed. Details: `docs/audits/2026-11-07-focal-points.md`.
+
+### Blockers
+- None for the requested separate local commit. No actual published content or private draft was edited by tests. The review app is current on port 3210 and its tunnel URL is unchanged. No push, client-server operation or production deployment. Existing release/device/manual-screen-reader checks remain documented separately.

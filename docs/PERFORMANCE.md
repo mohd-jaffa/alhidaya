@@ -239,3 +239,10 @@ See [full-route evidence](audits/2026-11-07-readiness-performance.json), [gate s
 The final formatting build `gLhbjogm1XoQ77FAgEygi` passed the complete 40-case suite in 9.0 minutes. All twenty public mobile routes and desktop scrolling counterparts retained the same strict budgets and no retries. Maximum initial JavaScript 173,771 / 174,080 gzip bytes, mobile lab LCP 688.4 ms, scripted INP bound 64 ms, combined measured CLS 0.0419191, lowest Lighthouse category 96, no observed scrolling long task and 0% desktop missed-vsync estimate.
 
 See [all-route evidence](audits/2026-11-07-inline-formatting-performance.json) and [feature validation and limits](audits/2026-11-07-inline-formatting.md). The separate functional pass includes styled copy across every bundled font, 320–1440 px and normal/doubled text, plus formatted development hydration. These remain local lab/emulated-layout results, with existing release checks unchanged.
+
+
+## D190 — Per-placement image framing, 2026-11-07
+
+All 40 serial performance cases passed on `JFI8gFRSKn_HhB5BWmAgr` after the focal-point controls and deterministic per-tag publishing revisions. Initial public JS peaked at 173,789 / 174,080 gzip bytes; LCP 687.1 ms; scripted INP upper bound 64 ms; combined CLS 0.0000000; minimum Lighthouse category 96; observed scrolling long-task maximum 0 ms; desktop missed-vsync estimate 0.0%. No retries or threshold changes. Framing reuses existing variants and adds only CSS object-position when explicitly set.
+
+[All-route evidence](audits/2026-11-07-focal-points-performance.json) · [validation and limits](audits/2026-11-07-focal-points.md).

@@ -1,0 +1,84 @@
+{
+  "buildId": "JFI8gFRSKn_HhB5BWmAgr",
+  "baselineCommit": "afb4d42",
+  "coverage": {
+    "filesPassed": 374,
+    "testsPassed": 1388,
+    "totals": {
+      "lines": {
+        "total": 4501,
+        "covered": 4501,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 5055,
+        "covered": 5055,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 1853,
+        "covered": 1853,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 3327,
+        "covered": 3327,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "browser": {
+    "passed": 274,
+    "intentionalProjectSkips": 62,
+    "failed": 0
+  },
+  "framing": {
+    "perPlacement": true,
+    "phoneDesktopJourneys": 2,
+    "editorWidths": [320, 390, 768, 1440],
+    "publicWidths": [320, 390, 768, 1440],
+    "textScales": [1, 2],
+    "nativeTouchAndKeyboard": true
+  },
+  "publishingRegression": {
+    "passed": 13,
+    "intentionalProjectSkips": 1,
+    "failed": 0,
+    "clockIndependentTagRevisions": true
+  },
+  "developmentHydration": {
+    "passed": 2,
+    "navigations": 46,
+    "failed": 0
+  },
+  "performance": {
+    "passed": 40,
+    "failed": 0,
+    "maximum": {
+      "initialJavaScript": 173789,
+      "lcp": 687.121,
+      "inpUpperBound": 64,
+      "cls": 0,
+      "scrollTask": 0,
+      "desktopDroppedFrameRatio": 0
+    },
+    "lowestLighthouseCategory": 0.96
+  },
+  "sourceManifest": {
+    "files": 969,
+    "sha256": "7c1a440cb12eec3842864e28435c0542ca1e2903e18017659ca3741d802d2b1b",
+    "unchangedAtFinalCheckpoint": true
+  },
+  "limits": "Chromium with emulated viewports and synthesized touch; not physical-device, Safari/Firefox, manual-screen-reader, field or production-region certification.",
+  "git": "User-authorized separate local feature commit; no push or client-server deployment."
+}

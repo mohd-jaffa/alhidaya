@@ -52,6 +52,7 @@ export function MediaImage({
         fetchPriority={priority ? "high" : undefined}
         decoding="async"
         className={className}
+        style={image.focalPoint ? { objectPosition: `${image.focalPoint.x}% ${image.focalPoint.y}%` } : undefined}
       />
     </picture>
   );

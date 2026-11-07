@@ -16,6 +16,13 @@ const made = (mime: string, extension: string, ...widths: number[]) =>
   widths.map((width) => ({ url: `/media/2026-10/abcdefghij-w${width}.${extension}`, width, mime }));
 
 describe("MediaImage", () => {
+  it("applies only an explicit placement point without changing sources or intrinsic size", () => {
+    render(
+      <MediaImage image={{ ...image(made("image/webp", "webp", 640)), focalPoint: { x: 0, y: 100 } }} sizes="100vw" />,
+    );
+    expect(screen.getByRole("img")).toHaveStyle({ objectPosition: "0% 100%" });
+    expect(screen.getByRole("img")).toHaveAttribute("width", "1600");
+  });
   it("offers AVIF, then WebP, at every made width, the image itself in the last type, shaped before it arrives", () => {
     const { container } = render(
       <MediaImage

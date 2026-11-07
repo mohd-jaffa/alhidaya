@@ -4,6 +4,8 @@ import { ROUTES } from "@/constants/routes";
 import type { PageKey } from "@/constants/sections";
 import type { SectionForm } from "@/constants/statuses";
 import type { SectionData } from "@/features/content/types";
+import { placedImage } from "@/features/media/framing";
+import type { ImageRef } from "@/features/media/types";
 import type { Section } from "@/lib/validation";
 
 import { sectionAnchors } from "./anchors";
@@ -58,7 +60,7 @@ function SectionFor({
   forms: Partial<Record<SectionForm, ReactNode>>;
   hasSign: boolean;
 }) {
-  const image = (ref: { mediaId: string } | null) => (ref ? (data.images.get(ref.mediaId) ?? null) : null);
+  const image = (ref: ImageRef | null) => placedImage(data.images, ref);
   switch (section.type) {
     case "SIGN":
       // Home opens with its slides (D128); every other page with its sign (D109).

@@ -13,6 +13,12 @@ import type { RecordCollection } from "@/constants/statuses";
 const COLLECTION_TAGS: Record<RecordCollection, string> = { SERVICES: "services", JOBS: "jobs", CLIENTS: "clients" };
 const RECORD_TAGS: Record<RecordCollection, string> = { SERVICES: "service", JOBS: "job", CLIENTS: "client" };
 
+// Next's built-in tag expiry compares wall-clock stamps with a monotonic clock. A publish
+// revision makes the next read independent of that race, within D119's single app process.
+// Keep this shared across route bundles/HMR; Next still owns the bounded in-memory cache.
+const state = globalThis as unknown as { alhidayaContentRevisions?: Map<string, number> };
+const revisions = (state.alhidayaContentRevisions ??= new Map<string, number>());
+
 export const CACHE_TAGS = {
   /** A page, the site's content, or an order (an order changes its collection's lists). */
   document: (key: DocumentKey): string =>
@@ -34,7 +40,14 @@ export function cachedRead<A extends (string | number)[], R>(
   read: (...args: A) => Promise<R>,
   tags: (...args: A) => string[],
 ): (...args: A) => Promise<R> {
-  return (...args) => unstable_cache(() => read(...args), [key, ...args.map(String)], { tags: tags(...args) })();
+  return (...args) => {
+    const readTags = tags(...args);
+    return unstable_cache(
+      () => read(...args),
+      [key, ...args.map(String), ...readTags.map((tag) => `${tag}:${revisions.get(tag) ?? 0}`)],
+      { tags: readTags },
+    )();
+  };
 }
 
 /**
@@ -43,7 +56,9 @@ export function cachedRead<A extends (string | number)[], R>(
  * publish route, inside the app (R6).
  */
 export function revalidateContent(tags: readonly string[]): void {
-  for (const tag of new Set(tags)) revalidateTag(tag, { expire: 0 });
+  const unique = [...new Set(tags)];
+  for (const tag of unique) revisions.set(tag, (revisions.get(tag) ?? 0) + 1);
+  for (const tag of unique) revalidateTag(tag, { expire: 0 });
 }
 
 /** What a publish changes: the document's tag, or the collection's and the record's at each of its addresses. */

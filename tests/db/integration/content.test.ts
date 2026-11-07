@@ -89,6 +89,22 @@ describe("documents, against the local MySQL", () => {
   it("record every change in the audit trail", async () => {
     expect(await actions()).toEqual(expect.arrayContaining(["UPDATE", "PUBLISH", "DISCARD_DRAFT"]));
   });
+
+  it("persists placement coordinates in draft/published JSON without leaking or losing them on discard", async () => {
+    const first = pageFixture("PRIVACY");
+    const sign = first.sections.find((section) => section.type === "SIGN")!;
+    sign.content.image = { mediaId: crypto.randomUUID(), focalPoint: { x: 10, y: 90 } };
+    await saveDocumentDraft("PAGE:PRIVACY", first, actor);
+    await publishDocument("PAGE:PRIVACY", actor);
+    const next = structuredClone(first);
+    const nextSign = next.sections.find((section) => section.type === "SIGN")!;
+    nextSign.content.image!.focalPoint = { x: 80, y: 20 };
+    await saveDocumentDraft("PAGE:PRIVACY", next, actor);
+    expect(await readPublishedDocument("PAGE:PRIVACY")).toEqual(first);
+    expect((await readDocumentDraft("PAGE:PRIVACY"))?.draft).toEqual(next);
+    await discardDocumentDraft("PAGE:PRIVACY", actor);
+    expect((await readDocumentDraft("PAGE:PRIVACY"))?.draft).toEqual(first);
+  });
 });
 
 describe("records, against the local MySQL", () => {

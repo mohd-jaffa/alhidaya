@@ -546,3 +546,10 @@ A single small syntax hint appears in Pages, Services, Jobs and Settings content
 ## Admin User manual (D189, 2026-11-07)
 
 Administration includes User manual with the existing document pictogram. The white work area pairs a topic list with lesson buttons, one responsive native video player, numbered steps and an expandable transcript. On smaller screens the topics stack above the lesson. Only the selected clip loads metadata, playback is user initiated, and captions are optional. Existing admin tokens, forest actions and shared buttons are used.
+
+
+## Per-placement photo framing (D190, 2026-11-07)
+
+Existing page and service photo fields include a collapsed “Adjust photo framing” disclosure after a photo is selected. It expands inline: concise instructions, the full uncropped photo as a click/tap target with a navy/white focal ring, two labelled native percentage ranges, a reversible Reset framing action and wide/square/portrait example crops. Ranges run in physical left-to-right coordinates, including in RTL containers; the same control is usable with a keyboard. Existing admin tokens, visible focus and touch targets apply; no new decorative animation or modal. The source and preview columns shrink within phone/enlarged-text widths.
+
+Coordinates belong to the selecting page/service reference and follow its Save → Preview → Publish/Discard. Shared service selections carry their framing into service cards and the pyramid. Logos keep contain-fit behavior and have no framing control. Unset points preserve every current public default; explicit points use CSS object-position on the existing responsive image. No extra image variants, runtime resizer, public control or dependency. Crop examples are representative; page Preview shows the actual composition.

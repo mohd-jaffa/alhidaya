@@ -11,11 +11,12 @@ import { Notice } from "@/components/ui/notice";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { UI_TEXT } from "@/constants/messages";
 import { ADMIN_API_ROUTES } from "@/constants/admin-routes";
-import type { LibraryImageItem } from "@/features/media/types";
+import type { ImageRef, LibraryImageItem } from "@/features/media/types";
 import { errorMessage } from "@/lib/errors/errorMessage";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 
 import { ImageUpload } from "./ImageUpload";
+import { FocalPointEditor } from "./FocalPointEditor";
 
 /** The library's images to choose from (D89), newest first. */
 function Library({ chosen, onChoose }: { chosen: string | null; onChoose: (id: string) => void }) {
@@ -78,14 +79,14 @@ export function PhotoField({
     ? { none: ADMIN_TEXT.noLogo, choose: ADMIN_TEXT.chooseLogo, change: ADMIN_TEXT.changeLogo }
     : { none: ADMIN_TEXT.noPhoto, choose: ADMIN_TEXT.choosePhoto, change: ADMIN_TEXT.changePhoto };
   const { field, fieldState } = useController({ name });
-  const value = field.value as { mediaId: string } | null;
+  const value = field.value as ImageRef | null;
   const { data } = useApiQuery<LibraryImageItem[]>(value ? ADMIN_API_ROUTES.adminMedia : null);
   const [choosing, setChoosing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const labelId = useId();
   const chosen = value ? data?.find((image) => image.id === value.mediaId) : undefined;
   const choose = (id: string) => {
-    field.onChange({ mediaId: id });
+    field.onChange(value?.mediaId === id ? value : { mediaId: id });
     setChoosing(false);
   };
   return (
@@ -103,8 +104,12 @@ export function PhotoField({
         {!value ? (
           <p className="text-ink-2">{words.none}</p>
         ) : chosen ? (
-          <figure className="grid w-48 gap-1">
-            <MediaImage image={chosen} sizes="12rem" className="aspect-[3/2] w-full rounded-control object-cover" />
+          <figure className="grid w-48 max-w-full gap-1">
+            <MediaImage
+              image={{ ...chosen, focalPoint: value.focalPoint }}
+              sizes="12rem"
+              className="aspect-[3/2] w-full rounded-control object-cover"
+            />
             <figcaption className="line-clamp-2 text-small text-ink-2">
               {chosen.alt || ADMIN_TEXT.decorativeImage}
             </figcaption>
@@ -112,7 +117,7 @@ export function PhotoField({
         ) : data ? (
           <FieldError>{ADMIN_TEXT.photoMissing}</FieldError>
         ) : (
-          <span aria-busy="true" className="aspect-[3/2] w-48 animate-pulse rounded-control bg-mist" />
+          <span aria-busy="true" className="aspect-[3/2] w-48 max-w-full animate-pulse rounded-control bg-mist" />
         )}
         <div className="flex flex-wrap gap-2">
           <Button
@@ -131,6 +136,13 @@ export function PhotoField({
           ) : null}
         </div>
       </div>
+      {chosen && value && !logo ? (
+        <FocalPointEditor
+          image={chosen}
+          value={value.focalPoint}
+          onChange={(focalPoint) => field.onChange(focalPoint ? { ...value, focalPoint } : { mediaId: value.mediaId })}
+        />
+      ) : null}
       {fieldState.error?.message ? <FieldError>{fieldState.error.message}</FieldError> : null}
       <Dialog
         open={choosing}

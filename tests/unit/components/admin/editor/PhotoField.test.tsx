@@ -52,6 +52,24 @@ function photo(
 }
 
 describe("PhotoField", () => {
+  it("keeps framing in its field and removes it on reset or photo replacement", async () => {
+    const { value } = photo({ mediaId: LIBRARY[0].id });
+    await screen.findByRole("button", { name: ADMIN_TEXT.changePhoto });
+    await userEvent.click(screen.getByText(ADMIN_TEXT.framing));
+    const x = screen.getByRole("slider", { name: new RegExp(ADMIN_TEXT.focalHorizontal) });
+    const { fireEvent } = await import("@testing-library/react");
+    fireEvent.change(x, { target: { value: "25" } });
+    expect(value()).toEqual({ mediaId: LIBRARY[0].id, focalPoint: { x: 25, y: 50 } });
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.resetFraming }));
+    expect(value()).toEqual({ mediaId: LIBRARY[0].id });
+    fireEvent.change(x, { target: { value: "75" } });
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.changePhoto }));
+    await userEvent.click(await screen.findByRole("button", { name: LIBRARY[0].alt }));
+    expect(value()).toEqual({ mediaId: LIBRARY[0].id, focalPoint: { x: 75, y: 50 } });
+    await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.changePhoto }));
+    await userEvent.click(await screen.findByRole("button", { name: ADMIN_TEXT.decorativeImage }));
+    expect(value()).toEqual({ mediaId: LIBRARY[1].id });
+  });
   it("says there is no photo, and reads nothing until the library is opened", async () => {
     const { fetch } = photo(null);
     expect(screen.getByRole("group", { name: `${ADMIN_TEXT.photo} (${UI_TEXT.optional})` })).toBeVisible();
@@ -133,5 +151,6 @@ describe("PhotoField", () => {
     expect(screen.getByRole("group", { name: ADMIN_TEXT.photo })).toBeVisible();
     expect(await screen.findByRole("button", { name: ADMIN_TEXT.changeLogo })).toBeVisible();
     expect(screen.queryByRole("button", { name: ADMIN_TEXT.removePhoto })).toBeNull();
+    expect(screen.queryByText(ADMIN_TEXT.framing)).toBeNull();
   });
 });

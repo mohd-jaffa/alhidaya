@@ -3,9 +3,35 @@ import * as z from "zod";
 
 import { VALIDATION_MESSAGES } from "@/constants/messages";
 import { hrefSchema, httpsUrlSchema, isoDateSchema, isSafeHref, richTextSchema, slugSchema } from "@/lib/validation";
-import { withoutRepeats } from "@/lib/validation/schemas/content";
+import { imageRefSchema, withoutRepeats } from "@/lib/validation/schemas/content";
 
 const message = (schema: z.ZodType, value: unknown) => schema.safeParse(value).error?.issues[0].message;
+
+describe("photo reference framing", () => {
+  const mediaId = "11111111-1111-4111-8111-111111111111";
+  it("keeps old references valid and accepts all physical edges", () => {
+    expect(imageRefSchema.parse({ mediaId })).toEqual({ mediaId });
+    for (const focalPoint of [
+      { x: 0, y: 100 },
+      { x: 100, y: 0 },
+      { x: 50, y: 50 },
+    ])
+      expect(imageRefSchema.parse({ mediaId, focalPoint })).toEqual({ mediaId, focalPoint });
+  });
+  it("rejects malformed, fractional and out-of-range coordinates with catalogue messages", () => {
+    for (const focalPoint of [
+      null,
+      {},
+      { x: -1, y: 50 },
+      { x: 50, y: 101 },
+      { x: 1.5, y: 50 },
+      { x: "50", y: 50 },
+      { x: Infinity, y: 50 },
+    ])
+      expect(imageRefSchema.safeParse({ mediaId, focalPoint }).success).toBe(false);
+    expect(message(imageRefSchema, { mediaId, focalPoint: { x: -1, y: 0 } })).toBe(VALIDATION_MESSAGES.invalid);
+  });
+});
 
 describe("links", () => {
   it("lead to a page of this site, or to an https address", () => {

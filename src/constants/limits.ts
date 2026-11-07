@@ -157,5 +157,8 @@ export const ADMIN_SESSION = { hours: 8, refreshMinutes: 60 } as const;
 /** How long the logs are kept (plan §36): server failures a month, the admin's changes a year. */
 export const LOG_KEEP_DAYS = { errors: 30, audit: 365 } as const;
 
+/** Physical image coordinates, stored per placement as whole percentages. */
+export const FOCAL_POINT_LIMITS = { min: 0, max: 100, center: 50, step: 1 } as const;
+
 /** How much of a failure the error log keeps, per field. */
 export const ERROR_LOG_LIMITS = { message: 300, path: 500, detail: 2000, stack: 8000 } as const;

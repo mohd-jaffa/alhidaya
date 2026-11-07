@@ -10,6 +10,8 @@ import { RichText } from "@/components/ui/rich-text";
 import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import type { SiteImage } from "@/features/media/types";
+import type { ImageRef } from "@/features/media/types";
+import { placedImage } from "@/features/media/framing";
 import { publicSiteUrl } from "@/lib/env/public";
 import { breadcrumbs, serviceData } from "@/lib/seo/structured-data";
 import type { SiteDocument } from "@/lib/validation";
@@ -29,7 +31,7 @@ export function ServicePage({
   images: ReadonlyMap<string, SiteImage>;
 }) {
   const { published } = service;
-  const image = (ref: { mediaId: string } | null) => (ref ? (images.get(ref.mediaId) ?? null) : null);
+  const image = (ref: ImageRef | null) => placedImage(images, ref);
 
   const siteUrl = publicSiteUrl();
   return (

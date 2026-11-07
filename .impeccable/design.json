@@ -578,6 +578,12 @@
         "typewriterCaret": "calc(var(--spacing-emphasis-ink) + 2px)"
       },
       "plainText": "Metadata, sharing, structured data, image labels, dropdowns, generated slugs and snapshots; literal contact/routing values."
+    },
+    "photoFramingD190": {
+      "scope": "Per-placement photo references in existing page and service editors",
+      "controls": "Inline disclosure; original-photo point selection, two native percentage ranges, reset and representative crop previews",
+      "publishing": "Existing owning document/record draft-preview-publish-discard; unset preserves defaults",
+      "rendering": "CSS object-position only; existing variants; logos unchanged"
     }
   },
   "components": [

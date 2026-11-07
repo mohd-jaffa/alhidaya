@@ -9,6 +9,19 @@ import type { Audience } from "./statuses";
  * saying what it means.
  */
 export const ADMIN_TEXT = {
+  framing: "Adjust photo framing",
+  framingHint:
+    "Click or tap the important part of the photo, or use the position controls. Framing belongs to this photo placement and goes live when you publish.",
+  focalChoose: "Choose the photo's focal point",
+  focalHorizontal: "Horizontal position, left to right",
+  focalVertical: "Vertical position, top to bottom",
+  focalPercentage: (value: number) => `${value}%`,
+  resetFraming: "Reset framing",
+  framingPreviews: "Example crops",
+  framingPreviewHint: "These show typical crop shapes. Use page Preview to check the actual layout.",
+  framingWide: "Wide",
+  framingSquare: "Square",
+  framingPortrait: "Portrait",
   inlineFormattingHint:
     "Website copy supports **bold**, *italic* and ***both***. Preview before publishing. Contact details, URLs and SEO fields use plain text.",
   fontManager: "Font Manager",

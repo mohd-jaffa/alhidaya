@@ -217,6 +217,7 @@ Turnstile, rate limiting, audit, the error log and SEO are infrastructure in
   layout or animation controls to the admin. The user-authorized D168 Font Manager
   is the narrow exception: fixed tested font families per public text type only.
   D188 also permits limited bold/italic shortcuts in public copy, without other styling controls.
+  D190 permits per-placement photo focal coordinates as content framing, with the owning draft/publish flow.
 - Content is stored per locale (`{ "en": … }`, plan §33).
 
 ---

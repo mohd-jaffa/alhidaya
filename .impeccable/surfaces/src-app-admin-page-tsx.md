@@ -85,3 +85,6 @@ D181 protects pending writes with a named native fieldset disabled during the op
 
 
 D188: one concise syntax hint in eligible content editors for **bold**, *italic* and ***both***, using the existing small secondary-copy treatment. No new toolbar, Markdown editor, font/color/size control, field schema or publishing workflow. Raw source stays editable; previews show its safe rendered form.
+
+
+D190: per-placement photo framing extends PhotoField inline, under a native disclosure. Original-photo click/tap, native labelled x/y ranges, reset and three representative crops use the current Operate tokens. Keep logos untouched, keyboard controls equivalent, pending fieldsets respected, and Save/Preview/Publish/Discard scoped to the owning content. No new modal or immediate global media mutation.

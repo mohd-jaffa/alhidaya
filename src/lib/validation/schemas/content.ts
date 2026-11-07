@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
+import { FOCAL_POINT_LIMITS, LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
 
 import { optionalLine, optionalLines, requiredLine, requiredLines } from "../primitives";
@@ -55,7 +55,15 @@ export const isoDateSchema = (label: string) =>
     .refine(isCalendarDay, VALIDATION_MESSAGES.date(label));
 
 /** An image from the media library, by id. */
-export const imageRefSchema = z.object({ mediaId: z.uuid() });
+const focalCoordinate = z
+  .number()
+  .int(VALIDATION_MESSAGES.invalid)
+  .min(FOCAL_POINT_LIMITS.min, VALIDATION_MESSAGES.invalid)
+  .max(FOCAL_POINT_LIMITS.max, VALIDATION_MESSAGES.invalid);
+export const imageRefSchema = z.object({
+  mediaId: z.uuid(),
+  focalPoint: z.object({ x: focalCoordinate, y: focalCoordinate }).optional(),
+});
 
 const richBlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("heading"), text: localized(requiredLine("Heading", { max: TEXT_LIMITS.heading })) }),
