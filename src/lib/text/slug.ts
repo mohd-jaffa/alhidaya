@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import { TEXT_LIMITS } from "@/constants/limits";
 
 /**
@@ -8,7 +9,7 @@ import { TEXT_LIMITS } from "@/constants/limits";
  * admin to type.
  */
 export function slugify(name: string): string {
-  return name
+  return plainText(name)
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()

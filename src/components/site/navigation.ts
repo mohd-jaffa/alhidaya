@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import { HEADER_NAVIGATION_LIMITS } from "@/constants/limits";
 import type { SiteDocument } from "@/lib/validation";
 
@@ -12,7 +13,7 @@ export function visibleLinks(site: SiteDocument | null): NavigationLink[] {
 export function needsCompactMenu(links: NavigationLink[]): boolean {
   return (
     links.length > HEADER_NAVIGATION_LIMITS.links ||
-    links.map((link) => link.label.en).join("").length > HEADER_NAVIGATION_LIMITS.characters
+    links.map((link) => plainText(link.label.en)).join("").length > HEADER_NAVIGATION_LIMITS.characters
   );
 }
 

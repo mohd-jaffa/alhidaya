@@ -38,6 +38,20 @@ describe("markedWords (D128)", () => {
 });
 
 describe("Words (D128)", () => {
+  it("keeps emphasis across words and blue-highlight boundaries without animating markers", () => {
+    const { container } = render(<Words text="**Quality nursing** *care* ***today***" highlight="nursing care" />);
+    expect(container.querySelector(".sr-only")).toHaveTextContent("Quality nursing care today");
+    const visual = container.querySelector('[aria-hidden="true"]')!;
+    expect(visual.textContent).toBe("Quality nursing care today");
+    expect([...visual.querySelectorAll("strong")].map((node) => node.textContent)).toEqual([
+      "Quality",
+      "nursing",
+      "today",
+    ]);
+    expect([...visual.querySelectorAll("em")].map((node) => node.textContent)).toEqual(["care", "today"]);
+    expect([...visual.querySelectorAll(".text-deep")].map((node) => node.textContent)).toEqual(["nursing", "care"]);
+  });
+
   it("reads the text once, whole, and draws each word in its own clipped box, the phrase in deep blue", () => {
     const { container } = render(<Words text="Care for your loved ones." highlight="loved ones." />);
     expect(container.querySelector(".sr-only")).toHaveTextContent("Care for your loved ones.");

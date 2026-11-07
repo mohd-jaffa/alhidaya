@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import Link from "next/link";
 
 import { Reveal } from "@/components/motion/Reveal";
@@ -29,7 +30,7 @@ export function ServiceSummaryCard({ service, photo }: { service: PublishedServi
         </span>
       ) : null}
       <span className="min-w-0 text-title font-medium text-navy underline decoration-transparent underline-offset-4 group-hover:decoration-current">
-        {service.published.name.en}
+        <InlineText text={service.published.name.en} />
       </span>
     </Link>
   );
@@ -69,11 +70,15 @@ export function ServiceCard({
         />
       ) : null}
       {photoFade ? (
-        <span className="pyramid-service-name">{service.published.name.en}</span>
+        <span className="pyramid-service-name">
+          <InlineText text={service.published.name.en} />
+        </span>
       ) : (
         <span className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-inset bg-card p-3.5">
           <span className="grid gap-0.5">
-            <span className="font-semibold leading-snug text-navy">{service.published.name.en}</span>
+            <span className="font-semibold leading-snug text-navy">
+              <InlineText text={service.published.name.en} />
+            </span>
           </span>
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-deep text-on-deep transition-transform duration-(--duration-state) group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5">
             <Pictogram name="arrow" size="sm" className="rtl:rotate-180" />

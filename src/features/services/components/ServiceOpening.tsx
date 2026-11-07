@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { PageSplit } from "@/components/sections/PageSplit";
 import { PillLink } from "@/components/ui/pill";
 import type { SiteImage } from "@/features/media/types";
@@ -25,7 +26,7 @@ export function ServiceOpening({ service, image }: { service: ServiceDocument; i
               size="lg"
               arrow={index === 0}
             >
-              {button.label.en}
+              <InlineText text={button.label.en} />
             </PillLink>
           ))
         : null}

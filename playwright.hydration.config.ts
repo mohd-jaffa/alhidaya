@@ -7,6 +7,7 @@ const server = Array.isArray(journeys.webServer) ? journeys.webServer[0] : journ
 /** Detailed attribute mismatches are only reported by React's development build (D180). */
 export default defineConfig({
   ...journeys,
+  globalSetup: "./tests/e2e/hydration-setup.ts",
   testMatch: "hydration.spec.ts",
   grep: /public hydration/,
   outputDir: "test-results/hydration-development",

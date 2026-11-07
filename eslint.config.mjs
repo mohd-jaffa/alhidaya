@@ -23,7 +23,8 @@ const eslintConfig = defineConfig([
       ],
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "coverage/**", "next-env.d.ts"]),
+  // Local runtime data can contain private uploads and copied preview builds; none is source code.
+  globalIgnores([".next/**", ".data/**", "out/**", "build/**", "coverage/**", "next-env.d.ts"]),
 ]);
 
 export default eslintConfig;

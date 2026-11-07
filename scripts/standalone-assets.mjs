@@ -19,3 +19,6 @@ if (fs.existsSync("public"))
   });
 fs.cpSync(".next/static", `${STANDALONE}/.next/static`, { recursive: true });
 console.log("Copied public/ and .next/static into the standalone build.");
+
+// Private training clips are served only by the signed-in manual endpoint.
+fs.cpSync("resources/admin-manual", `${STANDALONE}/resources/admin-manual`, { recursive: true });

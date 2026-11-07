@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { RiseWords } from "@/components/motion/RiseWords";
 import { headingId, SectionBand } from "@/components/sections/SectionFrame";
@@ -64,7 +65,9 @@ export function ServicePage({
                   {published.included.map((item) => (
                     <li key={item.en} className="flex items-start gap-3">
                       <IconChip name="check" tone="ground" size="sm" />
-                      <span className="pt-0.5">{item.en}</span>
+                      <span className="pt-0.5">
+                        <InlineText text={item.en} />
+                      </span>
                     </li>
                   ))}
                 </ul>

@@ -82,3 +82,6 @@ D172 responsive verification: preserve the full 44 px mobile menu button; editor
 D181 polish: Preview shares the toolbar’s pending state: dimmed, aria-disabled, out of the tab order and blocked for normal/auxiliary activation while saving, publishing or discarding. Restore it after completion or failure. Preserve saved-draft preview and automatic save before preview.
 
 D181 protects pending writes with a named native fieldset disabled during the operation; restore on success/failure. Keep the field group’s zero minimum width for mobile/enlarged text and all current inputs/labels.
+
+
+D188: one concise syntax hint in eligible content editors for **bold**, *italic* and ***both***, using the existing small secondary-copy treatment. No new toolbar, Markdown editor, font/color/size control, field schema or publishing workflow. Raw source stays editable; previews show its safe rendered form.

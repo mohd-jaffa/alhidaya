@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00:00.500 --> 00:00:06.633
+Upload an image accepts JPEG, PNG, WebP, or AVIF files up to ten megabytes.
+
+00:00:06.683 --> 00:00:10.178
+Write useful alt text describing the image,
+
+00:00:10.228 --> 00:00:13.394
+or mark it decorative when appropriate.
+
+00:00:13.444 --> 00:00:16.609
+The website creates the sizes it needs.
+
+00:00:16.659 --> 00:00:21.473
+We are showing the upload form without adding another copy.

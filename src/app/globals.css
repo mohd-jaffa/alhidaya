@@ -9,6 +9,8 @@
  */
 @theme static {
   --spacing-map-min: 200px;
+  --spacing-emphasis-ink: 0.15em;
+  --spacing-typewriter-caret: calc(var(--spacing-emphasis-ink) + 2px);
   --color-*: initial;
   --font-*: initial;
   --text-*: initial;
@@ -1065,6 +1067,9 @@ html.lenis body {
 }
 .home-services-pyramid[data-pyramid] .pyramid-controls {
   visibility: visible;
+}
+.typewriter[data-inline-emphasis] .typewriter-word {
+  padding-inline-end: var(--spacing-typewriter-caret);
 }
 .typewriter [data-type-caret] {
   position: absolute;

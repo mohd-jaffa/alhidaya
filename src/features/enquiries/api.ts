@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 
 import { FORM_RATE_LIMIT, INBOX_PAGE_SIZE, INBOX_SUMMARY_LENGTH } from "@/constants/limits";
@@ -105,7 +106,8 @@ export function enquiryFields(payload: EnquiryPayload, serviceName: string | nul
 /** The name of the published service at `slug`, as the visitor chose it; null when none is published there. */
 async function publishedServiceName(slug: string): Promise<string | null> {
   const services = await listPublishedServices();
-  return services.find((service) => service.published.slug === slug)?.published.name.en ?? null;
+  const name = services.find((service) => service.published.slug === slug)?.published.name.en;
+  return name === undefined ? null : plainText(name);
 }
 
 /**

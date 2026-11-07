@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import { RiseWords } from "@/components/motion/RiseWords";
 import { MediaImage } from "@/components/ui/media-image";
 import type { PublishedClient } from "@/features/clients/api";
@@ -13,7 +14,9 @@ type ClientsContent = Extract<Section, { type: "CLIENTS" }>["content"];
 export function shownClients(clients: readonly PublishedClient[], images: ReadonlyMap<string, SiteImage>) {
   return clients.flatMap((client) => {
     const logo = images.get(client.published.logo.mediaId);
-    return logo ? [{ client: client.published, id: client.id, logo: { ...logo, alt: client.published.name.en } }] : [];
+    return logo
+      ? [{ client: client.published, id: client.id, logo: { ...logo, alt: plainText(client.published.name.en) } }]
+      : [];
   });
 }
 
@@ -52,7 +55,7 @@ export function ClientsSection({
         <ClientsRows
           clients={shown.map(({ client, id, logo }) => ({
             id,
-            name: client.name.en,
+            name: plainText(client.name.en),
             url: client.url,
             logo: (
               <MediaImage

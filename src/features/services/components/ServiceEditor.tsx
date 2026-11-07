@@ -1,5 +1,7 @@
 "use client";
 
+import { plainText } from "@/lib/text/inline";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -68,10 +70,11 @@ function ServiceForm({ initial }: { initial: ServiceDraftItem | null }) {
     if (reset) form.reset(saved.draft);
     await refresh([ADMIN_API_ROUTES.adminServices, ADMIN_API_ROUTES.adminService(saved.id)]);
   };
-  const name = item?.draft.name.en || ADMIN_TEXT.newService;
+  const name = plainText(item?.draft.name.en || ADMIN_TEXT.newService);
 
   return (
     <DraftEditor
+      formatting
       form={form}
       name={name}
       back={{ href: ADMIN_ROUTES.services, label: ADMIN_TEXT.services }}

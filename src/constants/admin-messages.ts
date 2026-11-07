@@ -9,6 +9,8 @@ import type { Audience } from "./statuses";
  * saying what it means.
  */
 export const ADMIN_TEXT = {
+  inlineFormattingHint:
+    "Website copy supports **bold**, *italic* and ***both***. Preview before publishing. Contact details, URLs and SEO fields use plain text.",
   fontManager: "Font Manager",
   fontManagerIntro:
     "Choose a font for each text type on the public website. The admin panel keeps its current font. Save a draft, preview the real pages, then publish when ready.",
@@ -103,6 +105,19 @@ export const ADMIN_TEXT = {
   resetLinkMissing: "This page opens from the link in the password reset email. Request a new link to continue.",
   askAgain: "Request a new link",
   /** The admin's own profile (D115). */
+  userManual: "User manual",
+  manualIntro:
+    "Choose a topic, watch a short lesson and follow the steps. Start with Getting started if you are new to the admin panel.",
+  manualTopics: "Topics",
+  manualLessons: "Lessons",
+  manualSteps: "Step by step",
+  manualTranscript: "Read the video transcript",
+  manualEnglish: "English",
+  manualDuration: (seconds: number) => `${seconds} seconds · English narration`,
+  manualVideo: (title: string) => `${title} video lesson`,
+  manualVideoFallback: "Use the written steps and transcript below if your browser cannot play the video.",
+  manualRecordingNote:
+    "Training uses fictional submissions and a separate account. Email and contact controls are pointed out without sending messages; delete, archive and close confirmations are cancelled. Upload forms are shown without submitting a file. Captions are optional. The written steps explain how to complete these actions.",
   profile: "Profile",
   profileIntro: "Your account details. Changes apply to your admin account only.",
   accountDetails: "Account details",
@@ -716,3 +731,5 @@ export const SECTION_NAMES = {
   RICH_TEXT: "Text",
   SERVICES_ROW: "Our services",
 } as const satisfies Record<SectionType, string>;
+
+export { ADMIN_MANUAL } from "./admin-manual";

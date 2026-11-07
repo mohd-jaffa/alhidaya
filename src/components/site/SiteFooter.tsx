@@ -1,3 +1,5 @@
+import { plainText } from "@/lib/text/inline";
+import { InlineText } from "@/components/ui/inline-text";
 import Link from "next/link";
 
 import colourLogo from "@/assets/brand/logo.svg";
@@ -38,16 +40,22 @@ export function SiteFooter({ site }: { site: SiteDocument | null }) {
                 <span aria-hidden className="footer-logo-shine" style={{ maskImage: `url("${colourLogo.src}")` }} />
               </span>
             </Link>
-            {site ? <p className="max-w-[40ch]">{site.description.en}</p> : null}
+            {site ? (
+              <p className="max-w-[40ch]">
+                <InlineText text={site.description.en} />
+              </p>
+            ) : null}
           </div>
           {site?.footer.map((column) => (
-            <nav key={column.heading.en} aria-label={column.heading.en} className="grid content-start gap-3">
-              <h2 className={HEADING}>{column.heading.en}</h2>
+            <nav key={column.heading.en} aria-label={plainText(column.heading.en)} className="grid content-start gap-3">
+              <h2 className={HEADING}>
+                <InlineText text={column.heading.en} />
+              </h2>
               <ul className="grid">
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link href={link.href} className={LINK}>
-                      {link.label.en}
+                      <InlineText text={link.label.en} />
                     </Link>
                   </li>
                 ))}
@@ -73,7 +81,7 @@ export function SiteFooter({ site }: { site: SiteDocument | null }) {
                 {site.contact.hours.en ? (
                   <li className="flex items-center gap-2.5">
                     <Pictogram name="clock" size="sm" className="text-deep" />
-                    {site.contact.hours.en}
+                    <InlineText text={site.contact.hours.en} />
                   </li>
                 ) : null}
               </ul>

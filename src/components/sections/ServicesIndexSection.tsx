@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { RiseWords } from "@/components/motion/RiseWords";
 import type { SiteImage } from "@/features/media/types";
@@ -34,7 +35,9 @@ export function ServicesIndexSection({
           </h2>
           {content.intro.en ? (
             <Reveal>
-              <p className="text-lead whitespace-pre-line text-ink-2">{content.intro.en}</p>
+              <p className="text-lead whitespace-pre-line text-ink-2">
+                <InlineText text={content.intro.en} />
+              </p>
             </Reveal>
           ) : null}
         </div>
@@ -49,7 +52,9 @@ export function ServicesIndexSection({
         </h2>
         {content.intro.en ? (
           <Reveal>
-            <p className="text-lead whitespace-pre-line text-ink-2">{content.intro.en}</p>
+            <p className="text-lead whitespace-pre-line text-ink-2">
+              <InlineText text={content.intro.en} />
+            </p>
           </Reveal>
         ) : null}
       </div>

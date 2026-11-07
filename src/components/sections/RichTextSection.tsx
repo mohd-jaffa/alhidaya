@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { RichText } from "@/components/ui/rich-text";
 import type { RichText as RichTextBlocks, Section } from "@/lib/validation";
@@ -38,7 +39,9 @@ export function RichTextSection({
     <Frame anchor={anchor} named={heading !== null} tone="mist" className="grid gap-6">
       {heading ? (
         <Reveal>
-          <SectionHeading anchor={anchor}>{heading}</SectionHeading>
+          <SectionHeading anchor={anchor}>
+            <InlineText text={heading} />
+          </SectionHeading>
         </Reveal>
       ) : null}
       <div className="grid gap-5">

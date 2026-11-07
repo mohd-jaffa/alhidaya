@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import Link from "next/link";
 
 import { Reveal } from "@/components/motion/Reveal";
@@ -60,9 +61,13 @@ export function IntroSection({
             }
           >
             {!groupedPoints ? <Pictogram name="check" size="sm" className="mt-0.5 text-forest sm:mt-0" /> : null}
-            <span className="font-semibold text-navy">{point.title.en}</span>
+            <span className="font-semibold text-navy">
+              <InlineText text={point.title.en} />
+            </span>
             {point.text.en ? (
-              <span className={groupedPoints ? "text-ink-2" : "text-ink-2 max-sm:col-start-2"}>{point.text.en}</span>
+              <span className={groupedPoints ? "text-ink-2" : "text-ink-2 max-sm:col-start-2"}>
+                <InlineText text={point.text.en} />
+              </span>
             ) : null}
           </li>
         ))}
@@ -99,7 +104,11 @@ export function IntroSection({
         ) : null}
       </div>
       <Reveal className="intro-copy grid content-start gap-4">
-        {lead?.type === "paragraph" ? <p className="text-lead whitespace-pre-line text-navy">{lead.text.en}</p> : null}
+        {lead?.type === "paragraph" ? (
+          <p className="text-lead whitespace-pre-line text-navy">
+            <InlineText text={lead.text.en} />
+          </p>
+        ) : null}
         {/* The rest of the admin's text, its headings, lists and links too, in the quieter ink. */}
         <div className="text-ink-2">
           <RichText blocks={lead?.type === "paragraph" ? rest : content.body} headingLevel="h3" />

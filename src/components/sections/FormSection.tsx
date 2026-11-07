@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/motion/Reveal";
@@ -49,7 +50,11 @@ function QuoteBand({
           <h2 id={headingId(anchor)} className="text-display font-semibold">
             <RiseWords text={content.heading.en} />
           </h2>
-          {content.text.en ? <p className="text-lead whitespace-pre-line text-ink-2">{content.text.en}</p> : null}
+          {content.text.en ? (
+            <p className="text-lead whitespace-pre-line text-ink-2">
+              <InlineText text={content.text.en} />
+            </p>
+          ) : null}
           {site ? (
             <Reveal>
               <ContactWays site={site} className="mt-4" tiles />
@@ -105,7 +110,11 @@ export function FormSection({
       <h2 id={headingId(anchor)} className="text-display font-semibold text-balance">
         <RiseWords text={content.heading.en} />
       </h2>
-      {content.text.en ? <p className="text-lead whitespace-pre-line text-ink-2">{content.text.en}</p> : null}
+      {content.text.en ? (
+        <p className="text-lead whitespace-pre-line text-ink-2">
+          <InlineText text={content.text.en} />
+        </p>
+      ) : null}
     </Reveal>
   );
   return (

@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import { UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import type { EmploymentType } from "@/constants/statuses";
@@ -14,8 +15,8 @@ export function medicalBusiness(site: SiteDocument, siteUrl: string): Structured
     "@context": "https://schema.org",
     "@type": "MedicalBusiness",
     "@id": `${siteUrl}/#business`,
-    name: site.name.en,
-    description: site.description.en,
+    name: plainText(site.name.en),
+    description: plainText(site.description.en),
     url: siteUrl,
     logo: `${siteUrl}/apple-icon.png`,
     telephone: contact.phone,
@@ -30,7 +31,9 @@ export function medicalBusiness(site: SiteDocument, siteUrl: string): Structured
       ? { geo: { "@type": "GeoCoordinates", latitude: contact.mapPin.lat, longitude: contact.mapPin.lon } }
       : {}),
     // Only while the site says so: the company's own claim (plan §6.7).
-    ...(contact.hours.en && /24\s*\/\s*7/.test(contact.hours.en) ? { openingHours: "Mo-Su 00:00-23:59" } : {}),
+    ...(contact.hours.en && /24\s*\/\s*7/.test(plainText(contact.hours.en))
+      ? { openingHours: "Mo-Su 00:00-23:59" }
+      : {}),
     ...(site.social.length > 0 ? { sameAs: site.social.map((social) => social.url) } : {}),
   };
 }
@@ -40,8 +43,8 @@ export function serviceData(service: ServiceDocument, siteUrl: string): Structur
   return {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: service.name.en,
-    description: service.summary.en,
+    name: plainText(service.name.en),
+    description: plainText(service.summary.en),
     url: `${siteUrl}${ROUTES.service(service.slug)}`,
     areaServed: { "@type": "City", name: "Doha" },
     provider: { "@id": `${siteUrl}/#business` },
@@ -56,7 +59,7 @@ const EMPLOYMENT: Record<EmploymentType, string> = {
 };
 
 const escapeHtml = (text: string) =>
-  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  plainText(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 const htmlList = (items: readonly { en: string }[]) =>
   `<ul>${items.map((item) => `<li>${escapeHtml(item.en)}</li>`).join("")}</ul>`;
@@ -98,7 +101,7 @@ export function jobPosting(job: JobDocument, siteUrl: string): StructuredData {
   return {
     "@context": "https://schema.org",
     "@type": "JobPosting",
-    title: job.title.en,
+    title: plainText(job.title.en),
     description,
     datePosted: job.postedOn,
     ...(job.closesOn ? { validThrough: `${job.closesOn}T23:59:59${SITE_TIME_ZONE_OFFSET}` } : {}),
@@ -126,7 +129,7 @@ export function breadcrumbs(trail: readonly { name: string; path: string }[], si
     itemListElement: trail.map((step, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name: step.name,
+      name: plainText(step.name),
       item: `${siteUrl}${step.path === "/" ? "" : step.path}`,
     })),
   };

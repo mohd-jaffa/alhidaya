@@ -1,6 +1,8 @@
 "use client";
 "use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
+import { InlineText } from "@/components/ui/inline-text";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef } from "react";
@@ -71,7 +73,7 @@ export function SiteHeader({ site }: { site: SiteDocument | null }) {
                     {here ? (
                       <span aria-hidden className="nav-pill absolute inset-0 -z-10 rounded-pill bg-deep" />
                     ) : null}
-                    {link.label.en}
+                    <InlineText text={link.label.en} />
                   </Link>
                 </li>
               );

@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Words } from "@/components/motion/Words";
 import { IconChip } from "@/components/ui/icon-chip";
 import { MediaImage } from "@/components/ui/media-image";
@@ -47,11 +48,13 @@ export function HeroSection({
         <Words text={slide.headline.en} highlight={slide.highlight.en} />
       </h1>
       {slide.text.en ? (
-        <p className="slide-line max-w-hero-lede text-lead whitespace-pre-line text-ink-2">{slide.text.en}</p>
+        <p className="slide-line max-w-hero-lede text-lead whitespace-pre-line text-ink-2">
+          <InlineText text={slide.text.en} />
+        </p>
       ) : null}
       {slide.buttonLabel.en && slide.buttonHref.en ? (
         <PillLink href={slide.buttonHref.en} size="lg" arrow className="slide-line slide-action">
-          {slide.buttonLabel.en}
+          <InlineText text={slide.buttonLabel.en} />
         </PillLink>
       ) : null}
     </div>
@@ -60,7 +63,9 @@ export function HeroSection({
     !content.hideNote && note.text.en ? (
       <p className="slide-note absolute start-4 end-4 bottom-4 z-10 flex w-fit max-w-full items-center gap-3 rounded-card bg-card p-2.5 pe-5 shadow-float sm:start-6 sm:end-6 sm:bottom-6">
         {note.pictogram ? <IconChip name={note.pictogram} tone="leaf" /> : null}
-        <span className="font-semibold">{note.text.en}</span>
+        <span className="font-semibold">
+          <InlineText text={note.text.en} />
+        </span>
       </p>
     ) : null;
 

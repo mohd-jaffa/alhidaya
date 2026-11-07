@@ -216,6 +216,7 @@ Turnstile, rate limiting, audit, the error log and SEO are infrastructure in
 - **The design is locked** (plan D12): never add colour, font, size, spacing,
   layout or animation controls to the admin. The user-authorized D168 Font Manager
   is the narrow exception: fixed tested font families per public text type only.
+  D188 also permits limited bold/italic shortcuts in public copy, without other styling controls.
 - Content is stored per locale (`{ "en": … }`, plan §33).
 
 ---

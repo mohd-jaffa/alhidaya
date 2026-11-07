@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { RiseWords } from "@/components/motion/RiseWords";
 import { MediaImage } from "@/components/ui/media-image";
@@ -33,7 +34,9 @@ export function InstitutionsSection({
           <h2 id={headingId(anchor)} className="text-display font-semibold text-balance">
             <RiseWords text={content.heading.en} />
           </h2>
-          <p className="max-w-measure text-lead whitespace-pre-line text-ink-2">{content.text.en}</p>
+          <p className="max-w-measure text-lead whitespace-pre-line text-ink-2">
+            <InlineText text={content.text.en} />
+          </p>
           <PillLink href={ROUTES.quote} size="lg" arrow>
             {UI_TEXT.requestQuote}
           </PillLink>

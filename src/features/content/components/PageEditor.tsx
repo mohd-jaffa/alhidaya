@@ -54,6 +54,7 @@ function PageForm({ page, state }: { page: PageKey; state: PageDraftItem }) {
 
   return (
     <DraftEditor
+      formatting
       form={form}
       name={PAGE_NAMES[page]}
       back={{ href: ADMIN_ROUTES.pages, label: ADMIN_TEXT.pages }}

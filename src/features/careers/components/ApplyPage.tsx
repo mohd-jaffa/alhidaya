@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import Link from "next/link";
 
 import { PageHero } from "@/components/sections/PageHero";
@@ -49,7 +50,7 @@ export function ApplyPage({ job }: { job: PublishedJob | null }) {
                   href={ROUTES.job(job.published.slug)}
                   className="font-medium text-forest underline underline-offset-4"
                 >
-                  {job.published.title.en}
+                  <InlineText text={job.published.title.en} />
                 </Link>
                 .
               </>

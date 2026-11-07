@@ -8,6 +8,27 @@ const SITE = "https://alhidaya.qa";
 const en = <T>(value: T) => ({ en: value });
 
 describe("medicalBusiness", () => {
+  it("projects emphasis to clean schema text while contact/address values remain literal", () => {
+    const site = siteFixture();
+    const data = medicalBusiness(
+      {
+        ...site,
+        name: en("**Al Hidaya**"),
+        description: en("*Quality* ***care***"),
+        contact: { ...site.contact, address: [en("*Literal* address")], hours: en("**24**/*7*") },
+      },
+      SITE,
+    );
+    expect(data).toMatchObject({
+      name: "Al Hidaya",
+      description: "Quality care",
+      openingHours: "Mo-Su 00:00-23:59",
+      address: { streetAddress: "*Literal* address" },
+      email: site.contact.email,
+      telephone: site.contact.phone,
+    });
+  });
+
   it("describes the company from the published site content, open 24/7 while the site says so", () => {
     const site = siteFixture();
     expect(

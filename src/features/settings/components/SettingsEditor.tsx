@@ -56,6 +56,7 @@ function SettingsForm({ initial }: { initial: SiteDraftItem }) {
 
   return (
     <DraftEditor
+      formatting
       form={form}
       name={ADMIN_TEXT.settings}
       state={item}

@@ -372,7 +372,7 @@
       },
       "service-hero": {
         "displayName": "Service hero",
-        "purpose": "Approved editorial service-detail headlines, 42–96 px."
+        "purpose": "Approved editorial service-detail headlines, 42\u201396 px."
       },
       "value-title": {
         "displayName": "Value title",
@@ -435,42 +435,42 @@
       {
         "name": "duration-slide",
         "value": "6s",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "duration-slide-wipe",
         "value": "1100ms",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "duration-slide-word",
         "value": "900ms",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "stagger-slide-word",
         "value": "45ms",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "delay-slide-word",
         "value": "160ms",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "delay-slide-line",
         "value": "480ms",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "delay-slide-action",
         "value": "620ms",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "delay-slide-frame",
         "value": "760ms",
-        "purpose": "Home’s coordinated six-second photo, word, line, action and progress sequence (D136)."
+        "purpose": "Home\u2019s coordinated six-second photo, word, line, action and progress sequence (D136)."
       },
       {
         "name": "lenis-lerp",
@@ -540,7 +540,7 @@
       "uploads": false
     },
     "responsiveConsistency": {
-      "decision": "D172–D179",
+      "decision": "D172\u2013D179",
       "publicNav": "Shared soft-white surface and 64/76/100 px height; only photo openings overlap.",
       "brandLogo": "Contain fitting; footer shine uses centred contain mask.",
       "contactCards": "Off-white rounded channels, bold terms, 8 px independent translate on hover/focus; static reduced-motion shadow.",
@@ -568,6 +568,16 @@
       "caption": "Body-scale semibold white text centred at the photo bottom over a navy fade, with no label card or name arrow. Intrinsic text reflow at accessibility enlargement.",
       "behavior": "Six-second automatic advance, manual arrows/swipe, keyboard-focus pause, reduced motion and native fallback retained; other service surfaces unchanged.",
       "layoutStability": "Keep native flex layout boxes, a zero-minimum track/grid column, and compose the enhanced pyramid with transforms only. No deferred display/inset change or layout shift."
+    },
+    "inlineFormattingD188": {
+      "syntax": ["**bold**", "*italic*", "***both***"],
+      "scope": "Existing public display copy; one syntax hint per eligible admin editor. Safe React strong/em only, no HTML or full Markdown.",
+      "motion": "Server-rendered styled word/letter slots preserve existing highlights, reveals/typewriter, reduced motion and public budgets.",
+      "spacing": {
+        "emphasisInk": "0.15em",
+        "typewriterCaret": "calc(var(--spacing-emphasis-ink) + 2px)"
+      },
+      "plainText": "Metadata, sharing, structured data, image labels, dropdowns, generated slugs and snapshots; literal contact/routing values."
     }
   },
   "components": [
@@ -575,7 +585,7 @@
       "name": "Deep Button",
       "kind": "button",
       "refersTo": "button-deep",
-      "description": "The public site’s main action: deep blue, white words, 12 px corners and a stepping arrow.",
+      "description": "The public site\u2019s main action: deep blue, white words, 12 px corners and a stepping arrow.",
       "html": "<a class=\"ds-deep\" href=\"#\">Request a quote <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a>",
       "css": ".ds-deep{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--radius-button,12px);font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif);font-size:var(--text-body,1.0625rem);font-weight:600;line-height:1.25;text-decoration:none;transition:background-color var(--duration-state,200ms),transform var(--duration-state,200ms);background:var(--color-deep,#0f64ac);color:var(--color-on-deep,#fff);box-shadow:var(--shadow-raised,0 8px 24px -12px rgb(11 36 64 / .28))}.ds-deep:hover{background:var(--color-navy,#0b2440)}.ds-deep svg{transition:transform var(--duration-state,200ms)}.ds-deep:hover svg{transform:translateX(4px)}.ds-deep:active{transform:scale(.98)}.ds-deep:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-deep{transition:none!important;animation:none!important}}"
     },
@@ -607,7 +617,7 @@
       "name": "Service Photo Card",
       "kind": "card",
       "refersTo": "service-card",
-      "description": "296 × 395 px photo card, represented by its pale placeholder here; a soft-white inset label holds its name and audience.",
+      "description": "296 \u00d7 395 px photo card, represented by its pale placeholder here; a soft-white inset label holds its name and audience.",
       "html": "<a class=\"ds-service\" href=\"#\"><span class=\"ds-service-label\"><strong>Home nursing care</strong><span class=\"ds-service-meta\">For families <i><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></i></span></span></a>",
       "css": ".ds-service{display:flex;align-items:flex-end;width:296px;height:395px;padding:12px;box-sizing:border-box;border-radius:var(--radius-card,28px);background:var(--color-leaf-pale,#eef5e2);box-shadow:var(--shadow-raised,0 8px 24px -12px rgb(11 36 64 / .28));color:var(--color-navy,#0b2440);text-decoration:none;font-family:var(--font-sans,'Inter Tight',system-ui,sans-serif)}.ds-service-label{display:grid;gap:8px;width:100%;padding:14px;border-radius:var(--radius-inset,20px);background:var(--color-card,#fcfdfe)}.ds-service-label strong{font-size:var(--text-title,1.3125rem);font-weight:600}.ds-service-meta{display:flex;justify-content:space-between;align-items:center;color:var(--color-forest,#5b7628);font-size:var(--text-small,.875rem);font-weight:600}.ds-service-meta i{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--color-deep,#0f64ac);color:var(--color-on-deep,#fff)}.ds-service:hover svg{transform:translateX(3px)}.ds-service svg{transition:transform var(--duration-state,200ms)}.ds-service:active{transform:scale(.98)}.ds-service:focus-visible{outline:3px solid var(--color-focus,#0f64ac);outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-service,.ds-service-label,.ds-service-meta{transition:none!important;animation:none!important}}"
     },
@@ -661,7 +671,7 @@
       "name": "Contact Ribbon",
       "kind": "section",
       "description": "D145/D147 opening and Reach us unchanged; D152 message section on rounded pastel green, heading/map/office left and a shadowed white form card right. No overlap. Type/hold/delete loop remains reduced-motion aware. D153 adds only a blue backdrop behind the unchanged rounded green panel.",
-      "html": "<section class=\"ds-contact\"><div class=\"ds-contact-opening\">We are here<br>day and night</div><div class=\"ds-contact-reach\"><strong>Reach us</strong><p>WhatsApp · Phone · Email</p></div><div class=\"ds-contact-message\"><aside><h2>Send us a message</h2><p>Map</p><h3>Visit our office</h3><p>Published address</p></aside><div>Message form</div></div></section>",
+      "html": "<section class=\"ds-contact\"><div class=\"ds-contact-opening\">We are here<br>day and night</div><div class=\"ds-contact-reach\"><strong>Reach us</strong><p>WhatsApp \u00b7 Phone \u00b7 Email</p></div><div class=\"ds-contact-message\"><aside><h2>Send us a message</h2><p>Map</p><h3>Visit our office</h3><p>Published address</p></aside><div>Message form</div></div></section>",
       "css": ".ds-contact{background:var(--color-mist);font-family:var(--font-sans);color:var(--color-navy)}.ds-contact-opening{padding:32px;background:var(--color-ground);font-size:32px;line-height:1.06;font-weight:600}.ds-contact-reach{padding:24px 32px 56px;background:var(--color-mist)}.ds-contact-message{margin:0 16px 16px;padding:32px;display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;background:var(--color-leaf-pale);border-radius:28px}.ds-contact-message>div{padding:24px;border-radius:28px;background:var(--color-card);box-shadow:var(--shadow-float)}@media(max-width:500px){.ds-contact-message{grid-template-columns:1fr}}"
     },
     {
@@ -675,7 +685,7 @@
       "name": "Blended Photo Opening",
       "kind": "section",
       "description": "D158/D160: full-width navy-dimmed photo, light headline and sky-tinted phrase. The navbar stays solid soft white with original coloured logo; only the image top fades gradually through a static mask. Home note visibility is independently published (D157). Photo openings on Home, About and main Services only.",
-      "html": "<section class=\"ds-blended-opening\"><header>Al Hidaya <span>Home　 About　 Services　 Careers　 Contact</span></header><h2>Quality <em>nursing care</em><br>at your doorstep.</h2><p>Highly trained nurses giving compassionate care.</p></section>",
+      "html": "<section class=\"ds-blended-opening\"><header>Al Hidaya <span>Home\u3000 About\u3000 Services\u3000 Careers\u3000 Contact</span></header><h2>Quality <em>nursing care</em><br>at your doorstep.</h2><p>Highly trained nurses giving compassionate care.</p></section>",
       "css": ".ds-blended-opening{position:relative;min-height:350px;background:var(--color-navy);color:var(--color-card);font-family:var(--font-sans);padding:150px 32px 32px}.ds-blended-opening header{position:absolute;inset:0 0 auto;height:90px;padding:24px 32px;color:var(--color-navy);background:var(--color-card)}.ds-blended-opening header span{float:right}.ds-blended-opening h2{font-size:42px;line-height:1.04;margin:0 0 20px}.ds-blended-opening em{font-style:normal;color:color-mix(in srgb,var(--color-sky) 55%,var(--color-card))}"
     }
   ],
@@ -687,12 +697,12 @@
       "Deep blue for the main button, links and the highlighted phrase in a heading; leaf green for small marks (checks, the WhatsApp chip, the mark under a heading).",
       "Buttons with 12 px corners; the header's links in a floating round pill.",
       "One family, Inter Tight, semibold for headings and titles, regular for reading.",
-      "Automatic motion is limited to Home’s hero/services, Contact’s typewriter and the clients’ rows, with their recorded stop conditions and reduced-motion paths."
+      "Automatic motion is limited to Home\u2019s hero/services, Contact\u2019s typewriter and the clients\u2019 rows, with their recorded stop conditions and reduced-motion paths."
     ],
     "rules": [
       {
         "name": "The Never-Pure-White Rule",
-        "body": "On the public site, white is soft white: the page is `page`, a raised surface `card`. The user’s Contact exception (D145) sets its opening and form controls to pure `ground` white; other surfaces retain the existing palette.",
+        "body": "On the public site, white is soft white: the page is `page`, a raised surface `card`. The user\u2019s Contact exception (D145) sets its opening and form controls to pure `ground` white; other surfaces retain the existing palette.",
         "section": "colors"
       },
       {
@@ -722,7 +732,7 @@
       },
       {
         "name": "The Still-Page Rule",
-        "body": "Nothing else moves on its own (WCAG 2.2.2). The slides stop on deliberate keyboard focus; the clients' rows stop under the pointer, on focus and on a chosen logo (the user chose no pause button for them; recorded in D133). Contact’s explicitly requested typewriter is another exception (D147), paused offscreen/hidden and static for reduced motion.",
+        "body": "Nothing else moves on its own (WCAG 2.2.2). The slides stop on deliberate keyboard focus; the clients' rows stop under the pointer, on focus and on a chosen logo (the user chose no pause button for them; recorded in D133). Contact\u2019s explicitly requested typewriter is another exception (D147), paused offscreen/hidden and static for reduced motion.",
         "section": "components"
       },
       {

@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import Link from "next/link";
 
 import { Reveal } from "@/components/motion/Reveal";
@@ -41,7 +42,11 @@ export function ServicesRowSection({
       <h2 id={headingId(anchor)} className="text-display font-semibold">
         <RiseWords text={content.heading.en} />
       </h2>
-      {content.text.en ? <p className="text-lead text-ink-2">{content.text.en}</p> : null}
+      {content.text.en ? (
+        <p className="text-lead text-ink-2">
+          <InlineText text={content.text.en} />
+        </p>
+      ) : null}
     </div>
   );
   const cards = services.map((service) => (

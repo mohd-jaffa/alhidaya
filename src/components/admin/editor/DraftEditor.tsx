@@ -48,6 +48,8 @@ export interface DraftEditorProps<TInput extends FieldValues, TOutput> {
   fieldPath?: (path: string) => string;
   /** A rule about the whole thing, said in place of the general words. */
   ruleError?: string;
+  /** Public copy supports the limited emphasis syntax (D188). */
+  formatting?: boolean;
   children: ReactNode;
 }
 
@@ -72,6 +74,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
   onRefused,
   fieldPath = (at) => at,
   ruleError,
+  formatting = false,
   children,
 }: DraftEditorProps<TInput, TOutput>) {
   const { isDirty, errors } = useFormState({ control: form.control });
@@ -268,6 +271,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
       </form>
 
       <fieldset ref={root} disabled={busy} aria-label={name} className="mt-6 grid min-w-0 max-w-5xl gap-6">
+        {formatting ? <p className="max-w-prose text-small text-ink-2">{ADMIN_TEXT.inlineFormattingHint}</p> : null}
         {errorCount > 0 ? (
           <Notice tone="error" title={ADMIN_TEXT.fieldsNeedAttention(errorCount)}>
             <p>{ruleError ?? ADMIN_TEXT.fieldsNeedAttentionBody}</p>

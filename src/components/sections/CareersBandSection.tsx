@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { PillLink } from "@/components/ui/pill";
 import { PillLabel } from "@/components/ui/pill-label";
@@ -33,9 +34,13 @@ export function CareersBandSection({
     <SectionFrame anchor={anchor} className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-16">
       <Reveal className="grid content-start justify-items-start gap-6">
         <PillLabel>{UI_TEXT.careers}</PillLabel>
-        <SectionHeading anchor={anchor}>{content.heading.en}</SectionHeading>
+        <SectionHeading anchor={anchor}>
+          <InlineText text={content.heading.en} />
+        </SectionHeading>
         {content.text.en ? (
-          <p className="max-w-measure text-lead whitespace-pre-line text-ink-2">{content.text.en}</p>
+          <p className="max-w-measure text-lead whitespace-pre-line text-ink-2">
+            <InlineText text={content.text.en} />
+          </p>
         ) : null}
         <PillLink href={ROUTES.careers} size="lg" arrow>
           {UI_TEXT.allOpenJobs}

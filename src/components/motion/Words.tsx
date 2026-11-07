@@ -1,11 +1,16 @@
 import { type CSSProperties, Fragment } from "react";
 
+import { InlineRuns } from "@/components/ui/inline-text";
+import { parseInline, plainText, sliceInline } from "@/lib/text/inline";
+
 /**
  * The text's words in order, each numbered, whether it is in the highlighted
  * phrase, and whether a space comes before it (none before a comma that
  * follows the phrase).
  */
 export function markedWords(text: string, highlight?: string | null) {
+  text = plainText(text);
+  highlight = highlight ? plainText(highlight) : highlight;
   const at = highlight ? text.indexOf(highlight) : -1;
   const segments: [string, boolean][] =
     highlight && at >= 0
@@ -34,6 +39,9 @@ export function markedWords(text: string, highlight?: string | null) {
  * A screen reader reads the text once, whole.
  */
 export function Words({ text, highlight }: { text: string; highlight?: string | null }) {
+  const formatted = parseInline(text);
+  const visible = formatted.map((run) => run.text).join("");
+  let offset = 0;
   const runs: ReturnType<typeof markedWords>[] = [];
   for (const word of markedWords(text, highlight)) {
     if (word.spaceBefore || runs.length === 0) runs.push([word]);
@@ -42,16 +50,24 @@ export function Words({ text, highlight }: { text: string; highlight?: string | 
   // Relative, so the screen reader's copy is placed within the words, never off the page's edge.
   return (
     <span className="relative">
-      <span className="sr-only">{text}</span>
+      <span className="sr-only">{visible}</span>
       <span aria-hidden="true">
         {runs.map((run, at) => {
-          const boxes = run.map(({ word, marked, index }) => (
-            <span key={index} className={marked ? "rise-word text-deep" : "rise-word"}>
-              <span data-word style={{ "--i": index } as CSSProperties}>
-                {word}
+          const boxes = run.map(({ word, marked, index }) => {
+            const start = visible.indexOf(word, offset);
+            offset = start + word.length;
+            const content = sliceInline(formatted, start, offset);
+            return (
+              <span
+                key={index}
+                className={`${marked ? "rise-word text-deep" : "rise-word"}${content.some((run) => run.format & 1) ? " pe-(--spacing-emphasis-ink)" : ""}`}
+              >
+                <span data-word style={{ "--i": index } as CSSProperties}>
+                  <InlineRuns runs={content} />
+                </span>
               </span>
-            </span>
-          ));
+            );
+          });
           return (
             <Fragment key={run[0].index}>
               {at > 0 ? " " : null}

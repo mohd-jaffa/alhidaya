@@ -1,5 +1,7 @@
 "use client";
 
+import { plainText } from "@/lib/text/inline";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -98,10 +100,11 @@ function JobForm({ initial }: { initial: JobDraftItem | null }) {
     if (reset) form.reset(saved.draft);
     await refresh([ADMIN_API_ROUTES.adminJobs, ADMIN_API_ROUTES.adminJob(saved.id)]);
   };
-  const name = item?.draft.title.en || ADMIN_TEXT.newJob;
+  const name = plainText(item?.draft.title.en || ADMIN_TEXT.newJob);
 
   return (
     <DraftEditor
+      formatting
       form={form}
       name={name}
       back={{ href: ADMIN_ROUTES.jobs, label: ADMIN_TEXT.jobs }}

@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import type { PictogramName } from "@/assets/brand/pictograms";
 import { Reveal } from "@/components/motion/Reveal";
 import { RiseWords } from "@/components/motion/RiseWords";
@@ -71,7 +72,9 @@ export function ContactDetailsSection({
           {site?.contact.hours.en ? (
             <Reveal className="flex items-center gap-3 text-on-deep-2">
               <Pictogram name="clock" size="sm" />
-              <span>{site.contact.hours.en}</span>
+              <span>
+                <InlineText text={site.contact.hours.en} />
+              </span>
             </Reveal>
           ) : null}
         </div>

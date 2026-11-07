@@ -23,12 +23,14 @@ type Values = z.infer<typeof schema>;
 function Thing({
   state,
   path,
+  formatting = false,
   save = async () => {},
   publish = async () => {},
   back = { href: "/admin/services", label: "Services" },
 }: {
   state: DraftState;
   path: string | null;
+  formatting?: boolean;
   save?: (values: Values) => Promise<void>;
   publish?: () => Promise<void>;
   back?: { href: string; label: string } | null;
@@ -36,6 +38,7 @@ function Thing({
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { name: "Elderly care" } });
   return (
     <DraftEditor
+      formatting={formatting}
       form={form}
       name="Elderly care"
       back={back ?? undefined}
@@ -53,6 +56,12 @@ function Thing({
 const NEW: DraftState = { publishedAt: null, unpublishedChanges: true };
 
 describe("DraftEditor (D88, D92)", () => {
+  it("shows one concise syntax hint only for eligible public-copy editors", () => {
+    const { rerender } = render(<Thing state={NEW} path={null} formatting />);
+    expect(screen.getByText(ADMIN_TEXT.inlineFormattingHint)).toBeVisible();
+    rerender(<Thing state={NEW} path={null} />);
+    expect(screen.queryByText(ADMIN_TEXT.inlineFormattingHint)).toBeNull();
+  });
   it("offers no Preview for what has no address yet, and Publish for what was never published", async () => {
     render(<Thing state={NEW} path={null} />);
     expect(screen.getByRole("link", { name: "Services" })).toHaveAttribute("href", "/admin/services");

@@ -4,6 +4,20 @@ import { describe, expect, it } from "vitest";
 import { SettleText } from "@/components/motion/SettleText";
 
 describe("SettleText (D97)", () => {
+  it("preserves inline styles through letter and highlight splits with clean accessible words", () => {
+    const { container } = render(
+      <h1>
+        <SettleText text="**Care** at *home*, ***now***" highlight="**at home**" />
+      </h1>,
+    );
+    expect(screen.getByRole("heading", { name: "Care at home, now" })).toBeVisible();
+    const visual = container.querySelector('[aria-hidden="true"]')!;
+    expect(visual.textContent).toBe("Care at home, now");
+    expect(visual.querySelectorAll("strong")).toHaveLength(7);
+    expect(visual.querySelectorAll("em")).toHaveLength(7);
+    expect(visual.querySelector(".bg-leaf-pale")).toHaveTextContent("at home");
+  });
+
   it("is read once, whole, while its letters settle by CSS alone, each numbered across the text", () => {
     const { container } = render(
       <h1>

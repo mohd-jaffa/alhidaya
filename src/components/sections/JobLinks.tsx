@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import Link from "next/link";
 
 import { Reveal } from "@/components/motion/Reveal";
@@ -31,7 +32,7 @@ export function JobLinks({ jobs, onBand = false }: { jobs: readonly PublishedJob
                 href={ROUTES.job(job.slug)}
                 className="text-title font-medium underline decoration-transparent underline-offset-4 group-hover:decoration-current after:absolute after:inset-0 after:rounded-card"
               >
-                {job.title.en}
+                <InlineText text={job.title.en} />
               </Link>
               <p className="flex flex-wrap gap-x-3 text-small text-ink-2">
                 <span>{job.location.en}</span>

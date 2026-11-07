@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import type { ReactNode } from "react";
 
 import type { SectionForm } from "@/constants/statuses";
@@ -18,7 +19,7 @@ import { ShortQuoteForm } from "./ShortQuoteForm";
 export function enquiryForms(data: SectionData, service?: string | string[]): Record<SectionForm, ReactNode> {
   const whatsapp = data.site?.contact.whatsapp ?? null;
   const siteKey = getServerEnv().TURNSTILE_SITE_KEY;
-  const services = data.services.map(({ published }) => ({ slug: published.slug, name: published.name.en }));
+  const services = data.services.map(({ published }) => ({ slug: published.slug, name: plainText(published.name.en) }));
   const chosen = services.find(({ slug }) => slug === service)?.slug ?? "";
   return {
     QUOTE: <QuoteForm services={services} chosen={chosen} whatsapp={whatsapp} siteKey={siteKey} />,

@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { RiseWords } from "@/components/motion/RiseWords";
 import type { Section, SiteDocument } from "@/lib/validation";
@@ -37,7 +38,9 @@ export function ContactBandSection({
           <RiseWords text={content.heading.en} />
         </h2>
         {content.text.en ? (
-          <p className="max-w-[46ch] text-lead whitespace-pre-line text-ink-2">{content.text.en}</p>
+          <p className="max-w-[46ch] text-lead whitespace-pre-line text-ink-2">
+            <InlineText text={content.text.en} />
+          </p>
         ) : null}
       </div>
       {site ? (

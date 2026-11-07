@@ -5,6 +5,9 @@ import { slugify } from "@/lib/text/slug";
 import { slugSchema } from "@/lib/validation/schemas/content";
 
 describe("slugify", () => {
+  it("uses visible title words without inserting hyphens inside formatted words", () => {
+    expect(slugify("Nur**sing** *care*")).toBe("nursing-care");
+  });
   it("makes a web address from a name, in the address's own rules (D92)", () => {
     expect(slugify("Maternity & Newborn Care")).toBe("maternity-newborn-care");
     expect(slugify("  Soins à domicile  ")).toBe("soins-a-domicile");

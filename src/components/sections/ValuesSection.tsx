@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { RiseWords } from "@/components/motion/RiseWords";
 import { Pictogram } from "@/components/ui/pictogram";
@@ -39,13 +40,13 @@ export function ValuesSection({
                   id={`${anchor}-value-${index}`}
                   className="relative z-10 text-value-title font-semibold wrap-anywhere"
                 >
-                  {item.title.en}
+                  <InlineText text={item.title.en} />
                 </h3>
                 {item.text.en ? (
                   <p
                     className={`relative z-10 mt-5 text-lead wrap-anywhere ${index % 3 === 0 ? "text-on-deep-2" : "text-ink-2"}`}
                   >
-                    {item.text.en}
+                    <InlineText text={item.text.en} />
                   </p>
                 ) : null}
               </article>
@@ -67,8 +68,14 @@ export function ValuesSection({
               className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1 border-b border-rule py-5 sm:grid-cols-[1.75rem_minmax(0,1fr)_minmax(0,1.3fr)] sm:items-center"
             >
               <Pictogram name="check" size="sm" className="mt-0.5 text-forest sm:mt-0" />
-              <h3 className="font-semibold text-navy">{item.title.en}</h3>
-              {item.text.en ? <p className="text-ink-2 max-sm:col-start-2">{item.text.en}</p> : null}
+              <h3 className="font-semibold text-navy">
+                <InlineText text={item.title.en} />
+              </h3>
+              {item.text.en ? (
+                <p className="text-ink-2 max-sm:col-start-2">
+                  <InlineText text={item.text.en} />
+                </p>
+              ) : null}
             </li>
           ))}
         </ul>

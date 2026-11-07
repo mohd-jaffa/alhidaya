@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { PillLink } from "@/components/ui/pill";
 import { MediaImage } from "@/components/ui/media-image";
@@ -63,10 +64,14 @@ export function JobsListSection({
           </div>
         ) : null}
         {open.length > 0 && content.intro.en ? (
-          <p className="jobs-intro-copy max-w-measure text-lead whitespace-pre-line text-ink-2">{content.intro.en}</p>
+          <p className="jobs-intro-copy max-w-measure text-lead whitespace-pre-line text-ink-2">
+            <InlineText text={content.intro.en} />
+          </p>
         ) : null}
         {open.length === 0 ? (
-          <p className="jobs-intro-copy max-w-measure text-lead whitespace-pre-line">{content.emptyText.en}</p>
+          <p className="jobs-intro-copy max-w-measure text-lead whitespace-pre-line">
+            <InlineText text={content.emptyText.en} />
+          </p>
         ) : null}
       </Reveal>
       {open.length > 0 ? <JobLinks jobs={open} onBand={band} /> : null}

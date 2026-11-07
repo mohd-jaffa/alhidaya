@@ -4695,3 +4695,50 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None for local commits. No push, deployment or client-server change. Existing launch-only checks and decisions remain documented in the readiness review.
+
+
+## 2026-11-07 — D188 lightweight inline copy formatting
+
+### Added
+- Safe, bounded-work inline copy rendering for `**bold**`, `*italic*` and `***both***`, including escaped asterisks and literal unmatched syntax. Public sections, rich-text blocks, service/job copy, action/navigation/footer labels and animated headings reuse the same renderer. HTML and other Markdown remain text.
+- One concise hint in eligible admin content editors; existing raw-string Save/Preview/Publish/Discard, permissions, schema limits and cache/audit behavior remain. No toolbar, dependency, upload or migration. Public font roles stay supported; admin typography stays unchanged.
+- Plain projections for metadata/share images/structured data, image labels, service choices, automatic slugs, readonly service/job names and submission snapshots; routing and contact/password values remain literal.
+
+### Changed
+- Split RiseWords into server-rendered word slots and its client motion wrapper to preserve the public JavaScript budget. Prepared Unicode character ranges before rendering to satisfy React's immutable-render checks.
+- Reserved italic ink/caret room only where formatted animated copy needs it, fixing confirmed narrow/enlarged Contact heading overflow. Preserved default copy and all existing animations/reduced-motion behavior.
+- Added formatted-copy development hydration fixtures and six functional browser journeys plus a 240-state all-font responsive matrix. ESLint excludes already ignored local `.data/` runtime artifacts, including copied generated preview builds; no application/test source rule was disabled.
+
+### Validation
+- Full unit/DB-contract/local-MySQL run: 1,359 tests in 369 files, 100% statements/branches/functions/lines. Complete production browser suite: 270 passed, 62 intentional duplicate-project skips, zero failures. Formatted development hydration: two cases/46 navigations passed.
+- All 40 production performance cases passed on build `gLhbjogm1XoQ77FAgEygi`: initial JavaScript ≤173,771 / 174,080 gzip bytes, LCP ≤688.4 ms, scripted INP bound ≤64 ms, CLS ≤0.0419191, minimum Lighthouse category 96, no observed scroll long task and 0% desktop missed-vsync estimate. No retry or threshold relaxation.
+- Lint, typecheck, formatting, build, diff checks and the 43-file Impeccable scan passed. Styled Home/About/Contact renders were visually reviewed. Details and evidence: `docs/audits/2026-11-07-inline-formatting.md`.
+
+### Blockers
+- None for the local feature. Existing release/device/security decisions remain separate; browser proof uses Chromium emulation. Tests preserved actual content/drafts and used isolated test data. Review preview updated on port 3210; nothing staged, committed, pushed or deployed.
+
+## 2026-11-07 — Admin User manual (D189)
+
+### Added
+- User-authorized User manual under Administration, with 37 narrated lessons across 12 topics, numbered written steps, optional English captions and transcripts for new admins.
+- Task clips split from the non-captioned walkthrough; private allowlisted asset responses check the admin session, support byte-range seeking and prevent caching. Standalone builds include the bundled training files (approximately 51 MB).
+
+### Validation
+- Typecheck, lint, format check and production build passed. All 1,376 unit and local database integration tests passed with 100% statement, branch, function and line coverage.
+- All 37 clips and caption files passed duration/format checks. Phone and desktop E2E: 22 cases passed, with 2 existing viewport-specific skips; private access, playback, byte-range seeking, topic navigation, axe and horizontal overflow checks passed. Screenshots: `docs/audits/2026-11-07-user-manual-{phone,desktop}.png`.
+
+### Blockers
+- None. No migration or external service is needed. Existing local inbox samples are retained.
+
+
+## 2026-11-07 — Approved current-work commit before focal points
+
+### Changed
+- The user authorized committing the existing D188 inline formatting and D189 User manual together, before implementing image focal points in a separate commit. No push or client-server deployment is authorized.
+
+### Validation
+- Fresh lint, formatting and typecheck passed. Full unit/DB-contract/local-MySQL coverage: 1,376 tests in 372 files passed, with 100% statements, branches, functions and lines. Complete production phone/desktop E2E on the current standalone build: 272 passed, 62 intentional viewport-specific skips, zero failures.
+- Existing D188 formatted hydration and all-route performance evidence remains applicable to the unchanged public implementation. Source/test inputs were unchanged during verification; secret and diff checks passed. The local review preview includes User manual at the unchanged Cloudflare address. No environment credentials, local uploads or CVs are included.
+
+### Blockers
+- None for this local commit. Existing launch-only checks remain as previously recorded.

@@ -1,6 +1,8 @@
 "use client";
 "use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
+import { InlineText } from "@/components/ui/inline-text";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -145,7 +147,9 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
                       onClick={close}
                       className={`menu-word flex items-center justify-between gap-4 text-on-deep focus-visible:outline-focus-on-deep ${here ? "font-semibold" : "font-medium"} ${index < links.length - 1 ? "border-b border-on-deep/20" : ""}`}
                     >
-                      <span className="min-w-0 wrap-anywhere">{link.label.en}</span>
+                      <span className="min-w-0 wrap-anywhere">
+                        <InlineText text={link.label.en} />
+                      </span>
                       <span
                         className={`grid size-10 shrink-0 place-items-center rounded-full ${here ? "bg-leaf text-on-leaf" : "text-on-deep/60"}`}
                       >

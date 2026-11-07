@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import { and, asc, count, desc, eq, inArray, isNotNull, isNull, max } from "drizzle-orm";
 import type { Metadata } from "next";
 
@@ -140,7 +141,7 @@ export async function getApplyMetadata(slug: string | null, at: Date = new Date(
   if (slug !== null) {
     const found = await findPublishedJob(slug, at);
     if (!found || "movedTo" in found || !found.record.open) return {};
-    title = UI_TEXT.applyFor(found.record.published.title.en);
+    title = UI_TEXT.applyFor(plainText(found.record.published.title.en));
     description = UI_TEXT.applyLede;
     url = ROUTES.applyForJob(found.record.published.slug);
   }
@@ -161,8 +162,8 @@ export async function getJobMetadata(slug: string, at: Date = new Date()): Promi
   const found = await findPublishedJob(slug, at);
   if (!found || "movedTo" in found) return {};
   const { open, published } = found.record;
-  const title = published.seo.title.en ?? published.title.en;
-  const description = published.seo.description.en ?? published.summary.en;
+  const title = plainText(published.seo.title.en ?? published.title.en);
+  const description = plainText(published.seo.description.en ?? published.summary.en);
   const url = ROUTES.job(published.slug);
   return {
     title,
@@ -231,7 +232,7 @@ export async function listJobsForAdmin(at: Date = new Date()): Promise<JobSummar
   return (await listRecordsForAdmin<JobDocument>("JOBS"))
     .map((record) => ({
       id: record.id,
-      title: record.draft.title.en,
+      title: plainText(record.draft.title.en),
       slug: record.draft.slug,
       location: record.draft.location.en,
       employmentType: record.draft.employmentType,
@@ -356,7 +357,7 @@ export async function submitApplication(
           );
         const published = job?.published as JobDocument | undefined;
         if (!published || !isOpen(published, dohaDay(at))) throw businessRuleError("JOB_CLOSED");
-        title = published.title.en;
+        title = plainText(published.title.en);
       }
 
       kept = keepCv ? await keepCv(title) : null;

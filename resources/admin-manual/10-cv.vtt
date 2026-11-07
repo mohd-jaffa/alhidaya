@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00:00.500 --> 00:00:05.471
+Download CV retrieves the applicant’s file for an authorised admin.
+
+00:00:05.521 --> 00:00:08.318
+Each download is recorded in Activity.
+
+00:00:08.368 --> 00:00:13.864
+If a CV has expired or could not be stored, its status explains that here.
+
+00:00:13.914 --> 00:00:19.034
+Move this sample application to In review, then record the next step.

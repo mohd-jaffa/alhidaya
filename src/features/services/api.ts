@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import type { Metadata } from "next";
 
 import type { Audience } from "@/constants/statuses";
@@ -94,8 +95,8 @@ export async function getServiceMetadata(slug: string): Promise<Metadata> {
   const found = await findPublishedService(slug);
   if (!found || "movedTo" in found) return {};
   const { seo, name, summary, slug: current } = found.record.published;
-  const title = seo.title.en ?? name.en;
-  const description = seo.description.en ?? summary.en;
+  const title = plainText(seo.title.en ?? name.en);
+  const description = plainText(seo.description.en ?? summary.en);
   const url = ROUTES.service(current);
   return {
     title,
@@ -154,7 +155,7 @@ export async function listServicesForAdmin(): Promise<ServiceList> {
   return {
     items: records.map((record) => ({
       id: record.id,
-      name: record.draft.name.en,
+      name: plainText(record.draft.name.en),
       slug: record.draft.slug,
       audience: record.draft.audience,
       publishedAt: record.publishedAt,

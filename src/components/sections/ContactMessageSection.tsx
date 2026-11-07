@@ -1,3 +1,5 @@
+import { plainText } from "@/lib/text/inline";
+import { InlineText } from "@/components/ui/inline-text";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/motion/Reveal";
@@ -32,10 +34,17 @@ export function ContactMessageSection({
               <h2 id={headingId(anchor)} className="text-display font-semibold text-balance">
                 <RiseWords text={content.heading.en} />
               </h2>
-              {content.text.en ? <p className="text-lead whitespace-pre-line text-ink-2">{content.text.en}</p> : null}
+              {content.text.en ? (
+                <p className="text-lead whitespace-pre-line text-ink-2">
+                  <InlineText text={content.text.en} />
+                </p>
+              ) : null}
               {site ? (
                 <>
-                  <GoogleMap pin={site.contact.mapPin} query={`${site.name.en}, ${site.contact.address.at(-1)!.en}`} />
+                  <GoogleMap
+                    pin={site.contact.mapPin}
+                    query={`${plainText(site.name.en)}, ${site.contact.address.at(-1)!.en}`}
+                  />
                   <div className="grid justify-items-start gap-4">
                     <h3 className="text-section font-semibold">{UI_TEXT.visitOffice}</h3>
                     <address className="grid not-italic text-ink-2">

@@ -288,6 +288,10 @@ question (§41) the user may overturn.
 
 | D187 | **Readiness review and at most two or three commits** (the user, 2026-11-06; verification continued after local midnight). Recheck the complete uncommitted bundle and, only when the local readiness gates pass, commit it in at most three coherent commits. This explicitly lifts the earlier no-commit-before-review restriction for this bundle. Preserve approved visuals, content, private drafts and credentials; use the required author, do not push or deploy. Local commit readiness does not close the remaining launch/device/security decisions. | 2026-11-06 |
 
+| D188 | **Lightweight inline bold and italic website copy** (the user, 2026-11-07; approved the lightweight approach). Existing admin text strings support `**bold**`, `*italic*` and `***both***` in public display copy, with safe React strong/em rendering and the same draft → authenticated Preview → Publish/Discard flow. Keep unmatched markers literal and support escaped asterisks. Preserve headings, highlights, word/letter/typewriter motion, fifteen-font choices, reduced motion and responsive layouts. Plain-text projections serve metadata, sharing images, accessible names, dropdown labels, slugs and submission/email snapshots; URL, phone, email, address and password values remain literal. Add a concise editor hint, no toolbar, HTML, full Markdown dependency, upload, schema/table/migration or new design controls. Scope includes the public copy and its necessary plain-text uses; unchanged copy retains its current rendering. Validate parser safety, private drafts/publishing, markup across words/highlights, mobile/enlarged text and runtime budgets. | 2026-11-07 |
+
+| D189 | **Admin User manual** (the user, 2026-11-07). Add User manual under Administration using the non-captioned admin walkthrough split into categorized instructions for new admins. Provide fixed written steps, short narrated clips, optional captions and transcripts. Serve bundled training assets only to signed-in admins; no new uploads, tables or external service. | 2026-11-07 |
+
 ## 3. Audiences and the admin
 
 ### 3.1 Visitors
@@ -554,7 +558,9 @@ says where the visitor is and the way back.
 | `SERVICES_ROW` | heading, text; every published service as a rounded photo card in a row to scroll, each opening its page, and All services; Home enhances this into the approved 30 px pyramid, automatically advancing every six seconds (D143) | Home |
 
 Rich text is stored as structured blocks (heading, paragraph, list, link),
-never HTML; links must be internal routes or validated `https` URLs.
+never HTML; links must be internal routes or validated `https` URLs. D188 adds
+limited inline bold/italic shortcuts inside existing copy strings, rendered
+through safe React nodes with plain-text projections for nonvisual uses.
 
 ## 8. Services
 
@@ -837,6 +843,7 @@ scroll. Desktop first; usable on a phone for reading the inbox.
 | Settings | Site content (§13), brochure. |
 | Operations | Recipients, retention. |
 | Activity | The audit trail of admin changes. |
+| User manual | Categorized video lessons, written instructions and transcripts for every admin area (D189). |
 
 Irreversible actions ask first: publish, delete or archive a record, delete an
 enquiry or application, change retention.
@@ -1677,6 +1684,7 @@ one commit (D27).
 | R6.8 | Activity (audit trail) | §36 | — | DONE (2026-10-30) |
 | R6.9 | E2E: edit → preview → publish → the public page changes | §34 | — | DONE (2026-10-30) |
 | R6.10 | Retries (D83): saving a CV tried 3 times during the upload, then nothing kept and the applicant asked to send it again (D84); every enquiry alert and HR email that failed sent again by the mail-retry cron every 10 minutes, up to 3 more tries, each recorded (D85, a migration); the admin's Retry for what still fails | §9.3, §17, D83, D84, D85 | R6.7's cron | DONE (2026-10-30) |
+| R6.11 | Categorized User manual with private narrated lesson clips, written steps and transcripts | §16, D189 | Admin walkthrough | DONE (2026-11-07; 37 clips/12 topics, 1,376 tests and 100% coverage, production build and 22 phone/desktop admin/access/manual E2E cases passed) |
 
 ### Phase 6B — The redesign (D97 – D108)
 
@@ -1769,6 +1777,8 @@ one commit (D27).
 | R6C.48 | Full uncommitted-work Harden, commit-readiness review and then Polish | D186 | R6C.47 | DONE (2026-11-07; local checks/review passed; included in the user-authorized D187 commits) |
 
 | R6C.49 | Final complete-bundle readiness review and user-authorized commits | D187 | R6C.48 | DONE (2026-11-07): 1,318 tests/100% coverage, 264 E2E cases, development hydration, 40 performance cases and static/build gates passed; bundle recorded in two local commits; no push or deployment |
+
+| R6C.50 | Lightweight inline copy formatting, animated-heading compatibility and clean plain-text projections | D188 | R6C.49 | DONE (2026-11-07; 1,359 tests/100% coverage, 270 E2E cases, formatted development hydration, 240 styled font/width/scale states and all 40 performance cases passed; user authorized the current-work commit on 2026-11-07) |
 
 ### Phase 7 — Performance, accessibility and the finish
 

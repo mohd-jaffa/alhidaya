@@ -34,6 +34,7 @@ export const ADMIN_ROUTES = {
   fonts: "/admin/settings/fonts",
   operations: "/admin/settings/operations",
   activity: "/admin/activity",
+  userManual: "/admin/user-manual",
   /** The signed-in admin's own details: their name and their password (D115). */
   profile: "/admin/profile",
 } as const;
@@ -45,6 +46,7 @@ export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
 /** Every endpoint the admin's screens call (AGENTS.md §14). */
 export const ADMIN_API_ROUTES = {
   adminSession: "/api/admin/session",
+  adminManualAsset: (asset: string) => `/api/admin/manual/${asset}`,
   passwordForgot: "/api/admin/password/forgot",
   passwordReset: "/api/admin/password/reset",
   /** The signed-in admin's name, and a new password from their profile (D115). */

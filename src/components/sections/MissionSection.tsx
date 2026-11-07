@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import type { ReactNode } from "react";
 
 import { Words } from "@/components/motion/Words";
@@ -100,7 +101,7 @@ export function MissionSection({ anchor, content }: { anchor: string; content: M
                 <Words text={statement.heading} />
               </h2>
               <p data-mission-statement className={`max-w-measure text-lead whitespace-pre-line ${statement.ink}`}>
-                {statement.text}
+                <InlineText text={statement.text} />
               </p>
             </article>
           </div>

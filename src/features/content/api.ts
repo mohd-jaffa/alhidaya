@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import type { Metadata } from "next";
 import { cache } from "react";
 
@@ -114,10 +115,12 @@ export async function listPublicPaths(): Promise<{ path: string; modified?: Date
  */
 export async function getPageMetadata(page: PageKey): Promise<Metadata> {
   const [document, site] = await Promise.all([getPublishedPage(page), getPublishedSite()]);
-  const named = document?.seo.title.en ?? PAGE_NAMES[page];
+  const named = plainText(document?.seo.title.en ?? PAGE_NAMES[page]);
   const title =
-    page === "HOME" && !document?.seo.title.en ? { absolute: site?.seo.title.en ?? UI_TEXT.siteName } : named;
-  const description = document?.seo.description.en ?? site?.seo.description.en ?? UI_TEXT.siteDescription;
+    page === "HOME" && !document?.seo.title.en
+      ? { absolute: plainText(site?.seo.title.en ?? UI_TEXT.siteName) }
+      : named;
+  const description = plainText(document?.seo.description.en ?? site?.seo.description.en ?? UI_TEXT.siteDescription);
   const shared = typeof title === "string" ? title : title.absolute;
   return {
     title,

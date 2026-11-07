@@ -232,3 +232,10 @@ The complete final suite passed all 40 cases in 9.0 minutes against build `_QNMI
 Maximum initial JavaScript was 173,842 / 174,080 gzip bytes, mobile lab LCP 686.447 ms, scripted INP upper bound 64 ms and combined measured CLS 0.0419191. The lowest Lighthouse category scored 96. No scrolling long task at the observer threshold was observed; the desktop missed-vsync estimate was 0%. Home's mobile CLS was zero. All expected public statuses and the deliberate 404 passed.
 
 See [full-route evidence](audits/2026-11-07-readiness-performance.json), [gate summary](audits/2026-11-07-readiness-summary.json) and [readiness review/limits](audits/2026-11-07-readiness.md). These remain local Chromium lab results; existing physical-device, other-browser, manual accessibility, field/compositor and production-region checks retain their release status. No push or deployment was performed.
+
+
+## Lightweight inline copy formatting — D188, 2026-11-07
+
+The final formatting build `gLhbjogm1XoQ77FAgEygi` passed the complete 40-case suite in 9.0 minutes. All twenty public mobile routes and desktop scrolling counterparts retained the same strict budgets and no retries. Maximum initial JavaScript 173,771 / 174,080 gzip bytes, mobile lab LCP 688.4 ms, scripted INP bound 64 ms, combined measured CLS 0.0419191, lowest Lighthouse category 96, no observed scrolling long task and 0% desktop missed-vsync estimate.
+
+See [all-route evidence](audits/2026-11-07-inline-formatting-performance.json) and [feature validation and limits](audits/2026-11-07-inline-formatting.md). The separate functional pass includes styled copy across every bundled font, 320–1440 px and normal/doubled text, plus formatted development hydration. These remain local lab/emulated-layout results, with existing release checks unchanged.

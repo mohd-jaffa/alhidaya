@@ -1,3 +1,5 @@
+import { InlineText } from "@/components/ui/inline-text";
+import { plainText } from "@/lib/text/inline";
 import type { ReactNode } from "react";
 
 import { SettleText } from "@/components/motion/SettleText";
@@ -35,11 +37,19 @@ export function PageHero({
     <section id={anchor} className="mx-auto w-full max-w-site px-gutter pt-2">
       <div className={image ? "grid gap-8 lg:grid-cols-[1fr_1.04fr] lg:items-center lg:gap-14" : "grid"}>
         <div className="grid content-start justify-items-start gap-6 lg:gap-8">
-          {headline.toLowerCase().includes(label.toLowerCase()) ? null : <PillLabel>{label}</PillLabel>}
+          {plainText(headline).toLowerCase().includes(plainText(label).toLowerCase()) ? null : (
+            <PillLabel>
+              <InlineText text={label} />
+            </PillLabel>
+          )}
           <h1 className="max-w-hero text-hero font-normal">
             <SettleText text={headline} highlight={highlight} />
           </h1>
-          {lede ? <p className="max-w-page-lede text-lead whitespace-pre-line text-ink-2">{lede}</p> : null}
+          {lede ? (
+            <p className="max-w-page-lede text-lead whitespace-pre-line text-ink-2">
+              <InlineText text={lede} />
+            </p>
+          ) : null}
           {children ? <div className="flex flex-wrap gap-3">{children}</div> : null}
         </div>
         {image ? (

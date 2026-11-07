@@ -242,6 +242,7 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
       stations: [
         { label: ADMIN_TEXT.operations, href: ADMIN_ROUTES.operations, pictogram: "clipboard" },
         { label: ADMIN_TEXT.activity, href: ADMIN_ROUTES.activity, pictogram: "clock" },
+        { label: ADMIN_TEXT.userManual, href: ADMIN_ROUTES.userManual, pictogram: "document" },
       ],
     },
   ];

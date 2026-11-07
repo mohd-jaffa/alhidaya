@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { TypewriterText } from "@/components/motion/TypewriterText";
 import type { Section } from "@/lib/validation";
 
@@ -12,7 +13,9 @@ export function ContactOpening({ anchor, content }: { anchor: string; content: S
           <TypewriterText text={content.headline.en} />
         </h1>
         {content.lede.en ? (
-          <p className="split-line max-w-page-lede text-lead whitespace-pre-line text-ink-2">{content.lede.en}</p>
+          <p className="split-line max-w-page-lede text-lead whitespace-pre-line text-ink-2">
+            <InlineText text={content.lede.en} />
+          </p>
         ) : null}
       </div>
     </section>

@@ -1,3 +1,5 @@
+import { InlineText } from "@/components/ui/inline-text";
+import { plainText } from "@/lib/text/inline";
 import type { ReactNode } from "react";
 
 import { Words } from "@/components/motion/Words";
@@ -42,11 +44,19 @@ export function PageSplit({
     <div
       className={`page-split grid content-center justify-items-start gap-6 ${image ? `px-gutter py-12 sm:py-16 ${ALIGN}` : "pt-12 sm:pt-16"}`}
     >
-      {headline.toLowerCase().includes(label.toLowerCase()) ? null : <p className="font-semibold text-deep">{label}</p>}
+      {plainText(headline).toLowerCase().includes(plainText(label).toLowerCase()) ? null : (
+        <p className="font-semibold text-deep">
+          <InlineText text={label} />
+        </p>
+      )}
       <h1 className="max-w-split text-hero font-semibold text-navy">
         <Words text={headline} highlight={highlight} />
       </h1>
-      {lede ? <p className="split-line max-w-page-lede text-lead whitespace-pre-line text-ink-2">{lede}</p> : null}
+      {lede ? (
+        <p className="split-line max-w-page-lede text-lead whitespace-pre-line text-ink-2">
+          <InlineText text={lede} />
+        </p>
+      ) : null}
       {children ? <div className="split-line flex flex-wrap gap-3">{children}</div> : null}
     </div>
   );

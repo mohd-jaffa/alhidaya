@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import type { RichText as RichTextBlocks } from "@/lib/validation";
 
 import { ArrowLink } from "./arrow-link";
@@ -18,27 +19,31 @@ export function RichText({ blocks, headingLevel = "h2" }: { blocks: RichTextBloc
           case "heading":
             return (
               <Heading key={key} className="pt-4 text-section font-medium">
-                {block.text.en}
+                <InlineText text={block.text.en} />
               </Heading>
             );
           case "paragraph":
             return (
               <p key={key} className="whitespace-pre-line">
-                {block.text.en}
+                <InlineText text={block.text.en} />
               </p>
             );
           case "list":
             return (
               <ul key={key} className="grid list-disc gap-2 ps-6 marker:text-forest">
                 {block.items.map((item, itemIndex) => (
-                  <li key={`${key}-${itemIndex}`}>{item.en}</li>
+                  <li key={`${key}-${itemIndex}`}>
+                    <InlineText text={item.en} />
+                  </li>
                 ))}
               </ul>
             );
           case "link":
             return (
               <p key={key}>
-                <ArrowLink href={block.href}>{block.label.en}</ArrowLink>
+                <ArrowLink href={block.href}>
+                  <InlineText text={block.label.en} />
+                </ArrowLink>
               </p>
             );
         }

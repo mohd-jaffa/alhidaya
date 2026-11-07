@@ -532,3 +532,17 @@ D186 enlarged menu: contact tiles use content-aware columns (paired at normal ph
 D186 fallback input: apply pan-y only after pyramid enhancement. The native row retains the browser’s horizontal touch scrolling if JavaScript or its deferred module is unavailable.
 
 D186 menu interruption: cancellation of the closing animation (including a reduced-motion preference change) completes the native dialog close and restores focus; opening-animation cancellation keeps the menu open.
+
+
+## D188 — Limited inline copy formatting
+
+Website copy accepts `**bold**`, `*italic*` and `***both***` in the existing strings. Backslash-escaped asterisks and unmatched delimiters remain readable literal text. This is limited inline emphasis, not a Markdown document editor: no HTML, embedded media, auto-links or new styling controls. Shared safe React nodes use semantic strong/em, the existing bold weight (700), existing public font roles and the unchanged colour/size tokens.
+
+Animated headings preserve emphasis across word/letter and blue-highlight boundaries. Their accessible copy contains the visible words once, without delimiters. RiseWords draws copy on the server and sends its existing motion wrapper the rendered slots. Contact's formatted typewriter reserves inline ink/caret room; italic word masks reserve ink room too. New spacing tokens are `--spacing-emphasis-ink: 0.15em` and `--spacing-typewriter-caret: calc(var(--spacing-emphasis-ink) + 2px)`. Unformatted copy retains the prior layout; reduced motion retains styled, visible text.
+
+A single small syntax hint appears in Pages, Services, Jobs and Settings content editors. No toolbar or repeated per-field controls. Save/Preview/Publish/Discard and raw string limits stay unchanged. Metadata, share pictures, structured data, image labels, form choices, generated slugs and submission snapshots use a plain-text projection. Routing, contact addresses/phone/email, passwords and URL values remain literal. All formatting output remains escaped React text.
+
+
+## Admin User manual (D189, 2026-11-07)
+
+Administration includes User manual with the existing document pictogram. The white work area pairs a topic list with lesson buttons, one responsive native video player, numbered steps and an expandable transcript. On smaller screens the topics stack above the lesson. Only the selected clip loads metadata, playback is user initiated, and captions are optional. Existing admin tokens, forest actions and shared buttons are used.

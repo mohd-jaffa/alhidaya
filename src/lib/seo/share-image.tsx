@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -25,6 +26,8 @@ const FONT = "src/assets/fonts/inter-tight/share/inter-tight-latin-400-normal.wo
  * published headline and the site's domain. No remote images or browser JS.
  */
 export async function renderShareImage({ title, label }: { title: string; label?: string }): Promise<ImageResponse> {
+  title = plainText(title);
+  label = label ? plainText(label) : label;
   const [regular, logo] = await Promise.all([
     readFile(path.join(process.cwd(), FONT)),
     readFile(path.join(process.cwd(), "src/assets/brand/logo.svg")),

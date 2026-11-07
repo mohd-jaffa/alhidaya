@@ -1,3 +1,4 @@
+import { plainText } from "@/lib/text/inline";
 import type { ImageSource, SiteImage } from "@/features/media/types";
 
 /** The browser takes the first type it can show: the smallest files first (plan §15). */
@@ -44,7 +45,7 @@ export function MediaImage({
         src={last[last.length - 1].url}
         srcSet={srcSet(last)}
         sizes={sizes}
-        alt={decorative ? "" : image.alt}
+        alt={decorative ? "" : plainText(image.alt)}
         width={image.width}
         height={image.height}
         loading={priority ? "eager" : "lazy"}

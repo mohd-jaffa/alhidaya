@@ -1,3 +1,4 @@
+import { InlineText } from "@/components/ui/inline-text";
 import { Reveal } from "@/components/motion/Reveal";
 import { JobLinks } from "@/components/sections/JobLinks";
 import { PageHero } from "@/components/sections/PageHero";
@@ -26,7 +27,9 @@ function JobPoints({ title, items }: { title: string; items: readonly { en: stri
         {items.map((item) => (
           <li key={item.en} className="flex items-start gap-3">
             <IconChip name="check" size="sm" />
-            <span className="pt-0.5">{item.en}</span>
+            <span className="pt-0.5">
+              <InlineText text={item.en} />
+            </span>
           </li>
         ))}
       </ul>
@@ -42,11 +45,11 @@ function JobPoints({ title, items }: { title: string; items: readonly { en: stri
  */
 export function JobPage({ job, others }: { job: PublishedJob; others: readonly PublishedJob[] }) {
   const { published, open } = job;
-  const facts: { term: string; value: string | null }[] = [
+  const facts: { term: string; value: string | null; formatted?: boolean }[] = [
     { term: UI_TEXT.location, value: published.location.en },
     { term: UI_TEXT.employment, value: EMPLOYMENT_TYPE_LABELS[published.employmentType] },
-    { term: UI_TEXT.department, value: published.department.en },
-    { term: UI_TEXT.experience, value: published.experience.en },
+    { term: UI_TEXT.department, value: published.department.en, formatted: true },
+    { term: UI_TEXT.experience, value: published.experience.en, formatted: true },
     { term: UI_TEXT.posted, value: readableDay(published.postedOn) },
     {
       term: open ? UI_TEXT.closes : UI_TEXT.closedOn,
@@ -113,7 +116,7 @@ export function JobPage({ job, others }: { job: PublishedJob; others: readonly P
                 fact.value === null ? null : (
                   <div key={fact.term} className="grid gap-0.5">
                     <dt className="text-small text-ink-2">{fact.term}</dt>
-                    <dd className="font-medium">{fact.value}</dd>
+                    <dd className="font-medium">{fact.formatted ? <InlineText text={fact.value} /> : fact.value}</dd>
                   </div>
                 ),
               )}
