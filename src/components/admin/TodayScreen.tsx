@@ -31,7 +31,7 @@ export function TodayScreen({
     { view: "everything", label: ADMIN_TEXT.everything },
   ];
   return (
-    <div className="grid max-w-5xl gap-6">
+    <div className="grid max-w-5xl grid-cols-[minmax(0,1fr)] gap-6">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <h1 className="text-section font-bold">{ADMIN_TEXT.dashboard}</h1>
         <nav aria-label={ADMIN_TEXT.dashboard} className="flex gap-1">

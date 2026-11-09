@@ -1,0 +1,24 @@
+name: Start test services
+description: Start the existing local services with bounded registry retries.
+inputs:
+  services:
+    description: The compose services to start, separated by spaces; every service when empty.
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Start the local services
+      shell: bash
+      env:
+        SERVICES: ${{ inputs.services }}
+      run: |
+        for attempt in 1 2 3; do
+          # $SERVICES is split on purpose: one word per compose service.
+          if docker compose up -d --wait $SERVICES; then
+            exit 0
+          fi
+          if [ "$attempt" -lt 3 ]; then
+            sleep "$((attempt * 10))"
+          fi
+        done
+        exit 1

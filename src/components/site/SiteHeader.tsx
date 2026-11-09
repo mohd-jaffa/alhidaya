@@ -56,7 +56,11 @@ export function SiteHeader({ site }: { site: SiteDocument | null }) {
   return (
     <header data-compact={needsCompactMenu(links) || undefined} className="site-header relative z-(--z-header) bg-card">
       <div className="header-row mx-auto grid h-(--header-height) max-w-site grid-cols-[1fr_auto] items-center gap-3 px-gutter sm:gap-6 lg:grid-cols-[1fr_auto_1fr]">
-        <Link href={ROUTES.home} className="inline-flex min-h-touch shrink-0 items-center justify-self-start">
+        <Link
+          prefetch={false}
+          href={ROUTES.home}
+          className="inline-flex min-h-touch shrink-0 items-center justify-self-start"
+        >
           <Logo priority className="h-8 w-auto min-[22.5rem]:h-10 lg:h-11" />
         </Link>
         <nav aria-label={UI_TEXT.mainNavigation} className="desktop-nav hidden lg:block">

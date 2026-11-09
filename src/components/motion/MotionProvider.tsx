@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { createContext, type ReactNode, use, useEffect, useRef, useState } from "react";
+import { createContext, startTransition, type ReactNode, use, useEffect, useRef, useState } from "react";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { loadMotionEngine, type MotionEngine, type SmoothScroll } from "@/lib/motion/engine";
@@ -51,7 +51,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     const cancelIdle = whenIdle(() => {
       loadMotionEngine().then(
         (loaded) => {
-          if (!cancelled) setEngine(loaded);
+          if (!cancelled) startTransition(() => setEngine(loaded));
         },
         // Motion only enhances: if it cannot load, the page is already whole.
         () => undefined,

@@ -6,7 +6,7 @@ import { InlineText } from "@/components/ui/inline-text";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 
 import mark from "@/assets/brand/logo-mark-white.svg";
 import { IconChip } from "@/components/ui/icon-chip";
@@ -58,7 +58,7 @@ function Tile({ kind, number }: { kind: "whatsapp" | "call"; number: string }) {
  * animation) and returns focus to the button.
  */
 export function MobileMenu({ site, links }: { site: SiteDocument | null; links: NavigationLink[] }) {
-  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const pathname = usePathname();
 
@@ -84,7 +84,7 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
   const show = () => {
     // The dialog element is always rendered, so it is there by the time anything is tapped.
     dialog.current!.showModal();
-    setOpen(true);
+    trigger.current!.setAttribute("aria-expanded", "true");
   };
 
   /** Lifts the sheet away, then closes; with no animation to wait for (motion reduced), closes at once. */
@@ -101,7 +101,8 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
       <button
         type="button"
         aria-haspopup="dialog"
-        aria-expanded={open}
+        ref={trigger}
+        aria-expanded="false"
         onClick={show}
         className="-me-2 grid size-touch place-items-center rounded-full text-navy hover:bg-mist lg:hidden"
       >
@@ -114,7 +115,7 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
           event.preventDefault();
           close();
         }}
-        onClose={() => setOpen(false)}
+        onClose={() => trigger.current!.setAttribute("aria-expanded", "false")}
         onAnimationEnd={(event) => {
           if (event.target === event.currentTarget && event.animationName === SHEET_OUT)
             finishSheet(event.currentTarget);
@@ -142,6 +143,7 @@ export function MobileMenu({ site, links }: { site: SiteDocument | null; links: 
                 return (
                   <li key={link.href} className="menu-row" style={{ "--i": index } as CSSProperties}>
                     <Link
+                      prefetch={false}
                       href={link.href}
                       aria-current={here ? "page" : undefined}
                       onClick={close}

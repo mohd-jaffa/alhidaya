@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { plainText } from "@/lib/text/inline";
 import { RiseWords } from "@/components/motion/RiseWords";
 import { MediaImage } from "@/components/ui/media-image";
@@ -52,21 +53,23 @@ export function ClientsSection({
         />
       </div>
       <div className="min-w-0 lg:mx-[calc(50%_-_50vw)]">
-        <ClientsRows
-          clients={shown.map(({ client, id, logo }) => ({
-            id,
-            name: plainText(client.name.en),
-            url: client.url,
-            logo: (
-              <MediaImage
-                image={logo}
-                sizes="(min-width: 40rem) 12rem, 9rem"
-                decorative
-                className="absolute inset-2.5 size-[calc(100%-1.25rem)] object-contain"
-              />
-            ),
-          }))}
-        />
+        <Suspense>
+          <ClientsRows
+            clients={shown.map(({ client, id, logo }) => ({
+              id,
+              name: plainText(client.name.en),
+              url: client.url,
+              logo: (
+                <MediaImage
+                  image={logo}
+                  sizes="(min-width: 40rem) 12rem, 9rem"
+                  decorative
+                  className="absolute inset-2.5 size-[calc(100%-1.25rem)] object-contain"
+                />
+              ),
+            }))}
+          />
+        </Suspense>
       </div>
     </SectionFrame>
   );

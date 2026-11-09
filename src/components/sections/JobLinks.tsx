@@ -29,6 +29,7 @@ export function JobLinks({ jobs, onBand = false }: { jobs: readonly PublishedJob
           >
             <div className="grid gap-1.5">
               <Link
+                prefetch={false}
                 href={ROUTES.job(job.slug)}
                 className="text-title font-medium underline decoration-transparent underline-offset-4 group-hover:decoration-current after:absolute after:inset-0 after:rounded-card"
               >

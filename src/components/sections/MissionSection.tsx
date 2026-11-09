@@ -1,5 +1,5 @@
 import { InlineText } from "@/components/ui/inline-text";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 import { Words } from "@/components/motion/Words";
 import { UI_TEXT } from "@/constants/messages";
@@ -82,31 +82,33 @@ export function MissionSection({ anchor, content }: { anchor: string; content: M
   ];
   return (
     <SectionBand anchor={anchor} tone="mist" named={false}>
-      <MissionPanels>
-        {statements.map((statement) => (
-          <div key={statement.heading} data-mission-panel className="mission-scene">
-            <article
-              tabIndex={0}
-              aria-label={statement.heading}
-              className={`mission-panel mission-panel--${statement.kind} relative isolate flex h-full flex-col rounded-card p-7 sm:p-10 lg:p-12 ${statement.tone}`}
-            >
-              <span aria-hidden="true" className="mission-sheen" />
-              <div aria-hidden="true" className="mb-8 flex items-center gap-8">
-                <span data-mission-rule className="h-px grow bg-current opacity-25" />
-                <span className={`mission-emblem mission-emblem--${statement.kind} relative shrink-0`}>
-                  {statement.art}
-                </span>
-              </div>
-              <h2 className="mb-5 text-display font-semibold">
-                <Words text={statement.heading} />
-              </h2>
-              <p data-mission-statement className={`max-w-measure text-lead whitespace-pre-line ${statement.ink}`}>
-                <InlineText text={statement.text} />
-              </p>
-            </article>
-          </div>
-        ))}
-      </MissionPanels>
+      <Suspense>
+        <MissionPanels>
+          {statements.map((statement) => (
+            <div key={statement.heading} data-mission-panel className="mission-scene">
+              <article
+                tabIndex={0}
+                aria-label={statement.heading}
+                className={`mission-panel mission-panel--${statement.kind} relative isolate flex h-full flex-col rounded-card p-7 sm:p-10 lg:p-12 ${statement.tone}`}
+              >
+                <span aria-hidden="true" className="mission-sheen" />
+                <div aria-hidden="true" className="mb-8 flex items-center gap-8">
+                  <span data-mission-rule className="h-px grow bg-current opacity-25" />
+                  <span className={`mission-emblem mission-emblem--${statement.kind} relative shrink-0`}>
+                    {statement.art}
+                  </span>
+                </div>
+                <h2 className="mb-5 text-display font-semibold">
+                  <Words text={statement.heading} />
+                </h2>
+                <p data-mission-statement className={`max-w-measure text-lead whitespace-pre-line ${statement.ink}`}>
+                  <InlineText text={statement.text} />
+                </p>
+              </article>
+            </div>
+          ))}
+        </MissionPanels>
+      </Suspense>
     </SectionBand>
   );
 }

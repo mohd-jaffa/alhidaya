@@ -96,17 +96,17 @@ export function InboxLog<T extends { id: string; createdAt: string }>({
   const pages = Math.ceil(data.total / data.pageSize);
   const namedId = initiallyOpen && !data.items.some((item) => item.id === initiallyOpen) ? initiallyOpen : null;
   return (
-    <div className="grid gap-8">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
       {namedId && named ? named(namedId) : null}
       {byDay(data.items).map((day) => (
-        <section key={day.day} aria-labelledby={`day-${day.day}`} className="grid gap-2">
+        <section key={day.day} aria-labelledby={`day-${day.day}`} className="grid grid-cols-[minmax(0,1fr)] gap-2">
           <h2
             id={`day-${day.day}`}
             className="flex items-center gap-3 text-small font-bold text-ink-2 after:h-px after:flex-1 after:bg-rule"
           >
             {day.heading}
           </h2>
-          <ul className="grid gap-1">
+          <ul className="grid grid-cols-[minmax(0,1fr)] gap-1">
             {day.items.map((item) => (
               <li key={item.id}>
                 {row(item, openId === item.id, () => setOpenId((current) => (current === item.id ? null : item.id)))}

@@ -95,6 +95,7 @@ export function ServicesRowSection({
       </Reveal>
       <p className="text-center">
         <Link
+          prefetch={false}
           href={ROUTES.services}
           className="group inline-flex min-h-touch items-center gap-2 border-b-2 border-current pb-1 font-semibold text-deep"
         >

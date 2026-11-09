@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 import { UI_TEXT } from "@/constants/messages";
+import { settleAnimations } from "@tests/support/animations";
 
 test("an address the site does not have answers 404 with the not-found sign, inside the site's frame", async ({
   page,
@@ -19,6 +20,8 @@ test("an address the site does not have answers 404 with the not-found sign, ins
 
 test("the not-found page passes axe", async ({ page }) => {
   await page.goto("/missing/deeper/still");
+  // The sign's words rise in as the page opens; contrast is judged once they have.
+  await settleAnimations(page);
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(violations).toEqual([]);
 });

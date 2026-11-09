@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { DIRECTIONAL_PICTOGRAMS, PICTOGRAMS } from "@/assets/brand/pictograms";
@@ -50,4 +51,15 @@ describe("the pictograms (plan R2.3)", () => {
   it("mirror only drawings that exist", () => {
     for (const name of DIRECTIONAL_PICTOGRAMS) expect(PICTOGRAMS[name]).toBeDefined();
   });
+});
+
+it("serves every existing path unchanged in the shared SVG sprite", () => {
+  const svg = new DOMParser().parseFromString(readFileSync("public/brand/pictograms.svg", "utf8"), "image/svg+xml");
+  for (const [name, paths] of Object.entries(PICTOGRAMS)) {
+    if (name === "chat") continue;
+    expect(Array.from(svg.querySelectorAll(`symbol[id="${name}"] path`), (path) => path.getAttribute("d"))).toEqual(
+      paths,
+    );
+  }
+  expect(svg.querySelectorAll("script, image, foreignObject")).toHaveLength(0);
 });

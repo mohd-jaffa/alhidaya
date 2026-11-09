@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { PICTOGRAMS } from "@/assets/brand/pictograms";
 import { Pictogram } from "@/components/ui/pictogram";
 
 describe("Pictogram", () => {
@@ -18,7 +17,7 @@ describe("Pictogram", () => {
     expect(svg).toHaveAttribute("aria-hidden", "true");
     expect(svg).not.toHaveAttribute("role");
     expect(svg).toHaveClass("size-6");
-    expect(svg.querySelectorAll("path")).toHaveLength(PICTOGRAMS.phone.length);
+    expect(svg.querySelector("use")).toHaveAttribute("href", "/brand/pictograms.svg#phone");
   });
 
   it("is an image with a name when given a label", () => {

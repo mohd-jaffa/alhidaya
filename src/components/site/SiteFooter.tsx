@@ -34,7 +34,7 @@ export function SiteFooter({ site }: { site: SiteDocument | null }) {
         <FooterArtwork />
         <div className="footer-content mx-auto grid max-w-site gap-12 px-gutter py-16 md:grid-cols-2 lg:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))] lg:py-20">
           <div className="grid content-start gap-5">
-            <Link href={ROUTES.home} className="inline-flex min-h-touch w-fit items-center">
+            <Link prefetch={false} href={ROUTES.home} className="inline-flex min-h-touch w-fit items-center">
               <span className="footer-logo relative inline-flex">
                 <Logo className="h-12 w-auto" />
                 <span aria-hidden className="footer-logo-shine" style={{ maskImage: `url("${colourLogo.src}")` }} />
@@ -54,7 +54,7 @@ export function SiteFooter({ site }: { site: SiteDocument | null }) {
               <ul className="grid">
                 {column.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className={LINK}>
+                    <Link prefetch={false} href={link.href} className={LINK}>
                       <InlineText text={link.label.en} />
                     </Link>
                   </li>

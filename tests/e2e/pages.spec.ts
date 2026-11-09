@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test";
 import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { SEED_SERVICES, seedPages } from "@/db/seed/content";
+import { settleAnimations } from "@tests/support/animations";
 
 test("About reserves its opening title before the font arrives (D160)", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "the observed font rewrap is at the desktop heading width");
@@ -234,6 +235,7 @@ test("Contact lists every way to reach the company and the way to the office, an
     /^https:\/\/www\.google\.com\/maps\//,
   );
   await expect(message.getByTitle(UI_TEXT.satelliteMap)).toBeVisible();
+  await message.getByTitle(UI_TEXT.satelliteMap).scrollIntoViewIfNeeded();
   await expect(message.getByTitle(UI_TEXT.satelliteMap)).toHaveAttribute(
     "src",
     /https:\/\/maps\.google\.com\/maps\?.*t=k.*output=embed/,
@@ -249,6 +251,7 @@ test("Request a Quote opens on its sign above the form's place, and passes axe (
   await expect(page).toHaveTitle(new RegExp(`^${PAGE_NAMES.QUOTE} · `));
   await expect(page.getByRole("heading", { level: 1, name: "Tell us the care you need" })).toBeVisible();
   await expect(page.getByRole("region", { name: form.content.heading.en })).toBeVisible();
+  await settleAnimations(page);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 

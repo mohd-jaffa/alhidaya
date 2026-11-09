@@ -4805,3 +4805,19 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - Hosted CI must pass on the corrected commit before readiness is reported. No schema migration or production deployment.
+
+
+## 2026-11-09 — Leaner CI, report-only hosted performance and E2E stability
+
+### Changed
+- D194 / R7.3c: both hosted runs failed. Hosted evidence: all 20 desktop-scroll performance cases pass; on the mobile Lighthouse profile `/`, `/about`, `/services` and `/contact` score 0.84-0.93 against the 0.95 budget, and `/` and `/about` also miss the INP (184 ms) and long-task (53-108 ms) limits. LCP stays under 1 s and CLS is 0 everywhere; Total Blocking Time (300-650 ms) is the only failing metric. It comes from the JavaScript startup task (about 190 ms), style/layout (about 150 ms) and the HTML parse. A Linux Chromium reproduction (CPU benchmark 2,800-2,900; the runner's is 2,300-2,480) shows the same pages with about 150 ms of run-to-run noise; the same budgets pass on the faster development Mac. Wrapping every page section and the footer in `Suspense` was tried and reverted: React streams boundaries over about 12 KB after the first flush, which moved the layout (CLS 1.0).
+- Decided with the user: the performance job stays in CI, now as two jobs (mobile Lighthouse and interactions; desktop scroll), uploads every report and does not block `All gates passed`. The budgets in plan §31 are unchanged and remain strict in `npm run verify` and the pre-push hook. Making the job blocking again is removing one line (`continue-on-error`) and needs a startup-JavaScript, hydration and layout rework (open item).
+- CI clean-up (agent defaults): the separate unit job is removed (the coverage job runs every unit and database test); E2E runs as separate `phone` and `desktop` jobs, each on its own database and app instance (about 31 to about 17 minutes); hydration and performance start only MySQL (they never send mail); the service-start action takes the services it needs (`services` input, covered by its contract test); job names and artifact names say what they hold.
+- E2E stability: the not-found and Request a Quote axe scans wait for the page opening's finite animations to end (`tests/support/animations.ts`); they caught text mid-fade. The dashboard's grids (`TodayScreen`, `InboxLog`) now use `minmax(0, 1fr)` so the list shrinks to a 320 px screen: at doubled text the Linux font metrics, with rows listed, made the dashboard 2 px wider than the screen (reproduced and verified in Linux Chromium). `E2E_PORT` moves the journeys' app when another server holds 3100.
+- Also reviewed and kept: the uncommitted performance work already in the tree (links no longer prefetch, the home slides' clock pauses off screen, the map loads once scrolling settles, the icons are one cached SVG sprite, motion starts in a transition), each with its unit tests.
+
+### Validation
+- Format check, lint and typecheck passed. `actionlint` passed on the workflow; the services contract test passed (four cases).
+
+### Blockers
+- OPEN (performance, report-only on GitHub): mobile Lighthouse ≥ 95, INP ≤ 150 ms and long task ≤ 50 ms are missed on `/`, `/about`, `/services` and `/contact` on hosted runners. Required: a startup-JavaScript, hydration and layout rework, then the job can block again. Workaround: the budgets stay strict locally.

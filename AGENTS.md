@@ -587,10 +587,13 @@ tests/
 CI (`.github/workflows/ci.yml`) on every push to `main` and every PR:
 
 ```text
-parallel: lint | format | types | unit | audit | coverage + MySQL | build | dev hydration + MySQL
-build → parallel: E2E (phone + desktop, axe) | performance + MySQL
-all required jobs → All gates passed
+parallel: lint | format | types | audit | coverage + MySQL (every unit and database test) | build | dev hydration + MySQL
+build → parallel: E2E phone | E2E desktop (axe on every page) | performance (report-only)
+every required job → All gates passed
 ```
+
+The performance job reports on hosted runners but does not block them (D194): the
+budgets stay unchanged and strict in `npm run verify`, the pre-push gate.
 
 From Phase 7, the performance budgets too, and `npm run verify` with a
 pre-push hook. Node 22 everywhere. Prettier at 120 columns; Markdown is left

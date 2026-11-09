@@ -16,6 +16,7 @@ const SUMMARY_ROW = 3;
 export function ServiceSummaryCard({ service, photo }: { service: PublishedService; photo: SiteImage | null }) {
   return (
     <Link
+      prefetch={false}
       href={ROUTES.service(service.published.slug)}
       className="service-summary group flex h-full min-h-28 items-center gap-4 rounded-inset bg-card p-3 shadow-raised"
     >
@@ -58,6 +59,7 @@ export function ServiceCard({
 }) {
   return (
     <Link
+      prefetch={false}
       href={ROUTES.service(service.published.slug)}
       className={`group relative block overflow-hidden rounded-card bg-leaf-pale shadow-raised ${className} ${photoFade ? "pyramid-service" : ""}`}
     >

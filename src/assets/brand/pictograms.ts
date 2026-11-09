@@ -140,3 +140,6 @@ export const DIRECTIONAL_PICTOGRAMS: readonly PictogramName[] = ["arrow", "exter
 
 /** Shared standard WhatsApp brand SVG (Font Awesome Free, CC BY 4.0). */
 export const WHATSAPP_MARK = "/brand/whatsapp.svg#mark";
+
+/** Exact path geometry, served once instead of copied into every client bundle. */
+export const PICTOGRAM_SPRITE = "/brand/pictograms.svg";
