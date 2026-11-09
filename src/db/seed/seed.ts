@@ -1,3 +1,4 @@
+// Fills a local database with the current site's content, as drafts (plan R1.8).
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 

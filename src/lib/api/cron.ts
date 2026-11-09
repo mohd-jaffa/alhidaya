@@ -1,3 +1,4 @@
+// The bearer-token check for the cron routes (plan §17).
 import { timingSafeEqual } from "node:crypto";
 
 import { getServerEnv } from "@/lib/env/server";

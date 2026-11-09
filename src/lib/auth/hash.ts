@@ -1,3 +1,4 @@
+// Keyed hashes standing in for emails and IPs (plan §18, §26.4).
 import { createHmac } from "node:crypto";
 
 import { getServerEnv } from "@/lib/env/server";

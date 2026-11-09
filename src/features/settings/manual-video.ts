@@ -1,3 +1,4 @@
+// The admin manual's lesson videos, served from disk with range support.
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 

@@ -1,3 +1,4 @@
+// Which other services a service page suggests.
 import { randomInt } from "node:crypto";
 
 import { RELATED_SERVICE_COUNT } from "@/constants/limits";

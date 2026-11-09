@@ -4850,3 +4850,18 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - The same open item as before (mobile performance budgets, report-only on GitHub). If the hosted E2E still shows the doubled-text overflow in the service editor's framing panel (a Linux-only 96 px), it is recorded here for follow-up.
+
+
+## 2026-11-09 — CI follow-up: coverage merge and the first sharded run
+
+### Changed
+- The first sharded run took 17 min 51 s (the previous run, 19 min). Typical shards finished in 7 to 10 minutes; the run was held up by one outlier, `e2e desktop 1/4`: its Playwright browser download took 215 s (22 to 41 s elsewhere) and that shard also holds the two heaviest files (`consistency`, `font-manager`). Passing: static and security gates, build, hydration, all four coverage shards, six of eight E2E shards, three of four performance shards (report-only).
+- Coverage merge fixed: merged coverage read 99.93% because three files (`seed.ts`, `manual-video.ts`, `cron.ts`) showed only line 1 uncovered. Reproduced locally: merging blobs from different shards leaves line 1 uncovered when a file begins with a `node:` import. A leading comment line removes it, so the nine source files that begin with a `node:` import now start with a one-line purpose comment (no code change). Experiments that did not help: AST-aware remapping; dropping per-shard placeholders (the merge then ignores files no test loads, so the 100% would be weaker). Verified locally with two shards: `cron.ts` merges at 100%.
+
+### Validation
+- Lint and format passed on the changed files; the affected unit tests passed. Local two-shard merge shows the gap gone.
+
+### Blockers
+- OPEN (E2E): `tests/e2e/focal-points.spec.ts` fails on the phone project (twice) and flakes on desktop in CI only: at the end, the service editor at 320 px with doubled text is 96 px wider than the screen. Not reproduced: it passes on the Mac, and in Linux Chromium the same editor (clean, after publish, edit, save and discard) has no overflow at 320 x 900 with doubled text. `DraftEditor`'s grids were already given shrinkable columns. The trace in the hosted artifact (`e2e-phone-1-reports`) has the screen recording; the next step is to run that spec itself in Linux Chromium and measure the widest element.
+- OPEN (time): to reach ten minutes reliably, balance the E2E shards by file weight (the two heaviest desktop files sit in one shard) and cache the Playwright browsers; the cache action has to be pinned to a verified commit first.
+- OPEN (performance budgets, report-only on GitHub): unchanged.

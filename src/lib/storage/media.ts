@@ -1,3 +1,4 @@
+// The public media folder: keys, files and Apache's rules (plan §15).
 import fs from "node:fs/promises";
 import path from "node:path";
 

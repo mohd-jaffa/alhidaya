@@ -1,3 +1,4 @@
+// Reading and measuring the stored folders, never leaving them.
 import fs from "node:fs/promises";
 import path from "node:path";
 

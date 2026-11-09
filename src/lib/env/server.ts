@@ -1,3 +1,4 @@
+// The server's environment, checked once at start (plan §26.2).
 import path from "node:path";
 
 import * as z from "zod";

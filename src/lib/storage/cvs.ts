@@ -1,3 +1,4 @@
+// The private CV folder: names, keys and permissions (plan §9.4, D54).
 import fs from "node:fs/promises";
 import path from "node:path";
 
