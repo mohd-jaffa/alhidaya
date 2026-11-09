@@ -593,10 +593,12 @@ every required job → All gates passed
 ```
 
 The performance job reports on hosted runners but does not block them (D194): the
-budgets stay unchanged and strict in `npm run verify`, the pre-push gate.
+budgets stay unchanged and strict in `npm run verify`, the full local run.
 
-From Phase 7, the performance budgets too, and `npm run verify` with a
-pre-push hook. Node 22 everywhere. Prettier at 120 columns; Markdown is left
+From Phase 7, the performance budgets too. The pre-push hook runs `npm run verify:fast`
+(lint, format, types, both audits and the 100% unit and database coverage); `npm run
+verify` adds build, E2E, development hydration and the strict performance budgets, and CI
+runs those browser gates in parallel (D195). Node 22 everywhere. Prettier at 120 columns; Markdown is left
 as written.
 
 ---

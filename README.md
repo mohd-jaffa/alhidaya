@@ -63,7 +63,8 @@ run as `alhidaya_migrator` (plan §26.1). `npm run services:stop` stops both.
 ## Checks
 
 ```bash
-npm run verify                    # complete pre-push gates, with isolated local test data
+npm run verify:fast               # the pre-push gates: static, audits, 100% coverage
+npm run verify                    # every gate incl. build, E2E, hydration, performance; isolated local test data
 npm run lint
 npm run format:check
 npm run typecheck
@@ -84,8 +85,9 @@ above (plan D55).
 
 Install dependencies with npm 11 to enable the repository-local pre-push hook
 (`prepare` configures `.githooks` in this checkout only). Every push runs
-`npm run verify`: independent static/security checks together, followed by full
-coverage, build, production journeys, development hydration and performance.
+`npm run verify:fast`: independent static/security checks together, followed by full
+unit and database coverage. `npm run verify` adds build, production journeys, development
+hydration and the strict performance budgets; CI runs those browser gates in parallel.
 Docker must be running. Verification uses `.env.example` local test settings
 and `.data/verify-*` media/CV folders without editing `.env.local` or the real
 local database. Test records in `alhidaya_test` are reset by the suites.

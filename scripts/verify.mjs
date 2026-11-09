@@ -1,4 +1,7 @@
-// The same gates as CI, using only the example's local test services and isolated files.
+// The gates as CI runs them, using only the example's local test services and isolated files.
+// `--fast` (the pre-push hook, D195) stops after the static, security and 100%-coverage gates; the
+// browser gates (E2E, development hydration, performance) then run in CI, in parallel. The full run
+// stays `npm run verify`, and is the only automatic place the performance budgets are strict.
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -49,6 +52,10 @@ const checks = await Promise.allSettled([
 if (checks.some((check) => check.status === "rejected")) throw new Error("An independent verification gate failed.");
 await run("docker", ["compose", "up", "-d", "--wait"]);
 await run("npm", ["run", "test:coverage", "--", "--maxWorkers=1"]);
+if (process.argv.includes("--fast")) {
+  console.log("\nFast verification gates passed. Run `npm run verify` for the browser gates; CI runs them too.");
+  process.exit(0);
+}
 await run("npm", ["run", "build"]);
 await run("npx", ["playwright", "install", "chromium"]);
 // These seed the same isolated test DB, so keep them serial locally. CI isolates each job.

@@ -4821,3 +4821,17 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - OPEN (performance, report-only on GitHub): mobile Lighthouse ≥ 95, INP ≤ 150 ms and long task ≤ 50 ms are missed on `/`, `/about`, `/services` and `/contact` on hosted runners. Required: a startup-JavaScript, hydration and layout rework, then the job can block again. Workaround: the budgets stay strict locally.
+
+
+## 2026-11-09 — A fast pre-push hook
+
+### Changed
+- D195 / R7.3c: the pre-push hook now runs `npm run verify:fast` (new, `scripts/verify.mjs --fast`): lint, format, types, both audits and the 100% unit and database coverage, about 15 minutes. The full `npm run verify` (adds build, production E2E, development hydration and the strict performance budgets) took about 70 minutes and CI repeats those browser gates in parallel jobs, so it stays as the full local run. Chosen by the user. README, AGENTS.md §25 and plan §35 describe both commands.
+- Correction to the previous entry: the strict performance budgets are enforced by `npm run verify` run by hand, not by the pre-push hook.
+- `E2E_PORT` (previous entry) was also used to push while other local servers held ports 3100 and 3101.
+
+### Validation
+- Format check passed; `scripts/verify.mjs` checked for syntax. The earlier full push attempt passed lint, format, types, both audits and coverage (378 files, 1,414 tests) before it was stopped at E2E in favour of this change.
+
+### Blockers
+- The mobile performance budgets remain the open item recorded above (strict locally by hand, report-only on GitHub).

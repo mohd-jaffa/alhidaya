@@ -27,6 +27,7 @@
     "admin:create": "tsx --tsconfig tsconfig.json scripts/create-admin.mts",
     "test:performance": "playwright test --config playwright.performance.config.ts",
     "verify": "node scripts/verify.mjs",
+    "verify:fast": "node scripts/verify.mjs --fast",
     "prepare": "node scripts/install-hooks.mjs"
   },
   "engines": {
