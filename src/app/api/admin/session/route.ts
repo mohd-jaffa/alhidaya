@@ -1,3 +1,4 @@
+import { JSON_BODY_LIMITS } from "@/constants/limits";
 import { signIn, signOut } from "@/features/auth/api";
 import { withAdminRoute, withCookies } from "@/lib/api/admin";
 import { readJson, withApiHandler } from "@/lib/api/handler";
@@ -10,7 +11,7 @@ import { signInSchema } from "@/lib/validation";
 export function POST(request: Request) {
   return withApiHandler(request, async ({ requestId }) => {
     assertSameOrigin(request);
-    const body = await readJson(request, signInSchema);
+    const body = await readJson(request, signInSchema, JSON_BODY_LIMITS.auth);
     const cookies = await signIn(body, {
       ip: clientIp(request),
       userAgent: request.headers.get("user-agent"),

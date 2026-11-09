@@ -1,3 +1,4 @@
+import { JSON_BODY_LIMITS } from "@/constants/limits";
 import { requestPasswordReset } from "@/features/auth/api";
 import { readJson, withApiHandler } from "@/lib/api/handler";
 import { assertSameOrigin } from "@/lib/api/origin";
@@ -8,7 +9,7 @@ import { forgotPasswordSchema } from "@/lib/validation";
 export function POST(request: Request) {
   return withApiHandler(request, async ({ requestId }) => {
     assertSameOrigin(request);
-    const { email } = await readJson(request, forgotPasswordSchema);
+    const { email } = await readJson(request, forgotPasswordSchema, JSON_BODY_LIMITS.auth);
     await requestPasswordReset(email, {
       ip: clientIp(request),
       userAgent: request.headers.get("user-agent"),

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { connection } from "next/server";
 
 import { UI_TEXT } from "@/constants/messages";
 import { siteMetadataBase } from "@/lib/seo/metadata";
@@ -38,7 +39,9 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // Every HTML response (including error pages) needs its own CSP nonce. Published data stays cached.
+  await connection();
   // English at the root; Arabic arrives later under /ar with dir="rtl" (plan D4, §33).
   return (
     <html lang="en" dir="ltr" className={`${interTight.variable} h-full antialiased`}>

@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { getServerEnv } from "@/lib/env/server";
 import { TEST_ENV } from "@tests/support/env";
@@ -8,6 +8,7 @@ import { TEST_ENV } from "@tests/support/env";
 const env = (values: Record<string, string>) => values as unknown as NodeJS.ProcessEnv;
 
 const valid = { ...TEST_ENV };
+afterEach(() => vi.unstubAllEnvs());
 
 describe("getServerEnv", () => {
   it("accepts a complete environment, development by default", () => {
@@ -85,6 +86,7 @@ describe("getServerEnv", () => {
   });
 
   it("reads the process environment when given none", () => {
+    vi.stubEnv("DATABASE_URL", undefined);
     expect(() => getServerEnv()).toThrow(expect.objectContaining({ code: "CONFIG_INVALID" }));
   });
 });

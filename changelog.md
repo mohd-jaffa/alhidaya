@@ -4760,3 +4760,20 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None for the requested separate local commit. No actual published content or private draft was edited by tests. The review app is current on port 3210 and its tunnel URL is unchanged. No push, client-server operation or production deployment. Existing release/device/manual-screen-reader checks remain documented separately.
+
+
+## 2026-11-09
+
+### Changed
+- D191 / R7.3: reviewed the public/admin boundaries, sessions and origin checks, draft publishing, uploads/private downloads, input/SQL, logging, secrets and browser policy before the user-authorized initial GitHub push. Added security headers and fresh document CSP nonces; retained cached published reads and existing map/motion/font/media behavior. Streamed JSON ceilings stop oversized public/auth/content bodies before parsing. Shipped-dependency audits now reject unavailable, malformed or incomplete reports.
+- CI runs independent gates side by side; production browser/performance jobs reuse one standalone/static build with separate local test services. Official actions are pinned, checkout credentials are not persisted and permissions remain read-only. A final aggregate check requires all gates. No deployment workflow is added.
+- Added the complete `npm run verify` and repository-local pre-push hook. Verification uses only the example's separate local test database and isolated media/CV paths; it preserves the actual `.env.local`, review URL and real content.
+- Unit tests explicitly isolate optional/missing environment values, and source lint excludes generated Playwright trace/report bundles so a repeat verification after a browser failure remains valid. Browser screenshots write to per-test report folders rather than overwriting historical audit evidence.
+
+### Validation
+- Lint, format check, typecheck, standalone build and diff checks passed. 1,401 unit/integration tests across 376 files passed, with 100% statements/branches/functions/lines. Existing 276 production browser cases and all four corrected security cases passed (278 distinct cases, 62 intentional skips). Development hydration passed at both sizes, covering 46 navigations. The final pre-push hook repeats the complete command before upload.
+- All 40 performance cases passed, retaining every existing threshold: maximum initial JS 173,823 / 174,080 gzip bytes; LCP 555.477 ms; scripted interaction upper bound 72 ms; CLS 0; minimum Lighthouse 96; no observed scroll task above 50 ms. Source/history/standalone checks found no tracked private upload/env/key/token patterns; runtime dependency audit is clear, with 15 permitted moderate development-only findings remaining.
+- YAML parsed, action references and repository Actions permissions verified. The initial actual GitHub run will be linked in the push delivery. Full review and launch-only boundaries: `docs/audits/2026-11-09-pre-push-security.md`.
+
+### Blockers
+- No deployment is authorized. Existing production-only checks (TLS/Apache/proxy boundary, real secrets/Turnstile/mail, manual device/screen-reader approval) and the user's deferred malware-scanning decision remain launch work. This is a source-level review with regression tests, not an independent ASVS certification. No schema migration.

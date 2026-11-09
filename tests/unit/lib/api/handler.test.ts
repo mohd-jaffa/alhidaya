@@ -44,6 +44,22 @@ describe("readJson", () => {
   it("refuses a body that is not JSON", async () => {
     await expect(readJson(post("{nope"), schema)).rejects.toMatchObject({ code: "VALIDATION_INVALID_JSON" });
   });
+  it("counts streamed bytes, even without an honest content length, before schema validation", async () => {
+    const parse = vi.spyOn(schema, "parse");
+    for (const headers of [{}, { "content-length": "1" }, { "content-length": "100" }] as Record<string, string>[]) {
+      await expect(readJson(post('{"name":"éé"}', headers), schema, 12)).rejects.toMatchObject({
+        code: "REQUEST_TOO_LARGE",
+      });
+    }
+    expect(parse).not.toHaveBeenCalled();
+    expect(await readJson(post('{"name":"é"}'), schema, 13)).toEqual({ name: "é" });
+  });
+
+  it("refuses invalid UTF-8 rather than silently replacing bytes", async () => {
+    await expect(readJson(post(new Uint8Array([0xff])), schema)).rejects.toMatchObject({
+      code: "VALIDATION_INVALID_JSON",
+    });
+  });
 });
 
 describe("readQuery", () => {

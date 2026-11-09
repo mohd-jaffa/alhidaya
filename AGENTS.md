@@ -587,8 +587,9 @@ tests/
 CI (`.github/workflows/ci.yml`) on every push to `main` and every PR:
 
 ```text
-checks: install → lint → format check → typecheck → unit tests
-app:    MySQL 8.0 service (every migration) → test:coverage (100%) → build → E2E (phone + desktop, axe)
+parallel: lint | format | types | unit | audit | coverage + MySQL | build | dev hydration + MySQL
+build → parallel: E2E (phone + desktop, axe) | performance + MySQL
+all required jobs → All gates passed
 ```
 
 From Phase 7, the performance budgets too, and `npm run verify` with a

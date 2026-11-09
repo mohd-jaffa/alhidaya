@@ -293,6 +293,7 @@ question (§41) the user may overturn.
 | D189 | **Admin User manual** (the user, 2026-11-07). Add User manual under Administration using the non-captioned admin walkthrough split into categorized instructions for new admins. Provide fixed written steps, short narrated clips, optional captions and transcripts. Serve bundled training assets only to signed-in admins; no new uploads, tables or external service. | 2026-11-07 |
 
 | D190 | **Image focal points, per placement** (the user, 2026-11-07). After committing D188/D189, add framing to existing photo selections in page and service editors. The user chose independent placement references rather than a global Media Library setting. Store optional validated whole-percentage x/y coordinates beside each mediaId in the existing draft/published JSON; no new table or migration. Use an inline click/tap target with equivalent native range controls, reversible reset, and representative crop previews. Reused service references carry that service's framing into its cards, pyramid and opening. Logos remain contain-fit and have no focal-point control. Existing references without a point preserve current desktop/mobile defaults. Save → authenticated Preview → Publish/Discard, auditing and cache invalidation remain the owning document/record's. No new upload, generated variant, runtime image processing, dependency, external service or public-site JavaScript interaction. Necessary publishing hardening: retain Next caching and the D119 single-process memory scope, but include a process-shared per-tag revision in cache keys so a publish cannot serve stale content if Next 16.4.3 misses immediate expiry due to its wall/monotonic clock comparison. No cache handler, database or infrastructure is added. Commit separately; no push or client-server change. | 2026-11-07 |
+| D191 | **Pre-push security and parallel CI** (the user, 2026-11-09). Finish R7.3 before the initial push to the private `mohd-jaffa/alhidaya` repository. Add host-only HSTS and browser security headers; a fresh per-response CSP nonce for executable scripts, with dynamic HTML at the root and the existing cached published data reads retained. Inline styles remain permitted for existing animation/focal styles; eval is development-only. Stream JSON within 32 MiB for authenticated content, 64 KiB for enquiries and 16 KiB for authentication; reject before decoding/schema/persistence. Dependency audits fail closed on unavailable/incomplete reports. `npm run verify` and a repository-local pre-push hook run the complete gates using the example local test database and separate media/CV directories without changing `.env.local`. CI runs static gates, security audits, 100% coverage, build and development hydration independently; production E2E and performance reuse one build in separate isolated jobs. Each DB suite/performance worker remains serial internally. Official actions are pinned to verified immutable commits with read-only permissions and no persisted checkout credentials. Push main only and confirm GitHub CI; no production deployment or client-server mutation. Malware scanning remains Q52. | 2026-11-09 |
 
 
 ## 3. Audiences and the admin
@@ -1183,9 +1184,14 @@ the Node.js app's environment, never in a file inside `public_html`.
 ### 26.3 Headers
 
 HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`,
-frame-ancestors `none`, and a Content-Security-Policy allowing only the app,
-Turnstile and the analytics beacon; the CSP form that keeps public
-pages statically cached is settled in R7.3.
+frame-ancestors `none`, and a nonce-based Content-Security-Policy allowing the app,
+Turnstile, analytics, and the approved Google map frame (D191). HTML is rendered
+per request so the nonce is never reused; published data keeps its D76/D119 cache.
+Executable scripts have no unsafe-inline/eval allowance in production. Existing
+inline styles are permitted for GSAP transforms and focal coordinates. JSON reads
+are streamed and bounded before decoding: 32 MiB authenticated content, 64 KiB
+public enquiries, 16 KiB authentication. This supports the schema's largest escaped
+document while bounding request memory; uploads keep their separate limits.
 
 ### 26.4 Admin sign-in
 
@@ -1525,9 +1531,9 @@ No staging (D21).
 ### 35.2 CI (every push to `main` and every pull request)
 
 ```text
-checks: install → lint → format check → typecheck → unit tests
-app:    the database service (every migration) → test:coverage (unit + integration, 100%)
-        → build → E2E (phone + desktop, axe)
+parallel: lint | format | typecheck | unit | dependency security | coverage + local DB | build | dev hydration + local DB
+build → parallel: E2E (phone + desktop, axe) | performance + Lighthouse
+every required job → All gates passed
 ```
 
 From Phase 7 also the performance budgets (§31).
@@ -1557,8 +1563,16 @@ From Phase 7 also the performance budgets (§31).
 
 ### 35.4 Before code
 
-**Every test passes locally first.** `npm run verify` runs what CI runs, in
-order; a pre-push hook runs it (as clinicdesk, from Phase 7).
+**Every test passes locally first.** `npm run verify` runs the same gates as CI
+(D191): independent static/security checks together, then 100% unit/integration
+coverage, build, production E2E, development hydration and performance serially.
+It uses `.env.example` local-only test settings and separate `.data/verify-*`
+files; `.env.local` and the real local database are untouched. Install dependencies
+with Node 22/npm 11; `prepare` configures `.githooks/pre-push` in this checkout
+only, refuses to overwrite a different hook directory, and skips CI/non-Git packages.
+The hook runs verify before pushing. CI uses isolated services per database job,
+reuses a tarred standalone/static artifact and collects separate reports. A push
+checks code only; it cannot deploy to cPanel.
 
 ## 36. Observability
 
@@ -1794,7 +1808,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R7.1 | Performance budgets in CI; fixes until every page meets them | §31, D139 | — | LOCAL GATES VERIFIED (2026-11-07; D187): fresh full 40-case Lighthouse/JS/interaction/touch/wheel/cadence suite passed on the final bundle, with CI gates and evidence committed. Real-device/compositor, field and server-region checks remain release work (`docs/PERFORMANCE.md`) |
 | R7.2 | Accessibility: axe everywhere plus a manual keyboard and screen-reader pass | §32, D142 | — | IN PROGRESS (2026-11-01): automated axe, responsive/long-content/text-enlargement and keyboard/menu checks passed; identified 44 px targets fixed. Manual screen-reader speech and Q49 remain open |
-| R7.3 | Security review against OWASP ASVS level 2 (sign-in, sessions, uploads, file access, input, headers and CSP, secrets, logging); fixes; `npm run verify` and the pre-push hook | §26, §35.4, D55 | — | IN PROGRESS (2026-11-01): focused upload review and fixes D141 ready for review (`docs/audits/2026-11-01-upload-security.md`); broader ASVS review, verify command and hook remain TODO. Malware scanning deferred to a before-launch decision by the user (Q52) |
+| R7.3 | Security review against OWASP ASVS level 2 (sign-in, sessions, uploads, file access, input, headers and CSP, secrets, logging); fixes; `npm run verify` and the pre-push hook | §26, §35.4, D55 | — | DONE (2026-11-09; D191: broader source review and security fixes; 1,401 unit/DB tests, 100% coverage, 278 distinct production E2E cases after fixture correction, development hydration and all 40 performance cases passed locally; full verify/pre-push hook and parallel CI added. Initial GitHub run to be linked in the push delivery. Q52 remains a launch decision) |
 | R7.4 | Impeccable finish review of the public site; fixes; `DESIGN.md` and `.impeccable/design.json` from the built world | §30.1 | — | AUDIT COMPLETE (2026-11-01), entire codebase: `docs/audits/2026-11-01-impeccable-audit.md`; 15/20 at audit; findings 3/4 local fixes READY FOR REVIEW (D139; 40 performance cases passed, sidecar refreshed); finding 2 identified targets fixed by D142; finding 1/Q49 remains open. D142 harden/polish READY FOR REVIEW (`docs/audits/2026-11-01-impeccable-harden-polish.md`) |
 | R7.5 | Client sign-off: copy, images, logos, legal pages | D6, Q18 | Client (§40) | TODO |
 

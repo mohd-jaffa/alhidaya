@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 import { version } from "./package.json";
+import { SECURITY_HEADERS } from "./src/lib/security/policy";
 import { OLD_SITE_REDIRECTS } from "./src/constants/redirects";
 
 const nextConfig: NextConfig = {
@@ -23,6 +24,10 @@ const nextConfig: NextConfig = {
   // The share pictures read the typeface from disk (plan §19), so the standalone folder carries it.
   outputFileTracingIncludes: {
     "/**/opengraph-image": ["./src/assets/fonts/inter-tight/share/*.woff", "./src/assets/brand/logo.svg"],
+  },
+  // Apply browser protection to files and API responses as well as HTML.
+  async headers() {
+    return [{ source: "/:path*", headers: SECURITY_HEADERS }];
   },
   // The current site's addresses, moved for good (plan §5.3): 301, as the old site's links expect.
   async redirects() {

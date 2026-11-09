@@ -1,5 +1,7 @@
 // @vitest-environment node
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+afterEach(() => vi.unstubAllEnvs());
 
 const sendMail = vi.fn(async () => ({}));
 const createTransport = vi.fn(() => ({ sendMail }));
@@ -86,6 +88,7 @@ describe("createConfiguredMailService", () => {
   });
 
   it("reads the process environment when given none", () => {
+    vi.stubEnv("DATABASE_URL", undefined);
     expect(() => createConfiguredMailService()).toThrow();
   });
 });

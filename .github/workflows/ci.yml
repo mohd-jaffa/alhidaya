@@ -1,16 +1,5 @@
-# The quality gates (plan §35.2, AGENTS.md §25), on every push to main and every
-# pull request:
-#
-#   checks   install → lint → format check → typecheck → unit tests →
-#            dependency audits (nothing at high or above; nothing that ships
-#            at moderate or above; plan D55)
-#   app      MySQL 8.0.46 and Mailpit from compose.yaml, as on a laptop →
-#            unit + integration tests with coverage at 100% → build → the
-#            browser journeys on that build, phone and desktop, axe →
-#            mobile Lighthouse / interaction / touch-scroll budgets and desktop scroll
-#
-# A release runs the same gates again on its tag before it deploys (the release
-# workflow, Phase 8, after full payment: plan D48), calling this one with `ref`.
+# Independent gates start together. Each database job has its own local services.
+# Browser/performance jobs reuse one build; timing-sensitive tests stay serial.
 name: CI
 
 on:
@@ -33,91 +22,151 @@ concurrency:
 
 jobs:
   checks:
-    name: Lint, format, types, unit tests and audit
+    name: ${{ matrix.gate }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        gate:
+          - lint
+          - format:check
+          - typecheck
+          - test
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: npm run "${{ matrix.gate }}"
+
+  audit:
+    name: Dependency security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: npm audit --audit-level=high
+      - run: npm run audit:shipped
+
+  coverage:
+    name: Unit and database coverage (100%)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: cp .env.example .env.local
+      - run: docker compose up -d --wait
+      # AVIF encoding and DB writes stay serial within this job.
+      - run: npm run test:coverage -- --maxWorkers=1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  build:
+    name: Build once
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ inputs.ref }}
-
-      - uses: actions/setup-node@v5
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: cp .env.example .env.local
+      - run: npm run build
+      # Tar preserves hidden .next files and executable modes across artifact jobs.
+      - run: tar -czf /tmp/standalone.tgz .next/standalone .next/static
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          node-version-file: .nvmrc
-          cache: npm
+          name: standalone
+          path: /tmp/standalone.tgz
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
 
-      # npm 10.9, bundled with Node 22, cannot resolve Vitest's peers (plan D47).
-      - name: Use npm 11
-        run: npm install -g npm@11
-
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run format:check
-      - run: npm run typecheck
-      - run: npm test
-
-      - name: Audit every dependency (no known vulnerability at high or above)
-        run: npm audit --audit-level=high
-
-      # What ships is every package the app loads at runtime, bundled or not;
-      # not npm's production view, which an optional peer can widen
-      # (scripts/audit-shipped.mjs).
-      - name: Audit what ships (no known vulnerability at moderate or above)
-        run: npm run audit:shipped
-
-  app:
-    name: Coverage, build, journeys and performance
-    needs: checks
+  browsers:
+    name: ${{ matrix.suite }}
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - test:e2e
+          - test:performance
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ inputs.ref }}
-
-      - uses: actions/setup-node@v5
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Use npm 11
-        run: npm install -g npm@11
-
-      - run: npm ci
-
-      # The same file as on a laptop: MySQL at the server's version, Mailpit.
-      - name: Start MySQL and Mailpit
-        run: docker compose up -d --wait
-
-      # The tests and the build read .env.local, as they do on a laptop; every
-      # value in the example is for a local service only.
-      - name: Point the app at them
-        run: cp .env.example .env.local
-
-      # The photo seed performs real AVIF encoding; serial workers avoid the
-      # CPU contention reproduced locally while keeping the same coverage gates.
-      - run: npm run test:coverage -- --maxWorkers=1
-
-      - run: npm run build
-
-      - name: Install the browser
-        run: npx playwright install --with-deps chromium
-
-      - run: npm run test:e2e
-
-      # React only reports attribute-only hydration mismatches in development mode.
-      - run: npm run test:hydration
-
-      # A fresh seeded server/browser; strict §31 limits, no retries or threshold relaxation.
-      - run: npm run test:performance
-
-      - uses: actions/upload-artifact@v4
+          name: standalone
+          path: /tmp/build
+      - run: tar -xzf /tmp/build/standalone.tgz
+      - run: cp .env.example .env.local
+      - run: docker compose up -d --wait
+      - run: npx playwright install --with-deps chromium
+      - run: npm run "${{ matrix.suite }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: playwright-${{ github.run_number }}
+          name: ${{ strategy.job-index }}-browser-reports
           path: |
             playwright-report/
             test-results/
-            coverage/
           retention-days: 14
           if-no-files-found: ignore
+
+  hydration:
+    name: Development hydration
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: cp .env.example .env.local
+      - run: docker compose up -d --wait
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:hydration
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: hydration-reports
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  ready:
+    name: All gates passed
+    if: always()
+    needs: [checks, audit, coverage, build, browsers, hydration]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require every gate
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node -e 'const jobs=JSON.parse(process.env.RESULTS); if(Object.values(jobs).some(job=>job.result!=="success")) process.exit(1)'

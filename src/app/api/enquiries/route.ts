@@ -1,3 +1,4 @@
+import { JSON_BODY_LIMITS } from "@/constants/limits";
 import { after } from "next/server";
 import * as z from "zod";
 
@@ -24,7 +25,7 @@ export function POST(request: Request) {
     request,
     async ({ requestId }) => {
       assertSameOrigin(request);
-      const body = await readJson(request, z.unknown());
+      const body = await readJson(request, z.unknown(), JSON_BODY_LIMITS.enquiry);
       if (honeypotFilled(body)) {
         logger.info("Enquiry discarded: its trap field was filled", undefined, requestId);
         return { received: true };

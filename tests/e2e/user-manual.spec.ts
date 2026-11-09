@@ -76,5 +76,5 @@ test("manual lessons are private, playable, categorized and accessible", async (
     (document.activeElement as HTMLElement)?.blur();
     window.scrollTo(0, 0);
   });
-  await page.screenshot({ path: `docs/audits/2026-11-07-user-manual-${testInfo.project.name}.png`, fullPage: true });
+  await page.screenshot({ path: testInfo.outputPath("user-manual.png"), fullPage: true });
 });

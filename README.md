@@ -36,10 +36,15 @@ nvm use
 npx -y npm@11 install
 cp .env.example .env.local
 npm run services:start   # MySQL 8.0.46 and Mailpit, in Docker
+npm run db:migrate
+npm run db:seed          # missing local content only, saved as drafts
+npm run admin:create -- --email admin@example.com --name "Local Admin"
 npm run dev
 ```
 
-Then open <http://localhost:3000>.
+Then open <http://localhost:3000/admin/login>. The admin creation command asks
+for a password without recording it in shell history. Preview and publish the
+seeded drafts from the admin panel to make them public at <http://localhost:3000>.
 
 The local services (`compose.yaml`) bind to this machine only, on **563xx**
 ports, so they run beside other projects (clinicdesk uses 553xx):
@@ -58,6 +63,7 @@ run as `alhidaya_migrator` (plan §26.1). `npm run services:stop` stops both.
 ## Checks
 
 ```bash
+npm run verify                    # complete pre-push gates, with isolated local test data
 npm run lint
 npm run format:check
 npm run typecheck
@@ -65,6 +71,8 @@ npm test                          # unit tests
 npm run test:integration          # against the local MySQL (npm run services:start)
 npm run test:coverage             # unit + integration; fails below 100%
 npm run build && npm run test:e2e # browser journeys, phone and desktop, port 3100
+npm run test:hydration            # development-only React hydration diagnostics
+npm run test:performance          # Lighthouse, JS/interaction/scroll budgets
 npm run audit:shipped             # nothing the app loads at runtime may be vulnerable
 ```
 
@@ -73,3 +81,15 @@ every pull request, against the same `compose.yaml`, and audits the
 dependencies: nothing the app loads at runtime may carry a known
 vulnerability at moderate or above, and nothing in the tree one at high or
 above (plan D55).
+
+Install dependencies with npm 11 to enable the repository-local pre-push hook
+(`prepare` configures `.githooks` in this checkout only). Every push runs
+`npm run verify`: independent static/security checks together, followed by full
+coverage, build, production journeys, development hydration and performance.
+Docker must be running. Verification uses `.env.example` local test settings
+and `.data/verify-*` media/CV folders without editing `.env.local` or the real
+local database. Test records in `alhidaya_test` are reset by the suites.
+
+CI starts independent gates side by side. E2E and performance share one build
+artifact, with separate local databases/runners; the final **All gates passed**
+check requires every job. A push runs checks only and does not deploy.

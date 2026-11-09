@@ -1,6 +1,7 @@
 import type { ZodType } from "zod";
 import { ZodError } from "zod";
 
+import { JSON_BODY_LIMITS } from "@/constants/limits";
 import type { ErrorMessageCode } from "@/constants/messages";
 import { captureError } from "@/lib/audit/errorLog";
 import { type AppError, toAppError, validationError } from "@/lib/errors";
@@ -37,10 +38,15 @@ export function createRequestId(headers?: Headers): string {
  * malformed body and an invalid one answer with the same envelope, and
  * neither reaches the data layer.
  */
-export async function readJson<T>(request: Request, schema: ZodType<T>): Promise<T> {
+export async function readJson<T>(
+  request: Request,
+  schema: ZodType<T>,
+  maxBytes: number = JSON_BODY_LIMITS.content,
+): Promise<T> {
+  const bytes = await readBody(request, { maxBytes, tooLarge: "REQUEST_TOO_LARGE" });
   let body: unknown;
   try {
-    body = await request.json();
+    body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
   } catch {
     throw validationError("VALIDATION_INVALID_JSON");
   }

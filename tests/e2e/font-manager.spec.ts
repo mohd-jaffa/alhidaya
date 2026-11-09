@@ -52,7 +52,7 @@ test("fonts save as a draft, preview privately, publish independently, then disc
     await expect(page.getByRole("combobox")).toHaveCount(20);
     const adminBefore = await page.getByRole("heading", { level: 1 }).evaluate((el) => getComputedStyle(el).fontFamily);
     await axe(page);
-    await page.screenshot({ path: `docs/audits/2026-11-04-font-manager-${testInfo.project.name}.png` });
+    await page.screenshot({ path: testInfo.outputPath("font-manager.png") });
     const choice = page.getByRole("combobox", { name: ADMIN_TEXT.fontRoleLabels.h1 });
     await choice.selectOption("playfair-display");
     await page.getByRole("button", { name: ADMIN_TEXT.saveDraft }).click();

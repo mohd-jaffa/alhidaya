@@ -58,7 +58,23 @@ function auditReport() {
 }
 
 const shipped = runtimeClosure();
-const vulnerabilities = JSON.parse(auditReport()).vulnerabilities ?? {};
+const report = JSON.parse(auditReport());
+if (
+  report.error ||
+  report.auditReportVersion !== 2 ||
+  !report.vulnerabilities ||
+  typeof report.vulnerabilities !== "object" ||
+  Array.isArray(report.vulnerabilities) ||
+  !Number.isSafeInteger(report.metadata?.vulnerabilities?.total) ||
+  report.metadata.vulnerabilities.total !== Object.keys(report.vulnerabilities).length ||
+  Object.values(report.vulnerabilities).some(
+    (finding) => !["info", "low", "moderate", "high", "critical"].includes(finding?.severity),
+  )
+) {
+  console.error("Dependency audit failed: a complete npm audit report is required.");
+  process.exit(1);
+}
+const vulnerabilities = report.vulnerabilities;
 const blocking = Object.entries(vulnerabilities).filter(
   ([name, finding]) => BLOCKING.has(finding.severity) && shipped.has(name),
 );

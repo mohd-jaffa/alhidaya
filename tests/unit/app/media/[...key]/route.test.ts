@@ -43,6 +43,7 @@ describe("GET /media/…", () => {
   });
 
   it("serves nothing where Apache serves the folder", async () => {
+    vi.stubEnv("SERVE_MEDIA", undefined);
     stubServerEnv({ MEDIA_DIR: root });
     expect((await get(["2026-10", "abcdefghij-w480.webp"])).status).toBe(404);
   });
