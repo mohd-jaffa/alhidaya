@@ -1,11 +1,17 @@
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { act, render } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { RiseWordsMotion } from "@/components/motion/RiseWordsMotion";
 import { fakeEngine } from "@tests/support/motion";
 
 const motion = vi.hoisted(() => ({ engine: null as unknown }));
 vi.mock("@/components/motion/MotionProvider", () => ({ useMotion: () => ({ engine: motion.engine }) }));
+
+beforeEach(() => vi.useFakeTimers());
+afterEach(() => {
+  vi.clearAllTimers();
+  vi.useRealTimers();
+});
 
 describe("RiseWordsMotion", () => {
   it("shows its server-drawn children before the motion engine loads", () => {
@@ -26,6 +32,7 @@ describe("RiseWordsMotion", () => {
         <span data-word>Care</span>
       </RiseWordsMotion>,
     );
+    act(() => vi.runAllTimers());
     expect(fake.gsap.from).toHaveBeenCalledWith(container.querySelectorAll("[data-word]"), expect.any(Object));
     unmount();
     expect(fake.revert).toHaveBeenCalled();
@@ -39,6 +46,7 @@ describe("RiseWordsMotion", () => {
         <span>Care</span>
       </RiseWordsMotion>,
     );
+    act(() => vi.runAllTimers());
     expect(fake.gsap.from).not.toHaveBeenCalled();
   });
 });

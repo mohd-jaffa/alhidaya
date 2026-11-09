@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useRef } from "react";
 
+import { scheduleMotion } from "@/lib/motion/schedule";
 import { MOTION } from "@/lib/motion/tokens";
 
 import { useMotion } from "./MotionProvider";
@@ -28,19 +29,23 @@ export function Reveal({
 
   useEffect(() => {
     const element = ref.current;
-    if (!engine || !element || engine.ScrollTrigger.isInViewport(element, 0.05)) return;
-    const { gsap } = engine;
-    const context = gsap.context(() => {
-      gsap.from(element, {
-        opacity: 0,
-        y: MOTION.revealDistance,
-        duration: MOTION.duration.reveal,
-        delay: order * MOTION.stagger,
-        ease: MOTION.ease.out,
-        scrollTrigger: { trigger: element, start: "top 90%", once: true },
-      });
-    }, element);
-    return () => context.revert();
+    if (!engine || !element) return;
+    return scheduleMotion(() => {
+      // A visitor may have reached this block while initialization was queued.
+      if (engine.ScrollTrigger.isInViewport(element, 0.05)) return;
+      const { gsap } = engine;
+      const context = gsap.context(() => {
+        gsap.from(element, {
+          opacity: 0,
+          y: MOTION.revealDistance,
+          duration: MOTION.duration.reveal,
+          delay: order * MOTION.stagger,
+          ease: MOTION.ease.out,
+          scrollTrigger: { trigger: element, start: "top 90%", once: true },
+        });
+      }, element);
+      return () => context.revert();
+    });
   }, [engine, order]);
 
   return (

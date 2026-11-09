@@ -4777,3 +4777,31 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - No deployment is authorized. Existing production-only checks (TLS/Apache/proxy boundary, real secrets/Turnstile/mail, manual device/screen-reader approval) and the user's deferred malware-scanning decision remain launch work. This is a source-level review with regression tests, not an independent ASVS certification. No schema migration.
+
+
+## 2026-11-09 — CI cold-seed fixture
+
+### Changed
+- D192 / R7.3a: the first real GitHub run exposed a cold image-fixture deadline: all seed photographs/logos use the real upload encoder, exceeding the old two-minute deadline on the hosted runner. Moved that setup into a bounded ten-minute `beforeAll`, so the dependent idempotence cases cannot race an unfinished seed. All data, output, draft/privacy and idempotence assertions remain unchanged; no production code, image settings, normal test deadline or performance/coverage threshold changes.
+
+### Validation
+- All four seed integration cases passed against the isolated local test database, including cold real image conversion (73.85s). Lint, types, formatting and diff checks passed. Full pre-push verification repeats before the correction is uploaded; final GitHub result is linked in delivery.
+
+### Blockers
+- No product/schema/deployment change. The first hosted browser results are addressed together by D193 below.
+
+
+## 2026-11-09 — Hosted browser portability and motion startup
+
+### Changed
+- D193 / R7.3b: font matrices request the actual bundled family, retaining every fit/style/load assertion. On Linux, requesting Next's complete stack also loaded an absent local Arial/Times metric fallback and threw NetworkError despite valid bundled fonts. Native touch probes use trusted within-viewport events; the full-page performance sample traverses the entire document with bounded real swipes. It still asserts bottom coverage and all original budgets. Two layout probes wait for resize/animation settlement, preserving their exact limits.
+- Below-fold block/word motion initialization yields between independent tasks. Queued callbacks are cancelled on cleanup, retain scoped GSAP reverts and recheck viewport visibility before hiding anything. Visible server content, reduced motion, animation tokens and layout stay unchanged. No streaming/hidden-content change is retained. Initial Home JS is 173,942 / 174,080 gzip bytes.
+- Local verification resets only `.next/dev` before development hydration. This prevents stale incremental-cache reload loops without changing the standalone artifact, production behavior or isolated mobile review server. Browser evidence screenshots use per-test output folders, including the focal-point review.
+
+### Validation
+- All 1,405 unit/database cases across 377 files passed with 100% statements, branches, functions and lines. All 278 production browser cases passed (62 intentional skips), including no-JavaScript, font, touch and responsive checks. Both development hydration cases passed across 46 route visits. Lint, types, formatting and diff checks passed.
+- A local Linux browser reproduced synthetic touch scrollLeft 0 versus trusted touch scrollLeft 205, and missing fallback NetworkError versus successfully loaded bundled font. A separate constrained-CPU comparison reduced blocking time for Home (1312 → 904 ms) and Contact (1594.5 → 981 ms). This is stress evidence, not a substitute for the unchanged reference-profile gates. All 40 reference-profile performance cases passed locally: minimum Lighthouse 96, LCP at most 690.531 ms, CLS 0, scripted-interaction upper bound 64 ms, and no scroll task over 50 ms. Full pre-push verification repeats these gates; hosted results are linked in delivery.
+- A fresh isolated mobile preview is available on port 3210 through the requested tunnel; its local URL setting changed to the new temporary hostname after Cloudflare expired the previous tunnel. Existing actual content/account are preserved, and verification uses the separate local test database. No credentials or environment file are committed.
+
+### Blockers
+- Hosted CI must pass on the corrected commit before readiness is reported. No schema migration or production deployment.

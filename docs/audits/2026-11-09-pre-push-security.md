@@ -36,3 +36,17 @@ A separate build with an unreachable database address passed, proving the build 
 - Verify actual HTTPS/HSTS, Apache no-execution/media headers/private CV permissions, one Passenger process, and the trusted forwarded-IP boundary on cPanel.
 - Real secrets, Turnstile, SMTP/Microsoft 365 routing, analytics compatibility with CSP and cron configuration.
 - Q52 malware-scanning decision and existing client/manual-device/screen-reader approvals.
+
+## Hosted-runner fixture correction (D192)
+
+Initial run `42569832244` passed build, static checks, dependency security, unit tests and development hydration. Coverage exposed a cold real-image seed taking longer than its 120-second test timeout; subsequent idempotence cases then raced the still-running seed. The cold setup now completes in a ten-minute `beforeAll` barrier before dependent cases execute. All assertions and coverage/public performance limits stay unchanged. Four cold integration cases passed locally in 73.85 seconds. Final hosted results are linked in delivery.
+
+## Hosted browser portability (D193)
+
+The initial E2E job exposed ten deterministic font/touch probe failures and two settling races; the performance job's mobile samples stopped short on Linux and six Lighthouse performance scores were below 95. A local Linux Chromium probe reproduced the native-scroll and FontFaceSet issues without changing app content: the synthetic horizontal gesture moved 0 pixels, trusted touch input moved 205 pixels; the complete CSS font stack threw NetworkError for a missing OS metric fallback, while the bundled family loaded successfully. Probes now test bundled fonts explicitly and use bounded real touch swipes, retaining all original fit, whole-page and performance assertions. The two timing races now await settled state without relaxing pixel bounds.
+
+Independent Reveal/word GSAP initializers now run in cancellable tasks, rechecking current visibility and keeping their existing context cleanup. No streaming fallback or visual/layout change is retained. Eleven relevant unit tests and static checks passed. The queue adds 119 gzip bytes; Home remains at 173,942 / 174,080. A deliberately constrained Linux stress comparison reduced blocking time (Home 1312 → 904 ms; Contact 1594.5 → 981 ms). Reference-profile coverage, browser, hydration and performance gates remain required and are rerun on the correction.
+
+Development hydration initially hit a stale incremental-cache reload loop after prior build experiments. Removing only `.next/dev` restored both checks (46 route visits, 1.3 minutes), with no hydration errors. Local verification now resets that generated dev cache before the hydration stage; the isolated mobile preview and production artifact are unaffected.
+
+Correction validation: 1,405 unit/database cases across 377 files, all four coverage dimensions 100%; 278 production E2E cases passed with 62 intentional skips; both development hydration cases passed across 46 routes. All 40 unchanged reference-profile performance cases passed: minimum Lighthouse 96, maximum initial JS 173,942 / 174,080 gzip bytes, LCP 690.531 ms, CLS 0, scripted-interaction upper bound 64 ms and no scroll task exceeding 50 ms. Static checks and standalone build passed. The full pre-push hook repeats these checks before uploading the correction; final hosted results are linked in delivery.

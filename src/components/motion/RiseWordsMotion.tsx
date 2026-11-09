@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useRef } from "react";
 
+import { scheduleMotion } from "@/lib/motion/schedule";
 import { MOTION } from "@/lib/motion/tokens";
 
 import { useMotion } from "./MotionProvider";
@@ -17,18 +18,22 @@ export function RiseWordsMotion({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const element = ref.current;
-    if (!engine || !element || engine.ScrollTrigger.isInViewport(element, 0.05)) return;
-    const { gsap } = engine;
-    const context = gsap.context(() => {
-      gsap.from(element.querySelectorAll("[data-word]"), {
-        yPercent: 110,
-        duration: MOTION.duration.reveal,
-        stagger: MOTION.wordStagger,
-        ease: MOTION.ease.out,
-        scrollTrigger: { trigger: element, start: "top 90%", once: true },
-      });
-    }, element);
-    return () => context.revert();
+    if (!engine || !element) return;
+    return scheduleMotion(() => {
+      // A visitor may have reached this block while initialization was queued.
+      if (engine.ScrollTrigger.isInViewport(element, 0.05)) return;
+      const { gsap } = engine;
+      const context = gsap.context(() => {
+        gsap.from(element.querySelectorAll("[data-word]"), {
+          yPercent: 110,
+          duration: MOTION.duration.reveal,
+          stagger: MOTION.wordStagger,
+          ease: MOTION.ease.out,
+          scrollTrigger: { trigger: element, start: "top 90%", once: true },
+        });
+      }, element);
+      return () => context.revert();
+    });
   }, [engine]);
 
   return <span ref={ref}>{children}</span>;

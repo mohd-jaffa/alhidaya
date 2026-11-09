@@ -60,7 +60,7 @@ test("the commitment panels fit every supported font at phone, tablet and laptop
       await page.locator(".site-world").evaluate(
         async (el, { roles, stack, font }) => {
           for (const role of roles) (el as HTMLElement).style.setProperty(`--type-${role}`, stack);
-          const family = getComputedStyle(el).getPropertyValue(`--font-${font}`);
+          const family = getComputedStyle(el).getPropertyValue(`--font-${font}`).split(",")[0].trim();
           await document.fonts.load(`600 32px ${family}`);
           await document.fonts.load(`400 21px ${family}`);
           await document.fonts.ready;

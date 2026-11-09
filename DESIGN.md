@@ -558,3 +558,10 @@ Coordinates belong to the selecting page/service reference and follow its Save â
 ## Browser policy (D191, 2026-11-09)
 
 No visual changes. Every document carries a fresh nonce for executable scripts, including admin and error pages. Existing inline focal/animation styles, self-hosted fonts, Google satellite frames, Turnstile and private manual videos remain supported. Public content reads retain their existing publish cache. Reduced motion and responsive design contracts stay unchanged.
+
+D192 changes only the cold integration-test setup deadline/barrier; image encodings, public performance budgets and visual behavior stay unchanged.
+
+
+## Motion startup scheduling (D193, 2026-11-09)
+
+Below-fold block and word reveals initialize in separate cancellable browser tasks after the existing engine loads. Visibility is checked when each task executes, so a visitor who has already reached a block never sees it hidden afterward. Each initializer retains its GSAP context and reverts on cleanup; queued work is cancelled on navigation/reduced-motion changes. Animation values, durations, easing, geometry and visible server content remain unchanged. No streaming fallback or extra loading state is introduced.

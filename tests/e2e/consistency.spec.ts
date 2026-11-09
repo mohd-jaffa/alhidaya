@@ -136,7 +136,7 @@ test("contact tiles retain their requested colours and Reach us cards fit every 
       await page.locator(".site-world").evaluate(
         async (el, { roles, stack, font }) => {
           for (const role of roles) (el as HTMLElement).style.setProperty(`--type-${role}`, stack);
-          const variable = getComputedStyle(el).getPropertyValue(`--font-${font}`);
+          const variable = getComputedStyle(el).getPropertyValue(`--font-${font}`).split(",")[0].trim();
           await document.fonts.load(`600 21px ${variable}`);
           await document.fonts.load(`700 14px ${variable}`);
           await document.fonts.ready;
@@ -174,7 +174,9 @@ test("Careers photo and heading fit every supported font across responsive sizes
       await page.locator(".site-world").evaluate(
         async (el, { roles, stack, font }) => {
           for (const role of roles) (el as HTMLElement).style.setProperty(`--type-${role}`, stack);
-          await document.fonts.load(`600 32px ${getComputedStyle(el).getPropertyValue(`--font-${font}`)}`);
+          await document.fonts.load(
+            `600 32px ${getComputedStyle(el).getPropertyValue(`--font-${font}`).split(",")[0].trim()}`,
+          );
           await document.fonts.ready;
         },
         { roles: FONT_ROLES, stack: FONT_STACKS[font], font },

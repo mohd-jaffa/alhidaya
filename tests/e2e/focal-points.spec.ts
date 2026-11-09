@@ -77,10 +77,12 @@ test("placement framing is keyboard/touch usable, previewed privately and publis
     // Capture the entire control without the sticky editor toolbar crossing a tall element screenshot.
     await page.setViewportSize({ width: page.viewportSize()!.width, height: 1600 });
     await framing.evaluate((element) => element.scrollIntoView({ block: "center" }));
-    await framing.screenshot({ path: `docs/audits/2026-11-07-focal-point-${info.project.name}.png` });
+    await framing.screenshot({ path: info.outputPath("focal-point.png") });
     for (const width of [320, 390, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
+        .toBeLessThanOrEqual(1);
     }
     await page.setViewportSize(info.project.use.viewport!);
     const [preview] = await Promise.all([
@@ -128,7 +130,9 @@ test("placement framing is keyboard/touch usable, previewed privately and publis
     // Enlarged-text editing remains contained too.
     await page.setViewportSize({ width: 320, height: 844 });
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
+      .toBeLessThanOrEqual(1);
   } finally {
     await page.request.put(ADMIN_API_ROUTES.adminPage("ABOUT"), { data: original, headers });
     await page.request.post(ADMIN_API_ROUTES.adminPagePublish("ABOUT"), { headers });

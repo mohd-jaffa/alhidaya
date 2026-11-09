@@ -2,6 +2,7 @@ import { expect, type Page } from "@playwright/test";
 
 import { UI_TEXT } from "@/constants/messages";
 import { droppedFrameRatio, PERFORMANCE_PROFILE } from "@tests/support/performance";
+import { swipe } from "@tests/support/touch";
 
 interface Probe {
   events: { id: number; duration: number; name: string; target: string; inputDelay: number; processing: number }[];
@@ -108,7 +109,6 @@ export async function interact(page: Page): Promise<void> {
 }
 
 export async function scrollPerformance(page: Page, mobile: boolean) {
-  const cdp = await page.context().newCDPSession(page);
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(750);
   const baseline = await page.evaluate(async () => {
@@ -134,16 +134,29 @@ export async function scrollPerformance(page: Page, mobile: boolean) {
   });
   const viewport = page.viewportSize()!;
   const distance = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
-  // Native touch gestures on mobile, wheel gestures through Lenis on desktop.
-  await cdp.send("Input.synthesizeScrollGesture", {
-    x: Math.round(viewport.width / 2),
-    y: Math.round(viewport.height / 2),
-    // Travel beyond the document's last pixel, like a continuing human swipe.
-    // A gesture of exactly the nominal range can stop short after touch rounding/inertia.
-    yDistance: -(distance + viewport.height),
-    speed: 650,
-    gestureSourceType: mobile ? "touch" : "mouse",
-  });
+  // Real swipes stay inside the screen; one offscreen multi-page drag is not
+  // portable to Linux Chromium. Keep sampling through every swipe and its inertia.
+  if (mobile) {
+    const stride = Math.round(viewport.height * 0.6);
+    const attempts = Math.ceil(distance / (stride * 0.5)) + 4;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      if (await page.evaluate(() => scrollY + innerHeight >= document.documentElement.scrollHeight - 3)) break;
+      await swipe(
+        page,
+        { x: viewport.width / 2, y: viewport.height * 0.8 },
+        { x: viewport.width / 2, y: viewport.height * 0.2 },
+      );
+    }
+  } else {
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Input.synthesizeScrollGesture", {
+      x: Math.round(viewport.width / 2),
+      y: Math.round(viewport.height / 2),
+      yDistance: -(distance + viewport.height),
+      speed: 650,
+      gestureSourceType: "mouse",
+    });
+  }
   await page.waitForTimeout(750);
   const end = await page.evaluate(() => {
     window.performanceProbe.scrolling = false;

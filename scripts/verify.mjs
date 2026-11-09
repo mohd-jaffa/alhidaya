@@ -53,6 +53,8 @@ await run("npm", ["run", "build"]);
 await run("npx", ["playwright", "install", "chromium"]);
 // These seed the same isolated test DB, so keep them serial locally. CI isolates each job.
 await run("npm", ["run", "test:e2e"]);
+// Keep development hydration independent of stale incremental state from earlier edits.
+fs.rmSync(".next/dev", { recursive: true, force: true });
 await run("npm", ["run", "test:hydration"]);
 await run("npm", ["run", "test:performance"]);
 console.log("\nAll verification gates passed.");

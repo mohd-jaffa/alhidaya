@@ -1,4 +1,5 @@
 import { writeFile } from "node:fs/promises";
+import { swipe } from "@tests/support/touch";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
@@ -234,7 +235,7 @@ test("Home retains three landscape pyramid layers within the site gutters, with 
       await page.locator(".site-world").evaluate(
         async (world, { font, stack, roles }) => {
           for (const role of roles) (world as HTMLElement).style.setProperty(`--type-${role}`, stack);
-          const variable = getComputedStyle(world).getPropertyValue(`--font-${font}`);
+          const variable = getComputedStyle(world).getPropertyValue(`--font-${font}`).split(",")[0].trim();
           await document.fonts.load(`600 16px ${variable}`);
           await document.fonts.load(`400 16px ${variable}`);
           await document.fonts.ready;
@@ -337,7 +338,9 @@ test("landscape service captions reflow without clipping with doubled phone text
     await page.locator(".site-world").evaluate(
       async (world, { font, stack, roles }) => {
         for (const role of roles) (world as HTMLElement).style.setProperty(`--type-${role}`, stack);
-        await document.fonts.load(`600 32px ${getComputedStyle(world).getPropertyValue(`--font-${font}`)}`);
+        await document.fonts.load(
+          `600 32px ${getComputedStyle(world).getPropertyValue(`--font-${font}`).split(",")[0].trim()}`,
+        );
         await document.fonts.ready;
       },
       { font, stack: FONT_STACKS[font], roles: FONT_ROLES },
@@ -518,15 +521,7 @@ test("Home service links survive a missing enhancement script (D143)", async ({ 
       const track = section.locator(".pyramid-track");
       await track.scrollIntoViewIfNeeded();
       const box = (await track.boundingBox())!;
-      const cdp = await context.newCDPSession(page);
-      await cdp.send("Input.synthesizeScrollGesture", {
-        x: 195,
-        y: Math.round(box.y + box.height / 2),
-        xDistance: -200,
-        yDistance: 0,
-        speed: 500,
-        gestureSourceType: "touch",
-      });
+      await swipe(page, { x: 300, y: box.y + box.height / 2 }, { x: 80, y: box.y + box.height / 2 }, 500);
       await expect.poll(() => track.evaluate((el) => Math.abs(el.scrollLeft))).toBeGreaterThan(30);
     }
   } finally {
@@ -583,13 +578,8 @@ test("a real touch swipe advances Home services and the next tap still opens its
     const selected = await current.textContent();
     const beforeScroll = await page.evaluate(() => scrollY);
     const touchBounds = (await current.boundingBox())!;
-    await cdp.send("Input.synthesizeScrollGesture", {
-      x: 195,
-      y: Math.round(touchBounds.y + touchBounds.height / 2),
-      yDistance: -150,
-      speed: 500,
-      gestureSourceType: "touch",
-    });
+    const touchY = Math.min(700, touchBounds.y + touchBounds.height / 2);
+    await swipe(page, { x: 195, y: touchY }, { x: 195, y: touchY - 150 }, 500);
     await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(beforeScroll + 30);
     await expect(current).toHaveText(selected!);
     await current.scrollIntoViewIfNeeded();

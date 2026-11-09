@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { RiseWords } from "@/components/motion/RiseWords";
@@ -15,11 +15,12 @@ describe("RiseWords (D129)", () => {
     expect(container.querySelectorAll("[data-word]")).toHaveLength(3);
   });
 
-  it("raises its words one after another from behind their line, once, as it scrolls into view", () => {
+  it("raises its words one after another from behind their line, once, as it scrolls into view", async () => {
     const fake = fakeEngine();
     motion.engine = fake.engine;
     const { container, unmount } = render(<RiseWords text="Our clients" />);
     const holder = container.firstElementChild;
+    await waitFor(() => expect(fake.gsap.from).toHaveBeenCalled());
     expect(fake.gsap.from).toHaveBeenCalledWith(container.querySelectorAll("[data-word]"), {
       yPercent: 110,
       duration: MOTION.duration.reveal,
@@ -31,10 +32,11 @@ describe("RiseWords (D129)", () => {
     expect(fake.revert).toHaveBeenCalled();
   });
 
-  it("never moves a heading already on screen", () => {
+  it("never moves a heading already on screen", async () => {
     const fake = fakeEngine({ inViewport: true });
     motion.engine = fake.engine;
     render(<RiseWords text="About us" />);
+    await waitFor(() => expect(fake.ScrollTrigger.isInViewport).toHaveBeenCalled());
     expect(fake.gsap.from).not.toHaveBeenCalled();
   });
 });

@@ -210,7 +210,7 @@ test("formatted sections, typewriter and navigation fit all fonts and enlarged m
                   document.documentElement.style.fontSize = `${scale * 100}%`;
                   const world = document.querySelector<HTMLElement>(".site-world")!;
                   for (const role of roles) world.style.setProperty(`--type-${role}`, stack);
-                  const family = getComputedStyle(world).getPropertyValue(`--font-${font}`);
+                  const family = getComputedStyle(world).getPropertyValue(`--font-${font}`).split(",")[0].trim();
                   await document.fonts.load(`700 16px ${family}`, "Quality care");
                   await document.fonts.ready;
                   return {

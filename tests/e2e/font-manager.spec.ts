@@ -134,7 +134,7 @@ test("all font roles load every bundled font and preserve public page fit across
           async ({ roles, stack, font }) => {
             const world = document.querySelector<HTMLElement>(".site-world")!;
             for (const role of roles) world.style.setProperty(`--type-${role}`, stack);
-            const variable = getComputedStyle(world).getPropertyValue(`--font-${font}`);
+            const variable = getComputedStyle(world).getPropertyValue(`--font-${font}`).split(",")[0].trim();
             for (const weight of [400, 500, 600, 700]) {
               const loaded = await document.fonts.load(`${weight} 16px ${variable}`, "Al Hidaya +974 care — 24/7");
               if (loaded.length === 0) throw new Error(`Font not loaded: ${font}/${weight}`);

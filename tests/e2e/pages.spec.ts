@@ -75,7 +75,15 @@ test("mobile menu WhatsApp and Call tiles sit side by side, each number on one l
     await page.getByRole("button", { name: UI_TEXT.menu, exact: true }).click();
     const menu = page.getByRole("dialog", { name: UI_TEXT.menu });
     // Measure once the sheet and its rows have settled (D167), not while they move.
-    await menu.evaluate((sheet) => Promise.all(sheet.getAnimations({ subtree: true }).map((a) => a.finished)));
+    await menu.evaluate((sheet) => Promise.allSettled(sheet.getAnimations({ subtree: true }).map((a) => a.finished)));
+    await expect
+      .poll(() =>
+        menu.evaluate(
+          (sheet) =>
+            sheet.getAnimations({ subtree: true }).filter((animation) => animation.playState === "running").length,
+        ),
+      )
+      .toBe(0);
     const whatsapp = menu.getByRole("link", { name: new RegExp(`^${UI_TEXT.whatsappUs}`) });
     const call = menu.getByRole("link", { name: new RegExp(`^${UI_TEXT.callUs}`) });
     for (const tile of [whatsapp, call]) {

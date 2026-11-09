@@ -89,7 +89,9 @@ test("the expanded phone menu reflows all fonts at normal and doubled text sizes
         await page.locator(".site-world").evaluate(
           async (world, { font, roles, stack }) => {
             for (const role of roles) (world as HTMLElement).style.setProperty(`--type-${role}`, stack);
-            await document.fonts.load(`600 32px ${getComputedStyle(world).getPropertyValue(`--font-${font}`)}`);
+            await document.fonts.load(
+              `600 32px ${getComputedStyle(world).getPropertyValue(`--font-${font}`).split(",")[0].trim()}`,
+            );
             await document.fonts.ready;
           },
           { font, roles: FONT_ROLES, stack: FONT_STACKS[font] },

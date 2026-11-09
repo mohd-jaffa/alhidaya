@@ -35,7 +35,16 @@ async function clearContent() {
   }
 }
 
-beforeAll(clearContent);
+const own = pageFixture("TERMS");
+let seeded: Awaited<ReturnType<typeof seedContent>>;
+// This fixture encodes every original photo/logo through the real upload pipeline.
+// A cold two-core CI runner needs longer than a normal request test. Keeping it
+// in beforeAll prevents dependent idempotence tests from racing a timed-out seed.
+beforeAll(async () => {
+  await clearContent();
+  await saveDocumentDraft("PAGE:TERMS", own, actor);
+  seeded = await seedContent(actor, "2026-10-29");
+}, 600_000);
 
 afterAll(async () => {
   await clearContent();
@@ -44,75 +53,67 @@ afterAll(async () => {
 });
 
 describe("seedContent, against the local MySQL", () => {
-  it(
-    "fills what is missing as drafts, leaving a page that has one alone, and publishes nothing",
-    { timeout: 120_000 },
-    async () => {
-      const own = pageFixture("TERMS");
-      await saveDocumentDraft("PAGE:TERMS", own, actor);
+  it("fills what is missing as drafts, leaving a page that has one alone, and publishes nothing", async () => {
+    expect(seeded).toEqual({
+      documents: [
+        "PAGE:HOME",
+        "PAGE:ABOUT",
+        "PAGE:SERVICES",
+        "PAGE:CAREERS",
+        "PAGE:CONTACT",
+        "PAGE:QUOTE",
+        "PAGE:PRIVACY",
+        "SITE",
+        "TYPOGRAPHY",
+        "ORDER:SERVICES",
+        "ORDER:CLIENTS",
+      ],
+      services: 8,
+      jobs: 1,
+      clients: SEED_CLIENTS.length,
+      photos: IMAGES.length,
+    });
+    expect(await readDocumentDraft("PAGE:TERMS")).toMatchObject({ draft: own });
 
-      const result = await seedContent(actor, "2026-10-29");
-      expect(result).toEqual({
-        documents: [
-          "PAGE:HOME",
-          "PAGE:ABOUT",
-          "PAGE:SERVICES",
-          "PAGE:CAREERS",
-          "PAGE:CONTACT",
-          "PAGE:QUOTE",
-          "PAGE:PRIVACY",
-          "SITE",
-          "TYPOGRAPHY",
-          "ORDER:SERVICES",
-          "ORDER:CLIENTS",
-        ],
-        services: 8,
-        jobs: 1,
-        clients: SEED_CLIENTS.length,
-        photos: IMAGES.length,
-      });
-      expect(await readDocumentDraft("PAGE:TERMS")).toMatchObject({ draft: own });
+    const services = await listRecordsForAdmin<ServiceDocument>("SERVICES");
+    const order = await readDocumentDraft<string[]>("ORDER:SERVICES");
+    const slugs = order?.draft.map((id) => services.find((service) => service.id === id)?.draft.slug);
+    expect(slugs).toEqual(SEED_SERVICES.map((service) => service.slug));
+    expect(await listRecordsForAdmin("JOBS")).toEqual([
+      expect.objectContaining({ published: null, draft: expect.objectContaining({ postedOn: "2026-10-29" }) }),
+    ]);
 
-      const services = await listRecordsForAdmin<ServiceDocument>("SERVICES");
-      const order = await readDocumentDraft<string[]>("ORDER:SERVICES");
-      const slugs = order?.draft.map((id) => services.find((service) => service.id === id)?.draft.slug);
-      expect(slugs).toEqual(SEED_SERVICES.map((service) => service.slug));
-      expect(await listRecordsForAdmin("JOBS")).toEqual([
-        expect.objectContaining({ published: null, draft: expect.objectContaining({ postedOn: "2026-10-29" }) }),
-      ]);
+    // Every image is in the library, each kept with its words and where it came from.
+    const photos = await seedPhotoRows();
+    expect(photos.map((row) => [row.alt?.en, row.source]).toSorted()).toEqual(
+      IMAGES.map((image) => [image.alt, image.source]).toSorted(),
+    );
+    expect(photos.every((row) => row.variants.length > 0)).toBe(true);
+    const home = (await readDocumentDraft<PageDocument>("PAGE:HOME"))?.draft;
+    const sign = home?.sections[0];
+    // Home's first slide shows the current site's first slide photograph (D128).
+    const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.currentHomeVisit.source.url);
+    expect(sign?.type === "SIGN" ? sign.content.slides[0].image : null).toEqual({ mediaId: hero?.id });
+    // Each service shows the current site's own photograph (D102, D118).
+    const elderly = photos.find((row) => row.source?.url === SEED_PHOTOS.currentHelpingUp.source.url);
+    expect(services.find((service) => service.draft.slug === "elderly-care")?.draft.image).toEqual({
+      mediaId: elderly?.id,
+    });
+    expect(services.every((service) => service.draft.image !== null)).toBe(true);
 
-      // Every image is in the library, each kept with its words and where it came from.
-      const photos = await seedPhotoRows();
-      expect(photos.map((row) => [row.alt?.en, row.source]).toSorted()).toEqual(
-        IMAGES.map((image) => [image.alt, image.source]).toSorted(),
-      );
-      expect(photos.every((row) => row.variants.length > 0)).toBe(true);
-      const home = (await readDocumentDraft<PageDocument>("PAGE:HOME"))?.draft;
-      const sign = home?.sections[0];
-      // Home's first slide shows the current site's first slide photograph (D128).
-      const hero = photos.find((row) => row.source?.url === SEED_PHOTOS.currentHomeVisit.source.url);
-      expect(sign?.type === "SIGN" ? sign.content.slides[0].image : null).toEqual({ mediaId: hero?.id });
-      // Each service shows the current site's own photograph (D102, D118).
-      const elderly = photos.find((row) => row.source?.url === SEED_PHOTOS.currentHelpingUp.source.url);
-      expect(services.find((service) => service.draft.slug === "elderly-care")?.draft.image).toEqual({
-        mediaId: elderly?.id,
-      });
-      expect(services.every((service) => service.draft.image !== null)).toBe(true);
+    // The current site's client logos, as drafts in its order, each with its logo (D118).
+    const clients = await listRecordsForAdmin<ClientDocument>("CLIENTS");
+    const clientOrder = (await readDocumentDraft<string[]>("ORDER:CLIENTS"))?.draft;
+    const named = clientOrder?.map((id) => clients.find((client) => client.id === id)?.draft);
+    expect(named?.map((client) => client?.name.en)).toEqual(SEED_CLIENTS.map((client) => client.name));
+    const logo = photos.find((row) => row.source?.url === SEED_CLIENTS[0].source.url);
+    expect(named?.[0]?.logo).toEqual({ mediaId: logo?.id });
+    expect(await listPublishedRecords("CLIENTS")).toEqual([]);
 
-      // The current site's client logos, as drafts in its order, each with its logo (D118).
-      const clients = await listRecordsForAdmin<ClientDocument>("CLIENTS");
-      const clientOrder = (await readDocumentDraft<string[]>("ORDER:CLIENTS"))?.draft;
-      const named = clientOrder?.map((id) => clients.find((client) => client.id === id)?.draft);
-      expect(named?.map((client) => client?.name.en)).toEqual(SEED_CLIENTS.map((client) => client.name));
-      const logo = photos.find((row) => row.source?.url === SEED_CLIENTS[0].source.url);
-      expect(named?.[0]?.logo).toEqual({ mediaId: logo?.id });
-      expect(await listPublishedRecords("CLIENTS")).toEqual([]);
-
-      expect(await readPublishedDocument("PAGE:HOME")).toBeNull();
-      expect(await readPublishedDocument("SITE")).toBeNull();
-      expect(await listPublishedRecords("SERVICES")).toEqual([]);
-    },
-  );
+    expect(await readPublishedDocument("PAGE:HOME")).toBeNull();
+    expect(await readPublishedDocument("SITE")).toBeNull();
+    expect(await listPublishedRecords("SERVICES")).toEqual([]);
+  });
 
   it("writes nothing the second time", async () => {
     expect(await seedContent(actor)).toEqual({ documents: [], services: 0, jobs: 0, clients: 0, photos: 0 });
