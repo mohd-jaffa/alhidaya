@@ -235,7 +235,6 @@ test("Contact lists every way to reach the company and the way to the office, an
     /^https:\/\/www\.google\.com\/maps\//,
   );
   await expect(message.getByTitle(UI_TEXT.satelliteMap)).toBeVisible();
-  await message.getByTitle(UI_TEXT.satelliteMap).scrollIntoViewIfNeeded();
   await expect(message.getByTitle(UI_TEXT.satelliteMap)).toHaveAttribute(
     "src",
     /https:\/\/maps\.google\.com\/maps\?.*t=k.*output=embed/,

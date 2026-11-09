@@ -1,7 +1,7 @@
 "use client";
 "use no memo"; // Rarely redrawn: memoising it would only add to the page's JavaScript budget (plan §31).
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import { CarouselArrow } from "@/components/ui/carousel-arrow";
 import { UI_TEXT } from "@/constants/messages";
@@ -30,16 +30,6 @@ export function HeroSlides({
   /** The card on the photo, when the admin gave one. */
   note: ReactNode;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return;
-    const element = ref.current!;
-    const observer = new IntersectionObserver(([entry]) => {
-      element.toggleAttribute("data-offscreen", !entry.isIntersecting);
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
   const count = texts.length;
   const [{ at, was, turn }, setPlace] = useState({ at: 0, was: -1, turn: 0 });
   const move = (step: number) =>
@@ -47,7 +37,6 @@ export function HeroSlides({
 
   return (
     <section
-      ref={ref}
       aria-roledescription="carousel"
       aria-label={label}
       aria-description={count > 1 ? UI_TEXT.slidesAutoplayHelp : undefined}

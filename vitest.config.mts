@@ -35,7 +35,11 @@ export default defineConfig({
         "src/app/**/opengraph-image.tsx",
         "src/instrumentation.ts",
       ],
-      thresholds: { lines: 100, branches: 100, functions: 100, statements: 100 },
+      // A CI shard holds only part of the code, so it checks nothing; the job that merges the shards' blobs
+      // runs without COVERAGE_SHARD and demands 100% (D196).
+      thresholds: process.env.COVERAGE_SHARD
+        ? { lines: 0, branches: 0, functions: 0, statements: 0 }
+        : { lines: 100, branches: 100, functions: 100, statements: 100 },
     },
     projects: [
       {

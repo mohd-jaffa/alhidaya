@@ -38,3 +38,6 @@ next-env.d.ts
 /.impeccable/build/
 /.impeccable/questions/
 /.impeccable/hook.cache.json
+
+# Vitest shard blobs, merged in CI
+.vitest-reports/

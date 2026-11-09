@@ -215,7 +215,7 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
         onSubmit={form.handleSubmit(runSave, invalid)}
         className="z-[5] -mx-gutter -mt-8 border-b border-rule bg-ground px-gutter py-4 lg:sticky lg:top-0 lg:-mx-12 lg:-mt-10 lg:px-12"
       >
-        <div className="grid max-w-5xl gap-3">
+        <div className="grid max-w-5xl grid-cols-[minmax(0,1fr)] gap-3">
           {back ? (
             <Link
               href={back.href}
@@ -270,7 +270,12 @@ export function DraftEditor<TInput extends FieldValues, TOutput>({
         </div>
       </form>
 
-      <fieldset ref={root} disabled={busy} aria-label={name} className="mt-6 grid min-w-0 max-w-5xl gap-6">
+      <fieldset
+        ref={root}
+        disabled={busy}
+        aria-label={name}
+        className="mt-6 grid min-w-0 max-w-5xl grid-cols-[minmax(0,1fr)] gap-6"
+      >
         {formatting ? <p className="max-w-prose text-small text-ink-2">{ADMIN_TEXT.inlineFormattingHint}</p> : null}
         {errorCount > 0 ? (
           <Notice tone="error" title={ADMIN_TEXT.fieldsNeedAttention(errorCount)}>

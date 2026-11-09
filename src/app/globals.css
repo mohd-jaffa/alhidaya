@@ -745,8 +745,6 @@
     animation: run-bar var(--duration-slide) linear both;
   }
 
-  .slides-band[data-offscreen] .slide-fill,
-  .slides-band[data-offscreen] .slide-image,
   .slides-band:focus-visible .slide-bar[data-current] .slide-fill,
   .slides-band:focus-visible .slide-photo[data-current] .slide-image,
   .slides-band:has(:focus-visible) .slide-bar[data-current] .slide-fill,

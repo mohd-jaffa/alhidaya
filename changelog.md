@@ -4835,3 +4835,18 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - The mobile performance budgets remain the open item recorded above (strict locally by hand, report-only on GitHub).
+
+
+## 2026-11-09 — CI in about ten minutes
+
+### Changed
+- D196 / R7.3c: the last hosted run took 19 minutes (coverage 14, E2E 16 and 17, mobile performance 14), so the slow serial suites now run in parallel shards, each on its own database and app: one job for lint, format, types, test layout and both audits; coverage in four shards (blob reports, no per-shard threshold via `COVERAGE_SHARD`) merged by a job that demands 100% (verified locally, including the merge without a database); E2E phone and desktop in four shards each (`--shard`); mobile performance in three shards, desktop in one (`fullyParallel` with one worker per job). Estimated wall-clock about ten minutes, at about four times the runner minutes (about 110 per run). No test, budget or threshold changed.
+- The user asked for this one push to go without the pre-push hook (`--no-verify`); later pushes use the hook.
+- The service and page editors' grids (`DraftEditor`) now use shrinkable columns too, the same fix as the dashboard's, as a defence for the Linux-only 96 px overflow at doubled text in the service editor (not reproduced locally; the hosted run will show).
+- Reverted three uncommitted performance edits that the hosted run showed to be regressions: `Suspense` around the Home hero, Mission and Clients (the hero streamed in after the first paint: desktop layout shift 0.37, 0.70 in the cold-font test, mobile LCP 1.1 s); the hero's off-screen pause (broke the D136 playback test); the map's scroll-idle deferral (broke the keyboard-stops test). Kept: links without prefetch, the icon sprite, motion started in a transition.
+
+### Validation
+- Previous hosted run: coverage, hydration, lint, format, types and audits passed; the failures were the three regressions above and the admin framing panel's doubled-text overflow (below). A two-shard blob run merged locally into one coverage report with the real thresholds.
+
+### Blockers
+- The same open item as before (mobile performance budgets, report-only on GitHub). If the hosted E2E still shows the doubled-text overflow in the service editor's framing panel (a Linux-only 96 px), it is recorded here for follow-up.

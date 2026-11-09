@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { InlineText } from "@/components/ui/inline-text";
 import { Words } from "@/components/motion/Words";
 import { IconChip } from "@/components/ui/icon-chip";
@@ -72,9 +71,7 @@ export function HeroSection({
 
   return (
     <div id={anchor} className="opening-blend">
-      <Suspense>
-        <HeroSlides label={UI_TEXT.slidesLabel} photos={photos} texts={texts} note={card} />
-      </Suspense>
+      <HeroSlides label={UI_TEXT.slidesLabel} photos={photos} texts={texts} note={card} />
     </div>
   );
 }

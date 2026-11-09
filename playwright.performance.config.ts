@@ -13,6 +13,8 @@ export default defineConfig({
   timeout: 180_000,
   retries: 0,
   workers: 1,
+  // One worker, but each test may be sharded onto its own CI job (the pages share no state).
+  fullyParallel: true,
   // Trace snapshots alter interaction timings under 4× CPU throttling. Lighthouse keeps its own report.
   use: { ...journeys.use, trace: "off" },
   projects: [

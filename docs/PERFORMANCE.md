@@ -70,7 +70,7 @@ runner results are not treated as interchangeable or as physical-device evidence
 
 Per-route `summary.json`, `runtime.json`, desktop-scroll JSON and full Lighthouse
 JSON/HTML reports are written under `test-results/performance/`. CI runs this gate beside the
-functional E2E suites, as one job per project, and uploads the resulting artifacts even on
+functional E2E suites, in sharded jobs, and uploads the resulting artifacts even on
 success. On GitHub's runners it is report-only (D194): the budgets are unchanged and stay strict
 in `npm run verify`, but a miss does not block the run. Coverage
 uses one worker: the real photo-seed encodes otherwise competed for CPU and

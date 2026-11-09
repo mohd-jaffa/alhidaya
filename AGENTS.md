@@ -587,9 +587,9 @@ tests/
 CI (`.github/workflows/ci.yml`) on every push to `main` and every PR:
 
 ```text
-parallel: lint | format | types | audit | coverage + MySQL (every unit and database test) | build | dev hydration + MySQL
-build → parallel: E2E phone | E2E desktop (axe on every page) | performance (report-only)
-every required job → All gates passed
+parallel: static + security (lint, format, types, test layout, audits) | coverage in 4 shards + MySQL, then merged at 100% | build | dev hydration + MySQL
+build → parallel: E2E phone and desktop (axe on every page), 4 shards each | performance (report-only), 4 shards
+every required job → All gates passed (about ten minutes, D196)
 ```
 
 The performance job reports on hosted runners but does not block them (D194): the

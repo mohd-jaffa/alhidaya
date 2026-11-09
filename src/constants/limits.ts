@@ -5,9 +5,6 @@
 
 const MB = 1024 * 1024;
 
-/** Let native scrolling settle before starting a visible third-party map. */
-export const MAP_SCROLL_IDLE_MS = 200;
-
 /** Streamed JSON ceilings: room for the maximum escaped page document, smaller public payloads. */
 export const JSON_BODY_LIMITS = { content: 32 * MB, enquiry: 64 * 1024, auth: 16 * 1024 } as const;
 

@@ -1,6 +1,7 @@
-# Independent gates start together; each database job has its own local services.
-# One build feeds the browser jobs, which split by project so none waits for another.
-# The performance job reports on hosted runners but does not block (D194); `npm run verify` keeps it strict.
+# Built to finish in about ten minutes (D196): the slow serial suites (coverage, E2E, performance) are
+# sharded across parallel jobs, each with its own database and app. Independent gates start together;
+# one build feeds the browser jobs. The performance job reports on hosted runners but does not block
+# (D194); `npm run verify` keeps its budgets strict.
 name: CI
 
 on:
@@ -22,43 +23,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  checks:
-    name: ${{ matrix.gate }}
+  # Lint, format, types, test-file layout and both dependency audits: about a minute each, one runner.
+  # Each step runs even if an earlier one failed, so one run shows every problem.
+  static:
+    name: Static and security gates
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: npm run lint
+      - run: npm run format:check
+        if: ${{ !cancelled() }}
+      - run: npm run typecheck
+        if: ${{ !cancelled() }}
+      - run: node scripts/check-test-paths.mjs
+        if: ${{ !cancelled() }}
+      - run: npm audit --audit-level=high
+        if: ${{ !cancelled() }}
+      - run: npm run audit:shipped
+        if: ${{ !cancelled() }}
+
+  # Every unit and database test, in four shards. A shard holds part of the code, so it checks no
+  # threshold (COVERAGE_SHARD in vitest.config.mts); the next job merges them and demands 100%.
+  coverage:
+    name: coverage ${{ matrix.shard }}/4
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        gate:
-          - lint
-          - format:check
-          - typecheck
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ inputs.ref }}
-          persist-credentials: false
-      - uses: ./.github/actions/setup
-      - run: npm run "${{ matrix.gate }}"
-
-  audit:
-    name: Dependency security
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ inputs.ref }}
-          persist-credentials: false
-      - uses: ./.github/actions/setup
-      - run: npm audit --audit-level=high
-      - run: npm run audit:shipped
-
-  # Every unit test runs here too: the coverage run covers both projects, so no separate unit job.
-  coverage:
-    name: Unit and database coverage (100%)
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -67,8 +65,36 @@ jobs:
       - uses: ./.github/actions/setup
       - run: cp .env.example .env.local
       - uses: ./.github/actions/services
-      # AVIF encoding and DB writes stay serial within this job.
-      - run: npm run test:coverage -- --maxWorkers=1
+      # AVIF encoding and DB writes stay serial within a shard.
+      - run: npx vitest run --reporter=blob --coverage --shard=${{ matrix.shard }}/4 --maxWorkers=1
+        env:
+          COVERAGE_SHARD: "1"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: coverage-blob-${{ matrix.shard }}
+          path: .vitest-reports/
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
+  coverage-merge:
+    name: Unit and database coverage (100%)
+    needs: coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: coverage-blob-*
+          merge-multiple: true
+          path: .vitest-reports
+      # The real config: statements, branches, functions and lines must all be 100%.
+      - run: npx vitest --merge-reports --coverage --reporter=default
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
@@ -80,7 +106,7 @@ jobs:
   build:
     name: Build once
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -99,18 +125,17 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  # Phone and desktop journeys share no state, so each runs on its own database and app, serially inside.
+  # Phone and desktop journeys, each in four shards of test files, every shard on its own database and app.
   e2e:
-    name: e2e (${{ matrix.project }})
+    name: e2e ${{ matrix.project }} ${{ matrix.shard }}/4
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        project:
-          - phone
-          - desktop
+        project: [phone, desktop]
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -125,11 +150,11 @@ jobs:
       - run: cp .env.example .env.local
       - uses: ./.github/actions/services
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e -- --project="${{ matrix.project }}"
+      - run: npm run test:e2e -- --project="${{ matrix.project }}" --shard=${{ matrix.shard }}/4
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: e2e-${{ matrix.project }}-reports
+          name: e2e-${{ matrix.project }}-${{ matrix.shard }}-reports
           path: |
             playwright-report/
             test-results/
@@ -138,19 +163,21 @@ jobs:
 
   # Report-only (D194): hosted runners miss the mobile Lighthouse, INP and long-task budgets on a few
   # pages. Every number is uploaded; the budgets stay strict in `npm run verify`. Timing-sensitive, so
-  # each project is serial, and it needs only the database.
+  # each job is serial, and it needs only the database.
   performance:
-    name: performance (${{ matrix.project }}, report-only)
+    name: performance ${{ matrix.project }} ${{ matrix.shard }}/${{ matrix.of }} (report-only)
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
-        project:
-          - mobile-performance
-          - desktop-scroll-performance
+        include:
+          - { project: mobile-performance, shard: 1, of: 3 }
+          - { project: mobile-performance, shard: 2, of: 3 }
+          - { project: mobile-performance, shard: 3, of: 3 }
+          - { project: desktop-scroll-performance, shard: 1, of: 1 }
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -167,11 +194,11 @@ jobs:
         with:
           services: mysql
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:performance -- --project="${{ matrix.project }}"
+      - run: npm run test:performance -- --project="${{ matrix.project }}" --shard=${{ matrix.shard }}/${{ matrix.of }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: performance-${{ matrix.project }}-reports
+          name: performance-${{ matrix.project }}-${{ matrix.shard }}-reports
           path: |
             playwright-report/
             test-results/
@@ -184,7 +211,7 @@ jobs:
   hydration:
     name: Development hydration
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -210,7 +237,7 @@ jobs:
   ready:
     name: All gates passed
     if: always()
-    needs: [checks, audit, coverage, build, e2e, hydration]
+    needs: [static, coverage, coverage-merge, build, e2e, hydration]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

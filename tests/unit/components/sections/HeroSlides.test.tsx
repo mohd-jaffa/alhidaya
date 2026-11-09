@@ -1,11 +1,8 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import { HeroSlides } from "@/components/sections/HeroSlides";
 import { UI_TEXT } from "@/constants/messages";
-import { mockObservers } from "@tests/support/motion";
-
-afterEach(() => vi.unstubAllGlobals());
 
 const slides = (count: number) =>
   render(
@@ -34,21 +31,6 @@ const current = (selector: string) => document.querySelector(`${selector}[data-c
 const currentImage = () => document.querySelector(".slide-photo[data-current] .slide-image")!;
 
 describe("HeroSlides (D128, D136)", () => {
-  it("pauses its existing CSS clock offscreen, resumes in view and releases observation", () => {
-    const { intersections } = mockObservers();
-    const { unmount } = slides(3);
-    const hero = screen.getByRole("region", { name: "Highlights" });
-    const observer = intersections[0];
-    expect(observer.observed).toEqual([hero]);
-    act(() =>
-      observer.callback([{ isIntersecting: false }] as IntersectionObserverEntry[], {} as IntersectionObserver),
-    );
-    expect(hero).toHaveAttribute("data-offscreen");
-    act(() => observer.callback([{ isIntersecting: true }] as IntersectionObserverEntry[], {} as IntersectionObserver));
-    expect(hero).not.toHaveAttribute("data-offscreen");
-    unmount();
-    expect(observer.disconnect).toHaveBeenCalled();
-  });
   it("opens on the first photo and words, with chevrons around decorative progress and no count", () => {
     slides(3);
     const hero = screen.getByRole("region", { name: "Highlights" });
