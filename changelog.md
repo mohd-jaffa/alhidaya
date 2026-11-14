@@ -5107,3 +5107,14 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - OPEN: the real time is unproven until the workflow runs on GitHub; the E2E scope (every test kept) is the agent's default because the user was not sure.
 
+## 2026-11-14 — Release v1.0.1: the version
+
+### Changed
+- `package.json` and `package-lock.json`: 1.0.0 → **1.0.1**, so the tag `v1.0.1` equals `package.json` (the release's guard refuses a tag that does not) and the admin column reads "Admin panel v1.0.1". This release holds: the version label and the loaders in the admin, releases named after their tag, no pre-push hook, and a slimmer main CI. No schema change, so no migration runs.
+
+### Validation
+- Lint, format and types pass; only the two version fields changed.
+
+### Blockers
+- None.
+
