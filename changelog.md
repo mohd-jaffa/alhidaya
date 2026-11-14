@@ -5118,3 +5118,20 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - None.
 
+## 2026-11-14 — Main's CI: shards split by time, and the seed's images cached
+
+### Found
+- The first run of the slimmed CI (run 43602418240, `508f85f`) passed in **11 min 16 s** (was 14.5): the build 158 s, then the browser shards, the slowest 476 s. From its logs and step timings: the tests themselves take about 21 minutes in total across the 16 shards (phone 470 s, desktop 819 s), but each shard spent about 135 s in the global setup (the seed converts its photographs with sharp) and about 75 s in setup steps, and Playwright's `--shard` splits by test count, so the heavy files clustered: shards of 230 to 476 s. The desktop's `consistency.spec.ts` alone is 158 s.
+
+### Changed
+- `scripts/e2e-shard.mjs` and `tests/e2e/shard-weights.json`: each shard runs the spec files that balance by measured seconds (heaviest first to the lightest shard; unlisted files count 10 s; an empty shard is an error). `ci.yml` has six phone shards and ten desktop shards (`matrix.include`), each running `playwright test --project=<project> <its files>`.
+- `tests/support/seed-cache.ts` and `tests/e2e/global-setup.ts`: with `E2E_SEED_CACHE` set (CI only) the global setup restores the library's rows and files an earlier run kept, so the seed finds its images instead of converting them again, and keeps them after a cold run. A local trial: cold 80.4 s, warm 0.34 s, the same 46 library rows, 12 documents, 20 records and 242 files. A cache that cannot be used is ignored. `ci.yml` caches `.e2e-seed-cache`, keyed by the seed photos, the image code, the migrations and the lock file; `/.e2e-seed-cache/` is git-ignored.
+- `tests/contract/e2e-shards.test.ts` (6 tests: every spec runs exactly once in every layout, the same answer each time, a new spec is placed, no stale weight and the heaviest file not shared with another heavy one, an empty shard refused) and `ci-workflow.test.ts` updated. Decision D208.
+
+### Validation
+- Contract tests (103), lint and types pass; the seed cache trial above. Not yet run on GitHub.
+- Estimate: the first run after this change (cache cold) about 9 minutes, later runs about 7.
+
+### Blockers
+- OPEN: the real time is proven only when the workflow runs on GitHub (twice: once to fill the cache, once to use it).
+

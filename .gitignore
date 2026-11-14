@@ -47,3 +47,4 @@ next-env.d.ts
 
 # The launch content exported from the local database and its media files (RELEASE.md Q4); regenerated on demand
 /release-content/
+/.e2e-seed-cache/

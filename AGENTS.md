@@ -600,7 +600,7 @@ CI (`.github/workflows/ci.yml`) on every push to `main` and every PR:
 
 ```text
 parallel: static + security (lint, format, types, test layout, audits) | coverage in 4 shards + MySQL, then merged at 100% | build
-build → parallel: E2E phone and desktop (axe on every page), 8 shards each
+build → parallel: E2E phone (6 shards) and desktop (10 shards), axe on every page, split by measured time
 every job → All gates passed (D207: only what protects main, well inside ten minutes)
 ```
 
