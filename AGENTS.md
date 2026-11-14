@@ -547,11 +547,11 @@ true in the same commit.
   env files), uploads over SSH into a new release folder, migrates the
   database as the migration user, switches, restarts, and keeps the previous
   release for rollback. The media and CV folders sit outside the releases.
-  The workflow is started by hand (`workflow_dispatch`, never by a push or a
-  tag): a rehearsal run builds once and deploys to the hidden preview host,
-  and the production run promotes that very build after a typed confirmation
-  (plan D201). A site that does not answer after the switch is switched back
-  by itself.
+  The release is a pushed `vX.Y.Z` tag (equal to `package.json`, on `main`):
+  CI re-runs on that tag, then the site is built once and deployed to the live
+  app. The rehearsal is a manual run of the same workflow against the hidden
+  preview host (plan D201). A branch push never deploys. A site that does not
+  answer after the switch is switched back by itself.
 - The domain's mail is **Microsoft 365**; the cPanel mail routing must stay
   **Remote**.
 - The server's credentials and the content of its `.env` files are never

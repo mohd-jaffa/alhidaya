@@ -4961,3 +4961,17 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - None new.
 
+## 2026-11-14 — Release v1.0.0: the release now starts on its tag (user's instruction)
+
+### Changed
+- The user asked for the release to happen on the release tag `v1.0.0` and for CI to run on each release tag. `.github/workflows/release.yml` now starts on a pushed `vX.Y.Z` tag (it must equal `package.json` and sit on `main`): CI re-runs on that exact tag, then the site is built once and deployed to the live app. A manual run from `main` is the rehearsal and deploys the same build to the hidden preview host. This replaces D201's first form (manual-only, promoting a rehearsed artifact with a typed phrase), which is gone; D201, plan §35.3, AGENTS.md §23 and `docs/RELEASE.md` say so.
+- `docs/RELEASE.md`: E6 and E7 swapped (the live app is created first, then the tag is pushed: a tag pushed with no live app on the server stops at the deploy's first step and changes nothing). CI now runs inside the cutover window, so the maintenance page stays up for about 15 minutes longer.
+- The first rehearsal run (43579774106) was cancelled during CI, before it deployed anything: the rehearsal must run on the commit that will carry the tag, and the tag has to include the new trigger.
+- `tests/contract/release-workflow.test.ts`: 19 tests for the new triggers and guards.
+
+### Validation
+- Contract tests pass; `npm run verify:fast` run for the commit.
+
+### Blockers
+- None new. Still open: the Turnstile keys for the live cutover.
+

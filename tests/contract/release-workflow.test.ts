@@ -30,20 +30,32 @@ function runLines(source: string): string[] {
 }
 
 describe("release workflow", () => {
-  it("starts only by hand: a push, a pull request, a tag or a timer never deploys", () => {
+  it("starts on a version tag or by hand: a branch push, a pull request or a timer never deploys", () => {
     const triggers = workflow.slice(workflow.indexOf("\non:\n"), workflow.indexOf("\npermissions:"));
     expect(triggers).toContain("workflow_dispatch:");
-    expect(triggers).not.toMatch(/^ {2}(push|pull_request|pull_request_target|schedule|release|workflow_run|create):/m);
+    // The one push trigger is a vX.Y.Z tag, never a branch.
+    expect(triggers).toMatch(/^ {2}push:\n {4}tags: \["v\[0-9\]\+\.\[0-9\]\+\.\[0-9\]\+"\]\n/m);
+    expect(triggers).not.toMatch(/branches:/);
+    expect(triggers).not.toMatch(/^ {2}(pull_request|pull_request_target|schedule|release|workflow_run|create):/m);
   });
 
-  it("runs only from main, one at a time, never cancelled halfway", () => {
-    expect(workflow).toContain("github.ref != 'refs/heads/main'");
+  it("releases a tag only when it is vX.Y.Z, equals package.json and sits on main", () => {
+    expect(workflow).toContain("^v[0-9]+\\.[0-9]+\\.[0-9]+$");
+    expect(workflow).toContain('[ "v$version" = "$REF_NAME" ]');
+    expect(workflow).toContain('git merge-base --is-ancestor "$sha" origin/main');
+    expect(workflow).toContain("fetch-depth: 0");
+    // A tag means production; only the manual run means the rehearsal host, and only from main.
+    expect(workflow).toContain('if [ "$EVENT" = push ]; then\n            echo "target=production"');
+    expect(workflow).toContain("github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'");
+  });
+
+  it("runs one at a time and never cancels a deploy halfway", () => {
     expect(workflow).toMatch(/concurrency:\s+group: release\s+cancel-in-progress: false/);
   });
 
-  it("has read-only repository rights, and reads other runs' artifacts only in the jobs that need it", () => {
+  it("has read-only repository rights", () => {
     expect(workflow).toMatch(/^permissions:\n {2}contents: read\n/m);
-    expect(workflow).not.toMatch(/contents: write|packages: write|id-token: write/);
+    expect(workflow).not.toMatch(/contents: write|packages: write|id-token: write|actions: (read|write)/);
   });
 
   it("pins every third-party action to a commit", () => {
@@ -59,8 +71,12 @@ describe("release workflow", () => {
     for (const line of runLines(workflow)) expect(line).not.toContain("${{");
   });
 
-  it("re-runs CI, builds once with the live address, checks and prunes the folder, then packs it", () => {
-    expect(workflow).toContain("uses: ./.github/workflows/ci.yml");
+  it("re-runs CI on every release, builds once with the live address, checks and prunes the folder, then packs it", () => {
+    // CI and the build run on every tag and every rehearsal: neither job has a condition of its own.
+    expect(workflow).toMatch(
+      /\n {2}ci:\n {4}name: Re-run CI\n {4}needs: guard\n {4}uses: \.\/\.github\/workflows\/ci\.yml\n/,
+    );
+    expect(workflow).toMatch(/\n {2}build:\n {4}name: Build once\n {4}needs: \[guard, ci\]\n {4}runs-on:/);
     expect(workflow).toMatch(/npm run build\n\s+env:\n\s+NEXT_PUBLIC_SITE_URL: https:\/\/alhidaya\.qa\n/);
     const check = workflow.indexOf("node scripts/check-deploy-output.mjs --prune .next/standalone");
     const pack = workflow.indexOf("tar -czf dist/release.tar.gz");
@@ -70,24 +86,22 @@ describe("release workflow", () => {
     expect(workflow).toContain("retention-days: 14");
   });
 
-  it("promotes the rehearsed build to production without building again, after a typed confirmation", () => {
-    expect(workflow).toContain('[ "$CONFIRM" = "deploy alhidaya.qa" ]');
-    expect(workflow).toContain("^v[0-9]+\\.[0-9]+\\.[0-9]+$");
-    expect(workflow).toContain('[ "$run" = "Release success" ]');
-    // CI and the build run for the rehearsal only; production takes the rehearsal's artifact by run id.
-    expect(workflow.match(/if: \$\{\{ inputs\.target == 'rehearsal' \}\}/g)?.length).toBeGreaterThanOrEqual(3);
-    expect(workflow).toContain("run-id: ${{ inputs.rehearsed_run }}");
+  it("deploys what this run built and checked, and nothing built elsewhere", () => {
+    expect(workflow).toMatch(/\n {2}deploy:\n {4}name: Deploy to [^\n]+\n {4}needs: \[guard, build\]\n/);
     expect(workflow).toContain("(cd dist && sha256sum -c release.tar.gz.sha256)");
     expect(workflow).toContain('[ "$(cat dist/COMMIT)" = "$SHA" ]');
+    expect(workflow).not.toContain("run-id:");
   });
 
   it("deploys through the one script, with the key written privately and removed again", () => {
     expect(workflow).toContain("scripts/release-deploy.sh");
     expect(workflow).toContain("umask 077");
     expect(workflow).toMatch(/trap 'rm -f "\$key" "\$known"' EXIT/);
-    expect(workflow).toContain("APP: ${{ inputs.target == 'production' && 'alhidaya-site' || 'alhidaya-rehearsal' }}");
     expect(workflow).toContain(
-      "DOMAIN: ${{ inputs.target == 'production' && 'alhidaya.qa' || 'preview.alhidaya.qa' }}",
+      "APP: ${{ needs.guard.outputs.target == 'production' && 'alhidaya-site' || 'alhidaya-rehearsal' }}",
+    );
+    expect(workflow).toContain(
+      "DOMAIN: ${{ needs.guard.outputs.target == 'production' && 'alhidaya.qa' || 'preview.alhidaya.qa' }}",
     );
   });
 });
