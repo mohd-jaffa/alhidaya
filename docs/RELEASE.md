@@ -2,7 +2,7 @@
 
 |             |                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------- |
-| Status      | **IN PROGRESS, 2026-11-14.** The user dropped the rehearsal and asked for the new site live on alhidaya.qa, released by a version tag. Done: backup, the new database, the release key, the tag workflow, the server cleaned of the rehearsal. Next: the cutover window (Phase E), ending with **you creating the tag `v1.0.0`**. |
+| Status      | **LIVE, 2026-11-14.** `v1.0.0` was released by its tag and the new site has served alhidaya.qa since 12:16 UTC (maintenance page off). The old site is moved aside, not deleted. Left: the admin account (you type the password), the real Turnstile keys, and your word before the old site is deleted. |
 | Target      | alhidaya.qa on the client's HostCarts cPanel server (`asian-node010.hostcarts.com`, Singapore)     |
 | Access      | SSH port 2200, user `alhidaya`, key `~/.ssh/alhidaya_cpanel_rsa` (already authorised)              |
 | Version     | `package.json` 0.1.0 → **1.0.0** in the release commit; the tag and GitHub release are `v1.0.0`   |
@@ -216,36 +216,47 @@ subdomain and its folder were **removed from the server** (2026-11-14); nothing 
 Time zone: Qatar (UTC+3). Rollback is §5. **The release is a version tag** (`.github/workflows/release.yml`, D201): you
 create `v1.0.0`; it checks (about three minutes, side by side: the tag and version, static gates, unit tests, build; main's own long CI does **not** gate a release, so you never wait for it), then deploys to `alhidaya.qa`. Everything the tag cannot do for the first release is done here.
 
-- [ ] **E1** Me. **Before the window (the live site is not affected):** push the tag workflow to `main` (main's long CI
+- [x] **E1** Me. **Before the window (the live site is not affected):** push the tag workflow to `main` (main's long CI
       runs on its own and does not hold the release back); stage the launch content with
       `scripts/content-import.sh --media-dir alhidaya-data/media --no-restart`: the 487 media files into
       `~/alhidaya-data/media` (outside `public_html`; the app serves `/media/` itself with `SERVE_MEDIA=true`, D202) and
       the content rows into the empty `alhidaya_site`, counted against the export.
-- [ ] **E2** Me. **Final backup** into `backups/2026-11-14-final-before-switch/` (the old site still receives
+- [x] **E2** Me. **Final backup** into `backups/2026-11-14-final-before-switch/` (the old site still receives
       applications), verified as in B4/B5.
-- [ ] **E3** Me. **Maintenance page on:** `scripts/maintenance.sh on`; every URL answers the notice (§6).
-- [ ] **E4** Me. **Move the old site aside:** everything in `public_html` except `.well-known/`, `maintenance.html` and
+- [x] **E3** Me. **Maintenance page on:** `scripts/maintenance.sh on`; every URL answers the notice (§6).
+- [x] **E4** Me. **Move the old site aside:** everything in `public_html` except `.well-known/`, `maintenance.html` and
       `.htaccess` → `~/old-site-2026-11-14/` (same filesystem, instant); the old `.htaccess` goes with it and a fresh one
       keeps the maintenance block above `deploy/production/htaccess.block` (plain HTTP to HTTPS, and `www` to
       `alhidaya.qa` with a 301: the site refuses a form posted from any other address; SSL challenges excepted; proven
       in Apache by `scripts/test-site-rules.sh`). `.well-known.zip` leaves the web here.
-- [ ] **E5** Me. **Create the live Node.js app** (`alhidaya-site`, `alhidaya.qa`, Node 22, one Passenger process) with
+- [x] **E5** Me. **Create the live Node.js app** (`alhidaya-site`, `alhidaya.qa`, Node 22, one Passenger process) with
       the settings of C4 (the live address, the app's database login, the secrets, `MEDIA_DIR=~/alhidaya-data/media`,
       `SERVE_MEDIA=true`, Turnstile's public test keys until you add the real ones, the mail login: `mail.alhidaya.qa`
       port 465 over TLS, its certificate checked valid for that name), a new password for `noreply@alhidaya.qa`
       generated on the server and never shown (the mailbox login is tested before it is used), and the two cron jobs
       (C5: the bearer is read from the server's secrets file when the job runs, never written into the crontab).
-- [ ] **E6** You. **Create the tag `v1.0.0`** on the commit I name (`git tag -a v1.0.0 -m "v1.0.0" <commit> && git push
+- [x] **E6** You. **Create the tag `v1.0.0`** on the commit I name (`git tag -a v1.0.0 -m "v1.0.0" <commit> && git push
       origin v1.0.0`, or publish a GitHub release). I give you the release notes.
-- [ ] **E7** Me. Watch the run: checks, build, upload, SHA-256, migrate, switch, health check (switched back by itself if
+- [x] **E7** Me. Watch the run: checks, build, upload, SHA-256, migrate, switch, health check (switched back by itself if
       it fails), and the check of the live site from the internet with the window's token.
-- [ ] **E8** Me. **Smoke test on the real domain** with the window's token, maintenance still in front of visitors: every
+- [x] **E8** Me. **Smoke test on the real domain** with the window's token, maintenance still in front of visitors: every
       public page, the 301 map, sitemap, robots, a media file, the three forms, a CV upload (stored `700`/`600`, not
       web-reachable), admin sign-in, both cron routes with and without the bearer, error pages without stack or SQL.
-- [ ] **E9** Me. **Maintenance page off.**
-- [ ] **E10** Me. Final checks on the public domain; watch the app for 30 minutes (5xx, memory, restarts).
-- [ ] **E11** You. "Cutover accepted" or "roll back". Create the admin account first (you type the password at a hidden
+- [x] **E9** Me. **Maintenance page off.**
+- [x] **E10** Me. Final checks on the public domain; watch the app for 30 minutes (5xx, memory, restarts).
+- [~] **E11** You. "Cutover accepted" or "roll back". Create the admin account first (you type the password at a hidden
       prompt: `scripts/admin-create.sh`, which asks twice and prints nothing secret).
+
+**How the cutover went (2026-11-14, UTC).** Maintenance page on 11:03 (it then stayed on far longer than the planned
+25 minutes, about 73 minutes, mostly waiting between steps); final backup (the first full backup plus an increment: a
+full re-copy timed out mid-stream, so the files changed since the first backup and a fresh database dump were taken, row
+counts equal to the morning's); old site moved aside 11:55; live app, mail password and cron jobs set up; you pushed
+`v1.0.0` at 12:01; checks passed at 12:06, deploy at 12:12 (health check and a check from the internet, including a
+media file); my smoke test behind the page passed (every page, the 301 map, robots, sitemap, media caching, security
+headers, the admin API refusing without a session, the cron routes, both forms end to end: the enquiry and a CV
+application were saved, mailed and the CV stored `700`/`600` outside the web root and unreachable; the test records and
+the test CV were then deleted); maintenance page off 12:16.
+
 
 ### Phase F: After launch
 
@@ -397,6 +408,6 @@ is touched:
 | B6 backups received   | 2026-11-14 | You (chat answer) |
 | C: server prepared    |      |              |
 | D7 rehearsal approved |      |              |
-| E1 go for cutover     |      |              |
+| E1 go for cutover     | 2026-11-14 | You (chat answer) |
 | E11 cutover accepted  |      |              |
 | F5 old site deletion  |      |              |

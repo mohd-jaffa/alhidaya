@@ -5022,3 +5022,23 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 - `scripts/content-import.sh --no-restart` and `--media-dir alhidaya-data/media` (the app serves `/media/` itself, D202; the first import happens before the app exists).
 - Contract tests for the live site rules (2) and the import's new paths; the mail server's certificate covers `mail.alhidaya.qa` (port 465) and the mail routing is still Remote.
 
+## 2026-11-14 — Release v1.0.0: the new site is live on alhidaya.qa
+
+### Changed (on the client's server)
+- **Live:** the user created the tag `v1.0.0` (commit `023676a`); the release workflow's checks passed (tag, static gates, unit tests, build) and it deployed release `20261114-120255-023676a` to the live app `alhidaya-site` (127 MB; migration of `alhidaya_site`, switch, restart, health check, and a check from the internet that saw `/` 200, `/robots.txt` 200 and a media image 200). The maintenance page went off at 12:16 UTC; `alhidaya.qa` answers 200, `www` and plain HTTP answer 301 to `https://alhidaya.qa`, and the old addresses answer 301 to their new pages.
+- **Window:** maintenance page on 11:03 UTC, off 12:16 UTC (about 73 minutes, against the 25 promised, mostly waiting between steps).
+- **Old site:** moved (not deleted) to `~/old-site-2026-11-14` (258 MB); `public_html` now holds only `.htaccess` and `.well-known`. Backups: the morning's verified full backup plus `backups/2026-11-14-final-before-switch/` (the 29 files changed since, and a fresh dump of the old database; its row counts equal the morning's). A full re-copy timed out mid-stream (`Timeout, server alhidaya.qa not responding`); the partial file was discarded.
+- **Set up:** launch content imported (12 documents, 20 records, 75 media rows; 487 media files in `~/alhidaya-data/media`, served by the app, D202); a new random password for `noreply@alhidaya.qa` (kept in the server's secrets file, login over TLS to `mail.alhidaya.qa:465` tested); two cron jobs in the account's crontab (mail retry every 10 minutes, retention daily at 03:15), each reading the bearer from the secrets file when it runs (cPanel's UAPI has no Cron module here); `deploy/production/htaccess.block` (HTTPS and www rules) beside the app's own block.
+- **Smoke test on the real domain, before visitors saw it:** every page, every service and job page, the whole 301 map, robots, sitemap, media cache and `nosniff`, security headers, the admin API refusing without a session (401, publish 403), a cross-site form post refused (403), the cron routes refusing without the bearer and running with it, both forms end to end (a Contact enquiry and a general application with a CV: saved, `email_status SENT`, the CV stored `600` in `700` folders outside the web root, and 404 at every guessed URL). The test records and the test CV were then deleted; the live database holds 0 enquiries and 0 applications.
+
+### Found
+- The window's temporary release-check token was printed once in my own check output (it only lets a request past the maintenance page, and it was deleted when the page went off).
+- The server's Python is 3.6 (no `capture_output`); one setup script failed on it and was rerun with compatible code.
+- The earlier IPv4 oddity of the preview host did not appear on the live domain (the smoke test and the release's own check from GitHub's network both passed), which fits its cause being the old site's rules above the preview folder.
+
+### Validation
+- Release run 43592738223: checks passed in about 5 minutes, deploy 6 minutes. Smoke test as above.
+
+### Blockers
+- OPEN: the admin account (the user runs `scripts/admin-create.sh` and types the password); the real Turnstile keys (R8.4); the user's word before the old site and its database are deleted (D198, §8); old `.env` secrets to rotate after that; DKIM and DMARC at HostCarts are optional and cannot be added by us.
+
