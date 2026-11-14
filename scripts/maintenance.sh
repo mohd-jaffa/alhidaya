@@ -7,7 +7,9 @@
 # off). The page is two things in the site's document root: `maintenance.html`, and a marked block at the very top
 # of `.htaccess` that answers every request with HTTP 503. Everything else in `.htaccess` is left exactly as it was
 # (the old site's rules now, the Node.js app's later), and the first untouched copy is kept once as
-# `.htaccess.before-maintenance`.
+# `.htaccess.before-maintenance`. `on` also makes a new random release-check token for this window: a request
+# carrying it as the `X-Release-Check` header passes the block (the release's health check and smoke test); the token
+# is written only into the rules and into ~/alhidaya-data/.maintenance-token (mode 600), and is never printed.
 set -euo pipefail
 
 SSH_HOST="${SSH_HOST:-alhidaya.qa}"
@@ -39,8 +41,11 @@ case "$action" in
     # The notice first, so the rule's ErrorDocument target exists the moment the rule starts to answer.
     rssh "cat > \"\$HOME/$DOCROOT/maintenance.html.tmp\" && mv -f \"\$HOME/$DOCROOT/maintenance.html.tmp\" \"\$HOME/$DOCROOT/maintenance.html\"" \
       <"$kit/maintenance.html"
-    # The rule block goes up as a file of its own (a script read from stdin cannot also read the block from it).
-    rssh "cat > \"\$HOME/$DOCROOT/.htaccess.block.tmp\"" <"$kit/htaccess.block"
+    # The rule block goes up as a file of its own (a script read from stdin cannot also read the block from it),
+    # with this window's token in it; the token's own file is written first so the two never disagree.
+    token="$(openssl rand -hex 16)"
+    printf '%s\n' "$token" | rssh 'umask 077; mkdir -p "$HOME/alhidaya-data" && cat > "$HOME/alhidaya-data/.maintenance-token"'
+    sed "s/@BYPASS_TOKEN@/$token/g" "$kit/htaccess.block" | rssh "cat > \"\$HOME/$DOCROOT/.htaccess.block.tmp\""
     # Keep the first untouched .htaccess, then put the block above the rest in one atomic rename.
     rssh "bash -s" <<REMOTE
 set -euo pipefail
@@ -61,7 +66,7 @@ if [ -e .htaccess ]; then
   awk '/^# BEGIN MAINTENANCE/{skip=1} !skip{print} /^# END MAINTENANCE/{skip=0}' .htaccess > .htaccess.new.tmp
   mv -f .htaccess.new.tmp .htaccess
 fi
-rm -f maintenance.html maintenance.html.tmp
+rm -f maintenance.html maintenance.html.tmp "\$HOME/alhidaya-data/.maintenance-token"
 REMOTE
     ;;
   status) ;;

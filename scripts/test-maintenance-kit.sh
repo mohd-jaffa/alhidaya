@@ -26,9 +26,10 @@ echo 'token' >"$work/site/.well-known/acme-challenge/test-token"
 printf '# old site rules\nRewriteEngine On\nRewriteRule ^about_us$ /index.php [L]\n' >"$work/original.htaccess"
 cp "$work/original.htaccess" "$work/site/.htaccess"
 
-# The same insertion scripts/maintenance.sh performs on the server, applied locally.
+# The same insertion scripts/maintenance.sh performs on the server, applied locally (its release-check token too).
+token="$(openssl rand -hex 16)"
 cp "$kit/maintenance.html" "$work/site/maintenance.html"
-cat "$kit/htaccess.block" "$work/original.htaccess" >"$work/site/.htaccess"
+sed "s/@BYPASS_TOKEN@/$token/g" "$kit/htaccess.block" | cat - "$work/original.htaccess" >"$work/site/.htaccess"
 
 openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj "/CN=localhost" \
   -keyout "$work/key.pem" -out "$work/cert.pem" >/dev/null 2>&1
@@ -93,6 +94,20 @@ expect "the notice itself is served" 200 "$(code "$https/maintenance.html")"
 expect "an SSL challenge file stays reachable" 200 "$(code "$https/.well-known/acme-challenge/test-token")"
 expect "plain HTTP is sent to HTTPS" 301 "$(code "http://127.0.0.1:$http_port/")"
 expect "plain HTTP challenge is not redirected" 200 "$(code "http://127.0.0.1:$http_port/.well-known/acme-challenge/test-token")"
+
+# The release's own check: the window's token lets a request through to whatever sits behind the notice.
+expect "the release check header reaches the site behind the notice" 200 "$(code -H "X-Release-Check: $token" "$https/index.php")"
+expect "the release check works for a form POST too" 200 "$(code -H "X-Release-Check: $token" -X POST -d x=1 "$https/index.php")"
+expect "a wrong release check token is still refused" 503 "$(code -H "X-Release-Check: ${token}x" "$https/index.php")"
+expect "an empty release check token is still refused" 503 "$(code -H "X-Release-Check:" "$https/index.php")"
+checked="$(curl -sk -D - -o /dev/null -H "X-Release-Check: $token" "$https/index.php" | tr -d '\r')"
+for header in 'retry-after' 'x-robots-tag'; do
+  printf '%s' "$checked" | grep -qi "^$header:" && result=yes || result=no
+  expect "a checked response carries no '$header' of the notice" no "$result"
+done
+grep -q "$token" "$work/site/maintenance.html" && result=yes || result=no
+expect "the token is not in the notice" no "$result"
+expect "the token is not served from the rules file" 503 "$(code "$https/.htaccess")"
 
 headers="$(curl -sk -D - -o /dev/null "$https/")"
 body="$(curl -sk "$https/")"

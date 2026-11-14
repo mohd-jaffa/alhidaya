@@ -1,0 +1,193 @@
+# The release (docs/RELEASE.md D2, E6, E7). A push never deploys: this runs only when it is started by hand, and it
+# changes the client's server only through scripts/release-deploy.sh.
+#
+#   rehearsal: re-runs CI on the commit, builds ONCE, checks the folder (no secrets, maps, source or uploads), and
+#              deploys it to preview.alhidaya.qa. The build is kept as the artifact "release" for 14 days.
+#   production: re-uses that very build (same bytes: its SHA-256 is checked, nothing is built again) and deploys it to
+#              alhidaya.qa. It needs a vX.Y.Z tag, the rehearsal's run id and a typed confirmation.
+#
+# Start it with:
+#   gh workflow run release.yml --ref main -f target=rehearsal -f ref=<commit>
+#   gh workflow run release.yml --ref main -f target=production -f ref=v1.0.0 -f rehearsed_run=<run id> \
+#       -f confirm="deploy alhidaya.qa"
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Where to deploy
+        type: choice
+        options: [rehearsal, production]
+        default: rehearsal
+      ref:
+        description: The commit (rehearsal) or the vX.Y.Z tag (production) to release
+        type: string
+        required: true
+      rehearsed_run:
+        description: "Production only: the run id of the rehearsal whose build is promoted"
+        type: string
+        default: ""
+      confirm:
+        description: 'Production only: type "deploy alhidaya.qa"'
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+# One release at a time, and never cancelled halfway: a half-finished deploy is what this file exists to avoid.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    name: Check the request
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      sha: ${{ steps.resolve.outputs.sha }}
+    steps:
+      - name: Only from main
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          echo "::error::Start the release from main (the workflow file there is the reviewed one)."
+          exit 1
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: Resolve and check
+        id: resolve
+        env:
+          TARGET: ${{ inputs.target }}
+          REF: ${{ inputs.ref }}
+          CONFIRM: ${{ inputs.confirm }}
+          REHEARSED_RUN: ${{ inputs.rehearsed_run }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Releasing $REF = $sha to $TARGET"
+          if [ "$TARGET" = production ]; then
+            [ "$CONFIRM" = "deploy alhidaya.qa" ] || { echo '::error::Type exactly: deploy alhidaya.qa'; exit 1; }
+            [[ "$REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo '::error::Production takes a vX.Y.Z tag.'; exit 1; }
+            [[ "$REHEARSED_RUN" =~ ^[0-9]+$ ]] || { echo '::error::Production needs the rehearsal run id.'; exit 1; }
+            run="$(gh run view "$REHEARSED_RUN" --repo "$REPO" --json conclusion,workflowName --jq '[.workflowName, .conclusion] | join(" ")')"
+            [ "$run" = "Release success" ] || { echo "::error::Run $REHEARSED_RUN is '$run', not a successful Release run."; exit 1; }
+          fi
+
+  ci:
+    name: Re-run CI
+    needs: guard
+    if: ${{ inputs.target == 'rehearsal' }}
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.guard.outputs.sha }}
+
+  build:
+    name: Build once
+    needs: [guard, ci]
+    if: ${{ inputs.target == 'rehearsal' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ needs.guard.outputs.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # The address is written into the build (sitemap, robots.txt, canonical links), so it is the live one; the
+      # rehearsal host overrides only the value read at run time (docs/RELEASE.md section 9, item 7).
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://alhidaya.qa
+      - name: Check and pack the release
+        env:
+          SHA: ${{ needs.guard.outputs.sha }}
+        run: |
+          set -euo pipefail
+          node scripts/check-deploy-output.mjs --prune .next/standalone
+          mkdir dist
+          echo "$(date -u +%Y%m%d-%H%M%S)-${SHA:0:7}" > dist/RELEASE_ID
+          echo "$SHA" > dist/COMMIT
+          tar -czf dist/release.tar.gz --numeric-owner -C .next/standalone .
+          (cd dist && sha256sum release.tar.gz > release.tar.gz.sha256)
+          {
+            echo "### Release $(cat dist/RELEASE_ID)"
+            echo "- commit \`$SHA\`"
+            echo "- archive $(du -m dist/release.tar.gz | cut -f1) MB, SHA-256 \`$(cut -d' ' -f1 dist/release.tar.gz.sha256)\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release
+          path: dist/
+          compression-level: 0
+          retention-days: 14
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy to ${{ inputs.target }}
+    needs: [guard, ci, build]
+    # Production skips CI and the build on purpose (it promotes the rehearsed build); the rehearsal needs both.
+    if: ${{ always() && needs.guard.result == 'success' && (inputs.target == 'production' || needs.build.result == 'success') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    env:
+      TARGET: ${{ inputs.target }}
+      SHA: ${{ needs.guard.outputs.sha }}
+      APP: ${{ inputs.target == 'production' && 'alhidaya-site' || 'alhidaya-rehearsal' }}
+      DOMAIN: ${{ inputs.target == 'production' && 'alhidaya.qa' || 'preview.alhidaya.qa' }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ needs.guard.outputs.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - name: Take this run's build
+        if: ${{ inputs.target == 'rehearsal' }}
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release
+          path: dist
+      - name: Take the rehearsed build
+        if: ${{ inputs.target == 'production' }}
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release
+          path: dist
+          run-id: ${{ inputs.rehearsed_run }}
+          github-token: ${{ github.token }}
+      - name: Check the build is the one to release
+        run: |
+          set -euo pipefail
+          (cd dist && sha256sum -c release.tar.gz.sha256)
+          [ "$(cat dist/COMMIT)" = "$SHA" ] || { echo "::error::The build is of $(cat dist/COMMIT), not of $SHA."; exit 1; }
+          echo "RELEASE_ID=$(cat dist/RELEASE_ID)" >> "$GITHUB_ENV"
+      - name: Deploy
+        env:
+          RELEASE_SSH_HOST: ${{ secrets.RELEASE_SSH_HOST }}
+          RELEASE_SSH_PORT: ${{ secrets.RELEASE_SSH_PORT }}
+          RELEASE_SSH_USER: ${{ secrets.RELEASE_SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.RELEASE_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.RELEASE_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          umask 077
+          key="$RUNNER_TEMP/release_key"
+          known="$RUNNER_TEMP/known_hosts"
+          trap 'rm -f "$key" "$known"' EXIT
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$known"
+          SSH_KEY_FILE="$key" SSH_KNOWN_HOSTS_FILE="$known" scripts/release-deploy.sh \
+            --app "$APP" --domain "$DOMAIN" --archive dist/release.tar.gz --release-id "$RELEASE_ID"
+          echo "Release $RELEASE_ID is live on $DOMAIN." >> "$GITHUB_STEP_SUMMARY"

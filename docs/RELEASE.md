@@ -216,7 +216,9 @@ reach it, and it sends `X-Robots-Tag: noindex`.
       sends `X-Robots-Tag: noindex, nofollow`. The first request answered with that header and no redirect.
 - [ ] **D2** Me. Run the release workflow in **rehearsal** mode from the exact commit that will be tagged
       (`workflow_dispatch`, target `rehearsal`): CI, build once, upload, SHA-256 check, migrate, switch, restart.
-- [ ] **D3** Both. Load the launch content (Q4), create the admin account (you type the password), publish.
+- [ ] **D3** Both. Load the launch content (Q4) with `scripts/content-import.sh` (media first, then the rows into the
+      empty database as the app user, counted against the export; the app is restarted afterwards because it caches
+      what it read), create the admin account (you type the password), publish.
 - [ ] **D4** Me. **Smoke test on the rehearsal host:** every public page 200 with no console error; the 301 map; sitemap
       and robots; the three forms end to end (mail reaches `info@` and `hr@` in Microsoft 365, **not junk**); a CV
       upload lands in the private folder (`700`/`600`) and is **not** web-reachable; a media file is served by Apache
@@ -243,10 +245,15 @@ Time zone: Qatar (UTC+3). You may postpone at any step; rollback is §5.
       (block included), then `scripts/maintenance.sh on` writes the block onto a fresh `.htaccess`.
       `.well-known.zip` leaves the web here.
 - [ ] **E5** Me. Create the media folder and its `.htaccess` in the docroot; copy the media files (Q4).
-- [ ] **E6** Me. Release `v1.0.0`: version bump commit, annotated tag, GitHub release; the workflow re-runs CI on the
-      tag, then promotes the **already-rehearsed build** to production (SHA-256 verified).
-- [ ] **E7** Me. Migrate the production database (the migration user), restart, switch the Node app to `alhidaya.qa`
-      and `www`.
+- [ ] **E6** Me. Release `v1.0.0`: the version bump (package.json 1.0.0) is committed and rehearsed **before** the
+      window; after "rehearsal approved" the annotated tag `v1.0.0` is made on that very commit. The production run
+      (`workflow_dispatch`, target `production`, the tag, the rehearsal's run id and the typed phrase) **promotes the
+      already-rehearsed build**: its SHA-256 and commit are checked, nothing is built again and CI is not re-run inside
+      the window (it ran on the same commit in the rehearsal run). The GitHub release and its notes follow in F1.
+- [ ] **E7** Me. Create the production Node.js app with the selector (`alhidaya-site`, `alhidaya.qa` and `www`, the
+      same settings as the rehearsal app but the live site URL and the real Turnstile and SMTP values), remove the
+      rehearsal app and its releases first (the 1 GB quota holds two releases per app, not four), then the production
+      run migrates, switches, restarts and checks; a site that does not answer is switched back by itself.
 - [ ] **E8** Me. **Smoke test on the real domain**, with the maintenance page still in front of public visitors for a
       moment (a test header or the server's own address), then the full D4 list again.
 - [ ] **E9** Me. **Maintenance page off.** The Node app's `.htaccess` block is the only rule left.
@@ -358,6 +365,20 @@ is touched:
 8. **Settings written into `.htaccess`.** The selector keeps the app's environment in the host's `.htaccess` (and its
    own settings). `maintenance.sh` and any copy of that file therefore hold secrets: they stay `.ht*` files (never
    served), mode 644 or tighter, and are never downloaded into the backup folder unredacted.
+
+9. **An empty database answers 404 on `/`** (the pages show only published content), so the first rehearsal deploy,
+   before the content is loaded, would fail a plain "home page is 200" check. The server-side check therefore accepts
+   404 **only** while the `documents` table is empty, and only with `/robots.txt` at 200 and the app's own headers
+   (Apache cannot fake them); any 5xx, or a 404 once content exists, switches back. Found by running the pruned build
+   against a freshly migrated scratch MySQL.
+10. **The app caches what it read.** Content written straight into the database is invisible to a running app until
+    it restarts, so `content-import.sh` ends with a restart and a health check.
+11. **Disk.** The account's quota is 1 GB (about 295 MB used before this release). A release is about 121 MB unpacked
+    and 65 MB packed; `release-deploy.sh` refuses early when the quota cannot take it, keeps the newest two releases per
+    app and never deletes the live one. Plan for it: rehearsal app about 140 MB (release plus media), then it is removed
+    before the live app (about 140 MB, and a second release when v1.0.1 comes).
+12. **The SSH tunnel to the server's MySQL works** with the release key (checked 2026-11-14: the MySQL 8.0.46 greeting
+    arrived through `-L`), so migrations use Drizzle Kit itself, not hand-applied SQL.
 
 ---
 

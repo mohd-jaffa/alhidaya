@@ -4927,3 +4927,25 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - OPEN (DNS): the `preview` record at HostCarts (RELEASE.md Q6).
 - OPEN (inputs): the Turnstile keys and the new `noreply@` password (`.env.production`, for the rest of C4 and C6), and the cutover time.
+
+## 2026-11-14 — Release v1.0.0: the release workflow, the deploy scripts and the content import
+
+### Added
+- **`.github/workflows/release.yml`** (D201): started by hand only (`workflow_dispatch` from `main`). A rehearsal run re-runs CI on the commit, builds once with the live site address, prunes and checks the folder, keeps the tar as an artifact (14 days) and deploys it to `preview.alhidaya.qa`. A production run needs the `vX.Y.Z` tag, the rehearsal's run id and the typed phrase, re-uses the rehearsal's artifact (SHA-256 and commit checked, nothing built again) and deploys to `alhidaya.qa`. Secrets reach shell only through the environment; every action is pinned to a commit.
+- **`scripts/release-deploy.sh`** and **`scripts/release-remote.sh`**: quota check, upload, SHA-256 check, safe unpack into a new folder, database dump, Drizzle Kit migration through an SSH tunnel (the migration login is read from the server over that session, stored nowhere), one atomic `current` switch, restart, health check with automatic switch-back, tidy to the newest two releases.
+- **`scripts/content-import.sh`** and **`scripts/content-import.remote.sh`**: the approved content (D199) into an empty database as the app user, counted against the export, plus the media files with the folder's own `.htaccess`; the app restarts afterwards. `scripts/content-export.mts` now writes that `.htaccess` (the very text the site writes) into `release-content/media/`.
+- **Maintenance release-check token:** `maintenance.sh on` makes a per-window `X-Release-Check` token, written only into the rules and a private server file, so the release's health check and the smoke test pass the 503 while visitors still see the notice; the notice's three headers now go on the 503 only.
+- Tests: `scripts/test-release-remote.sh` (about 60 checks in a Linux container with stand-ins for curl, node, mysql and the selector), `tests/contract/release-workflow.test.ts` (18), the maintenance kit's Apache checks (now 25) and contract tests (6).
+- D201 in the plan's decision log; plan §35.3 and R8.2 updated; AGENTS.md §23; `docs/RELEASE.md` (E6, E7, D3, §9 items 7 to 12).
+
+### Found
+- A pruned, relocated standalone build runs from only `NEXT_PUBLIC_SITE_URL` at build time (no `.env.local`), and the same folder runs with a different run-time site URL.
+- An empty migrated database answers 404 on `/`; migration 0007 seeds a `TYPOGRAPHY` document that the exported one must replace; a running app keeps what it read until it restarts (checked on a scratch MySQL with the production-like users, since dropped).
+- The account's 1 GB quota allows two releases per app; the SSH tunnel to the server's MySQL works with the release key.
+
+### Validation
+- `scripts/test-release-remote.sh`, `scripts/test-maintenance-kit.sh` and the contract tests pass; the content import was run end to end on a scratch MySQL (right counts, wrong counts emptied again, a second run refused). Nothing here changed the client's server: the tooling is only tested locally.
+
+### Blockers
+- OPEN (DNS): the `preview` record at HostCarts (RELEASE.md Q6).
+- OPEN (inputs): the Turnstile keys and the new `noreply@` password; a "go" for D2 (the first upload to the server) and a push of `main` so the workflow exists on GitHub.

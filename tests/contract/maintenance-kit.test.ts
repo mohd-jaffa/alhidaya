@@ -45,12 +45,26 @@ describe("maintenance rules", () => {
     expect(block.trim().endsWith("# END MAINTENANCE")).toBe(true);
     expect(block).toContain("RewriteRule ^ - [R=503,L]");
     expect(block).toContain("ErrorDocument 503 /maintenance.html");
-    expect(block).toContain('Header always set Retry-After "3600"');
-    expect(block).toContain('Header always set Cache-Control "no-store"');
-    expect(block).toContain('Header always set X-Robots-Tag "noindex"');
+    // The three headers belong to the 503 only, so a checked response shows the site's own headers.
+    for (const header of ['Retry-After "3600"', 'Cache-Control "no-store"', 'X-Robots-Tag "noindex"']) {
+      expect(block).toContain(`Header always set ${header} "expr=%{REQUEST_STATUS} == 503"`);
+    }
     expect(block).toContain("!^/maintenance\\.html$");
     expect(block).toContain("!^/\\.well-known/(acme-challenge|pki-validation)/");
     expect(block).toContain("Options -Indexes");
+  });
+
+  it("let one request through: the window's release-check token, never written in the repository", () => {
+    expect(block).toContain("RewriteCond %{HTTP:X-Release-Check} !=@BYPASS_TOKEN@");
+    expect(block.match(/@BYPASS_TOKEN@/g)).toHaveLength(1);
+    // maintenance.sh makes a fresh token, puts it into the rules and into a private file on the server, and
+    // removes that file again when the page goes off; it never echoes it.
+    expect(script).toContain("openssl rand -hex 16");
+    expect(script).toContain('sed "s/@BYPASS_TOKEN@/$token/g"');
+    expect(script).toContain("umask 077");
+    expect(script).toContain(".maintenance-token");
+    expect(script).not.toMatch(/echo[^\n]*\$token|printf[^\n]*\$token[^|\n]*$/m);
+    expect(`${page}${block}${script}`).not.toMatch(/X-Release-Check:\s*[0-9a-f]{16,}/);
   });
 
   it("use the same markers the switch script cuts the block out by", () => {

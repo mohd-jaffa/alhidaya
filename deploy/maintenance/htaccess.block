@@ -1,20 +1,22 @@
 # BEGIN MAINTENANCE (RELEASE.md section 6; added and removed by scripts/maintenance.sh)
-# While this block is present every request answers HTTP 503 with the notice, except the notice itself and the
-# SSL certificate challenges (so AutoSSL renewals keep working). Retry-After tells search engines the outage is
-# short, so rankings are kept.
+# While this block is present every request answers HTTP 503 with the notice, except the notice itself, the SSL
+# certificate challenges (so AutoSSL renewals keep working) and a request that carries this window's release-check
+# header (the release's own health check and smoke test; the token is made by `maintenance.sh on`, kept only in this
+# file and in ~/alhidaya-data/.maintenance-token). Retry-After tells search engines the outage is short, so rankings
+# are kept; the three headers go only on the 503, so a checked response shows the site's own headers.
 Options -Indexes
-DirectoryIndex maintenance.html
 ErrorDocument 503 /maintenance.html
 <IfModule mod_headers.c>
-  Header always set Cache-Control "no-store"
-  Header always set Retry-After "3600"
-  Header always set X-Robots-Tag "noindex"
+  Header always set Cache-Control "no-store" "expr=%{REQUEST_STATUS} == 503"
+  Header always set Retry-After "3600" "expr=%{REQUEST_STATUS} == 503"
+  Header always set X-Robots-Tag "noindex" "expr=%{REQUEST_STATUS} == 503"
 </IfModule>
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteCond %{HTTPS} off
   RewriteCond %{REQUEST_URI} !^/\.well-known/
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTP:X-Release-Check} !=@BYPASS_TOKEN@
   RewriteCond %{REQUEST_URI} !^/maintenance\.html$
   RewriteCond %{REQUEST_URI} !^/\.well-known/(acme-challenge|pki-validation)/
   RewriteRule ^ - [R=503,L]

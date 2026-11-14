@@ -7,7 +7,8 @@
 //                 read it before it is used. The admin account, sessions, logs, enquiries, applications and the
 //                 rate-limit table are never exported, and every created_by / updated_by is cleared (the
 //                 production admin does not exist yet).
-//   media/        exactly the image and PDF files the media rows name, under their own keys
+//   media/        exactly the image and PDF files the media rows name, under their own keys, and the folder's own
+//                 .htaccess (the very text the site writes itself: nothing listed, nothing run, images and PDF only)
 //   summary.json  row counts and media files, for the import's own check
 //
 // Read-only: it only selects from the local database, and refuses to run against any other database.
@@ -28,6 +29,7 @@ const { default: mysql } = await import("mysql2");
 const { getDb, closeDb } = await import("../src/db/client");
 const { documents, records, media, siteOperations } = await import("../src/db/schema");
 const { getServerEnv } = await import("../src/lib/env/server");
+const { MEDIA_HTACCESS } = await import("../src/lib/storage/media");
 
 const OUT = "release-content";
 const ADMIN_COLUMNS = new Set(["created_by", "updated_by"]);
@@ -91,6 +93,8 @@ try {
     copyFileSync(from, to);
     bytes += statSync(from).size;
   }
+
+  writeFileSync(path.join(OUT, "media", ".htaccess"), MEDIA_HTACCESS, { mode: 0o644 });
 
   const operations = (await db.select().from(siteOperations))[0];
   writeFileSync(
