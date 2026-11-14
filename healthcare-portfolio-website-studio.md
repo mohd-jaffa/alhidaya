@@ -1832,7 +1832,7 @@ one commit (D27).
 |---|---|---|---|---|
 | R8.1 | The production MySQL database, created after the old one is cleared (D50), with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media folder (with its `.htaccess`) and the CV folder (`700`) | D39, D49, D54, §21.1 | Full payment (D48), R0.9 | TODO |
 | R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, tar upload, migrate, switch, restart, rollback; D200); the daily cron and the mail-retry cron (every 10 minutes, D85); the app kept to one Passenger process (D119); `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
-| R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM added in cPanel; DMARC `p=none` published; verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
+| R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM and DMARC `p=none` added **at HostCarts' DNS** (the world's nameservers are theirs, not this cPanel's, found 2026-11-14); verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
 | R8.4 | Turnstile keys for alhidaya.qa (replacing the test keys, which always pass; checked before go-live); Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
 | R8.5 | Pre-switch check on the server; speed from Qatar; the Cloudflare-proxy decision | D25 | Q22 | TODO |
 | R8.6 | Switch alhidaya.qa to the Node.js app; every 301 verified live; sitemap to Search Console; the old site's files moved aside at the cutover (behind the maintenance page) and removed only on the user's word, after the backup is verified (D198, §21.2) | D21, §19 | — | TODO |

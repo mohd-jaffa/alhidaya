@@ -2,7 +2,7 @@
 
 |             |                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------- |
-| Status      | **IN PROGRESS, 2026-11-14.** Payment confirmed (Q1). **Phase B (backup) done and verified**; nothing on the server has been changed yet. Next: your "backups received" (B6) and the items in §3.2. |
+| Status      | **IN PROGRESS, 2026-11-14.** Payment confirmed (Q1). **Phase B (backup), C1, C2, C3, C7 and the rehearsal app's settings (C4, part) done**; the old site is untouched and still serving. Next: the DNS decision (Q6), your Turnstile keys and new `noreply@` password (C4, C6), then the rehearsal release (D2). |
 | Target      | alhidaya.qa on the client's HostCarts cPanel server (`asian-node010.hostcarts.com`, Singapore)     |
 | Access      | SSH port 2200, user `alhidaya`, key `~/.ssh/alhidaya_cpanel_rsa` (already authorised)              |
 | Version     | `package.json` 0.1.0 → **1.0.0** in the release commit; the tag and GitHub release are `v1.0.0`   |
@@ -44,6 +44,7 @@ server: I stop and wait for your explicit "go" before it (plan D44). Tick each b
 | Cron           | No jobs                                                                                                                                       |
 | Node           | Not on the default SSH path. `cloudlinux-selector`, `selectorctl` and `uapi` are available; Node 22 is offered by the selector (plan §21.1)   |
 | Tools          | `tar`, `gzip`, `sha256sum`, `mysqldump` 8.0.46 present. **`rsync` is missing**                                                                 |
+| DNS           | **The world's DNS is HostCarts' own nameservers** (`ns1`/`ns2.alhidaya.qa` → 115.84.171.158, zone serial 2026082510), **not this cPanel** (its copy has serial 2026093001 and has diverged). Records added in cPanel's Zone Editor do **not** reach the internet. `alhidaya.qa` already resolves to this server (15.235.174.14), so the cutover needs no DNS change |
 | New build size | The standalone build is about 116 MB, so two releases fit the 250 MB budget                                                                    |
 
 **What differs from the plan, and what it changes**
@@ -76,6 +77,7 @@ server: I stop and wait for your explicit "go" before it (plan D44). Tick each b
 | Q3  | What happens to the old site after the cutover?                                                                                                                            | Moved aside, not served, kept ~14 days, deleted only when you say so (D50 changes: the clean-up moves from before to after the deploy) | **Move aside, delete later (2026-11-14).** Supersedes D50's order: the old site is cleared after the deploy, only on your word. |
 | Q4  | Where does the launch content come from: a fresh seed (drafts you publish one by one) or a copy of your local, approved content and photos?                                | Copy the local content tables and the 60 MB media folder, so the site launches exactly as the client approved it | **Copy the local approved content and media (2026-11-14).** Supersedes the plan's Q30 fresh seed. |
 | Q5  | Cloudflare Web Analytics: build it before v1.0.0, or ship without and add it in v1.0.1?                                                                                    | Ship v1.0.0 as tested; add analytics right after launch (agent default)                               | default |
+| Q6  | How does `preview.alhidaya.qa` get its public DNS record (HostCarts runs the world's DNS, not this cPanel)?                                                                | You (or the client) ask HostCarts to add `preview A 15.235.174.14`; or skip it and I rehearse by address only | _open_ |
 
 ### 3.2 Items and credentials
 
@@ -158,20 +160,43 @@ entry list instead of an extracted tree.
 
 The old site keeps serving throughout this phase.
 
-- [ ] **C1** Me. **Production database** (second slot): create it, the **app user** (data rights only) and the
-      **migration user** (schema rights), strong random passwords, both only on localhost.
-- [ ] **C2** Me. **Folders:** `~/alhidaya-data/cvs` (mode `700`, outside `public_html`), `~/alhidaya-app/releases/`,
-      the media folder with its `.htaccess` (no listing, no scripts, images and PDF only, `nosniff`; folders `755`,
-      files `644`). The media folder is created at the cutover inside the docroot (E4); during rehearsal it sits in the
-      rehearsal host's own docroot.
-- [ ] **C3** Me. **Node.js app** with `cloudlinux-selector` (Node 22, production, one Passenger process, D119).
-- [ ] **C4** Me. **App environment** set in the selector: `NODE_ENV`, `NEXT_PUBLIC_SITE_URL`, the two database URLs,
+- [x] **C1** (2026-11-14) Me. **Production database** (second slot): `alhidaya_site`, the **app user** `alhidaya_app`
+      (SELECT, INSERT, UPDATE, DELETE only) and the **migration user** `alhidaya_mig` (all rights on that database
+      only), random passwords generated on the server and never shown. They sit in `~/alhidaya-data/.secrets.env`
+      (mode 600, folder 700) with the Better Auth, IP-hash and cron secrets, for C4. _Verified:_ both log in from
+      127.0.0.1 (as `@localhost`); `SHOW GRANTS` is as intended. The old database and its user are untouched.
+- [x] **C2** (2026-11-14) Me. **Private folder:** `~/alhidaya-data/cvs` (mode `700`, outside `public_html`). _Still to
+      do with the app (C3/C4):_ the release folders, and the media folder with its `.htaccess` (no listing, no scripts,
+      images and PDF only, `nosniff`; folders `755`, files `644`), made by the app itself. During rehearsal the media
+      folder sits in the rehearsal host's docroot; the live one is made at the cutover (E5).
+- [x] **C3** (2026-11-14, rehearsal app) Me. **Node.js app** with `cloudlinux-selector` (Node 22.22.0, production, one
+      Passenger process, D119). Created for `preview.alhidaya.qa`: app folder `~/alhidaya-rehearsal` (outside
+      `public_html`), `app.js` the one stable startup file (it requires `./current/server.js`), `releases/` and a
+      `current` link, today pointing at a one-line placeholder release that answers 200 with `noindex`. _Proven:_ Apache
+      and Passenger answer for the host over HTTP and HTTPS (by address; the certificate is cPanel's self-signed one
+      until AutoSSL can validate). The production app is created the same way at E7.
+- [~] **C4** Me. **App environment** set in the selector: `NODE_ENV`, `NEXT_PUBLIC_SITE_URL`, the app's database URL,
       SMTP, the three secrets, Turnstile, `MEDIA_DIR`, `MEDIA_URL`, `CV_DIR`. `SERVE_MEDIA` and `KIT_PREVIEW` stay unset.
+      _Done for the rehearsal app (2026-11-14):_ every value except SMTP, with Cloudflare's public always-pass test
+      keys for Turnstile (the site's real keys replace them, item 3) and `NEXT_PUBLIC_SITE_URL=https://preview.alhidaya.qa`.
+      The migration login is **not** in the app's environment (AGENTS.md §9: only the release workflow uses it).
+      _Still to do:_ `SMTP_*` when you supply the new `noreply@` password (item 4). The selector writes these values into
+      the host's `.htaccess` (inside `<IfModule Litespeed>`, so Apache ignores them) as well as its own settings; Apache
+      never serves `.ht*` files, which D4 proves.
 - [ ] **C5** Me. **Cron:** daily `POST /api/cron/retention` and `POST /api/cron/mail-retry` every 10 minutes, each with
       the bearer `CRON_SECRET` read from the server's environment, never written into the crontab text.
 - [ ] **C6** Both. **Mail:** the `noreply@` password rotated (item 4); mail routing confirmed **Remote**; DKIM and
-      DMARC `p=none` records added in cPanel's Zone Editor (R8.3). MX, SPF and the existing records are not touched.
-- [ ] **C7** Me. **Deploy key:** the release workflow's own key pair (item 8), authorised for the `alhidaya` user only.
+      DMARC `p=none` records (R8.3) added **at HostCarts' DNS, not in cPanel's Zone Editor** (§2: cPanel's zone is not
+      the one the world reads). MX, SPF and the existing records are not touched. Optional for launch: SPF already
+      passes for this server through its `+a`, so DKIM and DMARC improve inbox placement but do not block it.
+- [x] **C7** (2026-11-14) Me. **Deploy key:** a dedicated ed25519 pair made on this Mac (`~/.ssh/alhidaya_release_ed25519`,
+      no passphrase, used only by the workflow); the public half was appended to the `alhidaya` user's
+      `authorized_keys` with `no-agent-forwarding,no-X11-forwarding` (the file was copied to
+      `authorized_keys.before-release-key` first; your own key is untouched) and a login with it was tested. The private
+      half, the host's three public keys (checked equal to the ones this Mac already trusts), host, port and user are
+      GitHub repository secrets (`RELEASE_SSH_KEY`, `RELEASE_SSH_KNOWN_HOSTS`, `RELEASE_SSH_HOST`, `RELEASE_SSH_PORT`,
+      `RELEASE_SSH_USER`), set with `gh` and never printed. Remove the key line from `authorized_keys` and delete the
+      secrets to revoke it.
 
 ### Phase D: Rehearse on a hidden host (GATE: each sub-step confirmed)
 
@@ -179,7 +204,16 @@ The same build that will go live runs first on the rehearsal host (plan Q22, R8.
 `alhidaya.qa`. The host sits in its own docroot **outside** `public_html`, so the old site's `.htaccess` rules cannot
 reach it, and it sends `X-Robots-Tag: noindex`.
 
-- [ ] **D1** Me. Create the rehearsal host and its AutoSSL certificate; its docroot is `~/rehearsal-site`.
+- [~] **D1** Me. The rehearsal host. _Done 2026-11-14:_ `preview.alhidaya.qa` created in cPanel; **cPanel forces a
+      subdomain's docroot under `public_html`**, so it is `public_html/rehearsal-site` (the first attempt, which also
+      landed there, was my own empty creation and was removed; nothing existing was touched); AutoSSL requested.
+      _Waiting on DNS:_ the world's DNS is HostCarts', so `preview A 15.235.174.14` must be added there (see §3.1, Q6)
+      before the certificate can be issued or a browser can reach it. Until then I rehearse from here by mapping the
+      name to the server's address (no DNS needed). _Also done (2026-11-14):_ the host's own `.htaccess` now carries a
+      marked `BEGIN/END ALHIDAYA REHEARSAL` block that cuts off the old site's rules (Apache applies
+      `public_html/.htaccess` to every folder below it: `RewriteEngine Off` makes the old rewrite rules, including its
+      forced HTTPS redirect, stop applying here; its CORS headers on scripts, styles and images are unset again) and
+      sends `X-Robots-Tag: noindex, nofollow`. The first request answered with that header and no redirect.
 - [ ] **D2** Me. Run the release workflow in **rehearsal** mode from the exact commit that will be tagged
       (`workflow_dispatch`, target `rehearsal`): CI, build once, upload, SHA-256 check, migrate, switch, restart.
 - [ ] **D3** Both. Load the launch content (Q4), create the admin account (you type the password), publish.
@@ -205,7 +239,7 @@ Time zone: Qatar (UTC+3). You may postpone at any step; rollback is §5.
 - [ ] **E3** Me. **Final backup** into `backups/2026-11-14-final-before-switch/`: the database again and the CV/upload
       folders (the files and the DB are the only things that can have changed), then the same B4 checks.
 - [ ] **E4** Me. **Move the old site aside:** everything in `public_html` except `.well-known/` (AutoSSL) and
-      `maintenance.html` → `~/old-site-2026-11-14/` (same filesystem, instant). The old `.htaccess` goes with it
+      `maintenance.html` and `rehearsal-site/` → `~/old-site-2026-11-14/` (same filesystem, instant). The old `.htaccess` goes with it
       (block included), then `scripts/maintenance.sh on` writes the block onto a fresh `.htaccess`.
       `.well-known.zip` leaves the web here.
 - [ ] **E5** Me. Create the media folder and its `.htaccess` in the docroot; copy the media files (Q4).
@@ -316,6 +350,14 @@ is touched:
    rehearsal host may need its own runtime value. The build itself stays identical.
 5. **Memory:** one Passenger process within 1 GB while sharp resizes an upload.
 6. **`uapi` and `cloudlinux-selector` permissions** for the steps above; the fallback for each is a cPanel click you do.
+7. **`NEXT_PUBLIC_SITE_URL` is read twice.** Next writes `process.env.NEXT_PUBLIC_SITE_URL` into the build
+   (`publicSiteUrl()`: the sitemap, robots.txt, canonical URLs and JSON-LD), while sign-in, the origin check and mail
+   links read it at run time. The release is therefore **built once with `https://alhidaya.qa`** and the rehearsal app
+   overrides only the run-time value with the preview host; the rehearsal's sitemap and canonicals name alhidaya.qa,
+   which is what the live site will say (the rehearsal host is `noindex`). D4 checks both.
+8. **Settings written into `.htaccess`.** The selector keeps the app's environment in the host's `.htaccess` (and its
+   own settings). `maintenance.sh` and any copy of that file therefore hold secrets: they stay `.ht*` files (never
+   served), mode 644 or tighter, and are never downloaded into the backup folder unredacted.
 
 ---
 

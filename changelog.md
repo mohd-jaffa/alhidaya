@@ -4888,3 +4888,42 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None. Waiting on the user (RELEASE.md §3.2): "backups received" (B6), the rehearsal host name, the admin's email and name, the Turnstile keys and the new `noreply@` password (as a local `.env.production`, never in chat), and the cutover time. No change has been made on the server.
+
+## 2026-11-14 — Release v1.0.0: server preparation begun (C1, C2, the preview host)
+
+### Changed (on the client's server; the user gave the go; the old site is untouched and still serving)
+- **C1, the new database:** `alhidaya_site` (the second of the two slots), the app user `alhidaya_app` (SELECT, INSERT, UPDATE, DELETE only) and the migration user `alhidaya_mig` (all rights on that database only). Passwords were generated on the server and never shown; they, with the Better Auth, IP-hash and cron secrets, sit in `~/alhidaya-data/.secrets.env` (mode 600, folder 700) for the app's settings. Both logins verified from 127.0.0.1 and the grants checked.
+- **C2, the private folder:** `~/alhidaya-data/cvs`, mode 700, outside `public_html`.
+- **The preview host:** `preview.alhidaya.qa` created in cPanel. cPanel forces every subdomain's document root under `public_html` (an absolute path outside it is rewritten), so it is `public_html/rehearsal-site`. My first attempt created it there too; that was my own empty folder (three cPanel-made files) and was removed before the second attempt. AutoSSL was requested.
+
+### Found
+- **The world's DNS is HostCarts' own nameservers** (`ns1`/`ns2.alhidaya.qa`, 115.84.171.158, zone serial 2026082510), not this cPanel (its copy is serial 2026093001, and the public SPF differs from cPanel's). A record added in cPanel's Zone Editor never reaches the internet, so `preview.alhidaya.qa` does not resolve yet and its certificate cannot be issued, and the planned DKIM and DMARC records (R8.3) must be added at HostCarts too. `alhidaya.qa` already resolves to this server, so the cutover itself needs no DNS change. SPF already passes for this server through its `+a`.
+- macOS `tar` hides `._*` entries on extraction; the backup verifier now reads the archive's raw entry list (no change to the backup).
+
+### Validation
+- `npm run verify:fast` passed before the commit (lint, format, types, both audits, 380 files, 1,434 tests, 100% coverage).
+
+### Blockers
+- OPEN (DNS): the `preview` record must be added at HostCarts (RELEASE.md Q6) for a browser to reach the rehearsal host; until then it is rehearsed by address.
+- OPEN (inputs): the Turnstile keys, the new `noreply@` password (`.env.production`), a "go" for C3 to C7, and the cutover time.
+
+## 2026-11-14 — Release v1.0.0: the rehearsal app and the release key (C3, C4 in part, C7)
+
+### Changed (on the client's server; the user gave the go for all three; the old site and alhidaya.qa are untouched)
+- **C3, the rehearsal Node.js app:** `cloudlinux-selector` created an app for `preview.alhidaya.qa` (Node 22.22.0, production, root `~/alhidaya-rehearsal` outside `public_html`). `app.js` is its one stable startup file and requires `./current/server.js`; `releases/` and a `current` link hold the builds, today a one-line placeholder that answers 200 with `noindex`. Apache and Passenger answered over HTTP and HTTPS by address.
+- **C4 in part, its environment:** every value except SMTP (database URL, the Better Auth, IP-hash and cron secrets from the server's own secrets file, paths, the preview site URL, Cloudflare's public test keys for Turnstile). The migration login is not in the app's environment. Values were never printed: the script redacts its own output.
+- **The host's `.htaccess`:** a marked `BEGIN/END ALHIDAYA REHEARSAL` block turns the old site's inherited rewrite rules off for this folder, unsets the old site's CORS headers on static files and sends `X-Robots-Tag: noindex, nofollow`. The file as it was before the selector touched it is kept beside it as `.htaccess.before-selector`.
+- **C7, the release key:** an ed25519 pair made on this Mac for the release workflow only; its public half appended to the server's `authorized_keys` (the old file kept as `authorized_keys.before-release-key`), a login with it tested. GitHub repository secrets `RELEASE_SSH_KEY`, `RELEASE_SSH_KNOWN_HOSTS` (the three host keys, checked equal to the ones this Mac trusts), `RELEASE_SSH_HOST`, `RELEASE_SSH_PORT`, `RELEASE_SSH_USER` set with `gh`, none printed.
+- `docs/RELEASE.md`: C3, C4, C7 and D1 updated; §9 gained two findings.
+
+### Found
+- `publicSiteUrl()` reads `process.env.NEXT_PUBLIC_SITE_URL` directly, so Next writes it into the build (sitemap, robots, canonicals, JSON-LD), while sign-in, the origin check and mail links read it at run time. The release is built once with `https://alhidaya.qa`; the rehearsal overrides only the run-time value.
+- The selector copies the app's environment into the host's `.htaccess` (inside `<IfModule Litespeed>`, inactive under Apache). Apache never serves `.ht*` files, but no copy of that file may go into a backup or repository unredacted.
+- Apache applies a parent folder's `.htaccess` to every folder below it; per-directory rewrite rules stop inheriting only once the child has its own mod_rewrite directive.
+
+### Validation
+- Server checks only: the preview host answers 200 with `x-robots-tag: noindex, nofollow` and no HTTPS redirect; the release key logs in. Nothing under `src/` changed.
+
+### Blockers
+- OPEN (DNS): the `preview` record at HostCarts (RELEASE.md Q6).
+- OPEN (inputs): the Turnstile keys and the new `noreply@` password (`.env.production`, for the rest of C4 and C6), and the cutover time.
