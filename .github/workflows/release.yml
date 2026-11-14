@@ -12,6 +12,8 @@
 # Only when all four pass is the build uploaded over SSH, its database migrated, `current` switched, the app restarted
 # and the site checked; a site that does not answer is switched back by itself (scripts/release-deploy.sh).
 name: Release
+# The run is named after the release tag in the Actions list ("Release v1.0.1"), not after the commit message (D206).
+run-name: Release ${{ github.ref_name }}
 
 on:
   push:

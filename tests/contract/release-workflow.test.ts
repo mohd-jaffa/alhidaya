@@ -40,6 +40,10 @@ describe("release workflow", () => {
     );
   });
 
+  it('names each run after its release tag, so the Actions list reads "Release v1.0.1" (D206)', () => {
+    expect(workflow).toMatch(/^name: Release\n(?:#[^\n]*\n)*run-name: Release \$\{\{ github\.ref_name \}\}\n/m);
+  });
+
   it("releases a tag only when it is vX.Y.Z, equals package.json and sits on main, and never waits for main's CI", () => {
     expect(workflow).toContain("^v[0-9]+\\.[0-9]+\\.[0-9]+$");
     expect(workflow).toContain('[ "v$version" = "$REF_NAME" ]');

@@ -5079,3 +5079,15 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - None.
 
+## 2026-11-14 — The release run is named after its tag
+
+### Changed
+- `.github/workflows/release.yml`: `run-name: Release ${{ github.ref_name }}`. A run started by the tag `v1.0.1` is now listed as "Release v1.0.1" instead of the commit's message (decision D206). A tag-triggered run only receives the tag's name, not the title typed in the GitHub release form; they match when the release is titled with its tag, as `v1.0.0` was.
+- `tests/contract/release-workflow.test.ts`: one test for the run name.
+
+### Validation
+- Contract tests, lint, format and types pass. No source under `src/` changed.
+
+### Blockers
+- None.
+
