@@ -17,14 +17,15 @@ cp "$root/scripts/release-remote.sh" "$work/release-remote.sh"
 # Stand-ins. curl answers like a site: healthy only when the release `current` points at holds a HEALTHY file.
 cat >"$work/stubs/curl" <<'EOF'
 #!/usr/bin/env bash
-out="" url="" write="" dump=""
+out="" url="" write="" dump="" ip=""
 while [ $# -gt 0 ]; do
   case "$1" in
     -o) out="$2"; shift ;;
     -D) dump="$2"; shift ;;
     -w) write="$2"; shift ;;
     -H) echo "header: $2" >>"$HOME/curl.log"; shift ;;
-    --max-time | --resolve) shift ;;
+    --resolve) echo "resolve: $2" >>"$HOME/curl.log"; ip="${2##*:}"; shift ;;
+    --max-time) shift ;;
     -*) ;;
     *) url="$1" ;;
   esac
@@ -32,7 +33,16 @@ while [ $# -gt 0 ]; do
 done
 echo "url: $url" >>"$HOME/curl.log"
 target="$(readlink "$HOME/alhidaya-test/current" || true)"
-if [ -e "$HOME/alhidaya-test/$target/HEALTHY" ]; then
+if [ "$ip" = 127.0.0.1 ]; then
+  # The loopback address reaches Apache's DEFAULT host (cPanel's page), whatever the release: found on the real server.
+  case "$url" in */robots.txt) code=404 ;; *) code=200 ;; esac
+  body='<html><body>cPanel default page</body></html>'
+  [ -n "$dump" ] && printf 'HTTP/1.1 %s\r\nserver: Apache\r\n\r\n' "$code" >"$dump"
+elif [ -e "$HOME/alhidaya-test/$target/PLAIN" ]; then
+  # The placeholder release: answers 200 to anything, with none of the app's own headers.
+  code=200; body='placeholder'
+  [ -n "$dump" ] && printf 'HTTP/1.1 200\r\nx-robots-tag: noindex\r\n\r\n' >"$dump"
+elif [ -e "$HOME/alhidaya-test/$target/HEALTHY" ]; then
   # A running app: the home page answers FAKE_HOME_CODE (200 unless a test says otherwise) and adds its own header.
   case "$url" in */robots.txt) code=200 ;; *) code="${FAKE_HOME_CODE:-200}" ;; esac
   body='<html><body>ok</body></html>'
@@ -53,6 +63,11 @@ cat >"$work/stubs/node" <<'EOF'
 #!/usr/bin/env bash
 # `node --check <file>`: fails for a file that says SYNTAX-ERROR.
 [ "$1" = "--check" ] && ! grep -q 'SYNTAX-ERROR' "$2"
+EOF
+cat >"$work/stubs/hostname" <<'EOF'
+#!/usr/bin/env bash
+# `hostname -I`: a loopback address, the server's own, and an IPv6 one; the check must pick the server's own.
+echo "${FAKE_HOSTNAME_I:-127.0.0.1 203.0.113.7 fe80::1}"
 EOF
 cat >"$work/stubs/cloudlinux-selector" <<'EOF'
 #!/usr/bin/env bash
@@ -186,12 +201,27 @@ printf 'abcdef0123456789abcdef0123456789\n' >"$HOME/alhidaya-data/.maintenance-t
 grep -q 'header: X-Release-Check: abcdef0123456789abcdef0123456789' "$HOME/curl.log" && ok "during maintenance the check carries the window's token" || bad "token not sent"
 printf '%s' "$out" | grep -q abcdef0123456789 && bad "the token was printed" || ok "the token is never printed"
 
+echo "health: where the check connects"
+fresh; sha="$(build $R1)"; upload $R1; run prepare $APP $R1 "$sha" >/dev/null 2>&1; touch "$HOME/$APP/releases/$R1/HEALTHY"
+: >"$HOME/curl.log"; run activate $APP $R1 preview.alhidaya.qa >/dev/null 2>&1
+grep -q 'resolve: preview.alhidaya.qa:443:203.0.113.7' "$HOME/curl.log" && ok "the check connects to the server's own address" || bad "wrong address: $(grep resolve "$HOME/curl.log" | head -1)"
+grep -q 'resolve: .*:127.0.0.1' "$HOME/curl.log" && bad "the check used the loopback address" || ok "never the loopback address (Apache's default host)"
+fresh; sha="$(build $R1)"; upload $R1; run prepare $APP $R1 "$sha" >/dev/null 2>&1; touch "$HOME/$APP/releases/$R1/HEALTHY"
+: >"$HOME/curl.log"; HEALTH_IP=198.51.100.9 run activate $APP $R1 preview.alhidaya.qa >/dev/null 2>&1
+grep -q 'resolve: preview.alhidaya.qa:443:198.51.100.9' "$HOME/curl.log" && ok "HEALTH_IP overrides the address" || bad "override ignored"
+fresh; sha="$(build $R1)"; upload $R1; run prepare $APP $R1 "$sha" >/dev/null 2>&1; touch "$HOME/$APP/releases/$R1/HEALTHY"
+expect "a check that lands on Apache's default host (loopback) is never healthy, however good the release" 1 "$(HEALTH_IP=127.0.0.1 status run activate $APP $R1 preview.alhidaya.qa)"
+fresh; rm -f "$HOME/$APP/releases/0-placeholder/HEALTHY"; touch "$HOME/$APP/releases/0-placeholder/PLAIN"; sha="$(build $R1)"; upload $R1; run prepare $APP $R1 "$sha" >/dev/null 2>&1
+expect "an unhealthy first release fails, rolling back to the plain placeholder" 1 "$(status run activate $APP $R1 preview.alhidaya.qa)"
+grep -q 'ROLLED BACK to 0-placeholder, which answers' /work/out.txt && ok "and the placeholder counts as answering" || bad "rollback verdict wrong: $(tail -2 /work/out.txt)"
+expect "current is back on the placeholder" "releases/0-placeholder" "$(readlink "$HOME/$APP/current")"
+
 echo "health: an empty database"
 fresh; sha="$(build $R1)"; upload $R1; run prepare $APP $R1 "$sha" >/dev/null 2>&1; touch "$HOME/$APP/releases/$R1/HEALTHY"
-expect "a 404 for / is healthy while the database holds no content" 0 "$(FAKE_HOME_CODE=404 FAKE_DOCS=0 status run activate $APP $R1 preview.alhidaya.qa)"
-grep -q 'holds no content yet' /work/out.txt && ok "and it says why" || bad "no reason given"
+expect "a 404 for / is healthy while the database holds no page" 0 "$(FAKE_HOME_CODE=404 FAKE_DOCS=0 status run activate $APP $R1 preview.alhidaya.qa)"
+grep -q 'holds no pages yet' /work/out.txt && ok "and it says why" || bad "no reason given"
 fresh; sha="$(build $R1)"; upload $R1; run prepare $APP $R1 "$sha" >/dev/null 2>&1; touch "$HOME/$APP/releases/$R1/HEALTHY"
-expect "a 404 for / is NOT healthy once the database holds content" 1 "$(FAKE_HOME_CODE=404 FAKE_DOCS=12 status run activate $APP $R1 preview.alhidaya.qa)"
+expect "a 404 for / is NOT healthy once the database holds a page" 1 "$(FAKE_HOME_CODE=404 FAKE_DOCS=12 status run activate $APP $R1 preview.alhidaya.qa)"
 expect "a 500 for / is never healthy, content or not" 1 "$(FAKE_HOME_CODE=500 FAKE_DOCS=0 status run activate $APP $R1 preview.alhidaya.qa)"
 fresh; rm -f "$HOME/$APP/releases/0-placeholder/HEALTHY"; touch "$HOME/$APP/releases/0-placeholder/APACHE"; sha="$(build $R1)"; upload $R1; run prepare $APP $R1 "$sha" >/dev/null 2>&1; touch "$HOME/$APP/releases/$R1/APACHE"
 expect "an Apache 404 without the app's headers is not healthy, even on an empty database" 1 "$(FAKE_DOCS=0 status run activate $APP $R1 preview.alhidaya.qa)"

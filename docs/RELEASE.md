@@ -216,8 +216,14 @@ reach it, and it sends `X-Robots-Tag: noindex`.
       `public_html/.htaccess` to every folder below it: `RewriteEngine Off` makes the old rewrite rules, including its
       forced HTTPS redirect, stop applying here; its CORS headers on scripts, styles and images are unset again) and
       sends `X-Robots-Tag: noindex, nofollow`. The first request answered with that header and no redirect.
-- [ ] **D2** Me. Run the release workflow as a **rehearsal** (a manual run from `main`) on the exact commit that will
-      get the `v1.0.0` tag: CI, build once, upload, SHA-256 check, migrate, switch, restart.
+- [~] **D2** Me. Run the release workflow as a **rehearsal** (a manual run from `main`) on the exact commit that will
+      get the `v1.0.0` tag: CI, build once, upload, SHA-256 check, migrate, switch, restart. _First run
+      (2026-11-14, `f0e4125`):_ CI passed (the open `focal-points` E2E failed once and passed on re-run), the build
+      packed 65 MB, the upload, SHA-256 check, unpack (127 MB, `server.js` loads) and the migration all worked, and the
+      switch happened, but my health check then **rolled the release back wrongly** (two findings, §9 items 13 and 14).
+      After the fix the same unpacked release was activated by hand: **healthy, live on the preview host**
+      (`/` 404 as it should with no page yet, `/robots.txt` 200, the app's own headers present). _Still to do:_ the same
+      run again on the final commit, so the workflow itself, not my hand, does the switch.
 - [ ] **D3** Both. Load the launch content (Q4) with `scripts/content-import.sh` (media first, then the rows into the
       empty database as the app user, counted against the export; the app is restarted afterwards because it caches
       what it read), create the admin account (you type the password), publish.
@@ -371,8 +377,9 @@ is touched:
 
 9. **An empty database answers 404 on `/`** (the pages show only published content), so the first rehearsal deploy,
    before the content is loaded, would fail a plain "home page is 200" check. The server-side check therefore accepts
-   404 **only** while the `documents` table is empty, and only with `/robots.txt` at 200 and the app's own headers
-   (Apache cannot fake them); any 5xx, or a 404 once content exists, switches back. Found by running the pruned build
+   404 **only** while no page document (`PAGE:%`) exists (migration 0007 seeds one `TYPOGRAPHY` row, so the table is
+   never empty), and only with `/robots.txt` at 200 and the app's own headers (Apache cannot fake them); any 5xx, or
+   a 404 once a page exists, switches back. Found by running the pruned build
    against a freshly migrated scratch MySQL.
 10. **The app caches what it read.** Content written straight into the database is invisible to a running app until
     it restarts, so `content-import.sh` ends with a restart and a health check.
@@ -382,6 +389,26 @@ is touched:
     before the live app (about 140 MB, and a second release when v1.0.1 comes).
 12. **The SSH tunnel to the server's MySQL works** with the release key (checked 2026-11-14: the MySQL 8.0.46 greeting
     arrived through `-L`), so migrations use Drizzle Kit itself, not hand-applied SQL.
+
+13. **Apache's loopback address is the wrong place to check from.** `curl --resolve host:443:127.0.0.1` on the server
+    reaches Apache's _default_ host (cPanel's page: `/` 200, `/robots.txt` 404) for any name; the server's own address
+    (`hostname -I`, 15.235.174.14) reaches the domain's own virtual host. The first rehearsal's health check used the
+    loopback address and saw only cPanel's page, so it rolled back a release that was fine (the safety net worked; the
+    check was aimed wrongly). Checks now use the server's own address, or `HEALTH_IP`.
+14. **"No content yet" cannot mean an empty table.** Migration 0007 seeds one `TYPOGRAPHY` document, so the rule is "no
+    `PAGE:%` document exists" (item 9). A rollback is now confirmed by "`/robots.txt` answers 200" (the placeholder has
+    none of the app's headers and could never pass the full check).
+
+15. **OPEN: the preview host answers 404 for every path over IPv4 from my network, and correctly over IPv6/NAT64 and
+    from the server itself** (same Apache address, same headers, same build: checked with `curl -4` and `curl -6`
+    against `15.235.174.14`, and through an SSH tunnel). The 404 is the app's own page, reached with a path outside
+    `/api` even for `/api/cron/retention`, so the request is changed before the app sees it. Not understood yet; it must
+    be understood before the preview host is shown to anyone, and before the cutover (the live site must answer over
+    IPv4). To find out: the web server's access log for this vhost, and what rewrites the path.
+16. **OPEN: static files in the docroot are not served by Apache on the preview host.** `/php.ini` (a real file in
+    `rehearsal-site`) answers the app's 404 page, so Passenger takes every request. The plan has Apache serve
+    `/media/...` straight from the docroot (plan §21.3); D4 must prove that with a real media file after the content
+    import, or the media folder must be reached another way (`SERVE_MEDIA`, or Passenger's public folder).
 
 ---
 

@@ -4975,3 +4975,25 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - None new. Still open: the Turnstile keys for the live cutover.
 
+## 2026-11-14 — Release v1.0.0: first rehearsal deploy, two health-check fixes
+
+### Changed
+- **First rehearsal run (`f0e4125`, run 43581174799), on the client's server:** CI passed (the open `focal-points` E2E failed once and passed on re-run), the build packed 65 MB, and the deploy uploaded, SHA-256-checked and unpacked it (127 MB, `server.js` loads) and migrated `alhidaya_site` with Drizzle Kit through the SSH tunnel. The switch then rolled back by itself: the health check was wrong, not the release.
+- **`scripts/release-remote.sh`:** checks connect to the server's own address (`hostname -I`, or `HEALTH_IP`), never 127.0.0.1, which reaches Apache's default host and shows cPanel's page for any name; "no content yet" now means no `PAGE:%` document (migration 0007 seeds a `TYPOGRAPHY` row); a rollback is confirmed by `/robots.txt` answering 200, so the plain placeholder counts. `scripts/test-release-remote.sh` gained the regression cases (the address, the override, the loopback trap, the placeholder rollback).
+- The unpacked release `20261114-100822-f0e4125` was then activated by hand with the fixed script: healthy and live on `preview.alhidaya.qa` (404 on `/` until the content is loaded, `/robots.txt` 200, the app's own headers).
+
+### Found
+- The old health check could not see the app at all from 127.0.0.1; only a real run on the real server could show it (the container tests used a stand-in curl). The container's curl stand-in now behaves like Apache's default host on the loopback address.
+
+### Validation
+- `scripts/test-release-remote.sh` passes; `npm run verify:fast` run for the commit.
+
+### Blockers
+- OPEN (E2E): the `focal-points` flake (96 px of overflow in the admin service editor at 320 px with doubled text) can fail a release's CI; this run needed one re-run.
+- Waiting on a go for D3 (the content import into the production database).
+
+### Found (later the same day, read-only checks of the preview host)
+- OPEN: over IPv4 from the developer's network the preview host answers 404 for every path (even an API route that answers 405 from the server itself); over IPv6/NAT64 it answers correctly. The request must be altered before the app sees it. Recorded as `docs/RELEASE.md` §9 item 15 and to be explained before the host is shown to anyone.
+- OPEN: static files in the docroot (`/php.ini`) answer the app's 404, so Passenger takes every request; Apache serving `/media/...` directly (plan §21.3) is unproven (item 16).
+- The host has no public DNS record (the user cannot reach HostCarts), so it is unreachable from a browser without a hosts-file line; this is why a browser cannot connect to it.
+

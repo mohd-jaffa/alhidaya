@@ -59,30 +59,51 @@ db_login() { # db_login <VARIABLE NAME>
   export MYSQL_PWD="${BASH_REMATCH[2]}"
 }
 
-# How many documents the site's database holds (an empty one has no pages to show), or "unknown".
+# How many page documents (PAGE:HOME and the like) the site's database holds, or "unknown". Migration 0007 seeds one
+# TYPOGRAPHY document, so "no content yet" cannot mean an empty table; it means no page has been saved.
 document_count() (
   db_login DATABASE_URL || {
     echo unknown
     exit 0
   }
-  mysql -N -B -h "$db_host" -P "$db_port" -u "$db_user" "$db_name" -e "SELECT COUNT(*) FROM documents" 2>/dev/null || echo unknown
+  mysql -N -B -h "$db_host" -P "$db_port" -u "$db_user" "$db_name" -e "SELECT COUNT(*) FROM documents WHERE \`key\` LIKE 'PAGE:%'" 2>/dev/null || echo unknown
 )
+
+# The address a check connects to: the server's own, never 127.0.0.1. Apache's virtual host for a domain answers on the
+# server's address; the loopback address reaches its DEFAULT host, which shows cPanel's page for any name (found in the
+# first rehearsal, 2026-11-14: / answered 200 and /robots.txt 404, both from cPanel). HEALTH_IP overrides it.
+health_ip() {
+  local ip
+  if [ -n "${HEALTH_IP:-}" ]; then
+    echo "$HEALTH_IP"
+    return
+  fi
+  for ip in $(hostname -I 2>/dev/null); do
+    case "$ip" in 127.* | *:*) ;; *)
+      echo "$ip"
+      return
+      ;;
+    esac
+  done
+  echo 127.0.0.1
+}
 
 # The site answers on its own domain, reached through this server's own address, so public DNS is not needed. While
 # the maintenance page is up, the window's release-check token (scripts/maintenance.sh) lets this request through.
 # Healthy means: /robots.txt answers 200, and / answers with a page that carries the headers only the app adds (the
-# Apache docroot cannot fake them): 200 with a page, or, while the database holds no content at all (the first
+# Apache docroot cannot fake them): 200 with a page, or, while the database holds no page at all (the first
 # rehearsal, before the launch content is loaded), 404, which is the site's own "no page yet" answer and proves the
 # database was reached. A 5xx, an Apache page or no answer is never healthy.
 health() { # health <domain>
-  local domain="$1" body headers code robots tries app_header header=()
+  local domain="$1" body headers code robots tries app_header ip header=()
   [[ "$domain" =~ ^[a-z0-9.-]+$ ]] || die "the domain is not valid"
+  ip="$(health_ip)"
   [ -r "$MAINTENANCE_TOKEN" ] && header=(-H "X-Release-Check: $(tr -d '\n' <"$MAINTENANCE_TOKEN")")
   body="$(mktemp)"
   headers="$(mktemp)"
   for tries in $(seq 1 "$HEALTH_TRIES"); do
-    code="$(curl -sk -D "$headers" -o "$body" -w '%{http_code}' --max-time 30 --resolve "$domain:443:127.0.0.1" ${header[@]+"${header[@]}"} "https://$domain/" || true)"
-    robots="$(curl -sk -o /dev/null -w '%{http_code}' --max-time 30 --resolve "$domain:443:127.0.0.1" ${header[@]+"${header[@]}"} "https://$domain/robots.txt" || true)"
+    code="$(curl -sk -D "$headers" -o "$body" -w '%{http_code}' --max-time 30 --resolve "$domain:443:$ip" ${header[@]+"${header[@]}"} "https://$domain/" || true)"
+    robots="$(curl -sk -o /dev/null -w '%{http_code}' --max-time 30 --resolve "$domain:443:$ip" ${header[@]+"${header[@]}"} "https://$domain/robots.txt" || true)"
     app_header=no
     grep -qi '^content-security-policy:' "$headers" && app_header=yes
     if [ "$robots" = 200 ] && [ "$app_header" = yes ]; then
@@ -93,7 +114,7 @@ health() { # health <domain>
       fi
       if [ "$code" = 404 ] && [ "$(document_count)" = 0 ]; then
         rm -f "$body" "$headers"
-        echo "  healthy after $tries check(s): the database holds no content yet, so / answers 404 as it should; /robots.txt answers 200"
+        echo "  healthy after $tries check(s): the database holds no pages yet, so / answers 404 as it should; /robots.txt answers 200"
         return 0
       fi
     fi
@@ -101,6 +122,20 @@ health() { # health <domain>
     sleep "$HEALTH_WAIT"
   done
   rm -f "$body" "$headers"
+  return 1
+}
+
+# Is anything answering for the domain? Used only to confirm a rollback: the placeholder release has none of the app's
+# own headers, so it could never pass health(), but it does answer /robots.txt.
+alive() { # alive <domain>
+  local domain="$1" tries code ip header=()
+  ip="$(health_ip)"
+  [ -r "$MAINTENANCE_TOKEN" ] && header=(-H "X-Release-Check: $(tr -d '\n' <"$MAINTENANCE_TOKEN")")
+  for tries in $(seq 1 "$HEALTH_TRIES"); do
+    code="$(curl -sk -o /dev/null -w '%{http_code}' --max-time 30 --resolve "$domain:443:$ip" ${header[@]+"${header[@]}"} "https://$domain/robots.txt" || true)"
+    [ "$code" = 200 ] && return 0
+    sleep "$HEALTH_WAIT"
+  done
   return 1
 }
 
@@ -222,7 +257,7 @@ case "$command_name" in
     if [ -n "$previous" ] && [ -d "$dir/releases/$previous" ]; then
       point_current "$previous"
       restart_app "$domain"
-      if health "$domain"; then
+      if alive "$domain"; then
         die "ROLLED BACK to $previous, which answers; release $release was not accepted (it stays unpacked for inspection)"
       fi
       die "ROLLED BACK to $previous, but it does not answer either: look at the app's log"
