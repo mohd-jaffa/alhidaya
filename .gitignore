@@ -41,3 +41,9 @@ next-env.d.ts
 
 # Vitest shard blobs, merged in CI
 .vitest-reports/
+
+# Server backups taken before the release (RELEASE.md §7): the old site's secrets and applicants' CVs
+/backups/
+
+# The launch content exported from the local database and its media files (RELEASE.md Q4); regenerated on demand
+/release-content/

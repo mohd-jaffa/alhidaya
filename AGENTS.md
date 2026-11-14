@@ -525,14 +525,18 @@ true in the same commit.
 # 23. Hosting and Deployment
 
 - **No deployment and no change of any kind on the client's server until the
-  user confirms full payment** (plan D48). Until then SSH (port 2200, the key
-  `~/.ssh/alhidaya_cpanel_rsa` on the developer's machine) is used **only for
-  read-only checks**: no files written, moved or deleted, no settings changed,
-  not even a backup.
+  user confirms full payment** (plan D48). **Confirmed 2026-11-14 (D197)**; the
+  release is run from `docs/RELEASE.md`, and **every server change is still
+  confirmed with the user at its checkpoint**. Before that confirmation SSH
+  (port 2200, the key `~/.ssh/alhidaya_cpanel_rsa` on the developer's machine)
+  was used **only for read-only checks**; the backup is streamed read-only into
+  `backups/` (git-ignored: it holds secrets and CVs), nothing is written on the
+  server.
 - After that, **every step that changes the server is confirmed with the user
-  first** (plan D44). **The user** backs up the old site, gives it to the
-  client and clears it and its database before the first deploy (plan D50,
-  R0.9); an agent never deletes anything of the old site.
+  first** (plan D44). The agent backs up the old site (D197); at the cutover it
+  is **moved aside, not cleared** (D198); **the user** gives the backup to the
+  client and says when the old site and its database may be deleted (plan D50,
+  R0.9); an agent never deletes anything of the old site on its own.
 - **Security is a must** (plan D55): every row carries its security tests.
 - Production is the client's **cPanel server** (plan §21.1): the Next.js
   **standalone** build as a Node.js app under Passenger (Node 22), MySQL 8.0

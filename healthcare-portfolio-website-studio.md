@@ -299,6 +299,10 @@ question (§41) the user may overturn.
 | D194 | **Leaner CI and a report-only hosted performance job** (the user, 2026-11-09: "make sure the CI is clean and efficient and optimized"; the user chose report-only for the performance job). Both hosted runs failed. The 20 desktop-scroll cases pass; on the mobile Lighthouse profile `/`, `/about`, `/services` and `/contact` score 0.84-0.93 (budget 0.95), `/` and `/about` also miss the INP and long-task limits, while LCP stays under 1 s and CLS 0. Only Total Blocking Time fails (300-650 ms); a Linux Chromium reproduction (CPU benchmark 2,800-2,900, like the runner's 2,300-2,480) shows the same pages and run-to-run noise of about 150 ms, while the same budgets pass on the faster development Mac. Wrapping every page section in `Suspense` was tried and rejected: React streams boundaries over about 12 KB after the first flush, shifting the layout (CLS 1.0). Decided: the performance job stays in CI, runs both projects as separate jobs, uploads every report and does not block `All gates passed`; the budgets (plan §31) are unchanged and remain strict in `npm run verify` and the pre-push hook; making them blocking again is one line and waits on a startup-JavaScript/hydration/layout rework (open item). Cleaned up as agent defaults: the separate unit job is removed (the coverage job runs every unit and database test); E2E runs as separate phone and desktop jobs, each on its own database and app (about 31 to about 17 minutes); only MySQL starts for hydration and performance (no Mailpit); the service start action takes the services it needs. Test fixes: the not-found and Request a Quote axe scans wait for the opening's finite animations (they caught text mid-fade); the dashboard's grids shrink to the screen (`minmax(0, 1fr)`), fixing a 2 px overflow at doubled text on a 320 px phone that only appeared with Linux font metrics when the list had rows. No product feature, schema or production change. | 2026-11-09 |
 | D195 | **A fast pre-push hook** (the user, 2026-11-09: "can we do something to speed up the pre push gate"; the user chose the fast hook with heavy gates in CI). The full `npm run verify` took about 70 minutes (coverage 11, build 3, E2E 30, hydration 8, strict performance 16) and CI repeats all of it, now in parallel jobs. The hook runs `npm run verify:fast`: lint, format, types, both audits and the unit and database coverage at 100% (about 15 minutes). Build, E2E, development hydration and performance run in CI; `npm run verify` stays for a full local run. Consequence, accepted: the performance budgets are enforced automatically nowhere (GitHub is report-only, D194) and only when `npm run verify` is run by hand. No product, schema or production change. | 2026-11-09 |
 | D196 | **CI in about ten minutes, and one push without the hook** (the user, 2026-11-09: "too long ... CI will take max 10min"; and "push this once without the pre-push hook, I have no time now", so this one push uses `--no-verify`; the hook stays for later pushes). The last run took 19 minutes (coverage 14, E2E 16 and 17, mobile performance 14). The slow suites are sharded across parallel jobs, each on its own database and app: lint, format, types, test layout and both audits share one job; coverage runs in four shards with no per-shard threshold (`COVERAGE_SHARD` in `vitest.config.mts`) and a merge job applies the real 100% (verified locally, including without a database); E2E runs phone and desktop in four shards each (Playwright `--shard`, by test file); performance runs mobile in three shards and desktop in one (`fullyParallel` with one worker per job). Estimated wall-clock about 10 minutes; the cost is about four times the runner minutes per run (about 110). Budgets, thresholds and tests are unchanged. Three of the earlier uncommitted performance edits were reverted because the hosted E2E and performance runs caught real regressions: `Suspense` around the Home hero, Mission and Clients (the hero streamed in late: layout shift 0.37 desktop and 0.70 in the font test, slower LCP), the hero's off-screen pause (broke the D136 playback test) and the map's scroll-idle deferral (broke the keyboard-stops test). Links without prefetch, the icon sprite and motion started in a transition stay. | 2026-11-09 |
+| D197 | **Payment confirmed; v1.0.0 may be deployed; the agent takes the backup** (the user, 2026-11-14: "client have agreed on the app, so now its to deploy it safely. release as v1.0.0 … first backup the old site, backup the db … all the backups should reach me, keep in this projects root folder"; asked once whether the client had paid, the answer was "Yes, full payment is confirmed"). D48 is lifted: backups and server steps may start, and **each server change is still confirmed at its checkpoint** in `docs/RELEASE.md` (D44). The backup supersedes D50's "the user backs up": the agent streams it read-only over SSH into `backups/` (git-ignored, mode 700; nothing is written on the server, so its 1 GB quota is untouched) and proves it with a restore drill into a throwaway MySQL. Taken and verified 2026-11-14 as `backups/2026-11-14-pre-v1.0.0`: 11,839 files (228.8 MB) equal to the server's own list at their sizes, the 95 CVs, and the old database (9 tables, every row count equal after the restore). The old database's login is read only inside the remote shell (the user chose "dump on the server"); it is never printed or saved. | 2026-11-14 |
+| D198 | **The old site is moved aside, not cleared, and deleted only on the user's word** (the user, 2026-11-14, "Move aside, delete later"; changes the order of D50, §21.2, §35.3 and R8.6). At the cutover, behind the maintenance page, everything in `public_html` except `.well-known/` and the notice moves to `~/old-site-2026-11-14/` (same filesystem, not served, instant to put back); the old database and its user stay untouched. Both sites fit the quota at launch (295 MB old + about 290 MB new of 1,024 MB). The old files and database are deleted only when the user says so, after the client holds the backup (D50) and the new site has run quietly (suggested 14 days). Rollback is therefore a move back, not a restore. | 2026-11-14 |
+| D199 | **The launch content is copied from the user's local approved content** (the user, 2026-11-14, "Copy my local approved content"; supersedes Q30's seed-as-drafts for the launch). `scripts/content-export.mts` reads the local database (refusing any other) and writes `release-content/` (git-ignored): `content.sql` (documents, records, media rows and `site_operations`, in one transaction, every `created_by` and `updated_by` cleared) and exactly the media files those rows name. It never exports the admin account, sessions, logs, enquiries, applications or the rate-limit table. Applied to the empty production database at the rehearsal. The seed stays local-only. Exported 2026-11-14: 12 documents, 20 records, 75 media rows, 487 files (18.5 MB); there is no local `site_operations` row, so production starts on the defaults (enquiries to `info@`, applications to `hr@`, Q17). | 2026-11-14 |
+| D200 | **Release mechanics (agent defaults under D197).** The server has no `rsync`, so the release uploads a tar over SSH and checks its SHA-256 (replaces §35.3's rsync). The build ships server source maps, six traced `.ts` files and a `public/media/.htaccess`, so `scripts/check-deploy-output.mjs --prune` removes them and then fails the release on any env file, key, map, source, test, docs, Git data or upload. A **maintenance page** covers the cutover window: a static, self-contained notice plus a marked block at the top of `.htaccess` answering every request **503 with `Retry-After`** (SSL challenges excepted), switched only by `scripts/maintenance.sh`, proven in a real Apache by `scripts/test-maintenance-kit.sh`. A hidden **rehearsal host** (Q22) runs the same build first. **Cloudflare Web Analytics is not built for v1.0.0** (only the security policy allows its host; add it right after launch). | 2026-11-14 |
 
 
 ## 3. Audiences and the admin
@@ -982,9 +986,10 @@ GitHub Actions (on a release) ──► build ──► rsync over SSH ──►
 
 ### 21.2 Living within 1 GB of disk (D51)
 
-The client is not upgrading, so the site is built to fit. Before the deploy,
-the user backs up the old site, hands the backup to the client, and clears the
-old site and its database from the server (D50), leaving about 950 MB:
+The client is not upgrading, so the site is built to fit. The old site is backed
+up and verified (D197), moved aside at the cutover and deleted only on the user's
+word (D198), so at launch both fit (295 MB old + about 290 MB new of 1,024 MB);
+once it is deleted about 950 MB remain:
 
 | Use | Budget |
 |---|---|
@@ -1550,7 +1555,7 @@ From Phase 7 also the performance budgets (§31): strict in `npm run verify`; re
   when it passes (D45), **builds on GitHub** (shared hosting has too little
   memory to build), checks the output (`scripts/check-deploy-output.mjs`: no
   source, source maps or env files), **uploads the standalone build over SSH
-  with rsync** into a new release folder, **applies new migrations** to the
+  as a tar (the server has no rsync, D200)** into a new release folder, **applies new migrations** to the
   server's database as the migration user, switches the app to the new
   folder, and restarts Passenger. The previous release folder stays for an
   instant rollback.
@@ -1559,9 +1564,10 @@ From Phase 7 also the performance budgets (§31): strict in `npm run verify`; re
   publish. The release workflow and `docs/RELEASE.md` check it (R8.2).
 - **The media folder and the CV folder live outside the release folders**,
   so no deploy or rollback ever touches them.
-- **Before the first deploy, the user backs up the old site** (its files, its
-  admin panel and its database), gives the backup to the client, and clears
-  the old site and its database from the server (D50, R0.9).
+- **Before the first deploy the old site is backed up and verified** (its files,
+  its admin panel and its database, kept in `backups/`, D197); at the cutover it
+  is moved aside, not cleared, and deleted only on the user's word (D198); the
+  user gives the backup to the client (D50). `docs/RELEASE.md` is the checklist.
 - The SSH key, host and paths are GitHub secrets. The app's runtime env is
   set in cPanel's Node.js app settings.
 - `docs/RELEASE.md` (Phase 8) is the step-by-step guide.
@@ -1632,7 +1638,7 @@ one commit (D27).
 | R0.6 | Core library from clinicdesk: `AppError` + kinds + `fromDatabaseError`; logger with redaction; `lib/api` (handler, responses, client, params); `lib/query` | §29, §36 | — | DONE (2026-10-28; with env validation from R0.4; `params` arrives with the first route, R1.2, and `lib/query` with the admin screens, R6.2) |
 | R0.7 | Constants skeleton (`messages`, `routes`, `limits`, `site`); validation primitives and text hygiene; phone (+974 and international) | §25 | — | DONE (2026-10-28; `redirects` arrives with R3.7, once the service slugs are approved) |
 | R0.8 | The cPanel server checked over SSH, read-only: Node versions, memory and CPU limits, Passenger, disk, databases, mail routing, outbound SMTP and HTTPS, server location; findings recorded in §21.1 | §21, D19 | — | DONE (2026-10-28) |
-| R0.9 | **The user** backs up the old site (`public_html`, the `alhidaya_hidaya` database), gives the backup to the client, then clears the old site and its database from the server | D50 | Full payment (D48) | TODO |
+| R0.9 | The old site (`public_html`, the `alhidaya_hidaya` database) is backed up and verified; **the user** gives the backup to the client and later says when the old site and database are deleted from the server | D50, D197, D198 | Full payment (D48, confirmed) | PARTLY DONE (2026-11-14: the agent's backup is taken and verified, `backups/2026-11-14-pre-v1.0.0`; the hand-over and the deletion are the user's, after the cutover) |
 
 ### Phase 1 — Data and security
 
@@ -1825,11 +1831,11 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R8.1 | The production MySQL database, created after the old one is cleared (D50), with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media folder (with its `.htaccess`) and the CV folder (`700`) | D39, D49, D54, §21.1 | Full payment (D48), R0.9 | TODO |
-| R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, rsync, migrate, switch, restart, rollback); the daily cron and the mail-retry cron (every 10 minutes, D85); the app kept to one Passenger process (D119); `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
+| R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, tar upload, migrate, switch, restart, rollback; D200); the daily cron and the mail-retry cron (every 10 minutes, D85); the app kept to one Passenger process (D119); `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | TODO |
 | R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM added in cPanel; DMARC `p=none` published; verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | TODO |
 | R8.4 | Turnstile keys for alhidaya.qa (replacing the test keys, which always pass; checked before go-live); Cloudflare Web Analytics site | §10.3, §20 | — | TODO |
 | R8.5 | Pre-switch check on the server; speed from Qatar; the Cloudflare-proxy decision | D25 | Q22 | TODO |
-| R8.6 | Switch alhidaya.qa to the Node.js app; every 301 verified live; sitemap to Search Console; the old site's files removed from the server only after the backup is verified (§21.2) | D21, §19 | — | TODO |
+| R8.6 | Switch alhidaya.qa to the Node.js app; every 301 verified live; sitemap to Search Console; the old site's files moved aside at the cutover (behind the maintenance page) and removed only on the user's word, after the backup is verified (D198, §21.2) | D21, §19 | — | TODO |
 | R8.7 | Smoke test; release `v1.0.0` | §35 | — | TODO |
 
 ## 39. Definition of shippable
@@ -1845,9 +1851,9 @@ URL answers with its 301; and no personal data appears in logs.
 | Item | Needed by |
 |---|---|
 | ~~SSH access to the cPanel server~~ (done: port 2200, user `alhidaya`, key authorised, 2026-10-28) | R0.8 |
-| **Full payment confirmed by the user** (D48) | R0.9 and every server step |
+| ~~**Full payment confirmed by the user** (D48)~~ (confirmed 2026-11-14, D197; each server change is still confirmed at its checkpoint) | R0.9 and every server step |
 | **Urgent, today's site:** remove the public `.well-known.zip` and rotate the secrets it exposed; protect `upload/CV` (§40.1) | now, independent of the build |
-| The old site backed up by the user, given to the client, and cleared from the server with its database (D50) | before R8.1 |
+| The old site backed up (done and verified 2026-11-14, D197), given to the client by the user (D50), and moved aside at the cutover, deleted only on the user's word (D198) | the cutover |
 | The GitHub repository (created by the user) | R0.5's first CI run |
 | Approval of the rewritten copy, at the user's demo (D70) | R7.5 |
 | Client names and permission for their logos, and the logo files | before the Clients section shows (D7) |

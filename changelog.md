@@ -4865,3 +4865,26 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 - OPEN (E2E): `tests/e2e/focal-points.spec.ts` fails on the phone project (twice) and flakes on desktop in CI only: at the end, the service editor at 320 px with doubled text is 96 px wider than the screen. Not reproduced: it passes on the Mac, and in Linux Chromium the same editor (clean, after publish, edit, save and discard) has no overflow at 320 x 900 with doubled text. `DraftEditor`'s grids were already given shrinkable columns. The trace in the hosted artifact (`e2e-phone-1-reports`) has the screen recording; the next step is to run that spec itself in Linux Chromium and measure the widest element.
 - OPEN (time): to reach ten minutes reliably, balance the E2E shards by file weight (the two heaviest desktop files sit in one shard) and cache the Playwright browsers; the cache action has to be pinned to a verified commit first.
 - OPEN (performance budgets, report-only on GitHub): unchanged.
+
+## 2026-11-14 — Release v1.0.0: the old site backed up, the release plan and its tooling
+
+### Added
+- `docs/RELEASE.md`: the release checklist (A to F): the rules, what the server looks like (read-only check), what is needed from the user, every checkpoint with who does it and which ones change the server, the rollback, the maintenance page, the backup set, the unknowns the rehearsal must settle, and a sign-off log.
+- **The old site is backed up and verified** (Phase B, D197): `scripts/backup-old-site.sh` streams the whole home folder (11,839 files, 228.8 MB), the old database and the server's settings over SSH into `backups/2026-11-14-pre-v1.0.0/` (177 MB; git-ignored, mode 700) without writing anything on the server; `scripts/verify-backup.sh` proves it (checksums, the archive's raw entry list equal to the server's own list, all 95 CVs, and a restore of the dump into a throwaway MySQL 8.0.46 with every table's row count equal). The old database's login is read only inside the remote shell (`scripts/old-site-db.remote.sh`) and never printed or saved.
+- **The maintenance page** (D200): `deploy/maintenance/` (a static, self-contained notice in the logo's colours with WhatsApp, phone and email; a marked `.htaccess` block answering every request 503 with `Retry-After`, SSL challenges excepted), switched by `scripts/maintenance.sh on|off|status`, proven in a real Apache over HTTPS by `scripts/test-maintenance-kit.sh` (17 checks), kept honest in CI by `tests/contract/maintenance-kit.test.ts`.
+- **The release folder check** (D200): `scripts/check-deploy-output.mjs [--prune]` (plan §35.3) removes what the build ships by accident (120 server source maps, six traced `.ts` files, `public/media/.htaccess`) and fails on any env file, key, map, source, test, docs, Git data or upload; `tests/contract/deploy-output.test.ts` (19 cases, one of which found that a `.git/` folder was not caught).
+- **The launch content export** (D199): `scripts/content-export.mts` writes `release-content/` (git-ignored): an auditable `content.sql` and exactly the media files the rows name (12 documents, 20 records, 75 media rows, 487 files, 18.5 MB), local database only, admin links cleared.
+
+### Changed
+- D197 to D200 in the plan's decision log: payment confirmed and the deploy authorised; the agent takes the backup; the old site is moved aside and deleted only on the user's word; the launch content is the user's local approved content; tar over SSH instead of rsync; Cloudflare Web Analytics is not built for v1.0.0. Plan §21.2, §35.3, §40 and tracker rows R0.9, R8.2 and R8.6 follow; AGENTS.md §23 now records that payment is confirmed and every server change is still confirmed at its checkpoint.
+- `.gitignore`: `/backups/` and `/release-content/`.
+
+### Found (read-only, 2026-11-14)
+- The server has no `rsync`, and Node is not on the default SSH path. The old site is still receiving applications (95 CVs, 12 more than on 2026-10-28; 47 applications and 54 contacts in its database). `public_html/.well-known.zip` (80 MB, a full copy of the old site including its `.env`) is still publicly downloadable (plan §40.1, open since 2026-10-28); the cutover removes it from the web.
+
+### Validation
+- Backup verified end to end (above). Maintenance kit: 17 Apache checks and 5 contract tests pass. Deploy-output check: 19 contract tests pass, and a real standalone build is clean after pruning. The content export ran against the local database: 107 INSERTs, nothing missing, no test-looking values.
+- Lint and Prettier pass on the new files. Nothing under `src/` changed, so unit and database coverage is unchanged.
+
+### Blockers
+- None. Waiting on the user (RELEASE.md §3.2): "backups received" (B6), the rehearsal host name, the admin's email and name, the Turnstile keys and the new `noreply@` password (as a local `.env.production`, never in chat), and the cutover time. No change has been made on the server.
