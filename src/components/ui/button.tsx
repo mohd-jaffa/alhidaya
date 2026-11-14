@@ -4,6 +4,7 @@ import type { ComponentProps, ReactNode } from "react";
 import type { PictogramName } from "@/assets/brand/pictograms";
 
 import { Pictogram } from "./pictogram";
+import { Spinner } from "./spinner";
 
 /**
  * The admin's actions (plan §30.3; the site's are pills since D97): one
@@ -46,18 +47,27 @@ export function buttonClasses({ variant = "primary", size = "md" }: Look, classN
     .join(" ");
 }
 
-function Content({ pictogram, children }: { pictogram?: PictogramName; children: ReactNode }) {
+function Content({
+  pictogram,
+  pending = false,
+  children,
+}: {
+  pictogram?: PictogramName;
+  pending?: boolean;
+  children: ReactNode;
+}) {
   return (
     <>
-      {pictogram ? <Pictogram name={pictogram} size="sm" /> : null}
+      {/* While an action is under way a ring turns where its mark was (D204). */}
+      {pending ? <Spinner /> : pictogram ? <Pictogram name={pictogram} size="sm" /> : null}
       <span className="min-w-0 wrap-anywhere">{children}</span>
     </>
   );
 }
 
 /**
- * An action on this page. `pending` keeps it in place, says so to screen
- * readers and stops a second press while the first is under way.
+ * An action on this page. `pending` keeps it in place, shows a turning ring,
+ * says so to screen readers and stops a second press while the first is under way.
  */
 export function Button({
   variant,
@@ -77,7 +87,9 @@ export function Button({
       aria-busy={pending || props["aria-busy"]}
       disabled={pending || props.disabled}
     >
-      <Content pictogram={pictogram}>{children}</Content>
+      <Content pictogram={pictogram} pending={pending}>
+        {children}
+      </Content>
     </button>
   );
 }

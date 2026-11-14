@@ -23,6 +23,8 @@ export function MoveTo<S extends string>({
   revalidate: readonly string[];
 }) {
   const [failure, setFailure] = useState<string | null>(null);
+  // Which status was pressed: its button turns a ring while the others only wait (D204).
+  const [moving, setMoving] = useState<S | null>(null);
   const { submit, submitting } = useApiMutation(move, {
     revalidate,
     onSuccess: () => setFailure(null),
@@ -35,7 +37,16 @@ export function MoveTo<S extends string>({
         {statuses
           .filter((status) => status !== current)
           .map((status) => (
-            <Button key={status} variant="secondary" disabled={submitting} onClick={() => submit(status)}>
+            <Button
+              key={status}
+              variant="secondary"
+              disabled={submitting}
+              pending={submitting && moving === status}
+              onClick={() => {
+                setMoving(status);
+                void submit(status);
+              }}
+            >
               {labels[status]}
             </Button>
           ))}

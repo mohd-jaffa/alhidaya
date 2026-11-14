@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -230,6 +230,31 @@ describe("AdminShell", () => {
       ADMIN_API_ROUTES.adminSession,
       expect.objectContaining({ method: "DELETE" }),
     );
+  });
+
+  it("keeps the confirm button busy, with its ring, until the sign-in page has arrived (D204)", async () => {
+    const user = userEvent.setup();
+    stubApi(counts);
+    let arrived: () => void = () => {};
+    navigation.replace.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          arrived = resolve;
+        }),
+    );
+    shell();
+    await user.click(within(screen.getByRole("complementary")).getByRole("button", { name: ADMIN_TEXT.signOut }));
+    const asked = within(screen.getByRole("dialog", { name: ADMIN_TEXT.signOutTitle }));
+    await user.click(asked.getByRole("button", { name: ADMIN_TEXT.signOut }));
+    await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith(ADMIN_ROUTES.login));
+    // The server has answered and the move has begun, but the page has not come: the button says it is working.
+    const busy = await asked.findByRole("button", { name: ADMIN_TEXT.signingOut });
+    expect(busy).toHaveAttribute("aria-busy", "true");
+    expect(busy).toBeDisabled();
+    expect(busy.querySelector(".animate-spinner")).not.toBeNull();
+    await act(async () => arrived());
+    expect(asked.getByRole("button", { name: ADMIN_TEXT.signOut })).not.toHaveAttribute("aria-busy", "true");
+    navigation.replace.mockReset();
   });
 
   it("logs out once confirmed, and goes to sign in whether or not the session was still there", async () => {

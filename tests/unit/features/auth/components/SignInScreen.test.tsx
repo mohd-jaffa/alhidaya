@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -73,6 +73,33 @@ describe("SignInScreen", () => {
     await user.type(fields().email, "admin@alhidaya.qa");
     await user.type(fields().password, "the long password");
     await user.click(screen.getByRole("button", { name: ADMIN_TEXT.signIn }));
-    expect(await screen.findByRole("button", { name: ADMIN_TEXT.signingIn })).toHaveAttribute("aria-busy", "true");
+    const busy = await screen.findByRole("button", { name: ADMIN_TEXT.signingIn });
+    expect(busy).toHaveAttribute("aria-busy", "true");
+    // A ring turns on the button while it waits (D204).
+    expect(busy.querySelector(".animate-spinner")).not.toBeNull();
+  });
+
+  it("stays busy after the server has answered, until the admin's page has arrived (D204)", async () => {
+    const user = userEvent.setup();
+    stubApi(() => ({ data: { signedIn: true } }));
+    let arrived: () => void = () => {};
+    replace.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          arrived = resolve;
+        }),
+    );
+    render(<SignInScreen next={ADMIN_ROUTES.overview} />, { wrapper: WithSWR });
+    await user.type(fields().email, "admin@alhidaya.qa");
+    await user.type(fields().password, "the long password");
+    await user.click(screen.getByRole("button", { name: ADMIN_TEXT.signIn }));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith(ADMIN_ROUTES.overview));
+    // The answer is in and the move has begun, but the page is not there: the button still says it is working.
+    const busy = await screen.findByRole("button", { name: ADMIN_TEXT.signingIn });
+    expect(busy).toHaveAttribute("aria-busy", "true");
+    expect(busy).toBeDisabled();
+    await act(async () => arrived());
+    expect(screen.getByRole("button", { name: ADMIN_TEXT.signIn })).not.toHaveAttribute("aria-busy", "true");
+    replace.mockReset();
   });
 });

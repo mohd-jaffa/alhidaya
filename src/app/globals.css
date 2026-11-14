@@ -155,11 +155,18 @@
   /* The phone menu's one curve (D167): the sheet and its rows share it, so they read as one movement. */
   --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* A skeleton waiting for its content: a slow fade, the only looping motion (none with reduced motion). */
+  /* A skeleton waiting for its content: a slow fade, a looping motion (none with reduced motion). */
   --animate-wait: wait 1.6s var(--ease-in-out) infinite;
   @keyframes wait {
     50% {
       opacity: 0.55;
+    }
+  }
+  /* A ring turning on an action that is under way (D204): transform alone, still with reduced motion. */
+  --animate-spinner: spinner var(--duration-spinner) linear infinite;
+  @keyframes spinner {
+    to {
+      transform: rotate(360deg);
     }
   }
 }
@@ -190,6 +197,7 @@
   --opening-hero-type: clamp(2.625rem, 1.2rem + 3.4vw, 4.25rem);
   --opening-highlight: color-mix(in srgb, var(--color-sky) 55%, var(--color-card));
   --duration-press: 120ms;
+  --duration-spinner: 800ms;
   --duration-state: 200ms;
   --duration-reveal: 640ms;
   --duration-typewriter: 6s;

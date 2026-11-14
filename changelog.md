@@ -5064,3 +5064,18 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - None.
 
+## 2026-11-14 — Admin panel: a loader on every action that is under way
+
+### Added
+- `src/components/ui/spinner.tsx` and the `--animate-spinner` / `--duration-spinner` tokens: a ring in the words' own colour that turns by transform alone and stands still, as a ring with a gap, with reduced motion.
+- `Button`: while `pending` it shows the ring where its mark was, as well as `aria-busy` and the disabled state it already had. Every admin button that marks a pending state (sign in, sign out, save, publish, discard, upload, delete, notes, profile, forgot and reset password, operations) gets the loader at once.
+- `src/hooks/useNavigation.ts`: goes to another page inside a transition and says `navigating` until the new page has arrived. Sign-in and sign-out use it, so after the server has answered the button stays busy ("Signing in…", "Signing out…") until the next page is there, instead of looking idle during the page load: the gap the user saw.
+- `MoveTo` (the status buttons of an enquiry or application): the pressed button shows the ring while the others wait.
+- Decision D204; DESIGN.md already notes the spinner.
+
+### Validation
+- New tests: `Spinner`, `useNavigation` (the move, and busy until it arrives), `Button` (ring, mark, none), sign-in and sign-out staying busy until the page arrives, and the status buttons; lint, types, and `npm run verify:fast` run for the commit.
+
+### Blockers
+- None.
+

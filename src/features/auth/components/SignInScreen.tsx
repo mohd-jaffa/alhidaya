@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -12,6 +11,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { TextInput } from "@/components/ui/text-input";
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { ADMIN_ROUTES } from "@/constants/admin-routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import { errorMessage } from "@/lib/errors/errorMessage";
 import { useApiMutation } from "@/lib/query/useApiMutation";
 import { type SignInInput, type SignInPayload, signInSchema } from "@/lib/validation";
@@ -25,7 +25,7 @@ import { AuthScene } from "./AuthScene";
  * nothing typed is lost. Signed in, the admin goes where they were headed.
  */
 export function SignInScreen({ next }: { next: string }) {
-  const router = useRouter();
+  const { replace, navigating } = useNavigation();
   const [failure, setFailure] = useState<string | null>(null);
   const {
     register,
@@ -37,7 +37,7 @@ export function SignInScreen({ next }: { next: string }) {
     defaultValues: { email: "", password: "" },
   });
   const { submit, submitting } = useApiMutation(AuthClient.signIn, {
-    onSuccess: () => router.replace(next),
+    onSuccess: () => replace(next),
     onError: (error) => setFailure(errorMessage(error)),
   });
 
@@ -67,8 +67,9 @@ export function SignInScreen({ next }: { next: string }) {
             {failure}
           </Notice>
         ) : null}
-        <Button type="submit" size="lg" pending={submitting} className="w-full">
-          {submitting ? ADMIN_TEXT.signingIn : ADMIN_TEXT.signIn}
+        {/* Busy while the request is out and until the admin's page has arrived (D204). */}
+        <Button type="submit" size="lg" pending={submitting || navigating} className="w-full">
+          {submitting || navigating ? ADMIN_TEXT.signingIn : ADMIN_TEXT.signIn}
         </Button>
       </form>
     </AuthScene>

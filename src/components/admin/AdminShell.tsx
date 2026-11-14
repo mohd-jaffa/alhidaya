@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { type ReactNode, useState } from "react";
 
 import type { PictogramName } from "@/assets/brand/pictograms";
@@ -23,6 +23,7 @@ import type { ServiceListItems } from "@/features/services/types";
 import type { SiteDraftItem } from "@/features/settings/types";
 import { todayKey } from "@/lib/inbox/keys";
 import { useApiMutation } from "@/lib/query/useApiMutation";
+import { useNavigation } from "@/hooks/useNavigation";
 import { publicAppVersion } from "@/lib/env/public";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 
@@ -106,10 +107,10 @@ function Stations({
 
 /** Who is signed in (D115): their profile, and the way out, asked first, each with its mark. */
 function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: () => void }) {
-  const router = useRouter();
+  const { replace, navigating } = useNavigation();
   const here = usePathname() === ADMIN_ROUTES.profile;
   const [asking, setAsking] = useState(false);
-  const leave = () => router.replace(ADMIN_ROUTES.login);
+  const leave = () => replace(ADMIN_ROUTES.login);
   const { submit, submitting } = useApiMutation(AuthClient.signOut, { onSuccess: leave, onError: leave });
   return (
     <div className="grid gap-1 border-t border-forest/20 pt-4">
@@ -131,8 +132,9 @@ function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: ()
         <div className="grid gap-5">
           <p>{ADMIN_TEXT.signOutBody}</p>
           <div className="flex flex-wrap gap-3">
-            <Button pending={submitting} onClick={() => submit(undefined)}>
-              {submitting ? ADMIN_TEXT.signingOut : ADMIN_TEXT.signOut}
+            {/* Busy while the request is out and until the sign-in page has arrived (D204). */}
+            <Button pending={submitting || navigating} onClick={() => submit(undefined)}>
+              {submitting || navigating ? ADMIN_TEXT.signingOut : ADMIN_TEXT.signOut}
             </Button>
             <Button variant="secondary" onClick={() => setAsking(false)}>
               {ADMIN_TEXT.cancel}

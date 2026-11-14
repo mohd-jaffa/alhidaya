@@ -31,7 +31,29 @@ describe("Button", () => {
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute("type", "submit");
     expect(button).toHaveClass("border-navy", "min-h-14");
-    expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    // The ring turns where the mark was (D204); the mark waits.
+    expect(button.querySelector(".animate-spinner")).toHaveAttribute("aria-hidden", "true");
+    expect(button.querySelector("svg")).toBeNull();
+  });
+
+  it("shows a turning ring only while an action is under way, and the mark otherwise (D204)", () => {
+    const { rerender } = render(<Button pictogram="download">Save</Button>);
+    const idle = screen.getByRole("button", { name: "Save" });
+    expect(idle.querySelector("svg")).not.toBeNull();
+    expect(idle.querySelector(".animate-spinner")).toBeNull();
+    rerender(
+      <Button pictogram="download" pending>
+        Saving
+      </Button>,
+    );
+    const busy = screen.getByRole("button", { name: "Saving" });
+    expect(busy.querySelector(".animate-spinner")).not.toBeNull();
+    expect(busy.querySelector("svg")).toBeNull();
+    // Without a mark it still shows the ring, and with neither it shows nothing extra.
+    rerender(<Button pending>Working</Button>);
+    expect(screen.getByRole("button", { name: "Working" }).querySelector(".animate-spinner")).not.toBeNull();
+    rerender(<Button>Plain</Button>);
+    expect(screen.getByRole("button", { name: "Plain" }).children).toHaveLength(1);
   });
 
   it("can be disabled on its own", () => {
