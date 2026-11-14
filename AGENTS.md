@@ -599,13 +599,13 @@ tests/
 CI (`.github/workflows/ci.yml`) on every push to `main` and every PR:
 
 ```text
-parallel: static + security (lint, format, types, test layout, audits) | coverage in 4 shards + MySQL, then merged at 100% | build | dev hydration + MySQL
-build → parallel: E2E phone and desktop (axe on every page), 4 shards each | performance (report-only), 4 shards
-every required job → All gates passed (about ten minutes, D196)
+parallel: static + security (lint, format, types, test layout, audits) | coverage in 4 shards + MySQL, then merged at 100% | build
+build → parallel: E2E phone and desktop (axe on every page), 8 shards each
+every job → All gates passed (D207: only what protects main, well inside ten minutes)
 ```
 
-The performance job reports on hosted runners but does not block them (D194): the
-budgets stay unchanged and strict in `npm run verify`, the full local run.
+The report-only performance budgets and the development-hydration check are not run in
+CI (D194, D207): they stay unchanged and strict in `npm run verify`, the full local run.
 
 From Phase 7, the performance budgets too. There is no Git hook (D205); run `npm run verify:fast` by hand before a commit
 (lint, format, types, both audits and the 100% unit and database coverage); `npm run

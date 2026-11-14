@@ -1,25 +1,21 @@
-# Built to finish in about ten minutes (D196): the slow serial suites (coverage, E2E, performance) are
-# sharded across parallel jobs, each with its own database and app. Independent gates start together;
-# one build feeds the browser jobs. The performance job reports on hosted runners but does not block
-# (D194); `npm run verify` keeps its budgets strict.
+# Only what protects main, built to finish well inside ten minutes (D207): the static and security gates,
+# every unit and database test at 100% coverage, the build, and the phone and desktop journeys with axe on
+# every page. The slow serial suites (coverage, E2E) are sharded across parallel jobs, each with its own
+# database and app; independent gates start together and one build feeds the browser jobs. The report-only
+# performance budgets and the development-hydration check are not run here: they stay in the local
+# `npm run verify` (D194, D207).
 name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
-  workflow_call:
-    inputs:
-      ref:
-        description: The tag or commit to check; the triggering one when empty.
-        type: string
-        default: ""
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ inputs.ref || github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -32,7 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ inputs.ref }}
           persist-credentials: false
       - uses: ./.github/actions/setup
       - run: npm run lint
@@ -60,7 +55,6 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ inputs.ref }}
           persist-credentials: false
       - uses: ./.github/actions/setup
       - run: cp .env.example .env.local
@@ -85,7 +79,6 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ inputs.ref }}
           persist-credentials: false
       - uses: ./.github/actions/setup
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
@@ -110,7 +103,6 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ inputs.ref }}
           persist-credentials: false
       - uses: ./.github/actions/setup
       - run: cp .env.example .env.local
@@ -125,9 +117,11 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  # Phone and desktop journeys, each in four shards of test files, every shard on its own database and app.
+  # Phone and desktop journeys (PRODUCT.md: every journey at both), each in eight shards of test files, every
+  # shard on its own database and app. Playwright's browser is cached by its version, so a shard downloads it
+  # only when the version changes.
   e2e:
-    name: e2e ${{ matrix.project }} ${{ matrix.shard }}/4
+    name: e2e ${{ matrix.project }} ${{ matrix.shard }}/8
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -135,11 +129,10 @@ jobs:
       fail-fast: false
       matrix:
         project: [phone, desktop]
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ inputs.ref }}
           persist-credentials: false
       - uses: ./.github/actions/setup
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
@@ -149,8 +142,14 @@ jobs:
       - run: tar -xzf /tmp/build/standalone.tgz
       - run: cp .env.example .env.local
       - uses: ./.github/actions/services
+      - id: playwright
+        run: echo "version=$(npx playwright --version | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e -- --project="${{ matrix.project }}" --shard=${{ matrix.shard }}/4
+      - run: npm run test:e2e -- --project="${{ matrix.project }}" --shard=${{ matrix.shard }}/8
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
@@ -161,83 +160,10 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-  # Report-only (D194): hosted runners miss the mobile Lighthouse, INP and long-task budgets on a few
-  # pages. Every number is uploaded; the budgets stay strict in `npm run verify`. Timing-sensitive, so
-  # each job is serial, and it needs only the database.
-  performance:
-    name: performance ${{ matrix.project }} ${{ matrix.shard }}/${{ matrix.of }} (report-only)
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    continue-on-error: true
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { project: mobile-performance, shard: 1, of: 3 }
-          - { project: mobile-performance, shard: 2, of: 3 }
-          - { project: mobile-performance, shard: 3, of: 3 }
-          - { project: desktop-scroll-performance, shard: 1, of: 1 }
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ inputs.ref }}
-          persist-credentials: false
-      - uses: ./.github/actions/setup
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          name: standalone
-          path: /tmp/build
-      - run: tar -xzf /tmp/build/standalone.tgz
-      - run: cp .env.example .env.local
-      - uses: ./.github/actions/services
-        with:
-          services: mysql
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:performance -- --project="${{ matrix.project }}" --shard=${{ matrix.shard }}/${{ matrix.of }}
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: always()
-        with:
-          name: performance-${{ matrix.project }}-${{ matrix.shard }}-reports
-          path: |
-            playwright-report/
-            test-results/
-          retention-days: 14
-          if-no-files-found: ignore
-      - name: Say that the budgets were missed
-        if: failure()
-        run: echo "::warning title=Performance budgets missed (report-only)::See the uploaded report. The budgets stay strict in npm run verify."
-
-  hydration:
-    name: Development hydration
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ inputs.ref }}
-          persist-credentials: false
-      - uses: ./.github/actions/setup
-      - run: cp .env.example .env.local
-      - uses: ./.github/actions/services
-        with:
-          services: mysql
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:hydration
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: always()
-        with:
-          name: hydration-reports
-          path: |
-            playwright-report/
-            test-results/
-          retention-days: 14
-          if-no-files-found: ignore
-
   ready:
     name: All gates passed
     if: always()
-    needs: [static, coverage, coverage-merge, build, e2e, hydration]
+    needs: [static, coverage, coverage-merge, build, e2e]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

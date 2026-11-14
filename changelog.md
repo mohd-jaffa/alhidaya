@@ -5091,3 +5091,19 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - None.
 
+## 2026-11-14 — Main's CI keeps only what protects main
+
+### Changed
+- `.github/workflows/ci.yml` (decision D207): the report-only performance jobs and the development-hydration job are no longer run (they stay in the local `npm run verify`); the E2E journeys run in **eight shards per project** (sixteen jobs, was eight) so no single shard is the long pole; Playwright's browser is cached by its version; `workflow_call` and the `ref` input are removed (the release no longer calls CI). The gate "All gates passed" now needs static, coverage, coverage-merge, build and e2e.
+- `tests/contract/ci-workflow.test.ts` (7 tests): the jobs, the gate waiting for every one, phone and desktop both run, the shard count equal in the matrix, the name and the command, the cache before the install, one build, pinned actions.
+- README, AGENTS.md §25 and plan §35.2 describe the new CI.
+
+### Found
+- The last green run (14.5 minutes): static 85 s, coverage shards 3 to 4.6 minutes then a 37 s merge, build 111 s, then the E2E shards, 6 to 12.5 minutes each (desktop 1/4 was the slowest), performance 6 to 9 minutes (report-only, failing) and development hydration 7.3 minutes.
+
+### Validation
+- Estimate only (the user chose no push): from those timings about 8 to 9 minutes (the build 2 minutes, then shards of about 4 to 7 minutes); 7 minutes would need desktop E2E cut or larger runners. The workflow parses, and its contract tests, lint, format and types pass. It has not been run on GitHub.
+
+### Blockers
+- OPEN: the real time is unproven until the workflow runs on GitHub; the E2E scope (every test kept) is the agent's default because the user was not sure.
+

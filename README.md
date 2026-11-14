@@ -77,8 +77,10 @@ npm run test:performance          # Lighthouse, JS/interaction/scroll budgets
 npm run audit:shipped             # nothing the app loads at runtime may be vulnerable
 ```
 
-CI (`.github/workflows/ci.yml`) runs all of them on every push to `main` and
-every pull request, against the same `compose.yaml`, and audits the
+CI (`.github/workflows/ci.yml`) runs what protects `main` (the static and security
+gates, unit and database coverage, the build and the phone and desktop journeys) on every push to `main` and
+every pull request, against the same `compose.yaml`; the performance budgets and
+the development hydration check run only locally, in `npm run verify` (plan D207). It audits the
 dependencies: nothing the app loads at runtime may carry a known
 vulnerability at moderate or above, and nothing in the tree one at high or
 above (plan D55).
@@ -91,6 +93,6 @@ Docker must be running. Verification uses `.env.example` local test settings
 and `.data/verify-*` media/CV folders without editing `.env.local` or the real
 local database. Test records in `alhidaya_test` are reset by the suites.
 
-CI starts independent gates side by side. E2E and performance share one build
+CI starts independent gates side by side. The E2E shards share one build
 artifact, with separate local databases/runners; the final **All gates passed**
 check requires every job. A push runs checks only and does not deploy.

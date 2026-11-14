@@ -309,6 +309,7 @@ question (§41) the user may overturn.
 | D204 | **A loader on every admin action that is under way (the user, 2026-11-14: "when we click something, like login button or logout button, the click is processing but nothing shows ... keep a loader for such loading states").** The shared admin `Button` shows a turning ring (`Spinner`, token `--animate-spinner`, transform alone, the words' own colour, a still ring with reduced motion) in place of its mark whenever it is `pending`, besides the busy state it already had, so every button that already marks a pending state (sign in, sign out, save, publish, discard, upload, delete, notes, profile, forgot and reset password, operations) gets it at once. Two gaps are closed: after sign-in and sign-out succeed the page still has to load, so `useNavigation` keeps the button busy until the new page has arrived (a transition around the router's move) instead of looking idle between the answer and the arrival; and the status buttons (`MoveTo`) now show the ring on the one pressed while the others wait. Admin screens already show skeletons while their data loads. Public pages and their pills are unchanged. | 2026-11-14 |
 | D205 | **No pre-push hook (the user, 2026-11-14: "remove the pre push hook, dont need that at all").** Supersedes D195's hook: `.githooks/pre-push`, `scripts/install-hooks.mjs` and the `prepare` script are removed, and the checkout's `core.hooksPath` is unset, so nothing runs on a push. `npm run verify:fast` and `npm run verify` stay, run by hand before a commit; CI on `main` is unchanged. | 2026-11-14 |
 | D206 | **A release run is named after its tag (the user, 2026-11-14: "for that CI give name which is in release title").** `release.yml` sets `run-name: Release ${{ github.ref_name }}`, so a run started by the tag `v1.0.1` reads "Release v1.0.1" in the Actions list instead of the commit message. A tag-triggered run receives only the tag's name, not the title typed in the GitHub release form; the two are the same when the release is titled with its tag. | 2026-11-14 |
+| D207 | **Main's CI keeps only what protects main, and is built to finish well inside ten minutes (the user, 2026-11-14: "improve the CI in main branch, it takes a lot of time, only keep the needed things"; the user chose to drop the performance and development-hydration jobs and to have an estimate, not a run, as proof; on the browser scope they were not sure, so every test is kept: agent default, overturnable).** A run took 14.5 minutes: the build (2 minutes) then the slowest of eight E2E shards (12.5 minutes). Now: the static and security gates, the unit and database tests in four shards merged at 100%, the build, and the phone and desktop journeys (PRODUCT.md: every journey at both, axe on every page) in **eight shards per project**, with Playwright's browser cached by its version. The report-only performance jobs (they missed their budgets on GitHub's runners every time) and the development-hydration job are no longer run there; both stay strict in the local `npm run verify`. `workflow_call` and the `ref` input are gone (the release no longer calls CI, D201). Estimate from the last run's timings: about 8 to 9 minutes; 7 is not promised without cutting desktop E2E or paying for larger runners. `tests/contract/ci-workflow.test.ts` guards the shape (the jobs, the one gate waiting for all, the shard count, the cache, pinned actions). | 2026-11-14 |
 
 
 ## 3. Audiences and the admin
@@ -1547,12 +1548,12 @@ No staging (D21).
 ### 35.2 CI (every push to `main` and every pull request)
 
 ```text
-parallel: static + security (lint, format, typecheck, test layout, dependency audits) | coverage in 4 shards + local DB, merged at 100% | build | dev hydration + local DB
-build → parallel: E2E phone and desktop (axe), 4 shards each | performance + Lighthouse (report-only on GitHub, D194), 4 shards
-every required job → All gates passed (about ten minutes, D196)
+parallel: static + security (lint, format, typecheck, test layout, dependency audits) | coverage in 4 shards + local DB, merged at 100% | build
+build → parallel: E2E phone and desktop (axe), 8 shards each
+every job → All gates passed (D207: only what protects main, well inside ten minutes)
 ```
 
-From Phase 7 also the performance budgets (§31): strict in `npm run verify`; reported, not blocking, on GitHub's runners (D194). The fast subset (D195) is run by hand; there is no pre-push hook (D205).
+From Phase 7 also the performance budgets (§31): strict in `npm run verify` and no longer run on GitHub's runners (D194, D207). The fast subset (D195) is run by hand; there is no pre-push hook (D205).
 
 ### 35.3 Deploying to cPanel
 
