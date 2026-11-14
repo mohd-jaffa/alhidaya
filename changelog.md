@@ -5053,3 +5053,14 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - None.
 
+## 2026-11-14 — Removed the pre-push hook (user's instruction)
+
+### Removed
+- The pre-push hook (D195): `.githooks/pre-push`, `scripts/install-hooks.mjs` and the `prepare` script in `package.json`; the checkout's `core.hooksPath` is unset, so nothing runs on a push. Decision D205. `npm run verify:fast` and `npm run verify` remain for running by hand before a commit; CI on `main` is unchanged. README, AGENTS.md §25, plan §31 and §35 and a comment in `scripts/verify.mjs` now say there is no hook. Earlier entries and the 2026-11-09 audit, which describe the hook as it was, are left as history.
+
+### Validation
+- Lint, format, types and the test-layout check pass. No source or test file changed, so unit and database coverage are unchanged.
+
+### Blockers
+- None.
+

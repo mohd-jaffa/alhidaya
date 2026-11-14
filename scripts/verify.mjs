@@ -1,5 +1,5 @@
 // The gates as CI runs them, using only the example's local test services and isolated files.
-// `--fast` (the pre-push hook, D195) stops after the static, security and 100%-coverage gates; the
+// `--fast` (the quick local check, D195) stops after the static, security and 100%-coverage gates; the
 // browser gates (E2E, development hydration, performance) then run in CI, in parallel. The full run
 // stays `npm run verify`, and is the only automatic place the performance budgets are strict.
 import { spawn } from "node:child_process";

@@ -1,5 +1,0 @@
-#!/bin/sh
-set -eu
-cd "$(git rev-parse --show-toplevel)"
-# Static, security and coverage gates only (D195); CI runs the browser gates. `npm run verify` runs them all.
-exec npm run verify:fast

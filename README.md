@@ -63,7 +63,7 @@ run as `alhidaya_migrator` (plan §26.1). `npm run services:stop` stops both.
 ## Checks
 
 ```bash
-npm run verify:fast               # the pre-push gates: static, audits, 100% coverage
+npm run verify:fast               # the quick local gates: static, audits, 100% coverage
 npm run verify                    # every gate incl. build, E2E, hydration, performance; isolated local test data
 npm run lint
 npm run format:check
@@ -83,9 +83,8 @@ dependencies: nothing the app loads at runtime may carry a known
 vulnerability at moderate or above, and nothing in the tree one at high or
 above (plan D55).
 
-Install dependencies with npm 11 to enable the repository-local pre-push hook
-(`prepare` configures `.githooks` in this checkout only). Every push runs
-`npm run verify:fast`: independent static/security checks together, followed by full
+There is no Git hook: nothing runs on a push (D205). Run `npm run verify:fast` by hand before a commit:
+independent static/security checks together, followed by full
 unit and database coverage. `npm run verify` adds build, production journeys, development
 hydration and the strict performance budgets; CI runs those browser gates in parallel.
 Docker must be running. Verification uses `.env.example` local test settings
