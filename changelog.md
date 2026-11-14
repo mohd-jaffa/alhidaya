@@ -4949,3 +4949,15 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - OPEN (DNS): the `preview` record at HostCarts (RELEASE.md Q6).
 - OPEN (inputs): the Turnstile keys and the new `noreply@` password; a "go" for D2 (the first upload to the server) and a push of `main` so the workflow exists on GitHub.
+
+## 2026-11-14 — Release v1.0.0: the version
+
+### Changed
+- `package.json` and `package-lock.json`: 0.1.0 → **1.0.0**, so the commit that is rehearsed on the preview host is the commit that gets the `v1.0.0` tag. The build reads the version into `NEXT_PUBLIC_APP_VERSION`; nothing else uses it.
+
+### Validation
+- `npm run verify:fast` run for this commit.
+
+### Blockers
+- None new.
+
