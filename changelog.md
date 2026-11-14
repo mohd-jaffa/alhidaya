@@ -4997,3 +4997,28 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 - OPEN: static files in the docroot (`/php.ini`) answer the app's 404, so Passenger takes every request; Apache serving `/media/...` directly (plan §21.3) is unproven (item 16).
 - The host has no public DNS record (the user cannot reach HostCarts), so it is unreachable from a browser without a hosts-file line; this is why a browser cannot connect to it.
 
+## 2026-11-14 — Release v1.0.0: a short tag-only release, no rehearsal (user's instruction)
+
+### Changed
+- The user asked for the new site live on alhidaya.qa as demoed, released by a version tag with a short, quick check, and dropped the rehearsal. `.github/workflows/release.yml` now starts only on a pushed `vX.Y.Z` tag. It runs side by side: the guard (the tag is vX.Y.Z, equals `package.json` and sits on `main`; main's own long CI does not gate a release, because the user tags before it finishes), the static and security gates, every unit test (about two minutes), and the build (built once with the live address, pruned and checked). The deploy waits for all four, uploads, migrates, switches, checks the site and switches back by itself if it does not answer. Main's CI is unchanged.
+- `scripts/release-deploy.sh` ends with `--public-url`: the home page, `/robots.txt` and one media file are fetched from wherever the deploy runs (the internet), with the window's token if the maintenance page is up.
+- `tests/contract/release-workflow.test.ts`: 21 tests for the new triggers, guards and shape (no E2E, coverage or Playwright in the release).
+- **Server cleaned (the user allowed deleting what I uploaded):** the rehearsal Node app was unregistered with the selector and its folders (`~/alhidaya-rehearsal`, 127 MB; `~/nodevenv/alhidaya-rehearsal`) removed, the `preview.alhidaya.qa` subdomain was deleted in cPanel and its folder `public_html/rehearsal-site` removed. The old site is untouched: `public_html/.htaccess` is byte-identical to the backup's and `alhidaya.qa` still answers. Kept on purpose: the production database `alhidaya_site` (migrated, one seeded `TYPOGRAPHY` row), the private folders, the release key and the backup copy of `authorized_keys`.
+- D201 rewritten; **D202** added: the app serves `/media/` itself in production (`SERVE_MEDIA=true`, files in `~/alhidaya-data/media`), because Passenger answers every path on the domain (an existing `public_html` file returned the app's 404), so Apache cannot serve the media folder. Plan §35.3, AGENTS.md §23 and §15 and `docs/RELEASE.md` (Phase D dropped, Phase E rewritten) say so.
+
+### Found
+- Over IPv4 from the developer's network the preview host answered 404 for every path while IPv6/NAT64 and the server itself were correct; not explained (the preview host no longer exists). The live domain is checked from the internet by the release itself and by the cutover smoke test before visitors see it.
+
+### Validation
+- Contract tests pass (21 for the workflow); `npm run verify:fast` run for the commit. The unit project alone takes about two minutes.
+
+### Blockers
+- OPEN (inputs): the Turnstile keys (the live site starts on Cloudflare's public always-pass test keys, so its forms rely on the honeypot and the rate limit until the real keys are added).
+- OPEN (E11): the admin account, created by the user with a hidden password prompt.
+
+### Added (same entry, the pieces the first live release needs)
+- `deploy/production/htaccess.block` (+ `scripts/test-site-rules.sh`, 15 checks in a real Apache, alone and beneath the maintenance block): plain HTTP to HTTPS and `www` to `alhidaya.qa` with 301s, SSL challenges excepted. Found while testing: a `www` request for a certificate challenge was being redirected (now exempt), and during maintenance a `www` visitor is sent to the apex, where the notice shows. The site refuses a form posted from any address but `https://alhidaya.qa`, so `www` must redirect.
+- `scripts/admin-create.sh`: the user's own command for the admin account (SSH tunnel, the app's login read over SSH into the environment of one command, a hidden password asked twice).
+- `scripts/content-import.sh --no-restart` and `--media-dir alhidaya-data/media` (the app serves `/media/` itself, D202; the first import happens before the app exists).
+- Contract tests for the live site rules (2) and the import's new paths; the mail server's certificate covers `mail.alhidaya.qa` (port 465) and the mail routing is still Remote.
+

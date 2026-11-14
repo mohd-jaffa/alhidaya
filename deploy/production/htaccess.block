@@ -1,0 +1,16 @@
+# BEGIN ALHIDAYA SITE (docs/RELEASE.md E4; written once at the cutover)
+# The live site's two permanent web-server rules, kept in public_html/.htaccess beside the Node.js app's own block
+# (the selector writes that one). Everything else is the app's: Passenger answers every other request.
+#   1. Plain HTTP goes to HTTPS on the one address the site is built for (SSL certificate challenges excepted).
+#   2. www goes to alhidaya.qa with a 301 (SSL certificate challenges excepted too): the site refuses a form posted from any other address (plan §26), and
+#      its canonical links, sitemap and sign-in all name alhidaya.qa.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !^/\.well-known/
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://alhidaya.qa%{REQUEST_URI} [R=301,L]
+  RewriteCond %{REQUEST_URI} !^/\.well-known/
+  RewriteCond %{HTTP_HOST} ^www\.alhidaya\.qa$ [NC]
+  RewriteRule ^ https://alhidaya.qa%{REQUEST_URI} [R=301,L]
+</IfModule>
+# END ALHIDAYA SITE

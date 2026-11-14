@@ -76,7 +76,7 @@ case "${1:-}" in
   media)
     want="${3:-}"
     [[ "$want" =~ ^[0-9]{1,6}$ ]] || die "the expected file count must be a number"
-    [[ "${2:-}" =~ ^public_html/[A-Za-z0-9._/-]+$ ]] && [[ "$2" != *..* ]] || die "the media folder must be a plain path inside public_html"
+    [[ "${2:-}" =~ ^(public_html|alhidaya-data)/[A-Za-z0-9._/-]+$ ]] && [[ "$2" != *..* ]] || die "the media folder must be a plain path inside public_html or alhidaya-data"
     folder="$HOME/$2"
     [ -d "$folder" ] || die "the media folder is not there"
     [ -f "$folder/.htaccess" ] || die "the media folder has no .htaccess: nothing may be served without its rules"

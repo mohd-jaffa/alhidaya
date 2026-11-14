@@ -2,11 +2,12 @@
 # Loads the approved launch content onto the client's server (docs/RELEASE.md Q4, D3 and E5): the media files first,
 # then the database rows, so a row never names a file that is not there.
 #
-#   scripts/content-import.sh --app alhidaya-rehearsal --domain preview.alhidaya.qa \
-#       --media-dir public_html/rehearsal-site/media [--source release-content]
+#   scripts/content-import.sh --media-dir alhidaya-data/media --no-restart [--source release-content]   (before the app exists)
+#   scripts/content-import.sh --media-dir alhidaya-data/media --app alhidaya-site --domain alhidaya.qa      (into a running app)
 #
-# The app is restarted at the end (scripts/release-remote.sh restart): it keeps what it read from the database in
-# memory, so content written straight into the database is only seen after a restart.
+# A running app is restarted at the end (scripts/release-remote.sh restart): it keeps what it read from the database in
+# memory, so content written straight into the database is only seen after a restart. With --no-restart (the app is
+# not set up yet, as at the first release) that step is skipped: the app reads the database afresh when it first starts.
 #
 # `release-content/` comes from `npx tsx --tsconfig tsconfig.json scripts/content-export.mts` (local database only;
 # git-ignored). Needs the same SSH settings as scripts/release-deploy.sh (RELEASE_SSH_HOST, RELEASE_SSH_USER,
@@ -14,20 +15,23 @@
 # already hold rows (scripts/content-import.remote.sh), and it writes only the media folder it is given.
 set -euo pipefail
 
-source_dir="release-content" media_dir="" app="" domain=""
+source_dir="release-content" media_dir="" app="" domain="" restart=yes
 while [ $# -gt 0 ]; do
   case "$1" in
     --media-dir) media_dir="$2"; shift 2 ;;
     --app) app="$2"; shift 2 ;;
     --domain) domain="$2"; shift 2 ;;
+    --no-restart) restart=no; shift ;;
     --source) source_dir="$2"; shift 2 ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
 done
-[[ "$app" =~ ^[a-z][a-z0-9-]{2,40}$ ]] || { echo "--app is not a plain folder name" >&2; exit 2; }
-[[ "$domain" =~ ^[a-z0-9.-]+$ ]] || { echo "--domain is not a plain host name" >&2; exit 2; }
-[ -n "$media_dir" ] || { echo "missing --media-dir (relative to the account's home, inside public_html)" >&2; exit 2; }
-[[ "$media_dir" =~ ^public_html/[A-Za-z0-9._/-]+$ ]] && [[ "$media_dir" != *..* ]] || { echo "--media-dir must be a plain path inside public_html" >&2; exit 2; }
+if [ "$restart" = yes ]; then
+  [[ "$app" =~ ^[a-z][a-z0-9-]{2,40}$ ]] || { echo "--app is not a plain folder name" >&2; exit 2; }
+  [[ "$domain" =~ ^[a-z0-9.-]+$ ]] || { echo "--domain is not a plain host name" >&2; exit 2; }
+fi
+[ -n "$media_dir" ] || { echo "missing --media-dir (relative to the account's home)" >&2; exit 2; }
+[[ "$media_dir" =~ ^(public_html|alhidaya-data)/[A-Za-z0-9._/-]+$ ]] && [[ "$media_dir" != *..* ]] || { echo "--media-dir must be a plain path inside public_html or alhidaya-data" >&2; exit 2; }
 for needed in content.sql summary.json media/.htaccess; do
   [ -e "$source_dir/$needed" ] || { echo "$source_dir/$needed is missing: run scripts/content-export.mts first" >&2; exit 2; }
 done
@@ -58,7 +62,11 @@ rssh 'umask 077; cat > "$HOME/alhidaya-data/content-import.sql"' <"$source_dir/c
 remote db "alhidaya-data/content-import.sql" \
   "$(count documents)" "$(count records)" "$(count media)" "$(count site_operations)"
 
-printf '\n== 3. restart the app so it reads the new content\n'
-rssh bash -s -- restart "$app" "$domain" <"$release_script"
+if [ "$restart" = yes ]; then
+  printf '\n== 3. restart the app so it reads the new content\n'
+  rssh bash -s -- restart "$app" "$domain" <"$release_script"
+else
+  printf '\n== 3. no restart (the app is not set up yet; it reads the database when it first starts)\n'
+fi
 
 printf '\nThe launch content is on the server.\n'

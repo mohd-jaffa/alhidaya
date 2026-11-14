@@ -2,7 +2,7 @@
 
 |             |                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------- |
-| Status      | **IN PROGRESS, 2026-11-14.** Payment confirmed (Q1). **Phase B (backup), C1, C2, C3, C7 and the rehearsal app's settings (C4, part) done**; the old site is untouched and still serving. Next: the DNS decision (Q6), your Turnstile keys and new `noreply@` password (C4, C6), then the rehearsal release (D2). |
+| Status      | **IN PROGRESS, 2026-11-14.** The user dropped the rehearsal and asked for the new site live on alhidaya.qa, released by a version tag. Done: backup, the new database, the release key, the tag workflow, the server cleaned of the rehearsal. Next: the cutover window (Phase E), ending with **you creating the tag `v1.0.0`**. |
 | Target      | alhidaya.qa on the client's HostCarts cPanel server (`asian-node010.hostcarts.com`, Singapore)     |
 | Access      | SSH port 2200, user `alhidaya`, key `~/.ssh/alhidaya_cpanel_rsa` (already authorised)              |
 | Version     | `package.json` 0.1.0 → **1.0.0** in the release commit; the tag and GitHub release are `v1.0.0`   |
@@ -78,7 +78,7 @@ server: I stop and wait for your explicit "go" before it (plan D44). Tick each b
 | Q4  | Where does the launch content come from: a fresh seed (drafts you publish one by one) or a copy of your local, approved content and photos?                                | Copy the local content tables and the 60 MB media folder, so the site launches exactly as the client approved it | **Copy the local approved content and media (2026-11-14).** Supersedes the plan's Q30 fresh seed. |
 | Q5  | Cloudflare Web Analytics: build it before v1.0.0, or ship without and add it in v1.0.1?                                                                                    | Ship v1.0.0 as tested; add analytics right after launch (agent default)                               | default |
 | Q6  | How does `preview.alhidaya.qa` get its public DNS record (HostCarts runs the world's DNS, not this cPanel)?                                                                | You (or the client) ask HostCarts to add `preview A 15.235.174.14`; or skip it and I rehearse by address only | **No DNS record: you cannot reach HostCarts (2026-11-14), and I have no access to their nameservers.** The rehearsal host is tested by address (`curl --resolve`, a browser with the name mapped), which needs no DNS; its certificate stays cPanel's self-signed one because AutoSSL cannot validate a name the world cannot resolve. To look at it yourself, add the line `15.235.174.14 preview.alhidaya.qa` to your Mac's `/etc/hosts` and accept the certificate warning; or I send screenshots. **The cutover needs no DNS change at all** (`alhidaya.qa` and `www` already point to this server), and DKIM/DMARC stay optional (SPF already passes). |
-| Q7  | Go for the first rehearsal: push `main` and run the release workflow (D2), with Cloudflare's test captcha keys and mail off? | Yes | **Yes (2026-11-14).** The rehearsal runs on the test keys, which always pass; the real keys replace them before the live cutover (R8.4). |
+| Q7  | Go for the first rehearsal: push `main` and run the release workflow (D2)? | Yes | **Superseded (2026-11-14):** the user dropped the rehearsal and asked for the new site live, released by a version tag. |
 | Q8  | When is the `noreply@` password changed? | Right before the rehearsal mail test | **Right before the rehearsal mail test (2026-11-14); I generate it on the server** and never show it. The old site may send through that mailbox, so it is changed as late as the test allows. |
 
 ### 3.2 Items and credentials
@@ -200,75 +200,52 @@ The old site keeps serving throughout this phase.
       `RELEASE_SSH_USER`), set with `gh` and never printed. Remove the key line from `authorized_keys` and delete the
       secrets to revoke it.
 
-### Phase D: Rehearse on a hidden host (GATE: each sub-step confirmed)
+### Phase D: Rehearse on a hidden host (DROPPED, 2026-11-14)
 
-The same build that will go live runs first on the rehearsal host (plan Q22, R8.5), while the old site still serves
-`alhidaya.qa`. The host sits in its own docroot **outside** `public_html`, so the old site's `.htaccess` rules cannot
-reach it, and it sends `X-Robots-Tag: noindex`.
+The user: "no need of rehearsal or anything", "i want the new site live". What the first rehearsal run proved on the
+real server before it was dropped: the release uploads, verifies (SHA-256), unpacks and loads; Drizzle Kit migrates
+`alhidaya_site` through the SSH tunnel; the switch, restart and health check work; the app runs under Passenger with
+its settings and answers with its own headers (`/robots.txt` 200, `/` 404 while no page exists). It also found three
+tooling bugs (§9 items 13, 14) that are fixed and tested, and two open questions (items 15, 16) that the cutover
+resolves with the real site behind the maintenance page. The rehearsal app, its releases, the `preview.alhidaya.qa`
+subdomain and its folder were **removed from the server** (2026-11-14); nothing of the old site was touched (its
+`.htaccess` is byte-identical to the backup's, and it still answers).
 
-- [~] **D1** Me. The rehearsal host. _Done 2026-11-14:_ `preview.alhidaya.qa` created in cPanel; **cPanel forces a
-      subdomain's docroot under `public_html`**, so it is `public_html/rehearsal-site` (the first attempt, which also
-      landed there, was my own empty creation and was removed; nothing existing was touched); AutoSSL requested.
-      _Waiting on DNS:_ the world's DNS is HostCarts', so `preview A 15.235.174.14` must be added there (see §3.1, Q6)
-      before the certificate can be issued or a browser can reach it. Until then I rehearse from here by mapping the
-      name to the server's address (no DNS needed). _Also done (2026-11-14):_ the host's own `.htaccess` now carries a
-      marked `BEGIN/END ALHIDAYA REHEARSAL` block that cuts off the old site's rules (Apache applies
-      `public_html/.htaccess` to every folder below it: `RewriteEngine Off` makes the old rewrite rules, including its
-      forced HTTPS redirect, stop applying here; its CORS headers on scripts, styles and images are unset again) and
-      sends `X-Robots-Tag: noindex, nofollow`. The first request answered with that header and no redirect.
-- [~] **D2** Me. Run the release workflow as a **rehearsal** (a manual run from `main`) on the exact commit that will
-      get the `v1.0.0` tag: CI, build once, upload, SHA-256 check, migrate, switch, restart. _First run
-      (2026-11-14, `f0e4125`):_ CI passed (the open `focal-points` E2E failed once and passed on re-run), the build
-      packed 65 MB, the upload, SHA-256 check, unpack (127 MB, `server.js` loads) and the migration all worked, and the
-      switch happened, but my health check then **rolled the release back wrongly** (two findings, §9 items 13 and 14).
-      After the fix the same unpacked release was activated by hand: **healthy, live on the preview host**
-      (`/` 404 as it should with no page yet, `/robots.txt` 200, the app's own headers present). _Still to do:_ the same
-      run again on the final commit, so the workflow itself, not my hand, does the switch.
-- [ ] **D3** Both. Load the launch content (Q4) with `scripts/content-import.sh` (media first, then the rows into the
-      empty database as the app user, counted against the export; the app is restarted afterwards because it caches
-      what it read), create the admin account (you type the password), publish.
-- [ ] **D4** Me. **Smoke test on the rehearsal host:** every public page 200 with no console error; the 301 map; sitemap
-      and robots; the three forms end to end (mail reaches `info@` and `hr@` in Microsoft 365, **not junk**); a CV
-      upload lands in the private folder (`700`/`600`) and is **not** web-reachable; a media file is served by Apache
-      with long cache headers; admin sign-in, a CV download is audited; both cron routes answer with the bearer and
-      refuse without it; error pages carry no stack or SQL; security headers present.
-- [ ] **D5** Me. **Prove the unknowns** (§9): the switch and restart mechanism, memory (one process within 1 GB), the
-      migration path, cache invalidation after a publish.
-- [ ] **D6** Me. Clean the rehearsal's test enquiries, applications and CVs from the production database (counts
-      shown to you first).
-- [ ] **D7** You. Open the rehearsal host and accept it ("rehearsal approved").
+### Phase E: Cutover (the user's go is given: "i want the new site live"; the window is about 20 minutes)
 
-### Phase E: Cutover (GATE: your "go for cutover"; window about 60 minutes, at a quiet time you choose)
+Time zone: Qatar (UTC+3). Rollback is §5. **The release is a version tag** (`.github/workflows/release.yml`, D201): you
+create `v1.0.0`; it checks (about three minutes, side by side: the tag and version, static gates, unit tests, build; main's own long CI does **not** gate a release, so you never wait for it), then deploys to `alhidaya.qa`. Everything the tag cannot do for the first release is done here.
 
-Time zone: Qatar (UTC+3). You may postpone at any step; rollback is §5.
-
-- [ ] **E1** Both. "Go for cutover" and the time. The old site's fingerprint is recorded again.
-- [ ] **E2** Me. **Maintenance page on:** `scripts/maintenance.sh on` puts `maintenance.html` and a marked 503 block
-      at the top of the live `.htaccess` (the old rules stay below it, untouched); _verify_ every URL returns the
-      notice (§6).
-- [ ] **E3** Me. **Final backup** into `backups/2026-11-14-final-before-switch/`: the database again and the CV/upload
-      folders (the files and the DB are the only things that can have changed), then the same B4 checks.
-- [ ] **E4** Me. **Move the old site aside:** everything in `public_html` except `.well-known/` (AutoSSL) and
-      `maintenance.html` and `rehearsal-site/` → `~/old-site-2026-11-14/` (same filesystem, instant). The old `.htaccess` goes with it
-      (block included), then `scripts/maintenance.sh on` writes the block onto a fresh `.htaccess`.
-      `.well-known.zip` leaves the web here.
-- [ ] **E5** Me. Create the media folder and its `.htaccess` in the docroot; copy the media files (Q4).
-- [ ] **E6** Me. Create the production Node.js app with the selector (`alhidaya-site`, `alhidaya.qa` and `www`, the
-      same settings as the rehearsal app but the live site URL and the real Turnstile and SMTP values), after removing
-      the rehearsal app and its releases (the 1 GB quota holds two releases per app, not four). The app must exist
-      **before** the tag is pushed in E7: without it the release stops at its first step and changes nothing.
-- [ ] **E7** Me. Release `v1.0.0` **on its tag**: the version bump (package.json 1.0.0) is committed and rehearsed
-      **before** the window; after "rehearsal approved" and your "go for cutover" the annotated tag `v1.0.0` is pushed on
-      that very commit. The tag starts the release workflow, which **re-runs CI on the tag** (about 15 minutes), builds
-      once, checks and prunes the folder and deploys it to the live app. Because CI runs inside the window, the
-      maintenance page stays up until it finishes. It migrates the database, switches, restarts and checks the site,
-      and a site that does not answer is switched back by itself. The GitHub release and its notes follow in F1.
-- [ ] **E8** Me. **Smoke test on the real domain**, with the maintenance page still in front of public visitors for a
-      moment (a test header or the server's own address), then the full D4 list again.
-- [ ] **E9** Me. **Maintenance page off.** The Node app's `.htaccess` block is the only rule left.
-- [ ] **E10** Me. Final checks on the public domain: 301s, sitemap, robots, the three forms, mail delivery, admin.
-      Watch the app's logs for 30 minutes (5xx count, memory, restarts).
-- [ ] **E11** You. "Cutover accepted" or "roll back".
+- [ ] **E1** Me. **Before the window (the live site is not affected):** push the tag workflow to `main` (main's long CI
+      runs on its own and does not hold the release back); stage the launch content with
+      `scripts/content-import.sh --media-dir alhidaya-data/media --no-restart`: the 487 media files into
+      `~/alhidaya-data/media` (outside `public_html`; the app serves `/media/` itself with `SERVE_MEDIA=true`, D202) and
+      the content rows into the empty `alhidaya_site`, counted against the export.
+- [ ] **E2** Me. **Final backup** into `backups/2026-11-14-final-before-switch/` (the old site still receives
+      applications), verified as in B4/B5.
+- [ ] **E3** Me. **Maintenance page on:** `scripts/maintenance.sh on`; every URL answers the notice (§6).
+- [ ] **E4** Me. **Move the old site aside:** everything in `public_html` except `.well-known/`, `maintenance.html` and
+      `.htaccess` → `~/old-site-2026-11-14/` (same filesystem, instant); the old `.htaccess` goes with it and a fresh one
+      keeps the maintenance block above `deploy/production/htaccess.block` (plain HTTP to HTTPS, and `www` to
+      `alhidaya.qa` with a 301: the site refuses a form posted from any other address; SSL challenges excepted; proven
+      in Apache by `scripts/test-site-rules.sh`). `.well-known.zip` leaves the web here.
+- [ ] **E5** Me. **Create the live Node.js app** (`alhidaya-site`, `alhidaya.qa`, Node 22, one Passenger process) with
+      the settings of C4 (the live address, the app's database login, the secrets, `MEDIA_DIR=~/alhidaya-data/media`,
+      `SERVE_MEDIA=true`, Turnstile's public test keys until you add the real ones, the mail login: `mail.alhidaya.qa`
+      port 465 over TLS, its certificate checked valid for that name), a new password for `noreply@alhidaya.qa`
+      generated on the server and never shown (the mailbox login is tested before it is used), and the two cron jobs
+      (C5: the bearer is read from the server's secrets file when the job runs, never written into the crontab).
+- [ ] **E6** You. **Create the tag `v1.0.0`** on the commit I name (`git tag -a v1.0.0 -m "v1.0.0" <commit> && git push
+      origin v1.0.0`, or publish a GitHub release). I give you the release notes.
+- [ ] **E7** Me. Watch the run: checks, build, upload, SHA-256, migrate, switch, health check (switched back by itself if
+      it fails), and the check of the live site from the internet with the window's token.
+- [ ] **E8** Me. **Smoke test on the real domain** with the window's token, maintenance still in front of visitors: every
+      public page, the 301 map, sitemap, robots, a media file, the three forms, a CV upload (stored `700`/`600`, not
+      web-reachable), admin sign-in, both cron routes with and without the bearer, error pages without stack or SQL.
+- [ ] **E9** Me. **Maintenance page off.**
+- [ ] **E10** Me. Final checks on the public domain; watch the app for 30 minutes (5xx, memory, restarts).
+- [ ] **E11** You. "Cutover accepted" or "roll back". Create the admin account first (you type the password at a hidden
+      prompt: `scripts/admin-create.sh`, which asks twice and prints nothing secret).
 
 ### Phase F: After launch
 
@@ -351,7 +328,7 @@ growing to the 250 MB budget). If the quota gets tight I tell you before it bloc
 instruction**, after the client has the backup (D50) and the new site has run quietly for the period you choose
 (suggested: 14 days). The old database and its user are deleted in the same separate step.
 
-## 9. Unknowns to retire in the rehearsal
+## 9. Unknowns, as found (the rehearsal was dropped; the rest are settled at the cutover)
 
 These cannot be proven from here without changing the server, so Phase D exists to prove them before the real domain
 is touched:

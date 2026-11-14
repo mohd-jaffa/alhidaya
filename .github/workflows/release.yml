@@ -1,26 +1,21 @@
-# The release (docs/RELEASE.md D2, E6, E7). It changes the client's server only through scripts/release-deploy.sh.
+# The release (docs/RELEASE.md). Creating a version tag (vX.Y.Z) deploys the site to alhidaya.qa; nothing else does.
 #
-#   A release tag (vX.Y.Z, equal to package.json, on a commit that is on main) is the release: CI runs on that exact
-#   tag, and only when it passes is the site built ONCE (with the live address), checked and pruned, and deployed to
-#   the live app (alhidaya-site, alhidaya.qa). That app exists on the server only from the cutover (docs/RELEASE.md
-#   E6), so a tag pushed before it cannot change anything: the deploy stops at its first step.
+#   git tag -a v1.0.1 -m "v1.0.1" && git push origin v1.0.1        (or publish a GitHub release, which creates the tag)
 #
-#   The rehearsal is started by hand for any commit or tag, from main, and deploys the same build to the hidden
-#   preview host (preview.alhidaya.qa). Nothing else starts this workflow: a push to a branch never deploys.
-#
-#   git tag -a v1.0.0 -m "v1.0.0" <commit> && git push origin v1.0.0         (the release)
-#   gh workflow run release.yml --ref main -f ref=<commit or tag>             (the rehearsal)
+# This is the SHORT check: main's own CI (.github/workflows/ci.yml) is the long, detailed one and does NOT gate a
+# release (a release is never held up waiting for it), so a release only runs the small, important checks, side by
+# side, in about three minutes:
+#   guard   the tag is vX.Y.Z, equals package.json, and sits on main;
+#   static  lint, format, types, test layout, dependency audits;
+#   tests   every unit test;
+#   build   the site, built once with the live address, pruned and checked (no secrets, maps, source or uploads).
+# Only when all four pass is the build uploaded over SSH, its database migrated, `current` switched, the app restarted
+# and the site checked; a site that does not answer is switched back by itself (scripts/release-deploy.sh).
 name: Release
 
 on:
   push:
     tags: ["v[0-9]+.[0-9]+.[0-9]+"]
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: The commit or tag to deploy to the rehearsal host (preview.alhidaya.qa)
-        type: string
-        required: true
 
 permissions:
   contents: read
@@ -32,70 +27,76 @@ concurrency:
 
 jobs:
   guard:
-    name: Check the request
+    name: Check the tag
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    outputs:
-      sha: ${{ steps.resolve.outputs.sha }}
-      target: ${{ steps.resolve.outputs.target }}
     steps:
-      - name: A manual run only from main
-        if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main' }}
-        run: |
-          echo "::error::Start the rehearsal from main (the workflow file there is the reviewed one)."
-          exit 1
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Resolve and check
-        id: resolve
+      - name: The tag, the version and main
         env:
-          EVENT: ${{ github.event_name }}
           REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          sha="$(git rev-parse HEAD)"
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          if [ "$EVENT" = push ]; then
-            echo "target=production" >> "$GITHUB_OUTPUT"
-            [[ "$REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::$REF_NAME is not a vX.Y.Z tag."; exit 1; }
-            version="$(node -p 'require("./package.json").version')"
-            [ "v$version" = "$REF_NAME" ] || { echo "::error::The tag is $REF_NAME but package.json says $version."; exit 1; }
-            git merge-base --is-ancestor "$sha" origin/main || { echo "::error::The tagged commit is not on main."; exit 1; }
-            echo "Release $REF_NAME = $sha goes to PRODUCTION once CI and the build pass."
-          else
-            echo "target=rehearsal" >> "$GITHUB_OUTPUT"
-            echo "Rehearsal of $sha on the preview host."
-          fi
+          [[ "$REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::$REF_NAME is not a vX.Y.Z tag."; exit 1; }
+          version="$(node -p 'require("./package.json").version')"
+          [ "v$version" = "$REF_NAME" ] || { echo "::error::The tag is $REF_NAME but package.json says $version. Change package.json, push, then tag."; exit 1; }
+          git merge-base --is-ancestor "$SHA" origin/main || { echo "::error::The tagged commit is not on main. Push it to main first."; exit 1; }
+          echo "Release $REF_NAME = $SHA"
 
-  ci:
-    name: Re-run CI
-    needs: guard
-    uses: ./.github/workflows/ci.yml
-    with:
-      ref: ${{ needs.guard.outputs.sha }}
+  static:
+    name: Static and security gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # Each step runs even if an earlier one failed, so one run shows every problem.
+      - run: npm run lint
+      - run: npm run format:check
+        if: ${{ !cancelled() }}
+      - run: npm run typecheck
+        if: ${{ !cancelled() }}
+      - run: node scripts/check-test-paths.mjs
+        if: ${{ !cancelled() }}
+      - run: npm audit --audit-level=high
+        if: ${{ !cancelled() }}
+      - run: npm run audit:shipped
+        if: ${{ !cancelled() }}
+
+  tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: cp .env.example .env.local
+      - run: npm test -- --reporter=dot
 
   build:
     name: Build once
-    needs: [guard, ci]
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ needs.guard.outputs.sha }}
           persist-credentials: false
       - uses: ./.github/actions/setup
-      # The address is written into the build (sitemap, robots.txt, canonical links), so it is the live one; the
-      # rehearsal host overrides only the value read at run time (docs/RELEASE.md section 9, item 7).
+      # The address is written into the build (sitemap, robots.txt, canonical links), so it is the live one.
       - run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://alhidaya.qa
       - name: Check and pack the release
         env:
-          SHA: ${{ needs.guard.outputs.sha }}
+          SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           node scripts/check-deploy-output.mjs --prune .next/standalone
@@ -118,18 +119,15 @@ jobs:
           if-no-files-found: error
 
   deploy:
-    name: Deploy to ${{ needs.guard.outputs.target }}
-    needs: [guard, build]
+    name: Deploy to alhidaya.qa
+    needs: [guard, static, tests, build]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SHA: ${{ needs.guard.outputs.sha }}
-      APP: ${{ needs.guard.outputs.target == 'production' && 'alhidaya-site' || 'alhidaya-rehearsal' }}
-      DOMAIN: ${{ needs.guard.outputs.target == 'production' && 'alhidaya.qa' || 'preview.alhidaya.qa' }}
+      SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: ${{ needs.guard.outputs.sha }}
           persist-credentials: false
       - uses: ./.github/actions/setup
       - name: Take this run's build
@@ -159,5 +157,6 @@ jobs:
           printf '%s\n' "$SSH_PRIVATE_KEY" > "$key"
           printf '%s\n' "$SSH_KNOWN_HOSTS" > "$known"
           SSH_KEY_FILE="$key" SSH_KNOWN_HOSTS_FILE="$known" scripts/release-deploy.sh \
-            --app "$APP" --domain "$DOMAIN" --archive dist/release.tar.gz --release-id "$RELEASE_ID"
-          echo "Release $RELEASE_ID is live on $DOMAIN." >> "$GITHUB_STEP_SUMMARY"
+            --app alhidaya-site --domain alhidaya.qa --public-url https://alhidaya.qa \
+            --archive dist/release.tar.gz --release-id "$RELEASE_ID"
+          echo "Release $RELEASE_ID is live on alhidaya.qa." >> "$GITHUB_STEP_SUMMARY"
