@@ -186,6 +186,28 @@ describe("AdminShell", () => {
     expect(logo).not.toHaveAttribute("loading", "lazy");
   });
 
+  it("shows the build's version beside the panel's name, under the logo (D203)", () => {
+    vi.stubEnv("NEXT_PUBLIC_APP_VERSION", "1.0.0");
+    stubApi(counts);
+    shell();
+    const aside = within(screen.getByRole("complementary"));
+    // Seen as "Admin panel v1.0.0"; a screen reader hears "version 1.0.0".
+    expect(aside.getByText(ADMIN_TEXT.adminVersion("1.0.0"))).toBeVisible();
+    expect(aside.getByText(ADMIN_TEXT.adminVersionSaid("1.0.0"))).toHaveClass("sr-only");
+    expect(aside.getAllByRole("link")[0]).toHaveTextContent(new RegExp(`${ADMIN_TEXT.admin} v1\\.0\\.0`));
+    vi.unstubAllEnvs();
+  });
+
+  it("shows no version when the build has none", () => {
+    vi.stubEnv("NEXT_PUBLIC_APP_VERSION", "");
+    stubApi(counts);
+    shell();
+    const aside = within(screen.getByRole("complementary"));
+    expect(aside.getByText(ADMIN_TEXT.admin)).toBeVisible();
+    expect(aside.queryByText(/^v\d/)).toBeNull();
+    vi.unstubAllEnvs();
+  });
+
   it("marks the profile as where the admin is on its page, and names it in the phone's bar", () => {
     navigation.pathname = ADMIN_ROUTES.profile;
     stubApi(counts);

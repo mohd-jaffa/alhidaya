@@ -176,7 +176,7 @@ components:
 
 The client wanted the structure they already knew (the current alhidaya.qa: a hero, About, What we do, Our clients, a quote form, a four-column footer) without it feeling like the same site. Shown five themes, they chose a mix, Theme 6 (plan D132): Theme 2's header and services cards, Theme 4's straight-lined hero and quote card, Theme 5's About and footer. It is a **Persuade** page on soft white, never a pure white (the client's words): deep blue leads every action, the logo's leaf green is the accent, photographs carry the care, and motion arrives as you read: slides wipe in, headings' words rise from behind their line, blocks rise as they scroll in, the clients' logos run in two rows.
 
-Density stays low: one idea per section, the old site's order, generous section gaps; bands of mist and pale green mark What we do and the quote. The admin panel is a separate **Operate** surface and keeps its own look entirely (the user: "no changes needed in the admin panel or its designs").
+Density stays low: one idea per section, the old site's order, generous section gaps; bands of mist and pale green mark What we do and the quote. The admin panel is a separate **Operate** surface and keeps its own look entirely (the user: "no changes needed in the admin panel or its designs"). Two small additions were asked for later (2026-11-14): the column header names the build's version beside "Admin panel" (D203), and a pending button shows a spinner (D204).
 
 **Key Characteristics:**
 - Soft white page (`page`), cards a touch lighter (`card`), mist and pale-leaf bands.

@@ -5042,3 +5042,14 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - OPEN: the admin account (the user runs `scripts/admin-create.sh` and types the password); the real Turnstile keys (R8.4); the user's word before the old site and its database are deleted (D198, §8); old `.env` secrets to rotate after that; DKIM and DMARC at HostCarts are optional and cannot be added by us.
 
+## 2026-11-14 — Admin panel: the version beside "Admin panel"
+
+### Added
+- `AdminShell`: the column header, under the logo, now reads "Admin panel v1.0.0" (the user asked for the current version to show there). The number is `package.json`'s, written into the build as `NEXT_PUBLIC_APP_VERSION` and read with `publicAppVersion()`; a screen reader hears "version 1.0.0"; a build with no version shows none. Words in `ADMIN_TEXT` (`adminVersion`, `adminVersionSaid`). Decision D203; DESIGN.md says so. The sign-in page and the phone's bar are unchanged.
+
+### Validation
+- Two new tests in `tests/unit/components/admin/AdminShell.test.tsx` (the version beside the name and read aloud; no version, none shown); lint, types, and `npm run verify:fast` run for the commit.
+
+### Blockers
+- None.
+

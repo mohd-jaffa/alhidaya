@@ -23,6 +23,7 @@ import type { ServiceListItems } from "@/features/services/types";
 import type { SiteDraftItem } from "@/features/settings/types";
 import { todayKey } from "@/lib/inbox/keys";
 import { useApiMutation } from "@/lib/query/useApiMutation";
+import { publicAppVersion } from "@/lib/env/public";
 import { useApiQuery } from "@/lib/query/useApiQuery";
 
 interface Station {
@@ -152,6 +153,8 @@ function Account({ adminName, onNavigate }: { adminName: string; onNavigate?: ()
 export function AdminShell({ adminName, children }: { adminName: string; children: ReactNode }) {
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
+  // The build's version, written into the build from package.json; none, none shown.
+  const version = publicAppVersion();
   const needs = useApiQuery<{ total: number }>(todayKey({ needsYou: true }));
   const freshEnquiries = useApiQuery<{ total: number }>(enquiriesKey({ status: "NEW" }));
   const freshApplications = useApiQuery<{ total: number }>(applicationsKey({ status: "NEW" }));
@@ -259,7 +262,18 @@ export function AdminShell({ adminName, children }: { adminName: string; childre
       <aside className="sticky top-0 hidden h-dvh flex-col gap-8 overflow-y-auto overscroll-contain border-e border-forest/15 bg-leaf-pale px-5 py-6 lg:flex">
         <Link href={ADMIN_ROUTES.overview} className="grid gap-1 text-navy">
           <Logo priority className="h-9 w-auto" />
-          <span className="text-small text-ink-2">{ADMIN_TEXT.admin}</span>
+          <span className="text-small text-ink-2">
+            {ADMIN_TEXT.admin}
+            {version ? (
+              <>
+                {" "}
+                <span aria-hidden="true" className="font-semibold text-navy">
+                  {ADMIN_TEXT.adminVersion(version)}
+                </span>
+                <span className="sr-only">{ADMIN_TEXT.adminVersionSaid(version)}</span>
+              </>
+            ) : null}
+          </span>
         </Link>
         <Stations groups={groups} />
         <div className="mt-auto">

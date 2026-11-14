@@ -82,6 +82,9 @@ export const ADMIN_TEXT = {
   },
   fontSample: (role: string) => `${role} sample`,
   admin: "Admin panel",
+  /** The build's version beside the panel's name (D203): "v1.0.0", and how a screen reader says it. */
+  adminVersion: (version: string) => `v${version}`,
+  adminVersionSaid: (version: string) => `version ${version}`,
   /** Signing in and the password (plan §26.4). */
   signInTitle: "Sign in",
   signInIntro: "The Al Hidaya website's admin panel, for authorised staff.",
