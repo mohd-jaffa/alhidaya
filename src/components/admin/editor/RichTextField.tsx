@@ -41,6 +41,7 @@ export function ListItems({
   min = 1,
   max = LIST_LIMITS.jobPoints,
   maxLength = TEXT_LIMITS.item,
+  add = ADMIN_TEXT.addItem,
 }: {
   name: string;
   /** What one line is called, numbered: "List item 2", "Responsibility 2". */
@@ -49,6 +50,8 @@ export function ListItems({
   max?: number;
   /** Each line's bound, as its check has it. */
   maxLength?: number;
+  /** What the action that adds a line says: "Add a choice" (D209). */
+  add?: string;
 }) {
   const { fields, append, move, remove } = useFieldArray({ name, keyName: "key" });
   const error = useEditorError(name);
@@ -77,7 +80,7 @@ export function ListItems({
       {error ? <FieldError>{error}</FieldError> : null}
       {fields.length < max ? (
         <Button variant="quiet" pictogram="plus" onClick={() => append({ en: "" })} className="justify-self-start">
-          {ADMIN_TEXT.addItem}
+          {add}
         </Button>
       ) : null}
     </div>

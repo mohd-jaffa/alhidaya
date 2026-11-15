@@ -55,6 +55,14 @@ async function job(closesOn: string | null, slug: string) {
 
 const jobs: Record<string, string> = {};
 
+/** A job's own questions (D209), one with emphasis the applicant reads as plain words. */
+const QUESTIONS = [
+  { question: { en: "Do you hold a **BLS** certificate?" }, choices: [{ en: "Yes" }, { en: "No" }] },
+  { question: { en: "Which shifts can you work?" }, choices: [{ en: "Days" }, { en: "Nights" }, { en: "Either" }] },
+];
+const BLS = "Do you hold a BLS certificate?";
+const SHIFTS = "Which shifts can you work?";
+
 beforeAll(async () => {
   await getDb().delete(applications);
   await getDb().delete(records);
@@ -64,6 +72,8 @@ beforeAll(async () => {
   jobs.archived = await job(null, "archived");
   await setRecordArchived("JOBS", jobs.archived, true, actor);
   jobs.draft = await createRecord("JOBS", jobFixture({ slug: "draft" }), actor);
+  jobs.asks = await createRecord("JOBS", jobFixture({ slug: "asks", questions: QUESTIONS }), actor);
+  await publishRecord("JOBS", jobs.asks, "asks", actor);
   jobs.service = await createRecord("SERVICES", serviceFixture(), actor);
   await publishRecord("SERVICES", jobs.service, "a-service", actor);
 });
@@ -125,9 +135,45 @@ describe("submitApplication, against the local MySQL", () => {
     }
   });
 
+  it("checks the answers against the job's own questions as published, in any order (D209)", async () => {
+    await saveRecordDraft("JOBS", jobs.asks, jobFixture({ slug: "asks", questions: [] }), actor);
+    const answers = [
+      { question: SHIFTS, choice: "Nights" },
+      { question: BLS, choice: "Yes" },
+    ];
+    await expect(submitApplication(application({ jobId: jobs.asks, answers }), ip(), at)).resolves.toMatchObject({
+      jobTitle: jobFixture().title.en,
+    });
+  });
+
+  it("refuses answers that are not to the job's own questions as published, as changed while answering (D209)", async () => {
+    const bls = { question: BLS, choice: "Yes" };
+    const shifts = { question: SHIFTS, choice: "Days" };
+    for (const [jobId, answers] of [
+      [jobs.asks, [bls]],
+      [jobs.asks, [bls, shifts, { question: "Weekends?", choice: "Yes" }]],
+      [jobs.asks, [bls, { question: SHIFTS, choice: "Mornings" }]],
+      [jobs.asks, [bls, bls]],
+      [jobs.asks, [{ question: "Do you hold a **BLS** certificate?", choice: "Yes" }, shifts]],
+      [jobs.open, [bls]],
+      [null, [bls]],
+    ] as const) {
+      await expect(
+        submitApplication(application({ jobId, answers: [...answers] }), ip(), at),
+        JSON.stringify(answers),
+      ).rejects.toMatchObject({ code: "JOB_QUESTIONS_CHANGED", httpStatus: 409 });
+    }
+    await expect(submitApplication(application({ jobId: jobs.asks }), ip(), at)).rejects.toMatchObject({
+      code: "JOB_QUESTIONS_CHANGED",
+    });
+  });
+
   it("takes five from a visitor in ten minutes and refuses the sixth, not counting a refused job", async () => {
     const visitor = ip();
     await expect(submitApplication(application({ jobId: jobs.closed }), visitor, at)).rejects.toThrow();
+    await expect(
+      submitApplication(application({ answers: [{ question: BLS, choice: "Yes" }] }), visitor, at),
+    ).rejects.toMatchObject({ code: "JOB_QUESTIONS_CHANGED" });
     for (let count = 0; count < FORM_RATE_LIMIT.limit; count++) await submitApplication(application(), visitor, at);
     await expect(submitApplication(application(), visitor, at)).rejects.toMatchObject({ code: "RATE_LIMITED" });
   });
@@ -232,6 +278,28 @@ describe("receiveApplication, against the local MySQL", () => {
       .from(applications)
       .where(eq(applications.id, unnamed.id));
     expect(cvName).toBe("cv");
+  });
+
+  it("keeps the job's own questions as answered after the fixed ones, as the form asks them (D209)", async () => {
+    const answers = [
+      { question: BLS, choice: "No" },
+      { question: SHIFTS, choice: "Either" },
+    ];
+    const { id } = await receiveApplication(
+      received({ bytes: PDF, name: "cv.pdf" }, { jobId: jobs.asks, answers }),
+      ip(),
+      at,
+    );
+    const [row] = await getDb()
+      .select({ fields: applications.fields })
+      .from(applications)
+      .where(eq(applications.id, id));
+    expect(row.fields.map(({ label }) => label).slice(6, 9)).toEqual([UI_TEXT.prometric, BLS, SHIFTS]);
+    expect(row.fields.slice(7, 10)).toEqual([
+      { label: BLS, value: "No" },
+      { label: SHIFTS, value: "Either" },
+      { label: UI_TEXT.experienceYears, value: "4" },
+    ]);
   });
 
   it("refuses a CV that is not a PDF or Word file by its first bytes, whatever its name, keeping nothing", async () => {

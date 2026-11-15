@@ -285,6 +285,7 @@ export const ADMIN_MANUAL = [
         duration: 24,
         steps: [
           "Update duties, qualifications, benefits and SEO using the item controls.",
+          "Optionally add Application questions: each needs at least two choices, and applicants must choose one answer to each.",
           "Save draft, preview and publish when the opening is ready.",
           "Choose Close now to stop new applications, or Archive to remove the listing. Review each confirmation first.",
         ],

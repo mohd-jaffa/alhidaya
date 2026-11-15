@@ -11,8 +11,13 @@ import { mockObservers } from "@tests/support/motion";
 // The page's motion waits on the engine; here the page only needs to be drawn.
 vi.mock("@/components/motion/MotionProvider", () => ({ useMotion: () => ({ engine: null }) }));
 vi.mock("@/features/careers/components/ApplicationForm", () => ({
-  ApplicationForm: ({ jobId, siteKey }: { jobId: string | null; siteKey: string }) => (
-    <form aria-label="Application" data-job={jobId ?? ""} data-site-key={siteKey} />
+  ApplicationForm: ({ jobId, siteKey, questions }: { jobId: string | null; siteKey: string; questions: unknown }) => (
+    <form
+      aria-label="Application"
+      data-job={jobId ?? ""}
+      data-site-key={siteKey}
+      data-questions={JSON.stringify(questions)}
+    />
   ),
 }));
 beforeEach(() => {
@@ -45,6 +50,23 @@ describe("ApplyPage", () => {
     expect(form.parentElement).toHaveClass("bg-mist", "rounded-card");
   });
 
+  it("hands the form the job's own questions in plain words, and none for a job published before them (D209)", () => {
+    const questions = [
+      { question: { en: "Do you hold a **BLS** certificate?" }, choices: [{ en: "*Yes*" }, { en: "No" }] },
+    ];
+    const job = { ...publishedFixture(jobFixture({ questions })), open: true };
+    const { unmount } = render(<ApplyPage job={job} />);
+    expect(JSON.parse(screen.getByRole("form", { name: "Application" }).dataset.questions!)).toEqual([
+      { question: "Do you hold a BLS certificate?", choices: ["Yes", "No"] },
+    ]);
+    unmount();
+
+    const before: Partial<ReturnType<typeof jobFixture>> = jobFixture();
+    delete before.questions;
+    render(<ApplyPage job={{ ...publishedFixture(before as ReturnType<typeof jobFixture>), open: true }} />);
+    expect(screen.getByRole("form", { name: "Application" }).dataset.questions).toBe("[]");
+  });
+
   it("is the general application without a job, with the way back to the open jobs", () => {
     const { container } = render(<ApplyPage job={null} />);
     const sign = within(container.querySelector<HTMLElement>("#start")!);
@@ -54,5 +76,6 @@ describe("ApplyPage", () => {
     const apply = within(screen.getByRole("region", { name: UI_TEXT.yourApplication }));
     expect(apply.getByText(UI_TEXT.generalApplicationFor)).toBeInTheDocument();
     expect(apply.getByRole("form", { name: "Application" }).dataset.job).toBe("");
+    expect(apply.getByRole("form", { name: "Application" }).dataset.questions).toBe("[]");
   });
 });

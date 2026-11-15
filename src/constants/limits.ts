@@ -44,6 +44,9 @@ export const TEXT_LIMITS = {
 /** Years of nursing experience, as the application form takes them (plan §9.2). */
 export const EXPERIENCE_YEARS = { min: 0, max: 50 } as const;
 
+/** How many choices one of a job's own application questions offers (D209). */
+export const JOB_QUESTION_CHOICES = { min: 2, max: 6 } as const;
+
 /** How many of a repeated thing a document may hold (plan §7.2, §8, §9.1, §13). */
 export const LIST_LIMITS = {
   sections: 20,
@@ -52,6 +55,8 @@ export const LIST_LIMITS = {
   included: 12,
   serviceButtons: 2,
   jobPoints: 20,
+  /** A job's own application questions (D209). */
+  jobQuestions: 10,
   navigation: 10,
   footerColumns: 4,
   footerLinks: 10,

@@ -47,6 +47,7 @@ import type { ContentView } from "@/lib/content/view";
 import { dohaDay } from "@/lib/dates";
 import {
   businessRuleError,
+  conflictError,
   fromDatabaseError,
   internalError,
   isAppError,
@@ -65,6 +66,7 @@ import { matchingPerson } from "@/lib/text/search";
 import {
   type ApplicationFormPayload,
   type ApplicationListQueryPayload,
+  type ChosenAnswer,
   GENERAL_APPLICATIONS,
   type JobDocument,
   jobDocumentSchema,
@@ -73,6 +75,39 @@ import {
 export interface PublishedJob extends PublishedRecord<JobDocument> {
   /** Open until the end of its closing day in Doha, or until the admin closes it (plan §9.1, D92). */
   open: boolean;
+}
+
+/** One of a job's own questions as an applicant reads it (D209): its words and its choices, plain. */
+export interface AskedQuestion {
+  question: string;
+  choices: string[];
+}
+
+const plainLine = (text: string) => normaliseLine(plainText(text));
+
+/**
+ * A job's own questions as its application form asks them (D209), in its
+ * order, in plain words; none for a job published before there were any.
+ */
+export const askedQuestions = (job: JobDocument): AskedQuestion[] =>
+  (job.questions ?? []).map(({ question, choices }) => ({
+    question: plainLine(question.en),
+    choices: choices.map((choice) => plainLine(choice.en)),
+  }));
+
+/**
+ * Refuses answers that are not to the job's own questions as published
+ * (D209): each must be answered once, with one of its choices, whatever the
+ * order. Anything else means they changed while the applicant was answering,
+ * and the applicant is asked to reload them.
+ */
+export function checkAnswers(asked: readonly AskedQuestion[], answers: readonly ChosenAnswer[]): void {
+  const answered =
+    answers.length === asked.length &&
+    asked.every(({ question, choices }) =>
+      choices.includes(answers.find((answer) => answer.question === question)?.choice ?? ""),
+    );
+  if (!answered) throw conflictError("JOB_QUESTIONS_CHANGED");
 }
 
 const isOpen = (job: JobDocument, today: string) => !job.closed && (job.closesOn === null || job.closesOn >= today);
@@ -308,13 +343,16 @@ export interface ApplicationSubmission {
   email: string;
   phone: string;
   fields: SubmittedField[];
+  /** The job's own questions as answered (D209), checked against the published job; none for a general application. */
+  answers?: ChosenAnswer[];
   cv: { name: string; type: FileType; bytes: number };
 }
 
 /**
  * Stores an application (plan §9.3, steps 1 – 2) in one transaction with its
  * rate limit: past the limit nothing is stored, and neither is an application
- * to a job that is not published and open in Doha today (plan §6.6). The
+ * to a job that is not published and open in Doha today (plan §6.6), nor one
+ * whose answers are not to the job's own questions as published (D209). The
  * job's title is taken from the published job, as applied for. `keepCv`
  * saves the CV inside the same transaction once that title is known (D84):
  * a CV that cannot be saved stores nothing and counts nothing against the
@@ -328,7 +366,7 @@ export async function submitApplication(
   keepCv?: (jobTitle: string | null) => Promise<string>,
 ): Promise<{ id: string; jobTitle: string | null }> {
   const id = newId();
-  const { cv, ...applicant } = submission;
+  const { cv, answers = [], ...applicant } = submission;
   let kept: string | null = null;
   try {
     return { id, jobTitle: await storeApplication() };
@@ -343,6 +381,7 @@ export async function submitApplication(
         throw rateLimitError("RATE_LIMITED");
 
       let title: string | null = null;
+      let asked: AskedQuestion[] = [];
       if (submission.jobId !== null) {
         const [job] = await tx
           .select({ published: records.published })
@@ -358,7 +397,9 @@ export async function submitApplication(
         const published = job?.published as JobDocument | undefined;
         if (!published || !isOpen(published, dohaDay(at))) throw businessRuleError("JOB_CLOSED");
         title = plainText(published.title.en);
+        asked = askedQuestions(published);
       }
+      checkAnswers(asked, answers);
 
       kept = keepCv ? await keepCv(title) : null;
       await tx.insert(applications).values({
@@ -381,6 +422,7 @@ export async function submitApplication(
  * Every answer as the applicant saw and gave it (plan §9.3): each field's
  * label, and a choice's words rather than its code, so the inbox and the HR
  * email read the application as it was sent whatever the form says later.
+ * The job's own questions (D209) follow the fixed ones, as the form asks them.
  * A left-out note is left out.
  */
 export function applicationFields(payload: ApplicationFormPayload): SubmittedField[] {
@@ -392,6 +434,7 @@ export function applicationFields(payload: ApplicationFormPayload): SubmittedFie
     [UI_TEXT.mophLicence, MOPH_LICENCE_LABELS[payload.mophLicence]],
     [UI_TEXT.dataflow, DATAFLOW_LABELS[payload.dataflow]],
     [UI_TEXT.prometric, PROMETRIC_LABELS[payload.prometric]],
+    ...payload.answers.map(({ question, choice }): [string, string] => [question, choice]),
     [UI_TEXT.experienceYears, String(payload.experienceYears)],
     [UI_TEXT.applicationNote, payload.note],
     [UI_TEXT.consent, UI_TEXT.consentGiven],
@@ -440,7 +483,7 @@ export async function receiveApplication(
   if (type === null || !CV_TYPES.includes(type)) {
     throw validationError("VALIDATION_ERROR", [{ path: "cv", message: VALIDATION_MESSAGES.cvType }]);
   }
-  const { jobId, name, email, phone } = payload;
+  const { jobId, name, email, phone, answers } = payload;
   const { id } = await submitApplication(
     {
       jobId,
@@ -448,6 +491,7 @@ export async function receiveApplication(
       email,
       phone,
       fields: applicationFields(payload),
+      answers,
       cv: { name: uploadedName(payload.cv.name), type, bytes: bytes.byteLength },
     },
     visitorIp,

@@ -272,7 +272,7 @@ export function seedPages(photos: SeedPhotoRefs = NO_PHOTOS): Record<PageKey, Pa
             heading("What we collect"),
             list(
               "When you send the Contact or Request a Quote form: your name, phone number, email address and what you tell us, including your organisation and the care you need when you give them.",
-              "When you apply for a job: your name, email address, phone number, your answers about your licence, Dataflow, Prometric and experience, your note, and your CV.",
+              "When you apply for a job: your name, email, phone number, your answers about your licence, Dataflow, Prometric, experience and the job's own questions, your note, and your CV.",
             ),
             heading("Why we collect it"),
             paragraph(
@@ -469,6 +469,7 @@ export function seedJob(postedOn: string): JobDocument {
       en("Strong communication and organisational skills"),
     ],
     benefits: [],
+    questions: [],
     postedOn,
     closesOn: null,
     closed: false,

@@ -32,6 +32,7 @@ import { type JobDocument, type JobDocumentInput, jobDocumentSchema } from "@/li
 
 import { JobsClient } from "../api.client";
 import type { JobDraftItem } from "../types";
+import { JobQuestions } from "./JobQuestions";
 
 /** A new job, posted today in Doha, blank for the admin to fill: refused until it is. */
 const blankJob = (): JobDocumentInput => ({
@@ -46,6 +47,7 @@ const blankJob = (): JobDocumentInput => ({
   responsibilities: [],
   qualifications: [],
   benefits: [],
+  questions: [],
   postedOn: dohaDay(),
   closesOn: null,
   seo: { title: { en: "" }, description: { en: "" } },
@@ -77,7 +79,8 @@ function Applications({ item, name, show }: { item: JobDraftItem; name: string; 
 
 /**
  * A job in the editor (D92): what it is and its address, its dates, its
- * description and lists, its words for search engines, whether it takes
+ * description and lists, its own application questions (D209), its words
+ * for search engines, whether it takes
  * applications, and taking it off the website. A new one is made on its
  * first save, and the address bar then names it.
  */
@@ -169,6 +172,9 @@ function JobForm({ initial }: { initial: JobDraftItem | null }) {
           max={LIST_LIMITS.jobPoints}
           hideLabel
         />
+      </EditorGroup>
+      <EditorGroup title={ADMIN_TEXT.applicationQuestions} hint={ADMIN_TEXT.applicationQuestionsHint}>
+        <JobQuestions />
       </EditorGroup>
       <SeoFields hint={ADMIN_TEXT.jobSeoHint} />
       {item ? (

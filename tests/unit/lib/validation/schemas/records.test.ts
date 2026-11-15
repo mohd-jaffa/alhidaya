@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { VALIDATION_MESSAGES } from "@/constants/messages";
-import { TEXT_LIMITS } from "@/constants/limits";
+import { JOB_QUESTION_CHOICES, LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
 import {
   archiveSchema,
   clientDocumentSchema,
@@ -81,6 +81,65 @@ describe("a job", () => {
     expect(jobDocumentSchema.safeParse(jobFixture({ qualifications: many })).error?.issues[0].message).toBe(
       VALIDATION_MESSAGES.atMost("Qualifications", 20),
     );
+  });
+});
+
+describe("a job's own application questions (D209)", () => {
+  const choices = (...words: string[]) => words.map((word) => ({ en: word }));
+  const asked = (question: string, ...words: string[]) => ({ question: { en: question }, choices: choices(...words) });
+  const issue = (questions: ReturnType<typeof asked>[]) =>
+    jobDocumentSchema.safeParse(jobFixture({ questions })).error?.issues[0];
+
+  it("are none on a job saved before they existed, and keep each question tidied with its choices", () => {
+    const before: Partial<ReturnType<typeof jobFixture>> = jobFixture();
+    delete before.questions;
+    expect(jobDocumentSchema.parse(before).questions).toEqual([]);
+    const questions = [asked("  Do you hold a  BLS certificate? ", " Yes ", "No")];
+    expect(jobDocumentSchema.parse(jobFixture({ questions })).questions).toEqual([
+      asked("Do you hold a BLS certificate?", "Yes", "No"),
+    ]);
+  });
+
+  it("need two to six choices, each different from the others, whatever their emphasis or case", () => {
+    expect(issue([asked("Shift?", "Days")])).toMatchObject({
+      message: VALIDATION_MESSAGES.fewChoices(JOB_QUESTION_CHOICES.min),
+      path: ["questions", 0, "choices"],
+    });
+    const seven = Array.from({ length: JOB_QUESTION_CHOICES.max + 1 }, (_, index) => `Choice ${index}`);
+    expect(issue([asked("Shift?", ...seven)])?.message).toBe(
+      VALIDATION_MESSAGES.atMost("Choices", JOB_QUESTION_CHOICES.max),
+    );
+    expect(issue([asked("Shift?", "Days", "**days**")])).toMatchObject({
+      message: VALIDATION_MESSAGES.noRepeats("Choices"),
+      path: ["questions", 0, "choices"],
+    });
+    expect(issue([asked("Shift?", "Days", "  ")])).toMatchObject({ path: ["questions", 0, "choices", 1, "en"] });
+  });
+
+  it("need their words, bounded, and never ask the same question twice, at most ten to a job", () => {
+    expect(issue([asked(" ", "Yes", "No")])).toMatchObject({
+      message: VALIDATION_MESSAGES.required("Question"),
+      path: ["questions", 0, "question", "en"],
+    });
+    expect(issue([asked("x".repeat(TEXT_LIMITS.item + 1), "Yes", "No")])?.path).toEqual([
+      "questions",
+      0,
+      "question",
+      "en",
+    ]);
+    expect(issue([asked("Shift?", "x".repeat(TEXT_LIMITS.heading + 1), "No")])?.path).toEqual([
+      "questions",
+      0,
+      "choices",
+      0,
+      "en",
+    ]);
+    expect(issue([asked("Night shifts?", "Yes", "No"), asked("night SHIFTS?", "Yes", "No")])).toMatchObject({
+      message: VALIDATION_MESSAGES.noRepeats("Application questions"),
+      path: ["questions"],
+    });
+    const eleven = Array.from({ length: LIST_LIMITS.jobQuestions + 1 }, (_, index) => asked(`Q${index}?`, "Yes", "No"));
+    expect(issue(eleven)?.message).toBe(VALIDATION_MESSAGES.atMost("Application questions", LIST_LIMITS.jobQuestions));
   });
 });
 

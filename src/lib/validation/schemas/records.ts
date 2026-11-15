@@ -1,9 +1,10 @@
 import * as z from "zod";
 
-import { LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
+import { JOB_QUESTION_CHOICES, LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
 import { RESERVED_JOB_SLUGS } from "@/constants/routes";
 import { AUDIENCES, EMPLOYMENT_TYPES } from "@/constants/statuses";
+import { plainText } from "@/lib/text/inline";
 
 import { optionalLine, optionalLines, requiredLine, requiredLines } from "../primitives";
 
@@ -16,6 +17,7 @@ import {
   richTextSchema,
   seoSchema,
   slugSchema,
+  withoutRepeats,
 } from "./content";
 
 const points = (label: string, max: number) =>
@@ -45,6 +47,23 @@ export const serviceDocumentSchema = z.object({
 export type ServiceDocument = z.output<typeof serviceDocumentSchema>;
 export type ServiceDocumentInput = z.input<typeof serviceDocumentSchema>;
 
+/** The same words, whatever their emphasis or case: two choices, or two questions, may not say them twice. */
+const sameWords = (text: { en: string }) => plainText(text.en).toLocaleLowerCase("en");
+
+/**
+ * One of a job's own application questions (D209): its words and two to six
+ * choices, no two the same, of which the applicant chooses one.
+ */
+export const jobQuestionSchema = z.object({
+  question: localized(requiredLine("Question", { max: TEXT_LIMITS.item })),
+  choices: z
+    .array(localized(requiredLine("Choice", { max: TEXT_LIMITS.heading })))
+    .min(JOB_QUESTION_CHOICES.min, VALIDATION_MESSAGES.fewChoices(JOB_QUESTION_CHOICES.min))
+    .max(JOB_QUESTION_CHOICES.max, VALIDATION_MESSAGES.atMost("Choices", JOB_QUESTION_CHOICES.max))
+    .superRefine(withoutRepeats("Choices", sameWords)),
+});
+export type JobQuestion = z.output<typeof jobQuestionSchema>;
+
 /** A job (plan §9.1): closed on its own once its closing date has passed. */
 export const jobDocumentSchema = z
   .object({
@@ -59,6 +78,12 @@ export const jobDocumentSchema = z
     responsibilities: points("Responsibilities", LIST_LIMITS.jobPoints),
     qualifications: points("Qualifications", LIST_LIMITS.jobPoints),
     benefits: points("Benefits", LIST_LIMITS.jobPoints),
+    /** Its own questions in its application form (D209), none when it asks only the fixed ones. */
+    questions: z
+      .array(jobQuestionSchema)
+      .max(LIST_LIMITS.jobQuestions, VALIDATION_MESSAGES.atMost("Application questions", LIST_LIMITS.jobQuestions))
+      .superRefine(withoutRepeats("Application questions", (asked) => sameWords(asked.question)))
+      .default([]),
     postedOn: isoDateSchema("The posting date"),
     closesOn: isoDateSchema("The closing date").nullable(),
     /** Closed at once by the admin (D92), whatever its closing date; set only by Close now and Reopen. */

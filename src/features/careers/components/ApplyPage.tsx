@@ -8,14 +8,15 @@ import { PAGE_NAMES, UI_TEXT } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import { getServerEnv } from "@/lib/env/server";
 
-import type { PublishedJob } from "../api";
+import { askedQuestions, type PublishedJob } from "../api";
 import { ApplicationForm } from "./ApplicationForm";
 
 /**
  * An application page (plan §9.2, §9.3, Q7, D109): its opening on Careers'
  * pill with the way back, then the form on a mist panel beside what it is
  * for, as the reference sets a form (D104). For an open job, it names the
- * job; without one, it is the general application. Turnstile's site key is
+ * job and asks its own questions (D209); without one, it is the general
+ * application. Turnstile's site key is
  * read on the server at request time (plan §10.3).
  */
 export function ApplyPage({ job }: { job: PublishedJob | null }) {
@@ -60,7 +61,11 @@ export function ApplyPage({ job }: { job: PublishedJob | null }) {
           </p>
         </div>
         <div className="rounded-card bg-mist p-5 sm:p-8 lg:p-10">
-          <ApplicationForm jobId={job?.id ?? null} siteKey={getServerEnv().TURNSTILE_SITE_KEY} />
+          <ApplicationForm
+            jobId={job?.id ?? null}
+            siteKey={getServerEnv().TURNSTILE_SITE_KEY}
+            questions={job ? askedQuestions(job.published) : []}
+          />
         </div>
       </SectionFrame>
     </div>

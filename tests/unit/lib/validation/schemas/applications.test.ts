@@ -8,6 +8,7 @@ import {
   applicationNoteSchema,
   applicationStatusSchema,
 } from "@/lib/validation";
+import { withJobQuestions } from "@/lib/validation/schemas/applications";
 
 const cv = new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" });
 
@@ -42,6 +43,7 @@ describe("the application form (plan §9.2)", () => {
       mophLicence: "HAVE",
       dataflow: "DONE",
       prometric: "PASSED",
+      answers: [],
       experienceYears: 12,
       cv,
       note: "ICU,\nfrom March.",
@@ -93,6 +95,35 @@ describe("the application form (plan §9.2)", () => {
     expect(problems(applicationFormSchema.safeParse({ ...application, cv: "cv.pdf" })).cv).toBe(
       VALIDATION_MESSAGES.cvRequired,
     );
+  });
+});
+
+describe("a job's own questions (D209)", () => {
+  it("go to the route as the questions asked, each with the choice made, tidied and bounded", () => {
+    const answers = [{ question: " Night shifts? ", choice: " Yes " }];
+    expect(applicationFormSchema.parse({ ...application, answers }).answers).toEqual([
+      { question: "Night shifts?", choice: "Yes" },
+    ]);
+    const many = Array.from({ length: 11 }, (_, index) => ({ question: `Q${index}?`, choice: "Yes" }));
+    expect(problems(applicationFormSchema.safeParse({ ...application, answers: many })).answers).toBe(
+      VALIDATION_MESSAGES.atMost("Answers", 10),
+    );
+    expect(
+      applicationFormSchema.safeParse({ ...application, answers: [{ question: "Q?", choice: " " }] }).success,
+    ).toBe(false);
+  });
+
+  it("are each answered in the browser with one of their choices, by the field that names them", () => {
+    const schema = withJobQuestions([
+      { field: "answer-0", choices: ["Yes", "No"] },
+      { field: "answer-1", choices: ["Days", "Nights"] },
+    ]);
+    expect(schema.safeParse({ ...application, "answer-0": "No", "answer-1": "Nights" }).success).toBe(true);
+    expect(problems(schema.safeParse({ ...application, "answer-0": "Maybe" }))).toEqual({
+      "answer-0": VALIDATION_MESSAGES.chooseAnswer,
+      "answer-1": VALIDATION_MESSAGES.chooseAnswer,
+    });
+    expect(withJobQuestions([]).safeParse(application).success).toBe(true);
   });
 });
 

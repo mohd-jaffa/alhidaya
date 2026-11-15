@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { EXPERIENCE_YEARS, TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
+import { EXPERIENCE_YEARS, LIST_LIMITS, TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { APPLICATION_STATUSES, DATAFLOW, MOPH_LICENCE, PROMETRIC, WHERE_NOW } from "@/constants/statuses";
 import { formatBytes } from "@/lib/files/size";
@@ -51,6 +51,21 @@ const cv = z
   });
 
 /**
+ * A job's own questions as answered (D209): each question's words and the
+ * choice made, as the applicant read them. They are checked against the
+ * published job as the application is stored; a general application has none.
+ */
+const answers = z
+  .array(
+    z.object({
+      question: requiredLine("Question", { max: TEXT_LIMITS.item }),
+      choice: requiredLine("Choice", { max: TEXT_LIMITS.heading }),
+    }),
+  )
+  .max(LIST_LIMITS.jobQuestions, VALIDATION_MESSAGES.atMost("Answers", LIST_LIMITS.jobQuestions))
+  .default([]);
+
+/**
  * The application form (plan §9.2, Q7 default), each field named by the
  * label the applicant sees: the job applied for (none for a general
  * application), who they are, where they are with Qatar's licensing, their
@@ -70,6 +85,7 @@ export const applicationFormSchema = z.object({
   mophLicence: z.enum(MOPH_LICENCE, { error: VALIDATION_MESSAGES.mophLicence }),
   dataflow: z.enum(DATAFLOW, { error: VALIDATION_MESSAGES.dataflow }),
   prometric: z.enum(PROMETRIC, { error: VALIDATION_MESSAGES.prometric }),
+  answers,
   experienceYears,
   cv,
   note: optionalLines(UI_TEXT.applicationNote, TEXT_LIMITS.note),
@@ -78,6 +94,22 @@ export const applicationFormSchema = z.object({
 });
 export type ApplicationFormInput = z.input<typeof applicationFormSchema>;
 export type ApplicationFormPayload = z.output<typeof applicationFormSchema>;
+export type ChosenAnswer = ApplicationFormPayload["answers"][number];
+
+/**
+ * The application form with a job's own questions (D209), as the browser
+ * checks it before they are gathered into `answers`: each question, by the
+ * field that names it, answered with one of its choices.
+ */
+export const withJobQuestions = (questions: readonly { field: string; choices: readonly string[] }[]) =>
+  applicationFormSchema.extend(
+    Object.fromEntries(
+      questions.map(({ field, choices }) => [
+        field,
+        z.enum(choices as readonly [string, ...string[]], { error: VALIDATION_MESSAGES.chooseAnswer }),
+      ]),
+    ),
+  );
 
 /** The general application, as the inbox's job filter names it. */
 export const GENERAL_APPLICATIONS = "general";

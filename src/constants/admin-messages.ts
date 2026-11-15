@@ -702,6 +702,14 @@ export const ADMIN_TEXT = {
   qualification: "Qualification",
   benefits: "Benefits",
   benefit: "Benefit",
+  /** A job's own application questions (D209). */
+  applicationQuestions: "Application questions",
+  applicationQuestionsHint:
+    "Optional. Applicants answer these in this job's application form, after its fixed questions. Each question needs at least two choices, and every applicant must choose one. They show as plain text.",
+  question: "Question",
+  choice: "Choice",
+  addQuestion: "Add a question",
+  addChoice: "Add a choice",
   dates: "Dates",
   postedOn: "Posting date",
   closesOn: "Closing date",

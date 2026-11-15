@@ -76,6 +76,9 @@ describe("JobEditor (D92)", () => {
     const responsibilities = screen.getByRole("group", { name: ADMIN_TEXT.responsibilities });
     await userEvent.click(within(responsibilities).getByRole("button", { name: ADMIN_TEXT.addItem }));
     await userEvent.type(textbox(`${ADMIN_TEXT.responsibility} 1`), "Visit patients at home");
+    const questions = screen.getByRole("region", { name: ADMIN_TEXT.applicationQuestions });
+    expect(questions).toHaveTextContent(ADMIN_TEXT.applicationQuestionsHint);
+    expect(within(questions).getByRole("button", { name: ADMIN_TEXT.addQuestion })).toBeEnabled();
     await userEvent.click(screen.getByRole("button", { name: ADMIN_TEXT.saveDraft }));
     expect(await screen.findByRole("heading", { level: 1, name: "Registered Nurse" })).toBeVisible();
     expect(writes(fetch)).toEqual([["POST", ADMIN_API_ROUTES.adminJobs]]);

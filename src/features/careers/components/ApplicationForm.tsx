@@ -20,20 +20,40 @@ import {
 import { CV_ACCEPT } from "@/constants/uploads";
 import { formatBytes } from "@/lib/files/size";
 
-import { CareersClient } from "../form.client";
+import type { AskedQuestion } from "../api";
+import { answerField, CareersClient } from "../form.client";
 
-const schema = () => import("@/lib/validation/schemas/applications").then((module) => module.applicationFormSchema);
+/** The form's schema, with the job's own questions (D209) each answered by one of its choices. */
+const schemaFor = (questions: readonly AskedQuestion[]) => () =>
+  import("@/lib/validation/schemas/applications").then((module) =>
+    module.withJobQuestions(questions.map(({ choices }, index) => ({ field: answerField(index), choices }))),
+  );
 
 /**
  * The application form (plan §9.2, Q7): who the nurse is, where they are
- * with Qatar's licensing, their experience, their CV and a note. For a job
- * (`jobId`) or, without one, a general application.
+ * with Qatar's licensing, the job's own questions (D209), their experience,
+ * their CV and a note. For a job (`jobId`) or, without one, a general
+ * application.
  */
-export function ApplicationForm({ jobId, siteKey }: { jobId: string | null; siteKey: string }) {
+export function ApplicationForm({
+  jobId,
+  siteKey,
+  questions = [],
+}: {
+  jobId: string | null;
+  siteKey: string;
+  /** The job's own questions, asked after the fixed ones; none for a general application. */
+  questions?: readonly AskedQuestion[];
+}) {
   return (
     <SiteForm
-      schema={schema}
-      send={CareersClient.apply}
+      schema={schemaFor(questions)}
+      send={(values) =>
+        CareersClient.apply(
+          values,
+          questions.map(({ question }) => question),
+        )
+      }
       action={UI_TEXT.sendApplication}
       sent={UI_TEXT.applicationSent}
       sentNext={UI_TEXT.applicationSentNext}
@@ -80,6 +100,16 @@ export function ApplicationForm({ jobId, siteKey }: { jobId: string | null; site
             required
             error={errors.prometric}
           />
+          {questions.map(({ question, choices }, index) => (
+            <RadioGroup
+              key={answerField(index)}
+              legend={question}
+              name={answerField(index)}
+              options={choices.map((choice) => ({ value: choice, label: choice }))}
+              required
+              error={errors[answerField(index)]}
+            />
+          ))}
           <Field
             label={UI_TEXT.experienceYears}
             hint={UI_TEXT.experienceYearsHint}

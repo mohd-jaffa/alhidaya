@@ -32,6 +32,7 @@ export {
   type ApplicationNotePayload,
   type ApplicationStatusInput,
   type ApplicationStatusPayload,
+  type ChosenAnswer,
 } from "./schemas/applications";
 
 export {

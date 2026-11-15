@@ -216,6 +216,8 @@ export const ERROR_MESSAGES = {
   BOT_CHECK_FAILED: "We could not confirm that a person sent this. Please send it again.",
   EMAIL_ALREADY_SENT: "This email was already sent.",
   JOB_CLOSED: "This job is no longer open. You can apply for an open job, or send a general application.",
+  JOB_QUESTIONS_CHANGED:
+    "This job's questions changed while you were applying. Please reload the page and answer them again.",
   CV_NOT_KEPT: "This CV is not kept on the website. Look for it attached to the application's HR email.",
   CV_NOT_SAVED: "Something went wrong with your CV upload. Please send it again.",
 
@@ -269,6 +271,9 @@ export const VALIDATION_MESSAGES = {
   mophLicence: "Please choose where you are with your MOPH licence.",
   dataflow: "Please choose where you are with Dataflow.",
   prometric: "Please choose where you are with Prometric.",
+  /** A job's own questions (D209). */
+  chooseAnswer: "Please choose an answer.",
+  fewChoices: (min: number) => `A question needs at least ${min} choices.`,
   cvRequired: "Please choose your CV to send.",
   cvSize: (max: string) => `Your CV can be at most ${max}. Please send a smaller file.`,
   cvType: "Your CV must be a PDF or a Word file (.pdf, .doc or .docx).",

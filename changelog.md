@@ -5135,3 +5135,27 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Blockers
 - OPEN: the real time is proven only when the workflow runs on GitHub (twice: once to fill the cache, once to use it).
 
+
+## 2026-11-15 — A job's own application questions (R9.1, D209)
+
+### Added
+- The job editor's **Application questions** group (`src/features/careers/components/JobQuestions.tsx`), after Benefits: none to ten questions, each its words and two to six choices (a new question starts with its two), moved and removed with the list controls; *Add a choice* stops at six and a choice cannot be removed below two. `ListItems` takes the words of its add action (`add`), for "Add a choice".
+- `jobDocumentSchema.questions` (`src/lib/validation/schemas/records.ts`): at most `LIST_LIMITS.jobQuestions` (10), each `JOB_QUESTION_CHOICES` (2 – 6) choices; question ≤ 200 and choice ≤ 120 characters; no two questions and no two of a question's choices the same, whatever their case or emphasis. Defaults to none, so a job saved before keeps working.
+- The application form asks a job's questions straight after Prometric, as round choices, each required (`VALIDATION_MESSAGES.chooseAnswer`), checked in the browser by `withJobQuestions` (loaded after first paint with the rest of the schema). `CareersClient.apply` gathers them into `answers`, each the question's words with the choice made. `ApplyPage` hands the form the job's questions in plain words (`askedQuestions`); the general application asks none.
+- `applicationFormSchema.answers` (≤ 10, tidied and bounded) and, in `submitApplication`'s transaction, `checkAnswers` against the job as published: each question answered once with one of its choices, in any order; otherwise `JOB_QUESTIONS_CHANGED` (409, a new catalogue message asking to reload), nothing kept and nothing counted against the rate limit. The answers are kept after the fixed questions in the words the applicant read, so the inbox and the HR email show them unchanged.
+
+### Changed
+- The seed's Privacy page lists the answers to "the job's own questions" among what an application collects (AGENTS.md §8). The **live** Privacy page is the admin's content: it changes only when its text is edited and published in the admin.
+- The User manual's job lesson gains one step about Application questions.
+- Plan: D209 (a narrow exception to D11's "no form builder"), §9.1, §9.2, Phase 9 *After launch* and its row R9.1.
+
+### Validation
+- `npm run verify:fast`: lint, format, types, both audits; 386 unit and database test files, 1,496 tests, coverage 100% (statements, branches, functions, lines). New: the job and application schemas' questions and answers, `JobQuestions`, the form's questions and their gathering, `ApplyPage`'s plain questions, and against the local MySQL the answer check (any order accepted; a missing, extra, repeated, edited or wrong-choice answer, or answers to the general application, refused as `JOB_QUESTIONS_CHANGED` without counting against the rate limit) and the answers kept after Prometric.
+- Build passed. Full E2E: 279 passed (63 skipped by project), axe on every page; the new desktop journey adds a question in the editor, publishes, is asked it after Prometric, is refused until it is answered, and finds the answer kept.
+- Performance (mobile profile) for `/careers/apply` and the seeded job's Apply: initial JavaScript 170,277 B gzip (budget 174,080), LCP 0.29 s, CLS 0, Lighthouse 100 in every category, INP upper bound 56 ms and 32 ms.
+
+### Migration
+- None: the questions live in the job's draft and published JSON.
+
+### Blockers
+- None.
