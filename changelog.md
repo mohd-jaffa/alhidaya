@@ -5159,3 +5159,14 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None.
+
+## 2026-11-15 — Release v1.0.2: the version
+
+### Changed
+- `package.json` and `package-lock.json`: 1.0.1 → **1.0.2**, so the tag `v1.0.2` equals `package.json` (the release's guard refuses a tag that does not) and the admin column reads "Admin panel v1.0.2". This release holds a job's own application questions (R9.1, D209). No schema change, so no migration runs.
+
+### Validation
+- Lint, format and types pass; only the two version fields changed.
+
+### Blockers
+- None.
