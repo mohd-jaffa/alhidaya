@@ -20,16 +20,17 @@ export const choiceOptions = <T extends string>(values: readonly T[], labels: Re
   values.map((value) => ({ value, label: labels[value] }));
 
 /**
- * One answer of several (plan §9.2, §10.1): a fieldset with its question as
- * the legend, each answer a tall, tappable row. The error is tied to the
- * group.
+ * Single or multiple answers (plan §9.2, §10.1): a fieldset with its question
+ * as the legend, each answer a tall, tappable row. The instructions and error
+ * describe the group.
  */
-export function RadioGroup({
+export function ChoiceGroup({
   legend,
   name,
   options,
   error,
   required = false,
+  multiple = false,
   ...props
 }: {
   legend: string;
@@ -37,11 +38,13 @@ export function RadioGroup({
   options: readonly { value: string; label: string }[];
   error?: string;
   required?: boolean;
+  multiple?: boolean;
 } & Omit<ComponentProps<"input">, "type" | "id" | "value">) {
   const id = useId();
   const errorId = error ? `${id}-error` : undefined;
+  const hintId = multiple ? `${id}-hint` : undefined;
   return (
-    <fieldset aria-describedby={errorId} className="grid gap-2">
+    <fieldset aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined} className="grid gap-2">
       <legend className="mb-2 font-semibold">
         {legend}
         {required ? null : (
@@ -51,16 +54,22 @@ export function RadioGroup({
           </>
         )}
       </legend>
+      {hintId ? (
+        <p id={hintId} className="text-small text-ink-2">
+          {UI_TEXT.selectOneOrMore}
+        </p>
+      ) : null}
       {options.map((option) => (
         <label key={option.value} className="flex min-h-touch cursor-pointer items-start gap-3 py-2">
           <input
-            type="radio"
+            type={multiple ? "checkbox" : "radio"}
             name={name}
             value={option.value}
-            required={required}
+            required={required && !multiple}
+            data-choice-list={multiple ? "" : undefined}
             data-invalid={error ? "" : undefined}
             {...props}
-            className={`${MARK} rounded-full checked:shadow-[inset_0_0_0_4px_var(--color-ground)]`}
+            className={`${MARK} ${multiple ? `${TICK} rounded-tag` : "rounded-full checked:shadow-[inset_0_0_0_4px_var(--color-ground)]"}`}
           />
           <span>{option.label}</span>
         </label>
@@ -68,6 +77,10 @@ export function RadioGroup({
       {error ? <FieldError id={errorId}>{error}</FieldError> : null}
     </fieldset>
   );
+}
+
+export function RadioGroup(props: Omit<ComponentProps<typeof ChoiceGroup>, "multiple">) {
+  return <ChoiceGroup {...props} />;
 }
 
 /** A box to tick, its words beside it: the consent to the privacy notice (plan §9.2). */

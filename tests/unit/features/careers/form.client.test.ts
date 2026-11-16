@@ -26,7 +26,7 @@ describe("CareersClient", () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async () => Response.json({ success: true, data: {} }));
     vi.stubGlobal("fetch", fetch);
     expect([answerField(0), answerField(1)]).toEqual(["answer-0", "answer-1"]);
-    await CareersClient.apply({ name: "Mariam", "answer-0": "Yes", "answer-1": "Nights", cv: null }, [
+    await CareersClient.apply({ name: "Mariam", "answer-0": "Yes", "answer-1": ["Days", "Nights"], cv: null }, [
       "BLS certificate?",
       "Which shifts?",
     ]);
@@ -35,7 +35,7 @@ describe("CareersClient", () => {
       name: "Mariam",
       answers: [
         { question: "BLS certificate?", choice: "Yes" },
-        { question: "Which shifts?", choice: "Nights" },
+        { question: "Which shifts?", choices: ["Days", "Nights"] },
       ],
     });
   });

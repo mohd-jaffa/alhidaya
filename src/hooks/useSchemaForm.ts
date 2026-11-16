@@ -20,14 +20,19 @@ const fieldName = (target: EventTarget): string => (target instanceof Element &&
 
 /**
  * What a form holds, by field name: a box as ticked or not, a group of
- * choices as the one chosen, a file as the one picked (or null).
+ * choices as the one chosen or the list of checked options, a file as the one
+ * picked (or null).
  */
 function formValues(form: HTMLFormElement): Record<string, unknown> {
   const values: Record<string, unknown> = {};
   for (const element of form.elements) {
     if (!isControl(element) || !element.name) continue;
-    if (element.type === "checkbox") values[element.name] = (element as HTMLInputElement).checked;
-    else if (element.type === "file") values[element.name] = (element as HTMLInputElement).files?.[0] ?? null;
+    if (element.type === "checkbox") {
+      const checked = (element as HTMLInputElement).checked;
+      if (element.hasAttribute("data-choice-list")) {
+        if (checked) ((values[element.name] ??= []) as string[]).push(element.value);
+      } else values[element.name] = checked;
+    } else if (element.type === "file") values[element.name] = (element as HTMLInputElement).files?.[0] ?? null;
     else if (element.type !== "radio" || (element as HTMLInputElement).checked) values[element.name] = element.value;
   }
   return values;

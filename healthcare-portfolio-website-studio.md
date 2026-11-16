@@ -312,6 +312,7 @@ question (§41) the user may overturn.
 | D207 | **Main's CI keeps only what protects main, and is built to finish well inside ten minutes (the user, 2026-11-14: "improve the CI in main branch, it takes a lot of time, only keep the needed things"; the user chose to drop the performance and development-hydration jobs and to have an estimate, not a run, as proof; on the browser scope they were not sure, so every test is kept: agent default, overturnable).** A run took 14.5 minutes: the build (2 minutes) then the slowest of eight E2E shards (12.5 minutes). Now: the static and security gates, the unit and database tests in four shards merged at 100%, the build, and the phone and desktop journeys (PRODUCT.md: every journey at both, axe on every page) in **eight shards per project**, with Playwright's browser cached by its version. The report-only performance jobs (they missed their budgets on GitHub's runners every time) and the development-hydration job are no longer run there; both stay strict in the local `npm run verify`. `workflow_call` and the `ref` input are gone (the release no longer calls CI, D201). Estimate from the last run's timings: about 8 to 9 minutes; 7 is not promised without cutting desktop E2E or paying for larger runners. `tests/contract/ci-workflow.test.ts` guards the shape (the jobs, the one gate waiting for all, the shard count, the cache, pinned actions). | 2026-11-14 |
 | D208 | **The E2E shards are split by measured time, and the seed's images are cached (agent default under D207, after D207's first run took 11 min 16 s, not the estimated 8 to 9).** Measured on that run: the tests themselves take only about 21 minutes in total across the 16 shards, but every shard first spent about 135 seconds in the global setup converting the seed's photographs into their sizes (sharp, AVIF), and Playwright's `--shard` splits by test count, so the heaviest files landed together (the slowest shard 476 s, the lightest 230 s). Now: `scripts/e2e-shard.mjs` gives each shard the spec files that balance by the seconds in `tests/e2e/shard-weights.json` (heaviest first to the lightest shard; a file not listed counts as 10 s and a new spec is never left out; an empty shard is an error, because Playwright with no file runs everything), **six shards for the phone and ten for the desktop** (whose files weigh more; the one heavy file, `consistency.spec.ts`, has a shard of its own); and `tests/support/seed-cache.ts` keeps the library's rows and files between runs in a CI cache keyed by everything that decides them, restoring them in under a second instead of re-making them (a trial: cold 80 s, warm 0.3 s, identical result; a cache that cannot be read is ignored). Estimate from the measured steps: the first run after this change (cache cold) about 9 minutes, later runs about 7. `tests/contract/e2e-shards.test.ts` proves every spec runs exactly once in every shard layout the workflow lists. | 2026-11-14 |
 | D209 | **A job's own application questions (the user, 2026-11-15: "in the job form, i want a new section which is customisable like descriptions, responsibilities, qualifications, i need a section where admin can ask question with multiple choice answers, minimum 2 choice is needed, they can optionally include that as well in the job form"; asked, the user chose one answer per question, every question required, the questions straight after the fixed ones, and at most 10 questions of 2 to 6 choices).** A narrow exception to D11's "no form builder", for jobs only. A job holds none to ten questions, each its words (at most 200 characters) and two to six choices (at most 120 each), no two questions and no two of a question's choices the same, whatever their case or emphasis; they show as plain text. The job's application form asks them after Prometric, as round choices like the fixed four, and the form will not send until each is answered; the general application asks none. They live in the job's draft and published copy (no new table, no migration; a job saved before them has none) and publish with it. The route checks the answers inside the application's transaction against the job as published: each question answered once with one of its choices, in any order; anything else means the questions changed while the applicant answered, refused as `JOB_QUESTIONS_CHANGED` (409, "reload the page and answer them again"), keeping nothing and counting nothing against the rate limit. Each answer is kept as every answer is, the question's and the choice's words as the applicant read them, after the fixed questions, so the inbox and the HR email show them unchanged. The word limits, the conflict refusal and the Privacy page's wording are agent defaults. | 2026-11-15 |
+| D210 | **Per-job application question settings.** The four predefined screening questions are optional for applicants and individually hideable in the job editor. For each custom question, the admin chooses one answer or multiple answers. A custom question requires at least one selection. The settings publish with the job and are checked against the published form when it is submitted. New and existing jobs start with all four predefined questions visible, and custom questions default to one answer. The general application keeps its required screening questions. | 2026-11-16 |
 
 
 ## 3. Audiences and the admin
@@ -616,8 +617,9 @@ only where the client confirms them for that service (Q9).
 A **job** has: title; slug; department (optional); location; employment type
 (`FULL_TIME`, `PART_TIME`, `CONTRACT`); experience required; short and full
 description; responsibilities; qualifications; benefits (optional); its own
-application questions (optional, D209: none to ten, each with two to six
-choices); posted date; closing date (optional); status (`DRAFT`, `PUBLISHED`, `CLOSED`,
+application questions (optional, D209 and D210: none to ten, each with two to six
+choices and a single or multiple selection setting); visibility for the four
+predefined screening questions; posted date; closing date (optional); status (`DRAFT`, `PUBLISHED`, `CLOSED`,
 `ARCHIVED`); SEO title and description. A published job past its closing
 date shows as closed on its own, with no admin step. A job's web address can
 never be `apply`, which the general application uses (§5.1).
@@ -636,14 +638,17 @@ outside Qatar); MOPH licence (have / in progress / not yet); Dataflow
 optional note; consent to the privacy notice. Turnstile, honeypot and rate
 limit as §10.3.
 
-A job may add **its own questions** (D209), asked straight after Prometric:
-each offers two to six choices, of which the applicant picks one, and each
-must be answered. The general application asks none. The route checks the
-answers against the job as published, inside the application's
-transaction; if the questions changed while the applicant was answering,
-nothing is kept and the form asks them to reload the page
-(`JOB_QUESTIONS_CHANGED`). The answers are kept after the fixed ones, in the
-words the applicant read.
+For a specific job, location, MOPH licence, Dataflow and Prometric answers
+are optional and the admin can hide any of these questions. A job may add
+**its own questions** (D209, D210) after the visible screening questions.
+Each offers two to six choices and requires at least one answer. The admin
+sets whether the applicant uses radio buttons for one answer or checkboxes
+for multiple answers. The general application retains the four required
+screening questions. The route checks the answers against the job as
+published inside the application's transaction. Incompatible answers result
+in `JOB_QUESTIONS_CHANGED` and a request to reload. Unanswered screening
+questions are omitted from the saved application. Custom answers are stored
+after the screening answers in the words the applicant read.
 
 Years of experience are a whole number from 0 to 50. The fields go as one
 JSON part beside the CV, and the route reads the whole body within 5 MB and
@@ -1853,7 +1858,7 @@ one commit (D27).
 | R8.1 | The production MySQL database, created after the old one is cleared (D50), with two users (app: data rights; migrations: schema rights); migrations; the admin account; the media folder (with its `.htaccess`) and the CV folder (`700`) | D39, D49, D54, §21.1 | Full payment (D48), R0.9 | DONE (2026-11-14) |
 | R8.2 | cPanel Node.js app (Node 22); env; the release workflow over SSH port 2200 with its own deploy key (build, check, tar upload, migrate, switch, restart, rollback; D200, D201); the daily cron and the mail-retry cron (every 10 minutes, D85); the app kept to one Passenger process (D119); `docs/RELEASE.md` | §35.3, §21.1 | Full payment (D48) | DONE (2026-11-14) |
 | R8.3 | The sender mailbox (Q24); mail routing kept Remote; DKIM and DMARC `p=none` added **at HostCarts' DNS** (the world's nameservers are theirs, not this cPanel's, found 2026-11-14); verified with sends to info@ and hr@ in Microsoft 365 | §17 | Full payment (D48) | PARTLY DONE (2026-11-14: mail login and delivery proven; DKIM and DMARC at HostCarts not added, optional) |
-| R8.4 | Turnstile keys for alhidaya.qa (replacing the test keys, which always pass; checked before go-live); Cloudflare Web Analytics site | §10.3, §20 | — | OPEN (live on Cloudflare's public test keys; the owner adds the real ones) |
+| R8.4 | Live Turnstile keys for alhidaya.qa and the Cloudflare Web Analytics site | §10.3, §20 | — | PARTLY DONE (2026-11-16: Turnstile is live with the production keys; Web Analytics remains open) |
 | R8.5 | Pre-switch check on the server; speed from Qatar; the Cloudflare-proxy decision | D25 | Q22 | DROPPED (2026-11-14: no rehearsal; the live site was smoke-tested behind the maintenance page) |
 | R8.6 | Switch alhidaya.qa to the Node.js app; every 301 verified live; sitemap to Search Console; the old site's files moved aside at the cutover (behind the maintenance page) and removed only on the user's word, after the backup is verified (D198, §21.2) | D21, §19 | — | DONE (2026-11-14: switched, 301s verified live; the sitemap to Search Console is the owner's) |
 | R8.7 | Smoke test; release `v1.0.0` | §35 | — | DONE (2026-11-14: `v1.0.0`) |
@@ -1863,6 +1868,7 @@ one commit (D27).
 | ID | Work | Source | Waits on | Status |
 |---|---|---|---|---|
 | R9.1 | A job's own application questions: the job editor's *Application questions* group (none to ten, each with two to six choices), asked in the job's application form after the fixed questions, checked against the published job when an application is stored, and kept with the application; released as `v1.0.2` | D209, §9.1, §9.2 | — | DONE (2026-11-15) |
+| R9.2 | Optional and individually hideable predefined job screening questions, with single or multiple selections per custom question; version `1.0.3` | D210, §9.1, §9.2 | — | DONE (2026-11-16) |
 
 ## 39. Definition of shippable
 

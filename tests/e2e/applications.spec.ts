@@ -114,7 +114,8 @@ test("a job's Apply leads to its form, which shows each mistake, then takes the 
   await form.getByRole("button", { name: UI_TEXT.sendApplication }).click();
   await expect(field(page, UI_TEXT.fullName)).toBeFocused();
   await expect(form.getByText(VALIDATION_MESSAGES.cvRequired)).toBeVisible();
-  await expect(form.getByText(VALIDATION_MESSAGES.mophLicence)).toBeVisible();
+  await expect(form.getByRole("group", { name: `${UI_TEXT.mophLicence} (${UI_TEXT.optional})` })).toBeVisible();
+  await expect(form.getByText(VALIDATION_MESSAGES.mophLicence)).toHaveCount(0);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
   await fill(page, email);

@@ -542,6 +542,8 @@ Animated headings preserve emphasis across word/letter and blue-highlight bounda
 
 A single small syntax hint appears in Pages, Services, Jobs and Settings content editors. No toolbar or repeated per-field controls. Save/Preview/Publish/Discard and raw string limits stay unchanged. Metadata, share pictures, structured data, image labels, form choices, generated slugs and submission snapshots use a plain-text projection. Routing, contact addresses/phone/email, passwords and URL values remain literal. All formatting output remains escaped React text.
 
+D210 places the four predefined screening controls together in the job editor's Application questions group. Each custom question uses the shared select for its answer mode. On the job's Apply page, visible screening questions carry the existing optional label. Custom questions use the shared radio rows for one answer or checkbox rows with selection instructions for multiple answers. The inbox and email show multiple selections on separate lines under the original question.
+
 
 ## Admin User manual (D189, 2026-11-07)
 

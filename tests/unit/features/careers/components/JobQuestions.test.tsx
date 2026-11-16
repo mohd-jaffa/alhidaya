@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { JOB_QUESTION_CHOICES, LIST_LIMITS } from "@/constants/limits";
-import { VALIDATION_MESSAGES } from "@/constants/messages";
+import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { JobQuestions } from "@/features/careers/components/JobQuestions";
 import { type JobDocument, type JobDocumentInput, jobDocumentSchema } from "@/lib/validation";
 import { jobFixture } from "@tests/support/fixtures/content";
@@ -37,8 +37,15 @@ describe("JobQuestions (D209)", () => {
     const user = userEvent.setup();
     render(<Editor save={save} />);
     expect(screen.queryByRole("textbox")).toBeNull();
+    const fieldToHide = screen.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.prometric) });
+    const fieldToRestore = screen.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.whereNow) });
+    expect(fieldToHide).not.toBeChecked();
+    await user.click(fieldToHide);
+    await user.click(fieldToRestore);
+    await user.click(fieldToRestore);
     await user.click(screen.getByRole("button", { name: ADMIN_TEXT.addQuestion }));
     const first = question(1);
+    expect(within(first).getByRole("combobox", { name: ADMIN_TEXT.answerSelection })).toHaveValue("single");
     await user.type(
       within(first).getByRole("textbox", { name: ADMIN_TEXT.question }),
       "Do you hold a BLS certificate?",
@@ -52,6 +59,7 @@ describe("JobQuestions (D209)", () => {
 
     await user.click(screen.getByRole("button", { name: ADMIN_TEXT.addQuestion }));
     const second = question(2);
+    await user.selectOptions(within(second).getByRole("combobox", { name: ADMIN_TEXT.answerSelection }), "multiple");
     await user.type(within(second).getByRole("textbox", { name: ADMIN_TEXT.question }), "Which shifts?");
     await user.type(choice(second, 1), "Days");
     await user.type(choice(second, 2), "Nights");
@@ -79,9 +87,18 @@ describe("JobQuestions (D209)", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
     expect(save).toHaveBeenCalledWith(
       expect.objectContaining({
+        hiddenQuestions: ["prometric"],
         questions: [
-          { question: { en: "Which shifts?" }, choices: [{ en: "Days" }, { en: "Nights" }, { en: "Either" }] },
-          { question: { en: "Do you hold a BLS certificate?" }, choices: [{ en: "Yes" }, { en: "No" }] },
+          {
+            question: { en: "Which shifts?" },
+            choices: [{ en: "Days" }, { en: "Nights" }, { en: "Either" }],
+            selection: "multiple",
+          },
+          {
+            question: { en: "Do you hold a BLS certificate?" },
+            choices: [{ en: "Yes" }, { en: "No" }],
+            selection: "single",
+          },
         ],
       }),
       expect.anything(),
@@ -91,7 +108,11 @@ describe("JobQuestions (D209)", () => {
   it("removes a question, says what the schema refuses, and adds no more than ten", async () => {
     const save = vi.fn();
     const user = userEvent.setup();
-    const asked = (words: string) => ({ question: { en: words }, choices: [{ en: "Yes" }, { en: "yes" }] });
+    const asked = (words: string) => ({
+      question: { en: words },
+      choices: [{ en: "Yes" }, { en: "yes" }],
+      selection: "single" as const,
+    });
     render(<Editor save={save} initial={jobFixture({ questions: [asked("Night shifts?"), asked("Weekends?")] })} />);
     await user.click(
       screen.getByRole("button", {
@@ -108,7 +129,11 @@ describe("JobQuestions (D209)", () => {
   });
 
   it("says the schema's refusal of the list itself", async () => {
-    const asked = { question: { en: "Night shifts?" }, choices: [{ en: "Yes" }, { en: "No" }] };
+    const asked = {
+      question: { en: "Night shifts?" },
+      choices: [{ en: "Yes" }, { en: "No" }],
+      selection: "single" as const,
+    };
     render(<Editor save={vi.fn()} initial={jobFixture({ questions: [asked, asked] })} />);
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(await screen.findByText(VALIDATION_MESSAGES.noRepeats("Application questions"))).toBeVisible();

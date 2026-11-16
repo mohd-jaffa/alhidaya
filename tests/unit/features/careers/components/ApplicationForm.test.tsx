@@ -22,17 +22,19 @@ const JOB_ID = "0f8c1c62-5d55-4b8e-9c3a-2f4e1d6b7a90";
 const field = (label: string) => screen.getByRole("textbox", { name: label });
 const cvInput = () => screen.getByLabelText(UI_TEXT.cv, { exact: false });
 
-async function fill(user: ReturnType<typeof userEvent.setup>, cv: File) {
+async function fill(user: ReturnType<typeof userEvent.setup>, cv: File, screening = true) {
   await user.type(field(UI_TEXT.fullName), "Mariam Ali");
   await user.type(field(UI_TEXT.email), "mariam@example.com");
   await user.type(field(UI_TEXT.phone), "5551 2345");
-  await user.click(screen.getByRole("radio", { name: "Outside Qatar" }));
-  await user.click(screen.getByRole("radio", { name: "In progress" }));
-  await user.click(screen.getAllByRole("radio", { name: "Done" })[0]);
-  await user.click(screen.getByRole("radio", { name: "Passed" }));
+  if (screening) {
+    await user.click(screen.getByRole("radio", { name: "Outside Qatar" }));
+    await user.click(screen.getByRole("radio", { name: "In progress" }));
+    await user.click(screen.getAllByRole("radio", { name: "Done" })[0]);
+    await user.click(screen.getByRole("radio", { name: "Passed" }));
+  }
   await user.type(field(UI_TEXT.experienceYears), "4");
   await user.upload(cvInput(), cv);
-  await user.click(screen.getByRole("checkbox"));
+  await user.click(screen.getByRole("checkbox", { name: new RegExp(UI_TEXT.consent) }));
 }
 
 describe("ApplicationForm (plan §9.2)", () => {
@@ -86,46 +88,47 @@ describe("ApplicationForm (plan §9.2)", () => {
     expect(thanks).not.toHaveTextContent(UI_TEXT.fasterOnWhatsApp);
   });
 
-  it("asks the job's own questions after the fixed ones, each answered with one choice (D209)", async () => {
+  it("hides selected screening questions, accepts unanswered ones, and supports both answer modes", async () => {
     apply.mockClear();
     const user = userEvent.setup();
     Element.prototype.scrollIntoView = vi.fn();
     const questions = [
-      { question: "Do you hold a BLS certificate?", choices: ["Yes", "No"] },
-      { question: "Which shifts can you work?", choices: ["Days", "Nights", "Either"] },
+      { question: "Do you hold a BLS certificate?", choices: ["Yes", "No"], selection: "single" as const },
+      { question: "Which shifts can you work?", choices: ["Days", "Nights", "Either"], selection: "multiple" as const },
     ];
-    render(<ApplicationForm jobId={JOB_ID} siteKey="site-key" questions={questions} />);
+    render(<ApplicationForm jobId={JOB_ID} siteKey="site-key" questions={questions} hiddenQuestions={["prometric"]} />);
     const legends = screen.getAllByRole("group").map((group) => group.querySelector("legend")?.textContent);
-    expect(legends.slice(0, 6)).toEqual([
-      UI_TEXT.whereNow,
-      UI_TEXT.mophLicence,
-      UI_TEXT.dataflow,
-      UI_TEXT.prometric,
+    expect(legends.slice(0, 5)).toEqual([
+      `${UI_TEXT.whereNow} (${UI_TEXT.optional})`,
+      `${UI_TEXT.mophLicence} (${UI_TEXT.optional})`,
+      `${UI_TEXT.dataflow} (${UI_TEXT.optional})`,
       "Do you hold a BLS certificate?",
       "Which shifts can you work?",
     ]);
     const shifts = screen.getByRole("group", { name: "Which shifts can you work?" });
     expect(
       within(shifts)
-        .getAllByRole("radio")
+        .getAllByRole("checkbox")
         .map((radio) => radio.getAttribute("value")),
     ).toEqual(["Days", "Nights", "Either"]);
 
-    await fill(user, new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" }));
+    await fill(user, new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" }), false);
     await user.click(screen.getByRole("button", { name: UI_TEXT.sendApplication }));
-    expect(await screen.findAllByText(VALIDATION_MESSAGES.chooseAnswer)).toHaveLength(2);
+    expect(await screen.findByText(VALIDATION_MESSAGES.chooseAnswer)).toBeVisible();
+    expect(within(shifts).getByText(VALIDATION_MESSAGES.chooseAnswers)).toBeVisible();
     expect(apply).not.toHaveBeenCalled();
 
     await user.click(
       within(screen.getByRole("group", { name: "Do you hold a BLS certificate?" })).getByRole("radio", { name: "No" }),
     );
-    await user.click(within(shifts).getByRole("radio", { name: "Nights" }));
+    await user.click(within(shifts).getByRole("checkbox", { name: "Days" }));
+    await user.click(within(shifts).getByRole("checkbox", { name: "Nights" }));
     await user.click(screen.getByRole("button", { name: UI_TEXT.sendApplication }));
     await waitFor(() =>
-      expect(apply).toHaveBeenCalledWith(expect.objectContaining({ "answer-0": "No", "answer-1": "Nights" }), [
-        "Do you hold a BLS certificate?",
-        "Which shifts can you work?",
-      ]),
+      expect(apply).toHaveBeenCalledWith(
+        expect.objectContaining({ "answer-0": "No", "answer-1": ["Days", "Nights"] }),
+        ["Do you hold a BLS certificate?", "Which shifts can you work?"],
+      ),
     );
   });
 

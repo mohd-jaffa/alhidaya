@@ -469,6 +469,7 @@ export function seedJob(postedOn: string): JobDocument {
       en("Strong communication and organisational skills"),
     ],
     benefits: [],
+    hiddenQuestions: [],
     questions: [],
     postedOn,
     closesOn: null,

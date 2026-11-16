@@ -65,6 +65,7 @@ export function ApplyPage({ job }: { job: PublishedJob | null }) {
             jobId={job?.id ?? null}
             siteKey={getServerEnv().TURNSTILE_SITE_KEY}
             questions={job ? askedQuestions(job.published) : []}
+            hiddenQuestions={job?.published.hiddenQuestions}
           />
         </div>
       </SectionFrame>

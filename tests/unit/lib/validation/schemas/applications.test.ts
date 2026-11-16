@@ -8,7 +8,7 @@ import {
   applicationNoteSchema,
   applicationStatusSchema,
 } from "@/lib/validation";
-import { withJobQuestions } from "@/lib/validation/schemas/applications";
+import { applicationSchemaFor, withJobQuestions } from "@/lib/validation/schemas/applications";
 
 const cv = new File(["%PDF-1.7"], "cv.pdf", { type: "application/pdf" });
 
@@ -72,6 +72,22 @@ describe("the application form (plan §9.2)", () => {
     });
   });
 
+  it("allows job applicants to skip screening and still requires it for general applications", () => {
+    const screening = { whereNow: undefined, mophLicence: undefined, dataflow: undefined, prometric: undefined };
+    expect(problems(applicationFormSchema.safeParse({ ...application, ...screening }))).toEqual({
+      whereNow: VALIDATION_MESSAGES.whereNow,
+      mophLicence: VALIDATION_MESSAGES.mophLicence,
+      dataflow: VALIDATION_MESSAGES.dataflow,
+      prometric: VALIDATION_MESSAGES.prometric,
+    });
+    const jobId = "0f8c1c62-5d55-4b8e-9c3a-2f4e1d6b7a90";
+    const schema = applicationSchemaFor(jobId);
+    expect(schema.safeParse({ ...application, ...screening, jobId }).success).toBe(true);
+    expect(problems(schema.safeParse({ ...application, jobId, prometric: "Unknown" }))).toEqual({
+      prometric: VALIDATION_MESSAGES.prometric,
+    });
+  });
+
   it("takes years of experience as a whole number from 0 to 50", () => {
     const years = (experienceYears: string) =>
       problems(applicationFormSchema.safeParse({ ...application, experienceYears })).experienceYears;
@@ -104,6 +120,17 @@ describe("a job's own questions (D209)", () => {
     expect(applicationFormSchema.parse({ ...application, answers }).answers).toEqual([
       { question: "Night shifts?", choice: "Yes" },
     ]);
+    expect(
+      applicationFormSchema.parse({
+        ...application,
+        answers: [{ question: " Shifts? ", choices: [" Days ", "Nights "] }],
+      }).answers,
+    ).toEqual([{ question: "Shifts?", choices: ["Days", "Nights"] }]);
+    for (const bad of [[], Array.from({ length: 7 }, () => "Days")]) {
+      expect(
+        applicationFormSchema.safeParse({ ...application, answers: [{ question: "Shifts?", choices: bad }] }).success,
+      ).toBe(false);
+    }
     const many = Array.from({ length: 11 }, (_, index) => ({ question: `Q${index}?`, choice: "Yes" }));
     expect(problems(applicationFormSchema.safeParse({ ...application, answers: many })).answers).toBe(
       VALIDATION_MESSAGES.atMost("Answers", 10),
@@ -114,16 +141,19 @@ describe("a job's own questions (D209)", () => {
   });
 
   it("are each answered in the browser with one of their choices, by the field that names them", () => {
-    const schema = withJobQuestions([
-      { field: "answer-0", choices: ["Yes", "No"] },
-      { field: "answer-1", choices: ["Days", "Nights"] },
+    const schema = withJobQuestions(null, [
+      { field: "answer-0", choices: ["Yes", "No"], selection: "single" },
+      { field: "answer-1", choices: ["Days", "Nights"], selection: "multiple" },
     ]);
-    expect(schema.safeParse({ ...application, "answer-0": "No", "answer-1": "Nights" }).success).toBe(true);
+    expect(schema.safeParse({ ...application, "answer-0": "No", "answer-1": ["Days", "Nights"] }).success).toBe(true);
     expect(problems(schema.safeParse({ ...application, "answer-0": "Maybe" }))).toEqual({
       "answer-0": VALIDATION_MESSAGES.chooseAnswer,
+      "answer-1": VALIDATION_MESSAGES.chooseAnswers,
+    });
+    expect(problems(schema.safeParse({ ...application, "answer-0": "No", "answer-1": ["Unknown"] }))).toEqual({
       "answer-1": VALIDATION_MESSAGES.chooseAnswer,
     });
-    expect(withJobQuestions([]).safeParse(application).success).toBe(true);
+    expect(withJobQuestions(null, []).safeParse(application).success).toBe(true);
   });
 });
 

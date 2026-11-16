@@ -9,7 +9,7 @@ import { clientIp } from "@/lib/api/request-info";
 import { captureError } from "@/lib/audit/errorLog";
 import { logger } from "@/lib/logger";
 import { verifyTurnstile } from "@/lib/turnstile/verify";
-import { applicationFormSchema } from "@/lib/validation";
+import { applicationSchemaFor } from "@/lib/validation/schemas/applications";
 
 /**
  * An application with its CV (plan §9.3): only from the site's own pages, and
@@ -34,7 +34,8 @@ export function POST(request: Request) {
         logger.info("Application discarded: its trap field was filled", undefined, requestId);
         return { received: true };
       }
-      const payload = applicationFormSchema.parse({ ...(fields as object), cv: form.get("cv") });
+      const input: Record<string, unknown> = { ...(fields as object), cv: form.get("cv") };
+      const payload = applicationSchemaFor(input.jobId).parse(input);
       await verifyTurnstile(payload.turnstileToken);
       const { id, cv } = await receiveApplication(payload, clientIp(request));
       after(async () => {

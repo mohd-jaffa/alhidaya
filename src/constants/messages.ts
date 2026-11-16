@@ -154,6 +154,7 @@ export const UI_TEXT = {
   mophLicence: "Your MOPH licence",
   dataflow: "Dataflow verification",
   prometric: "Prometric exam",
+  selectOneOrMore: "Select one or more answers.",
   experienceYears: "Years of nursing experience",
   experienceYearsHint: "A whole number, like 3. Write 0 if you are newly qualified.",
   cv: "Your CV",
@@ -273,6 +274,7 @@ export const VALIDATION_MESSAGES = {
   prometric: "Please choose where you are with Prometric.",
   /** A job's own questions (D209). */
   chooseAnswer: "Please choose an answer.",
+  chooseAnswers: "Please choose at least one answer.",
   fewChoices: (min: number) => `A question needs at least ${min} choices.`,
   cvRequired: "Please choose your CV to send.",
   cvSize: (max: string) => `Your CV can be at most ${max}. Please send a smaller file.`,

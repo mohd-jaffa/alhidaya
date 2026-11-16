@@ -1,13 +1,15 @@
 "use client";
 
 import { SiteForm } from "@/components/site/SiteForm";
-import { choiceOptions, RadioGroup } from "@/components/ui/choice";
+import { ChoiceGroup, choiceOptions, RadioGroup } from "@/components/ui/choice";
 import { Field } from "@/components/ui/field";
 import { FileInput } from "@/components/ui/file-input";
 import { TextArea, TextInput } from "@/components/ui/text-input";
 import { TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
 import { UI_TEXT } from "@/constants/messages";
 import {
+  APPLICATION_SCREENING_FIELDS,
+  type ApplicationScreeningField,
   DATAFLOW,
   DATAFLOW_LABELS,
   MOPH_LICENCE,
@@ -23,10 +25,20 @@ import { formatBytes } from "@/lib/files/size";
 import type { AskedQuestion } from "../api";
 import { answerField, CareersClient } from "../form.client";
 
-/** The form's schema, with the job's own questions (D209) each answered by one of its choices. */
-const schemaFor = (questions: readonly AskedQuestion[]) => () =>
+const SCREENING_OPTIONS = {
+  whereNow: choiceOptions(WHERE_NOW, WHERE_NOW_LABELS),
+  mophLicence: choiceOptions(MOPH_LICENCE, MOPH_LICENCE_LABELS),
+  dataflow: choiceOptions(DATAFLOW, DATAFLOW_LABELS),
+  prometric: choiceOptions(PROMETRIC, PROMETRIC_LABELS),
+};
+
+/** The form's schema, with the job's own questions and their selection modes (D210). */
+const schemaFor = (jobId: string | null, questions: readonly AskedQuestion[]) => () =>
   import("@/lib/validation/schemas/applications").then((module) =>
-    module.withJobQuestions(questions.map(({ choices }, index) => ({ field: answerField(index), choices }))),
+    module.withJobQuestions(
+      jobId,
+      questions.map((question, index) => ({ ...question, field: answerField(index) })),
+    ),
   );
 
 /**
@@ -39,15 +51,17 @@ export function ApplicationForm({
   jobId,
   siteKey,
   questions = [],
+  hiddenQuestions = [],
 }: {
   jobId: string | null;
   siteKey: string;
   /** The job's own questions, asked after the fixed ones; none for a general application. */
   questions?: readonly AskedQuestion[];
+  hiddenQuestions?: readonly ApplicationScreeningField[];
 }) {
   return (
     <SiteForm
-      schema={schemaFor(questions)}
+      schema={schemaFor(jobId, questions)}
       send={(values) =>
         CareersClient.apply(
           values,
@@ -72,40 +86,23 @@ export function ApplicationForm({
           <Field label={UI_TEXT.phone} hint={UI_TEXT.phoneHint} required error={errors.phone}>
             <TextInput name="phone" type="tel" autoComplete="tel" maxLength={TEXT_LIMITS.phone} />
           </Field>
-          <RadioGroup
-            legend={UI_TEXT.whereNow}
-            name="whereNow"
-            options={choiceOptions(WHERE_NOW, WHERE_NOW_LABELS)}
-            required
-            error={errors.whereNow}
-          />
-          <RadioGroup
-            legend={UI_TEXT.mophLicence}
-            name="mophLicence"
-            options={choiceOptions(MOPH_LICENCE, MOPH_LICENCE_LABELS)}
-            required
-            error={errors.mophLicence}
-          />
-          <RadioGroup
-            legend={UI_TEXT.dataflow}
-            name="dataflow"
-            options={choiceOptions(DATAFLOW, DATAFLOW_LABELS)}
-            required
-            error={errors.dataflow}
-          />
-          <RadioGroup
-            legend={UI_TEXT.prometric}
-            name="prometric"
-            options={choiceOptions(PROMETRIC, PROMETRIC_LABELS)}
-            required
-            error={errors.prometric}
-          />
-          {questions.map(({ question, choices }, index) => (
+          {APPLICATION_SCREENING_FIELDS.filter((field) => !hiddenQuestions.includes(field)).map((field) => (
             <RadioGroup
+              key={field}
+              legend={UI_TEXT[field]}
+              name={field}
+              options={SCREENING_OPTIONS[field]}
+              required={jobId === null}
+              error={errors[field]}
+            />
+          ))}
+          {questions.map(({ question, choices, selection }, index) => (
+            <ChoiceGroup
               key={answerField(index)}
               legend={question}
               name={answerField(index)}
               options={choices.map((choice) => ({ value: choice, label: choice }))}
+              multiple={selection === "multiple"}
               required
               error={errors[answerField(index)]}
             />

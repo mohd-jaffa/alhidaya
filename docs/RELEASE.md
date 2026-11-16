@@ -2,7 +2,7 @@
 
 |             |                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------- |
-| Status      | **LIVE, 2026-11-14.** `v1.0.0` was released by its tag and the new site has served alhidaya.qa since 12:16 UTC (maintenance page off). The old site is moved aside, not deleted. Left: the admin account (you type the password), the real Turnstile keys, and your word before the old site is deleted. |
+| Status      | **LIVE, 2026-11-14.** `v1.0.0` was released by its tag and the new site has served alhidaya.qa since 12:16 UTC. Production Turnstile keys went live on 2026-11-16. The old site remains available for recovery. |
 | Target      | alhidaya.qa on the client's HostCarts cPanel server (`asian-node010.hostcarts.com`, Singapore)     |
 | Access      | SSH port 2200, user `alhidaya`, key `~/.ssh/alhidaya_cpanel_rsa` (already authorised)              |
 | Version     | `package.json` 0.1.0 → **1.0.0** in the release commit; the tag and GitHub release are `v1.0.0`   |
@@ -266,6 +266,7 @@ the test CV were then deleted); maintenance page off 12:16.
 - [ ] **F3** Me. Day 1, day 3 and day 7 checks: disk use, errors, mail retries, cron ran.
 - [ ] **F4** Both. The speed check from Qatar and the Cloudflare-proxy decision (D25, R8.5).
 - [ ] **F5** You. Hand the backup to the client (D50), then say when the old site and database may be deleted (§8).
+- [x] **F6** Me, confirmed by the owner on 2026-11-16. Replace `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in the live cPanel Node.js app and restart it. The Careers, Quote and Contact pages served the production site key. Cloudflare recognised the configured secret in a Siteverify probe, and the live Careers widget issued a token in the browser. GitHub builds and local tests use Cloudflare's test keys.
 
 ---
 
@@ -411,3 +412,4 @@ is touched:
 | E1 go for cutover     | 2026-11-14 | You (chat answer) |
 | E11 cutover accepted  |      |              |
 | F5 old site deletion  |      |              |
+| F6 live Turnstile keys | 2026-11-16 | You (chat answer) |

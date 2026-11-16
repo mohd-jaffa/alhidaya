@@ -6,12 +6,15 @@ import { CV_SAVE_RETRIES, FORM_RATE_LIMIT, INBOX_PAGE_SIZE, TEXT_LIMITS } from "
 import { ERROR_MESSAGES, PAGE_NAMES, UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
 import { ROUTES } from "@/constants/routes";
 import {
+  APPLICATION_SCREENING_FIELDS,
+  type ApplicationScreeningField,
   AUDIT_ENTITIES,
   type ApplicationStatus,
   type CvStatus,
   DATAFLOW_LABELS,
   type EmailStatus,
   type EmploymentType,
+  type JobQuestionSelection,
   MOPH_LICENCE_LABELS,
   PROMETRIC_LABELS,
   WHERE_NOW_LABELS,
@@ -81,6 +84,7 @@ export interface PublishedJob extends PublishedRecord<JobDocument> {
 export interface AskedQuestion {
   question: string;
   choices: string[];
+  selection: JobQuestionSelection;
 }
 
 const plainLine = (text: string) => normaliseLine(plainText(text));
@@ -90,23 +94,33 @@ const plainLine = (text: string) => normaliseLine(plainText(text));
  * order, in plain words; none for a job published before there were any.
  */
 export const askedQuestions = (job: JobDocument): AskedQuestion[] =>
-  (job.questions ?? []).map(({ question, choices }) => ({
+  (job.questions ?? []).map(({ question, choices, selection = "single" }) => ({
     question: plainLine(question.en),
     choices: choices.map((choice) => plainLine(choice.en)),
+    selection,
   }));
+
+const selectedChoices = (answer: ChosenAnswer) => ("choices" in answer ? answer.choices : [answer.choice]);
 
 /**
  * Refuses answers that are not to the job's own questions as published
- * (D209): each must be answered once, with one of its choices, whatever the
- * order. Anything else means they changed while the applicant was answering,
- * and the applicant is asked to reload them.
+ * (D209, D210): each needs distinct, allowed choices within its selection
+ * mode. The applicant is asked to reload when the submitted answers do not fit.
  */
 export function checkAnswers(asked: readonly AskedQuestion[], answers: readonly ChosenAnswer[]): void {
   const answered =
     answers.length === asked.length &&
-    asked.every(({ question, choices }) =>
-      choices.includes(answers.find((answer) => answer.question === question)?.choice ?? ""),
-    );
+    asked.every(({ question, choices, selection }) => {
+      const answer = answers.find((item) => item.question === question);
+      if (!answer) return false;
+      const selected = selectedChoices(answer);
+      return (
+        selected.length > 0 &&
+        (selection === "multiple" || selected.length === 1) &&
+        new Set(selected).size === selected.length &&
+        selected.every((choice) => choices.includes(choice))
+      );
+    });
   if (!answered) throw conflictError("JOB_QUESTIONS_CHANGED");
 }
 
@@ -345,6 +359,7 @@ export interface ApplicationSubmission {
   fields: SubmittedField[];
   /** The job's own questions as answered (D209), checked against the published job; none for a general application. */
   answers?: ChosenAnswer[];
+  screeningAnswers?: ApplicationScreeningField[];
   cv: { name: string; type: FileType; bytes: number };
 }
 
@@ -366,7 +381,7 @@ export async function submitApplication(
   keepCv?: (jobTitle: string | null) => Promise<string>,
 ): Promise<{ id: string; jobTitle: string | null }> {
   const id = newId();
-  const { cv, answers = [], ...applicant } = submission;
+  const { cv, answers = [], screeningAnswers = [], ...applicant } = submission;
   let kept: string | null = null;
   try {
     return { id, jobTitle: await storeApplication() };
@@ -398,6 +413,9 @@ export async function submitApplication(
         if (!published || !isOpen(published, dohaDay(at))) throw businessRuleError("JOB_CLOSED");
         title = plainText(published.title.en);
         asked = askedQuestions(published);
+        if (published.hiddenQuestions?.some((field) => screeningAnswers.includes(field))) {
+          throw conflictError("JOB_QUESTIONS_CHANGED");
+        }
       }
       checkAnswers(asked, answers);
 
@@ -418,23 +436,26 @@ export async function submitApplication(
   }
 }
 
+const answerLabel = <T extends string>(value: T | undefined, labels: Record<T, string>) =>
+  value === undefined ? null : labels[value];
+
 /**
  * Every answer as the applicant saw and gave it (plan §9.3): each field's
  * label, and a choice's words rather than its code, so the inbox and the HR
  * email read the application as it was sent whatever the form says later.
  * The job's own questions (D209) follow the fixed ones, as the form asks them.
- * A left-out note is left out.
+ * Skipped screening questions and empty notes are omitted.
  */
 export function applicationFields(payload: ApplicationFormPayload): SubmittedField[] {
   const answers: [string, string | null][] = [
     [UI_TEXT.fullName, payload.name],
     [UI_TEXT.email, payload.email],
     [UI_TEXT.phone, displayPhone(payload.phone)],
-    [UI_TEXT.whereNow, WHERE_NOW_LABELS[payload.whereNow]],
-    [UI_TEXT.mophLicence, MOPH_LICENCE_LABELS[payload.mophLicence]],
-    [UI_TEXT.dataflow, DATAFLOW_LABELS[payload.dataflow]],
-    [UI_TEXT.prometric, PROMETRIC_LABELS[payload.prometric]],
-    ...payload.answers.map(({ question, choice }): [string, string] => [question, choice]),
+    [UI_TEXT.whereNow, answerLabel(payload.whereNow, WHERE_NOW_LABELS)],
+    [UI_TEXT.mophLicence, answerLabel(payload.mophLicence, MOPH_LICENCE_LABELS)],
+    [UI_TEXT.dataflow, answerLabel(payload.dataflow, DATAFLOW_LABELS)],
+    [UI_TEXT.prometric, answerLabel(payload.prometric, PROMETRIC_LABELS)],
+    ...payload.answers.map((answer): [string, string] => [answer.question, selectedChoices(answer).join("\n")]),
     [UI_TEXT.experienceYears, String(payload.experienceYears)],
     [UI_TEXT.applicationNote, payload.note],
     [UI_TEXT.consent, UI_TEXT.consentGiven],
@@ -492,6 +513,7 @@ export async function receiveApplication(
       phone,
       fields: applicationFields(payload),
       answers,
+      screeningAnswers: APPLICATION_SCREENING_FIELDS.filter((field) => payload[field] !== undefined),
       cv: { name: uploadedName(payload.cv.name), type, bytes: bytes.byteLength },
     },
     visitorIp,

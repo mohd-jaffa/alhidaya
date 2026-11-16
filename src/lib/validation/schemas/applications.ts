@@ -1,8 +1,15 @@
 import * as z from "zod";
 
-import { EXPERIENCE_YEARS, LIST_LIMITS, TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
+import { EXPERIENCE_YEARS, JOB_QUESTION_CHOICES, LIST_LIMITS, TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
 import { UI_TEXT, VALIDATION_MESSAGES } from "@/constants/messages";
-import { APPLICATION_STATUSES, DATAFLOW, MOPH_LICENCE, PROMETRIC, WHERE_NOW } from "@/constants/statuses";
+import {
+  APPLICATION_STATUSES,
+  DATAFLOW,
+  type JobQuestionSelection,
+  MOPH_LICENCE,
+  PROMETRIC,
+  WHERE_NOW,
+} from "@/constants/statuses";
 import { formatBytes } from "@/lib/files/size";
 import { normaliseLine } from "@/lib/text/normalise";
 
@@ -52,15 +59,30 @@ const cv = z
 
 /**
  * A job's own questions as answered (D209): each question's words and the
- * choice made, as the applicant read them. They are checked against the
+ * choices made, as the applicant read them. They are checked against the
  * published job as the application is stored; a general application has none.
  */
+const answerQuestion = requiredLine("Question", { max: TEXT_LIMITS.item });
+const answerChoice = requiredLine("Choice", { max: TEXT_LIMITS.heading });
 const answers = z
   .array(
-    z.object({
-      question: requiredLine("Question", { max: TEXT_LIMITS.item }),
-      choice: requiredLine("Choice", { max: TEXT_LIMITS.heading }),
-    }),
+    z.union(
+      [
+        z.strictObject({ question: answerQuestion, choice: answerChoice }, { error: VALIDATION_MESSAGES.invalid }),
+        z.strictObject(
+          {
+            question: answerQuestion,
+            choices: z
+              .array(answerChoice, { error: VALIDATION_MESSAGES.chooseAnswers })
+              .min(1, VALIDATION_MESSAGES.chooseAnswers)
+              .max(JOB_QUESTION_CHOICES.max, VALIDATION_MESSAGES.atMost("Choices", JOB_QUESTION_CHOICES.max)),
+          },
+          { error: VALIDATION_MESSAGES.invalid },
+        ),
+      ],
+      { error: VALIDATION_MESSAGES.invalid },
+    ),
+    { error: VALIDATION_MESSAGES.invalid },
   )
   .max(LIST_LIMITS.jobQuestions, VALIDATION_MESSAGES.atMost("Answers", LIST_LIMITS.jobQuestions))
   .default([]);
@@ -92,22 +114,41 @@ export const applicationFormSchema = z.object({
   consent,
   ...botCheck,
 });
-export type ApplicationFormInput = z.input<typeof applicationFormSchema>;
-export type ApplicationFormPayload = z.output<typeof applicationFormSchema>;
+const jobApplicationFormSchema = applicationFormSchema.partial({
+  whereNow: true,
+  mophLicence: true,
+  dataflow: true,
+  prometric: true,
+});
+
+/** Selects the form by its job field. Both schemas validate that field before a submission is accepted. */
+export const applicationSchemaFor = (jobId: unknown) =>
+  jobId == null || jobId === "" ? applicationFormSchema : jobApplicationFormSchema;
+
+export type ApplicationFormInput = z.input<typeof jobApplicationFormSchema>;
+export type ApplicationFormPayload = z.output<typeof jobApplicationFormSchema>;
 export type ChosenAnswer = ApplicationFormPayload["answers"][number];
 
 /**
  * The application form with a job's own questions (D209), as the browser
  * checks it before they are gathered into `answers`: each question, by the
- * field that names it, answered with one of its choices.
+ * field that names it, answered with one or more of its choices (D210).
  */
-export const withJobQuestions = (questions: readonly { field: string; choices: readonly string[] }[]) =>
-  applicationFormSchema.extend(
+export const withJobQuestions = (
+  jobId: string | null,
+  questions: readonly { field: string; choices: readonly string[]; selection: JobQuestionSelection }[],
+) =>
+  applicationSchemaFor(jobId).extend(
     Object.fromEntries(
-      questions.map(({ field, choices }) => [
-        field,
-        z.enum(choices as readonly [string, ...string[]], { error: VALIDATION_MESSAGES.chooseAnswer }),
-      ]),
+      questions.map(({ field, choices, selection }) => {
+        const choice = z.enum(choices, { error: VALIDATION_MESSAGES.chooseAnswer });
+        return [
+          field,
+          selection === "multiple"
+            ? z.array(choice, { error: VALIDATION_MESSAGES.chooseAnswers }).min(1, VALIDATION_MESSAGES.chooseAnswers)
+            : choice,
+        ];
+      }),
     ),
   );
 

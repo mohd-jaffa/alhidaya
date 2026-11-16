@@ -101,7 +101,7 @@ test("Close now closes the posting at once for visitors, and Reopen opens it aga
   }
 });
 
-test("a job's own questions are added in its editor, asked after the fixed ones, and kept answered (D209)", async ({
+test("published screening visibility and multiple answers carry through a job application (D210)", async ({
   page,
   browser,
 }, testInfo) => {
@@ -119,11 +119,13 @@ test("a job's own questions are added in its editor, asked after the fixed ones,
   try {
     await page.goto(ADMIN_ROUTES.job(id));
     const group = page.getByRole("region", { name: ADMIN_TEXT.applicationQuestions });
+    await group.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.prometric) }).check();
     await group.getByRole("button", { name: ADMIN_TEXT.addQuestion }).click();
     const first = group.getByRole("group", { name: ADMIN_TEXT.numbered(ADMIN_TEXT.question, 1) });
-    await first.getByRole("textbox", { name: ADMIN_TEXT.question }).fill("Do you hold a BLS certificate?");
-    await first.getByRole("textbox", { name: ADMIN_TEXT.numbered(ADMIN_TEXT.choice, 1) }).fill("Yes");
-    await first.getByRole("textbox", { name: ADMIN_TEXT.numbered(ADMIN_TEXT.choice, 2) }).fill("No");
+    await first.getByRole("textbox", { name: ADMIN_TEXT.question }).fill("Which shifts can you work?");
+    await first.getByRole("combobox", { name: ADMIN_TEXT.answerSelection }).selectOption("multiple");
+    await first.getByRole("textbox", { name: ADMIN_TEXT.numbered(ADMIN_TEXT.choice, 1) }).fill("Days");
+    await first.getByRole("textbox", { name: ADMIN_TEXT.numbered(ADMIN_TEXT.choice, 2) }).fill("Nights");
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     const name = `Night nurse ${RUN}`;
     await page.getByRole("button", { name: ADMIN_TEXT.publish, exact: true }).click();
@@ -133,20 +135,21 @@ test("a job's own questions are added in its editor, asked after the fixed ones,
       .click();
     await expect(page.getByText(ADMIN_TEXT.isPublished(name))).toBeVisible();
 
-    // The nurse: asked after Prometric, refused until it is answered, then sent.
+    // The nurse can skip screening and must select at least one shift.
     await visitor.setExtraHTTPHeaders({ "x-forwarded-for": `203.0.113.${Math.floor(Math.random() * 250) + 1}` });
     await visitor.goto(ROUTES.applyForJob(slug));
     const legends = await visitor.locator("form fieldset > legend").allTextContents();
-    expect(legends.slice(3, 5)).toEqual([UI_TEXT.prometric, "Do you hold a BLS certificate?"]);
+    expect(legends).toEqual([
+      `${UI_TEXT.whereNow} (${UI_TEXT.optional})`,
+      `${UI_TEXT.mophLicence} (${UI_TEXT.optional})`,
+      `${UI_TEXT.dataflow} (${UI_TEXT.optional})`,
+      "Which shifts can you work?",
+    ]);
     expect((await new AxeBuilder({ page: visitor }).analyze()).violations).toEqual([]);
     const field = (label: string) => visitor.getByRole("textbox", { name: label, exact: true });
     await field(UI_TEXT.fullName).fill("Questions Nurse");
     await field(UI_TEXT.email).fill(applicant);
     await field(UI_TEXT.phone).fill("5551 2345");
-    await visitor.getByRole("group", { name: UI_TEXT.whereNow }).getByRole("radio", { name: "In Qatar" }).check();
-    await visitor.getByRole("group", { name: UI_TEXT.mophLicence }).getByRole("radio", { name: "Not yet" }).check();
-    await visitor.getByRole("group", { name: UI_TEXT.dataflow }).getByRole("radio", { name: "Not yet" }).check();
-    await visitor.getByRole("group", { name: UI_TEXT.prometric }).getByRole("radio", { name: "Passed" }).check();
     await field(UI_TEXT.experienceYears).fill("3");
     await visitor.getByLabel(UI_TEXT.cv).setInputFiles({
       name: "cv.pdf",
@@ -156,9 +159,10 @@ test("a job's own questions are added in its editor, asked after the fixed ones,
     await visitor.getByRole("checkbox", { name: new RegExp(UI_TEXT.consent) }).check();
     await expect(visitor.locator(`input[name="${TURNSTILE_FIELD}"]`)).toHaveValue(/.+/);
     await visitor.getByRole("button", { name: UI_TEXT.sendApplication }).click();
-    const bls = visitor.getByRole("group", { name: "Do you hold a BLS certificate?" });
-    await expect(bls.getByText(VALIDATION_MESSAGES.chooseAnswer)).toBeVisible();
-    await bls.getByRole("radio", { name: "Yes" }).check();
+    const shifts = visitor.getByRole("group", { name: "Which shifts can you work?" });
+    await expect(shifts.getByText(VALIDATION_MESSAGES.chooseAnswers)).toBeVisible();
+    await shifts.getByRole("checkbox", { name: "Days" }).check();
+    await shifts.getByRole("checkbox", { name: "Nights" }).check();
     await visitor.getByRole("button", { name: UI_TEXT.sendApplication }).click();
     await expect(visitor.getByRole("group", { name: UI_TEXT.applicationSent })).toBeVisible();
 
@@ -166,8 +170,10 @@ test("a job's own questions are added in its editor, asked after the fixed ones,
       .select({ fields: applications.fields })
       .from(applications)
       .where(eq(applications.email, applicant));
-    const at = kept.fields.findIndex(({ label }) => label === UI_TEXT.prometric);
-    expect(kept.fields[at + 1]).toEqual({ label: "Do you hold a BLS certificate?", value: "Yes" });
+    expect(kept.fields.slice(3, 5)).toEqual([
+      { label: "Which shifts can you work?", value: "Days\nNights" },
+      { label: UI_TEXT.experienceYears, value: "3" },
+    ]);
   } finally {
     await visiting.close();
     await getDb().delete(applications).where(eq(applications.email, applicant));

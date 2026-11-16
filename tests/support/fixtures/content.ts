@@ -111,6 +111,7 @@ export const jobFixture = (overrides: Partial<JobDocument> = {}): JobDocument =>
   responsibilities: [],
   qualifications: [en("MOPH licence or home-country registration")],
   benefits: [],
+  hiddenQuestions: [],
   questions: [],
   postedOn: "2026-10-01",
   closesOn: null,

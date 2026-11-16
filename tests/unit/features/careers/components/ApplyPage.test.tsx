@@ -51,13 +51,15 @@ describe("ApplyPage", () => {
   });
 
   it("hands the form the job's own questions in plain words, and none for a job published before them (D209)", () => {
-    const questions = [
-      { question: { en: "Do you hold a **BLS** certificate?" }, choices: [{ en: "*Yes*" }, { en: "No" }] },
-    ];
-    const job = { ...publishedFixture(jobFixture({ questions })), open: true };
+    const question = {
+      question: { en: "Do you hold a **BLS** certificate?" },
+      choices: [{ en: "*Yes*" }, { en: "No" }],
+    };
+    const oldDocument = { ...jobFixture(), questions: [question] } as ReturnType<typeof jobFixture>;
+    const job = { ...publishedFixture(oldDocument), open: true };
     const { unmount } = render(<ApplyPage job={job} />);
     expect(JSON.parse(screen.getByRole("form", { name: "Application" }).dataset.questions!)).toEqual([
-      { question: "Do you hold a BLS certificate?", choices: ["Yes", "No"] },
+      { question: "Do you hold a BLS certificate?", choices: ["Yes", "No"], selection: "single" },
     ]);
     unmount();
 

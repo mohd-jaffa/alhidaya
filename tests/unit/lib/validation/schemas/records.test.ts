@@ -86,18 +86,42 @@ describe("a job", () => {
 
 describe("a job's own application questions (D209)", () => {
   const choices = (...words: string[]) => words.map((word) => ({ en: word }));
-  const asked = (question: string, ...words: string[]) => ({ question: { en: question }, choices: choices(...words) });
+  const asked = (question: string, ...words: string[]) => ({
+    question: { en: question },
+    choices: choices(...words),
+    selection: "single" as const,
+  });
   const issue = (questions: ReturnType<typeof asked>[]) =>
     jobDocumentSchema.safeParse(jobFixture({ questions })).error?.issues[0];
 
   it("are none on a job saved before they existed, and keep each question tidied with its choices", () => {
     const before: Partial<ReturnType<typeof jobFixture>> = jobFixture();
     delete before.questions;
-    expect(jobDocumentSchema.parse(before).questions).toEqual([]);
+    delete before.hiddenQuestions;
+    expect(jobDocumentSchema.parse(before)).toMatchObject({ questions: [], hiddenQuestions: [] });
+    const legacy = { question: { en: "Shifts?" }, choices: choices("Days", "Nights") };
+    expect(jobDocumentSchema.parse({ ...before, questions: [legacy] }).questions).toEqual([
+      asked("Shifts?", "Days", "Nights"),
+    ]);
     const questions = [asked("  Do you hold a  BLS certificate? ", " Yes ", "No")];
     expect(jobDocumentSchema.parse(jobFixture({ questions })).questions).toEqual([
       asked("Do you hold a BLS certificate?", "Yes", "No"),
     ]);
+  });
+
+  it("keeps known screening fields and answer modes", () => {
+    const question = { ...asked("Shifts?", "Days", "Nights"), selection: "multiple" as const };
+    const hiddenQuestions = ["whereNow", "prometric"];
+    expect(jobDocumentSchema.parse({ ...jobFixture(), questions: [question], hiddenQuestions })).toMatchObject({
+      questions: [question],
+      hiddenQuestions,
+    });
+    for (const hidden of [["unrecognised"], ["whereNow", "whereNow"]]) {
+      expect(jobDocumentSchema.safeParse({ ...jobFixture(), hiddenQuestions: hidden }).success).toBe(false);
+    }
+    expect(
+      jobDocumentSchema.safeParse({ ...jobFixture(), questions: [{ ...question, selection: "anything" }] }).success,
+    ).toBe(false);
   });
 
   it("need two to six choices, each different from the others, whatever their emphasis or case", () => {

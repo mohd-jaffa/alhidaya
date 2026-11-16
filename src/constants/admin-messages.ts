@@ -705,7 +705,12 @@ export const ADMIN_TEXT = {
   /** A job's own application questions (D209). */
   applicationQuestions: "Application questions",
   applicationQuestionsHint:
-    "Optional. Applicants answer these in this job's application form, after its fixed questions. Each question needs at least two choices, and every applicant must choose one. They show as plain text.",
+    "Add questions after the predefined ones. Each question needs at least two choices, and applicants must select at least one answer.",
+  predefinedQuestions: "Predefined questions",
+  predefinedQuestionsHint: "Applicants can skip these questions. Hide any you don't need for this job.",
+  hideQuestion: (question: string) => `Hide “${question}”`,
+  answerSelection: "Answer selection",
+  answerSelections: { single: "One answer", multiple: "Multiple answers" },
   question: "Question",
   choice: "Choice",
   addQuestion: "Add a question",

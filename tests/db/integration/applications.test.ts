@@ -26,7 +26,7 @@ import {
 import { getOperations } from "@/lib/content/operations";
 import { createRecord, publishRecord, saveRecordDraft, setRecordArchived } from "@/lib/content/records";
 import { saveCv } from "@/lib/storage/cvs";
-import { applicationFormSchema } from "@/lib/validation";
+import { applicationSchemaFor } from "@/lib/validation/schemas/applications";
 import { jobFixture, serviceFixture } from "@tests/support/fixtures/content";
 import { deleteMail, mailAttachments, mailText, searchMail, waitForMail } from "@tests/support/mailpit";
 
@@ -48,7 +48,9 @@ const application = (overrides: Partial<ApplicationSubmission> = {}): Applicatio
 });
 
 async function job(closesOn: string | null, slug: string) {
-  const id = await createRecord("JOBS", jobFixture({ slug, closesOn }), actor);
+  const fixture: Partial<ReturnType<typeof jobFixture>> = jobFixture({ slug, closesOn });
+  delete fixture.hiddenQuestions;
+  const id = await createRecord("JOBS", fixture, actor);
   await publishRecord("JOBS", id, slug, actor);
   return id;
 }
@@ -57,8 +59,16 @@ const jobs: Record<string, string> = {};
 
 /** A job's own questions (D209), one with emphasis the applicant reads as plain words. */
 const QUESTIONS = [
-  { question: { en: "Do you hold a **BLS** certificate?" }, choices: [{ en: "Yes" }, { en: "No" }] },
-  { question: { en: "Which shifts can you work?" }, choices: [{ en: "Days" }, { en: "Nights" }, { en: "Either" }] },
+  {
+    question: { en: "Do you hold a **BLS** certificate?" },
+    choices: [{ en: "Yes" }, { en: "No" }],
+    selection: "single" as const,
+  },
+  {
+    question: { en: "Which shifts can you work?" },
+    choices: [{ en: "Days" }, { en: "Nights" }, { en: "Either" }],
+    selection: "multiple" as const,
+  },
 ];
 const BLS = "Do you hold a BLS certificate?";
 const SHIFTS = "Which shifts can you work?";
@@ -72,7 +82,11 @@ beforeAll(async () => {
   jobs.archived = await job(null, "archived");
   await setRecordArchived("JOBS", jobs.archived, true, actor);
   jobs.draft = await createRecord("JOBS", jobFixture({ slug: "draft" }), actor);
-  jobs.asks = await createRecord("JOBS", jobFixture({ slug: "asks", questions: QUESTIONS }), actor);
+  jobs.asks = await createRecord(
+    "JOBS",
+    jobFixture({ slug: "asks", hiddenQuestions: ["dataflow"], questions: QUESTIONS }),
+    actor,
+  );
   await publishRecord("JOBS", jobs.asks, "asks", actor);
   jobs.service = await createRecord("SERVICES", serviceFixture(), actor);
   await publishRecord("SERVICES", jobs.service, "a-service", actor);
@@ -136,12 +150,19 @@ describe("submitApplication, against the local MySQL", () => {
   });
 
   it("checks the answers against the job's own questions as published, in any order (D209)", async () => {
-    await saveRecordDraft("JOBS", jobs.asks, jobFixture({ slug: "asks", questions: [] }), actor);
+    await saveRecordDraft(
+      "JOBS",
+      jobs.asks,
+      jobFixture({ slug: "asks", hiddenQuestions: ["whereNow"], questions: [] }),
+      actor,
+    );
     const answers = [
       { question: SHIFTS, choice: "Nights" },
       { question: BLS, choice: "Yes" },
     ];
-    await expect(submitApplication(application({ jobId: jobs.asks, answers }), ip(), at)).resolves.toMatchObject({
+    await expect(
+      submitApplication(application({ jobId: jobs.asks, answers, screeningAnswers: ["whereNow"] }), ip(), at),
+    ).resolves.toMatchObject({
       jobTitle: jobFixture().title.en,
     });
   });
@@ -153,11 +174,14 @@ describe("submitApplication, against the local MySQL", () => {
       [jobs.asks, [bls]],
       [jobs.asks, [bls, shifts, { question: "Weekends?", choice: "Yes" }]],
       [jobs.asks, [bls, { question: SHIFTS, choice: "Mornings" }]],
+      [jobs.asks, [{ question: BLS, choices: ["Yes", "No"] }, shifts]],
+      [jobs.asks, [bls, { question: SHIFTS, choices: ["Days", "Days"] }]],
+      [jobs.asks, [bls, { question: SHIFTS, choices: [] }]],
       [jobs.asks, [bls, bls]],
       [jobs.asks, [{ question: "Do you hold a **BLS** certificate?", choice: "Yes" }, shifts]],
       [jobs.open, [bls]],
       [null, [bls]],
-    ] as const) {
+    ] satisfies [string | null, NonNullable<ApplicationSubmission["answers"]>][]) {
       await expect(
         submitApplication(application({ jobId, answers: [...answers] }), ip(), at),
         JSON.stringify(answers),
@@ -198,7 +222,7 @@ describe("submitApplication, against the local MySQL", () => {
 
 /** An application as the route parses it, with a CV of these bytes under this name. */
 const received = (cv: { bytes: Uint8Array | string; name: string }, overrides: Record<string, unknown> = {}) =>
-  applicationFormSchema.parse({
+  applicationSchemaFor(overrides.jobId).parse({
     jobId: "",
     name: "Mariam Ali",
     email: "Mariam@Example.com",
@@ -283,10 +307,16 @@ describe("receiveApplication, against the local MySQL", () => {
   it("keeps the job's own questions as answered after the fixed ones, as the form asks them (D209)", async () => {
     const answers = [
       { question: BLS, choice: "No" },
-      { question: SHIFTS, choice: "Either" },
+      { question: SHIFTS, choices: ["Days", "Nights"] },
     ];
+    const candidate = { bytes: PDF, name: "cv.pdf" };
+    await expect(
+      receiveApplication(received(candidate, { jobId: jobs.asks, answers }), ip(), at),
+    ).rejects.toMatchObject({
+      code: "JOB_QUESTIONS_CHANGED",
+    });
     const { id } = await receiveApplication(
-      received({ bytes: PDF, name: "cv.pdf" }, { jobId: jobs.asks, answers }),
+      received(candidate, { jobId: jobs.asks, answers, dataflow: undefined, mophLicence: undefined }),
       ip(),
       at,
     );
@@ -294,10 +324,12 @@ describe("receiveApplication, against the local MySQL", () => {
       .select({ fields: applications.fields })
       .from(applications)
       .where(eq(applications.id, id));
-    expect(row.fields.map(({ label }) => label).slice(6, 9)).toEqual([UI_TEXT.prometric, BLS, SHIFTS]);
-    expect(row.fields.slice(7, 10)).toEqual([
+    expect(row.fields.map(({ label }) => label)).not.toContain(UI_TEXT.dataflow);
+    expect(row.fields.map(({ label }) => label)).not.toContain(UI_TEXT.mophLicence);
+    expect(row.fields.map(({ label }) => label).slice(4, 7)).toEqual([UI_TEXT.prometric, BLS, SHIFTS]);
+    expect(row.fields.slice(5, 8)).toEqual([
       { label: BLS, value: "No" },
-      { label: SHIFTS, value: "Either" },
+      { label: SHIFTS, value: "Days\nNights" },
       { label: UI_TEXT.experienceYears, value: "4" },
     ]);
   });

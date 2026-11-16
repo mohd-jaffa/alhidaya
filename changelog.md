@@ -5170,3 +5170,46 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 
 ### Blockers
 - None.
+
+## 2026-11-16 — Production Turnstile (R8.4)
+
+### Blocker
+
+- Status: OPEN
+- Area: Production Turnstile configuration
+- Description: Install the supplied keys in the live Node.js application's environment.
+- What was attempted: Confirmed read-only SSH access and located the app's environment in the cPanel Node.js Selector.
+- Why it is blocked: Automatic approval review rejected the production settings change and restart pending explicit confirmation at the D44 checkpoint.
+- Required decision/input: Approve replacing the two Turnstile values and restarting the live Node.js app.
+- Temporary workaround: The current production settings stay in service. Local and automated tests use Cloudflare's test keys.
+
+## 2026-11-16 — Job application question settings (R9.2, D210)
+
+### Changed
+
+- In Jobs → Application questions, the admin can hide location, MOPH licence, Dataflow and Prometric individually. Each visible screening question is optional when applying for a specific job.
+- Each custom question has an Answer selection setting. Applicants choose one answer with radio buttons or one or more with checkboxes. The general application retains its existing required screening questions.
+- The application API checks submitted answers against the published job in the application transaction. It omits skipped screening answers and preserves every selected answer in the inbox and HR email.
+- The User manual explains both controls. `package.json` and `package-lock.json` are at `1.0.3`.
+
+### Validation
+
+- Lint, formatting, type checking and dependency audit gates passed. All 1,498 unit, contract and database tests passed with 100% coverage.
+- The production build passed. All 279 applicable browser tests passed across the full run and the phone and desktop reruns of the updated screening assertion. The new journey verifies that publishing hides a predefined question, skips the remaining screening questions, and saves two selected answers.
+- Development hydration passed at phone and desktop widths.
+- All 40 mobile performance and desktop scroll checks passed.
+- Both application pages passed the mobile performance budgets: 170,610 bytes of initial JavaScript (gzip), about 0.28 s LCP, CLS 0, a 32 ms scripted INP upper bound, and Lighthouse 100 in every measured category.
+
+### Migration
+
+- None. The settings live in the job record's draft and published JSON. Older jobs default to showing the four screening questions and accepting one answer per custom question.
+
+## 2026-11-16 — Production Turnstile configured (R8.4)
+
+### Resolved
+
+- The owner confirmed the D44 checkpoint. Both Turnstile settings were installed in the live cPanel Node.js app and Passenger was restarted. The release build and local tests use the test configuration.
+
+### Validation
+
+- The live Careers, Quote and Contact pages returned HTTP 200 and served the new widget. Cloudflare recognised the configured secret and rejected a dummy token as expected. The live Careers widget issued a token in the browser. No live application was submitted.

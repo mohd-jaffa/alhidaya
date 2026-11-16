@@ -47,6 +47,7 @@ const blankJob = (): JobDocumentInput => ({
   responsibilities: [],
   qualifications: [],
   benefits: [],
+  hiddenQuestions: [],
   questions: [],
   postedOn: dohaDay(),
   closesOn: null,
