@@ -101,6 +101,17 @@ describe("the application form (plan §9.2)", () => {
     expect(years("   ")).toBe(VALIDATION_MESSAGES.required(UI_TEXT.experienceYears));
   });
 
+  it("requires visible years of experience and permits omission only when a job hides it", () => {
+    const jobId = "0f8c1c62-5d55-4b8e-9c3a-2f4e1d6b7a90";
+    const input = { ...application, jobId, experienceYears: undefined };
+    expect(withJobQuestions(jobId, [], true).safeParse(input).success).toBe(true);
+    expect(problems(withJobQuestions(jobId, []).safeParse(input))).toEqual({
+      experienceYears: VALIDATION_MESSAGES.required(UI_TEXT.experienceYears),
+    });
+    expect(withJobQuestions(null, [], true).safeParse({ ...input, jobId: "" }).success).toBe(false);
+    expect(withJobQuestions(jobId, [], true).safeParse({ ...input, experienceYears: "51" }).success).toBe(false);
+  });
+
   it("refuses a CV past its size, and anything that is not a file", () => {
     const large = new File([new Uint8Array(UPLOAD_LIMITS.cvBytes + 1)], "cv.pdf");
     expect(problems(applicationFormSchema.safeParse({ ...application, cv: large })).cv).toBe(

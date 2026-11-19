@@ -4,7 +4,7 @@ import { JOB_QUESTION_CHOICES, LIST_LIMITS, TEXT_LIMITS } from "@/constants/limi
 import { VALIDATION_MESSAGES } from "@/constants/messages";
 import { RESERVED_JOB_SLUGS } from "@/constants/routes";
 import {
-  APPLICATION_SCREENING_FIELDS,
+  APPLICATION_QUESTION_FIELDS,
   AUDIENCES,
   EMPLOYMENT_TYPES,
   JOB_QUESTION_SELECTIONS,
@@ -85,8 +85,8 @@ export const jobDocumentSchema = z
     qualifications: points("Qualifications", LIST_LIMITS.jobPoints),
     benefits: points("Benefits", LIST_LIMITS.jobPoints),
     hiddenQuestions: z
-      .array(z.enum(APPLICATION_SCREENING_FIELDS, { error: VALIDATION_MESSAGES.invalid }))
-      .max(APPLICATION_SCREENING_FIELDS.length, VALIDATION_MESSAGES.invalid)
+      .array(z.enum(APPLICATION_QUESTION_FIELDS, { error: VALIDATION_MESSAGES.invalid }))
+      .max(APPLICATION_QUESTION_FIELDS.length, VALIDATION_MESSAGES.invalid)
       .superRefine(withoutRepeats("Predefined questions", (field) => field))
       .default([]),
     /** Its own questions in its application form (D209, D210). */

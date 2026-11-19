@@ -5213,3 +5213,27 @@ and Careers' two sections' colours, to follow Home. Their answers are D135.
 ### Validation
 
 - The live Careers, Quote and Contact pages returned HTTP 200 and served the new widget. Cloudflare recognised the configured secret and rejected a dummy token as expected. The live Careers widget issued a token in the browser. No live application was submitted.
+
+## 2026-11-19 — Experience question visibility and admin menu (R9.3, D211)
+
+### Changed
+
+- Jobs → Application questions now includes a hide checkbox directly beneath Years of nursing experience. Publishing the job applies the setting to its application form. Hidden experience answers are omitted from the application, inbox and HR email. Visible experience fields keep their required 0–50 validation.
+- The admin menu keeps Applications on one line beside two- and three-digit counts. Row gaps and horizontal insets use the existing 8 px spacing, and badges retain their width.
+- The admin manual explains experience visibility. The package version is `1.0.4`.
+- The release audit flagged two Next.js cache isolation advisories. Updated the runtime from `16.4.3` to the patched `16.4.5` as required by the shipped-dependency security gate (GHSA-mfr8-8qww-v76h and GHSA-vc7v-qv4w-wrv8).
+
+### Validation
+
+- All 1,500 unit, contract and database tests passed across 386 files, with 100% statements, branches, functions and lines covered.
+- Lint, formatting, type checking, the patched dependency audit and the production build passed.
+- All 280 applicable phone and desktop browser journeys passed across the full run and retries of three Cloudflare-dependent timeouts. The job journey publishes the hide setting and submits without experience. The menu regression checks 10, 100 and 999 applications at 360, 390, 414, 1024 and 1440 px. Development hydration passed at both project widths.
+- All 40 performance checks passed across the full run and two repeated scroll measurements. Initial Careers and Contact desktop scroll outliers did not recur, with both reruns recording no long tasks or dropped frames. Both application pages measured 170,579 bytes initial JavaScript (gzip), about 0.29 s LCP, CLS 0, 32/48 ms scripted INP upper bounds and Lighthouse 100 in every category.
+
+### Migration
+
+- None. Experience visibility uses the existing hidden-questions list in the job's draft and published JSON. Existing jobs show the question.
+
+### Blockers
+
+- None.

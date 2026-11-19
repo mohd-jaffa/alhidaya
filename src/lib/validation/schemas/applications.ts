@@ -119,6 +119,7 @@ const jobApplicationFormSchema = applicationFormSchema.partial({
   mophLicence: true,
   dataflow: true,
   prometric: true,
+  experienceYears: true,
 });
 
 /** Selects the form by its job field. Both schemas validate that field before a submission is accepted. */
@@ -137,9 +138,11 @@ export type ChosenAnswer = ApplicationFormPayload["answers"][number];
 export const withJobQuestions = (
   jobId: string | null,
   questions: readonly { field: string; choices: readonly string[]; selection: JobQuestionSelection }[],
+  hideExperience = false,
 ) =>
-  applicationSchemaFor(jobId).extend(
-    Object.fromEntries(
+  applicationSchemaFor(jobId).extend({
+    experienceYears: jobId !== null && hideExperience ? experienceYears.optional() : experienceYears,
+    ...Object.fromEntries(
       questions.map(({ field, choices, selection }) => {
         const choice = z.enum(choices, { error: VALIDATION_MESSAGES.chooseAnswer });
         return [
@@ -150,7 +153,7 @@ export const withJobQuestions = (
         ];
       }),
     ),
-  );
+  });
 
 /** The general application, as the inbox's job filter names it. */
 export const GENERAL_APPLICATIONS = "general";

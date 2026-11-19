@@ -92,6 +92,50 @@ async function signIn(page: Page, email: string) {
 
 const axe = async (page: Page) => expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
+test("Applications and multi-digit counts fit on one menu row", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "one responsive menu regression covers both menu variants");
+  await signIn(page, await admin("Fatima"));
+  let total = 10;
+  await page.route(`**${ADMIN_API_ROUTES.adminApplications}?**`, (route) =>
+    route.fulfill({
+      json: { success: true, data: { total, items: [], page: 1, pageSize: 25 } },
+    }),
+  );
+  for (const count of [10, 100, 999]) {
+    total = count;
+    for (const width of [360, 390, 414, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(ADMIN_ROUTES.jobs);
+      if (width < 1024) await page.getByRole("button", { name: ADMIN_TEXT.menu }).click();
+      const menu = width < 1024 ? page.getByRole("dialog", { name: ADMIN_TEXT.menu }) : page.getByRole("complementary");
+      const link = menu.getByRole("link", {
+        name: new RegExp(`^${ADMIN_TEXT.applications}`),
+      });
+      await expect(link).toBeVisible();
+      await expect(link.getByText(String(count), { exact: true })).toBeVisible();
+      expect(
+        await link.evaluate((element) => {
+          const label = element.children[1];
+          const badge = element.children[2];
+          const text = document.createRange();
+          text.selectNodeContents(label);
+          const lines = [...text.getClientRects()];
+          const row = element.getBoundingClientRect();
+          const counter = badge.getBoundingClientRect();
+          return (
+            lines.length === 1 &&
+            lines[0].right <= counter.left &&
+            counter.right <= row.right &&
+            lines[0].left >= row.left
+          );
+        }),
+        `Applications ${count} at ${width}px`,
+      ).toBe(true);
+    }
+  }
+  await axe(page);
+});
+
 test("signing in: the way in, a refusal in plain words, then on to where the admin was headed", async ({
   page,
 }, testInfo) => {

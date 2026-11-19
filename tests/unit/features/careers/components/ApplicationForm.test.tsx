@@ -32,7 +32,8 @@ async function fill(user: ReturnType<typeof userEvent.setup>, cv: File, screenin
     await user.click(screen.getAllByRole("radio", { name: "Done" })[0]);
     await user.click(screen.getByRole("radio", { name: "Passed" }));
   }
-  await user.type(field(UI_TEXT.experienceYears), "4");
+  const experience = screen.queryByRole("textbox", { name: UI_TEXT.experienceYears });
+  if (experience) await user.type(experience, "4");
   await user.upload(cvInput(), cv);
   await user.click(screen.getByRole("checkbox", { name: new RegExp(UI_TEXT.consent) }));
 }
@@ -96,7 +97,15 @@ describe("ApplicationForm (plan §9.2)", () => {
       { question: "Do you hold a BLS certificate?", choices: ["Yes", "No"], selection: "single" as const },
       { question: "Which shifts can you work?", choices: ["Days", "Nights", "Either"], selection: "multiple" as const },
     ];
-    render(<ApplicationForm jobId={JOB_ID} siteKey="site-key" questions={questions} hiddenQuestions={["prometric"]} />);
+    render(
+      <ApplicationForm
+        jobId={JOB_ID}
+        siteKey="site-key"
+        questions={questions}
+        hiddenQuestions={["prometric", "experienceYears"]}
+      />,
+    );
+    expect(screen.queryByRole("textbox", { name: UI_TEXT.experienceYears })).toBeNull();
     const legends = screen.getAllByRole("group").map((group) => group.querySelector("legend")?.textContent);
     expect(legends.slice(0, 5)).toEqual([
       `${UI_TEXT.whereNow} (${UI_TEXT.optional})`,

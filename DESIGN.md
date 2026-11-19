@@ -328,6 +328,8 @@ A 56 px WhatsApp-green circle with the proper standard white brand mark (D154), 
 ### Admin (a separate Operate surface, D138)
 The admin shares the tokens, type and pictograms but keeps its boxed Operate layout. Its sidebar, mobile bar and mobile menu use pale leaf, navy headings and ink-2 links, the colour logo, green counts and forest-tinted rules. The current row is leaf with navy words, marked by its fill alone, never bold. The sidebar scrolls on its own (`overscroll-contain`), in the same groups; the admin's name, Profile and Log out remain at its foot, and Log out asks first.
 
+D211 keeps menu labels on one line and preserves the count badge's width, with 8 px row gaps and horizontal insets so Applications fits with two- and three-digit counts in the sidebar and phone menu.
+
 The work area is white, with the same ruled rows, mist for opened details, fixed rem sizes (28 px headings at 700), 6 px corners and hairlines. `.admin-world` scopes forest to the action/link/focus/checked-switch roles, so the public site's blue is unchanged. Primary `Button` actions use forest with white words (hover navy), secondary actions keep their navy outline, quiet actions use forest words. Switches keep their sliding white knob and Enabled/Disabled words, now in forest. Danger actions and errors stay red. New uses the original blue through `status-new`, in-progress keeps sky, resolved leaf and archived the quiet ink; every status keeps its words and mark.
 
 The sign-in panel uses pale leaf with navy and ink-2 words, forest marks in pale chips and the colour logo, beside the same white form. No smooth scroll or reveals; motion only for state (120–200 ms). The admin never loads the site's motion. Its words and workflow are unchanged.
@@ -543,6 +545,8 @@ Animated headings preserve emphasis across word/letter and blue-highlight bounda
 A single small syntax hint appears in Pages, Services, Jobs and Settings content editors. No toolbar or repeated per-field controls. Save/Preview/Publish/Discard and raw string limits stay unchanged. Metadata, share pictures, structured data, image labels, form choices, generated slugs and submission snapshots use a plain-text projection. Routing, contact addresses/phone/email, passwords and URL values remain literal. All formatting output remains escaped React text.
 
 D210 places the four predefined screening controls together in the job editor's Application questions group. Each custom question uses the shared select for its answer mode. On the job's Apply page, visible screening questions carry the existing optional label. Custom questions use the shared radio rows for one answer or checkbox rows with selection instructions for multiple answers. The inbox and email show multiple selections on separate lines under the original question.
+
+D211 adds Years of nursing experience below the four screening controls, with its hide checkbox directly beneath its label. The checkbox uses the existing shared control and the job's publish flow. A hidden experience field takes no space in the job application form.
 
 
 ## Admin User manual (D189, 2026-11-07)

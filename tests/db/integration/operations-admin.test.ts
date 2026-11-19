@@ -43,6 +43,7 @@ async function application(days: number, cv: "kept" | "stuck" | "none" = "kept")
       email: "mariam@example.com",
       phone: "+97455512345",
       fields: [{ label: "Years of nursing experience", value: "4" }],
+      experienceYears: 4,
       cv: { name: "cv.pdf", type: "pdf", bytes: 8 },
     },
     ip(),

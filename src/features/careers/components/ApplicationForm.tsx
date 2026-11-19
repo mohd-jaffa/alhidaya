@@ -9,7 +9,7 @@ import { TEXT_LIMITS, UPLOAD_LIMITS } from "@/constants/limits";
 import { UI_TEXT } from "@/constants/messages";
 import {
   APPLICATION_SCREENING_FIELDS,
-  type ApplicationScreeningField,
+  type ApplicationQuestionField,
   DATAFLOW,
   DATAFLOW_LABELS,
   MOPH_LICENCE,
@@ -33,11 +33,12 @@ const SCREENING_OPTIONS = {
 };
 
 /** The form's schema, with the job's own questions and their selection modes (D210). */
-const schemaFor = (jobId: string | null, questions: readonly AskedQuestion[]) => () =>
+const schemaFor = (jobId: string | null, questions: readonly AskedQuestion[], hideExperience: boolean) => () =>
   import("@/lib/validation/schemas/applications").then((module) =>
     module.withJobQuestions(
       jobId,
       questions.map((question, index) => ({ ...question, field: answerField(index) })),
+      hideExperience,
     ),
   );
 
@@ -57,11 +58,12 @@ export function ApplicationForm({
   siteKey: string;
   /** The job's own questions, asked after the fixed ones; none for a general application. */
   questions?: readonly AskedQuestion[];
-  hiddenQuestions?: readonly ApplicationScreeningField[];
+  hiddenQuestions?: readonly ApplicationQuestionField[];
 }) {
+  const hideExperience = jobId !== null && hiddenQuestions.includes("experienceYears");
   return (
     <SiteForm
-      schema={schemaFor(jobId, questions)}
+      schema={schemaFor(jobId, questions, hideExperience)}
       send={(values) =>
         CareersClient.apply(
           values,
@@ -107,14 +109,16 @@ export function ApplicationForm({
               error={errors[answerField(index)]}
             />
           ))}
-          <Field
-            label={UI_TEXT.experienceYears}
-            hint={UI_TEXT.experienceYearsHint}
-            required
-            error={errors.experienceYears}
-          >
-            <TextInput name="experienceYears" inputMode="numeric" autoComplete="off" maxLength={2} />
-          </Field>
+          {hideExperience ? null : (
+            <Field
+              label={UI_TEXT.experienceYears}
+              hint={UI_TEXT.experienceYearsHint}
+              required
+              error={errors.experienceYears}
+            >
+              <TextInput name="experienceYears" inputMode="numeric" autoComplete="off" maxLength={2} />
+            </Field>
+          )}
           <Field
             label={UI_TEXT.cv}
             hint={UI_TEXT.cvHint(formatBytes(UPLOAD_LIMITS.cvBytes))}

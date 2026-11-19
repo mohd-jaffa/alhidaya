@@ -120,6 +120,7 @@ test("published screening visibility and multiple answers carry through a job ap
     await page.goto(ADMIN_ROUTES.job(id));
     const group = page.getByRole("region", { name: ADMIN_TEXT.applicationQuestions });
     await group.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.prometric) }).check();
+    await group.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.experienceYears) }).check();
     await group.getByRole("button", { name: ADMIN_TEXT.addQuestion }).click();
     const first = group.getByRole("group", { name: ADMIN_TEXT.numbered(ADMIN_TEXT.question, 1) });
     await first.getByRole("textbox", { name: ADMIN_TEXT.question }).fill("Which shifts can you work?");
@@ -150,7 +151,7 @@ test("published screening visibility and multiple answers carry through a job ap
     await field(UI_TEXT.fullName).fill("Questions Nurse");
     await field(UI_TEXT.email).fill(applicant);
     await field(UI_TEXT.phone).fill("5551 2345");
-    await field(UI_TEXT.experienceYears).fill("3");
+    await expect(field(UI_TEXT.experienceYears)).toHaveCount(0);
     await visitor.getByLabel(UI_TEXT.cv).setInputFiles({
       name: "cv.pdf",
       mimeType: "application/pdf",
@@ -172,7 +173,7 @@ test("published screening visibility and multiple answers carry through a job ap
       .where(eq(applications.email, applicant));
     expect(kept.fields.slice(3, 5)).toEqual([
       { label: "Which shifts can you work?", value: "Days\nNights" },
-      { label: UI_TEXT.experienceYears, value: "3" },
+      { label: UI_TEXT.consent, value: UI_TEXT.consentGiven },
     ]);
   } finally {
     await visiting.close();

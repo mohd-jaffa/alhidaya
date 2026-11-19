@@ -13,8 +13,8 @@ import { ADMIN_TEXT } from "@/constants/admin-messages";
 import { JOB_QUESTION_CHOICES, LIST_LIMITS, TEXT_LIMITS } from "@/constants/limits";
 import { UI_TEXT } from "@/constants/messages";
 import {
-  APPLICATION_SCREENING_FIELDS,
-  type ApplicationScreeningField,
+  APPLICATION_QUESTION_FIELDS,
+  type ApplicationQuestionField,
   JOB_QUESTION_SELECTIONS,
 } from "@/constants/statuses";
 
@@ -38,24 +38,28 @@ const blankQuestion = () => ({
 export function JobQuestions() {
   const { fields, append, move, remove } = useFieldArray({ name: "questions", keyName: "key" });
   const { field: visibility } = useController({ name: "hiddenQuestions", defaultValue: [] });
-  const hidden = visibility.value as ApplicationScreeningField[];
+  const hidden = visibility.value as ApplicationQuestionField[];
   const error = useEditorError("questions");
   return (
     <div className="grid gap-5">
       <fieldset className="grid">
         <legend className="mb-2 font-semibold">{ADMIN_TEXT.predefinedQuestions}</legend>
         <p className="text-small text-ink-2">{ADMIN_TEXT.predefinedQuestionsHint}</p>
-        {APPLICATION_SCREENING_FIELDS.map((field) => (
-          <Checkbox
-            key={field}
-            checked={hidden.includes(field)}
-            onBlur={visibility.onBlur}
-            onChange={(event) =>
-              visibility.onChange(event.target.checked ? [...hidden, field] : hidden.filter((value) => value !== field))
-            }
-          >
-            {ADMIN_TEXT.hideQuestion(UI_TEXT[field])}
-          </Checkbox>
+        {APPLICATION_QUESTION_FIELDS.map((field) => (
+          <div key={field}>
+            {field === "experienceYears" ? <p className="mt-3 font-semibold">{UI_TEXT.experienceYears}</p> : null}
+            <Checkbox
+              checked={hidden.includes(field)}
+              onBlur={visibility.onBlur}
+              onChange={(event) =>
+                visibility.onChange(
+                  event.target.checked ? [...hidden, field] : hidden.filter((value) => value !== field),
+                )
+              }
+            >
+              {ADMIN_TEXT.hideQuestion(UI_TEXT[field])}
+            </Checkbox>
+          </div>
         ))}
       </fieldset>
       {fields.map((field, index) => {

@@ -115,6 +115,8 @@ export const CONTACT_METHOD_LABELS: Record<ContactMethod, string> = {
  */
 export const APPLICATION_SCREENING_FIELDS = ["whereNow", "mophLicence", "dataflow", "prometric"] as const;
 export type ApplicationScreeningField = (typeof APPLICATION_SCREENING_FIELDS)[number];
+export const APPLICATION_QUESTION_FIELDS = [...APPLICATION_SCREENING_FIELDS, "experienceYears"] as const;
+export type ApplicationQuestionField = (typeof APPLICATION_QUESTION_FIELDS)[number];
 
 export const JOB_QUESTION_SELECTIONS = ["single", "multiple"] as const;
 export type JobQuestionSelection = (typeof JOB_QUESTION_SELECTIONS)[number];

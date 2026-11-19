@@ -285,7 +285,8 @@ export const ADMIN_MANUAL = [
         duration: 24,
         steps: [
           "Update duties, qualifications, benefits and SEO using the item controls.",
-          "In Application questions, hide any predefined questions you don't need. Applicants can skip the ones you show.",
+          "In Application questions, hide any predefined questions you don't need. Applicants can skip the location and licensing questions you show.",
+          "Tick Hide Years of nursing experience to remove that question from this job's application form. It is required when shown. Publish the job to apply the change.",
           "For each custom question, add at least two choices and set Answer selection to One answer or Multiple answers. Applicants must select at least one.",
           "Save draft, preview and publish when the opening is ready.",
           "Choose Close now to stop new applications, or Archive to remove the listing. Review each confirmation first.",

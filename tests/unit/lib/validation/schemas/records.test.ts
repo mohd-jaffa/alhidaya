@@ -111,7 +111,7 @@ describe("a job's own application questions (D209)", () => {
 
   it("keeps known screening fields and answer modes", () => {
     const question = { ...asked("Shifts?", "Days", "Nights"), selection: "multiple" as const };
-    const hiddenQuestions = ["whereNow", "prometric"];
+    const hiddenQuestions = ["whereNow", "prometric", "experienceYears"];
     expect(jobDocumentSchema.parse({ ...jobFixture(), questions: [question], hiddenQuestions })).toMatchObject({
       questions: [question],
       hiddenQuestions,

@@ -43,6 +43,7 @@ const application = (overrides: Partial<ApplicationSubmission> = {}): Applicatio
   email: "mariam@example.com",
   phone: "+97455512345",
   fields: [{ label: "Years of nursing experience", value: "4" }],
+  experienceYears: 4,
   cv: { name: "Mariam CV.pdf", type: "pdf", bytes: 120_000 },
   ...overrides,
 });
@@ -332,6 +333,40 @@ describe("receiveApplication, against the local MySQL", () => {
       { label: SHIFTS, value: "Days\nNights" },
       { label: UI_TEXT.experienceYears, value: "4" },
     ]);
+  });
+
+  it("publishes and restores experience visibility, omits hidden answers and refuses stale forms", async () => {
+    const draft = jobFixture({ slug: "experience-visibility" });
+    const id = await createRecord("JOBS", draft, actor);
+    await publishRecord("JOBS", id, draft.slug, actor);
+    const cv = { bytes: PDF, name: "cv.pdf" };
+    const omitted = received(cv, { jobId: id, experienceYears: undefined });
+    const keep = vi.fn(async () => "unused");
+    await saveRecordDraft("JOBS", id, { ...draft, hiddenQuestions: ["experienceYears"] }, actor);
+    await expect(
+      submitApplication(application({ jobId: id, fields: [], experienceYears: undefined }), ip(), at, keep),
+    ).rejects.toMatchObject({
+      code: "JOB_QUESTIONS_CHANGED",
+    });
+    expect(keep).not.toHaveBeenCalled();
+    await publishRecord("JOBS", id, draft.slug, actor);
+    await expect(receiveApplication(received(cv, { jobId: id }), ip(), at)).rejects.toMatchObject({
+      code: "JOB_QUESTIONS_CHANGED",
+    });
+    const accepted = await receiveApplication(omitted, ip(), at);
+    const [stored] = await getDb()
+      .select({ fields: applications.fields })
+      .from(applications)
+      .where(eq(applications.id, accepted.id));
+    expect(stored.fields.some(({ label }) => label === UI_TEXT.experienceYears)).toBe(false);
+    await saveRecordDraft("JOBS", id, draft, actor);
+    await publishRecord("JOBS", id, draft.slug, actor);
+    await expect(receiveApplication(omitted, ip(), at)).rejects.toMatchObject({ code: "JOB_QUESTIONS_CHANGED" });
+    await expect(
+      receiveApplication(received(cv, { jobId: id, experienceYears: "0" }), ip(), at),
+    ).resolves.toMatchObject({
+      id: expect.any(String),
+    });
   });
 
   it("refuses a CV that is not a PDF or Word file by its first bytes, whatever its name, keeping nothing", async () => {

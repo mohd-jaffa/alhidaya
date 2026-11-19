@@ -45,7 +45,7 @@ const currentStation = (pathname: string, stations: Station[]) =>
   stations.filter((station) => isHere(pathname, station.href)).sort((a, b) => b.href.length - a.href.length)[0];
 
 /** A row of the column: a station, the profile, the way out. */
-const ROW = "flex min-h-touch w-full items-center gap-3 rounded-control px-3 text-start";
+const ROW = "flex min-h-touch w-full items-center gap-2 rounded-control px-2 text-start";
 const ROW_IDLE = "text-ink-2 hover:bg-leaf/20 hover:text-navy";
 // The current row is marked by its highlight alone, never by a heavier weight (D115).
 const ROW_HERE = "bg-leaf text-navy";
@@ -87,9 +87,9 @@ function Stations({
                     className={`${ROW} ${here ? ROW_HERE : ROW_IDLE}`}
                   >
                     <Pictogram name={station.pictogram} size="sm" />
-                    <span className="grow">{station.label}</span>
+                    <span className="grow whitespace-nowrap">{station.label}</span>
                     {station.count && station.count.value > 0 ? (
-                      <span className="rounded-full bg-leaf/30 px-2 text-small font-bold text-navy tabular-nums">
+                      <span className="shrink-0 rounded-full bg-leaf/30 px-2 text-small font-bold text-navy tabular-nums">
                         <span aria-hidden="true">{station.count.value}</span>
                         <span className="sr-only">{station.count.said}</span>
                       </span>

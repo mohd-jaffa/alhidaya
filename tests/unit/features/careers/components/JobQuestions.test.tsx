@@ -38,9 +38,13 @@ describe("JobQuestions (D209)", () => {
     render(<Editor save={save} />);
     expect(screen.queryByRole("textbox")).toBeNull();
     const fieldToHide = screen.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.prometric) });
+    const hideExperience = screen.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.experienceYears) });
+    expect(screen.getByText(UI_TEXT.experienceYears)).toBeVisible();
+    expect(hideExperience).not.toBeChecked();
     const fieldToRestore = screen.getByRole("checkbox", { name: ADMIN_TEXT.hideQuestion(UI_TEXT.whereNow) });
     expect(fieldToHide).not.toBeChecked();
     await user.click(fieldToHide);
+    await user.click(hideExperience);
     await user.click(fieldToRestore);
     await user.click(fieldToRestore);
     await user.click(screen.getByRole("button", { name: ADMIN_TEXT.addQuestion }));
@@ -87,7 +91,7 @@ describe("JobQuestions (D209)", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
     expect(save).toHaveBeenCalledWith(
       expect.objectContaining({
-        hiddenQuestions: ["prometric"],
+        hiddenQuestions: ["prometric", "experienceYears"],
         questions: [
           {
             question: { en: "Which shifts?" },

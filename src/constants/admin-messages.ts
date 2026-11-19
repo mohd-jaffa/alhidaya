@@ -707,7 +707,8 @@ export const ADMIN_TEXT = {
   applicationQuestionsHint:
     "Add questions after the predefined ones. Each question needs at least two choices, and applicants must select at least one answer.",
   predefinedQuestions: "Predefined questions",
-  predefinedQuestionsHint: "Applicants can skip these questions. Hide any you don't need for this job.",
+  predefinedQuestionsHint:
+    "Hide any questions you don't need for this job. Applicants can skip the location and licensing questions. Years of experience is required when shown.",
   hideQuestion: (question: string) => `Hide “${question}”`,
   answerSelection: "Answer selection",
   answerSelections: { single: "One answer", multiple: "Multiple answers" },

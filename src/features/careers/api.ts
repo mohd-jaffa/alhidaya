@@ -360,6 +360,8 @@ export interface ApplicationSubmission {
   /** The job's own questions as answered (D209), checked against the published job; none for a general application. */
   answers?: ChosenAnswer[];
   screeningAnswers?: ApplicationScreeningField[];
+  /** Parsed experience answer, checked against the job's visibility before anything is stored. */
+  experienceYears?: number;
   cv: { name: string; type: FileType; bytes: number };
 }
 
@@ -381,7 +383,7 @@ export async function submitApplication(
   keepCv?: (jobTitle: string | null) => Promise<string>,
 ): Promise<{ id: string; jobTitle: string | null }> {
   const id = newId();
-  const { cv, answers = [], screeningAnswers = [], ...applicant } = submission;
+  const { cv, answers = [], screeningAnswers = [], experienceYears, ...applicant } = submission;
   let kept: string | null = null;
   try {
     return { id, jobTitle: await storeApplication() };
@@ -413,9 +415,14 @@ export async function submitApplication(
         if (!published || !isOpen(published, dohaDay(at))) throw businessRuleError("JOB_CLOSED");
         title = plainText(published.title.en);
         asked = askedQuestions(published);
-        if (published.hiddenQuestions?.some((field) => screeningAnswers.includes(field))) {
+        if (
+          published.hiddenQuestions?.some((field) => field !== "experienceYears" && screeningAnswers.includes(field))
+        ) {
           throw conflictError("JOB_QUESTIONS_CHANGED");
         }
+        const asksExperience = !published.hiddenQuestions?.includes("experienceYears");
+        const answeredExperience = experienceYears !== undefined;
+        if (asksExperience !== answeredExperience) throw conflictError("JOB_QUESTIONS_CHANGED");
       }
       checkAnswers(asked, answers);
 
@@ -456,7 +463,7 @@ export function applicationFields(payload: ApplicationFormPayload): SubmittedFie
     [UI_TEXT.dataflow, answerLabel(payload.dataflow, DATAFLOW_LABELS)],
     [UI_TEXT.prometric, answerLabel(payload.prometric, PROMETRIC_LABELS)],
     ...payload.answers.map((answer): [string, string] => [answer.question, selectedChoices(answer).join("\n")]),
-    [UI_TEXT.experienceYears, String(payload.experienceYears)],
+    [UI_TEXT.experienceYears, payload.experienceYears === undefined ? null : String(payload.experienceYears)],
     [UI_TEXT.applicationNote, payload.note],
     [UI_TEXT.consent, UI_TEXT.consentGiven],
   ];
@@ -504,7 +511,7 @@ export async function receiveApplication(
   if (type === null || !CV_TYPES.includes(type)) {
     throw validationError("VALIDATION_ERROR", [{ path: "cv", message: VALIDATION_MESSAGES.cvType }]);
   }
-  const { jobId, name, email, phone, answers } = payload;
+  const { jobId, name, email, phone, answers, experienceYears } = payload;
   const { id } = await submitApplication(
     {
       jobId,
@@ -513,6 +520,7 @@ export async function receiveApplication(
       phone,
       fields: applicationFields(payload),
       answers,
+      experienceYears,
       screeningAnswers: APPLICATION_SCREENING_FIELDS.filter((field) => payload[field] !== undefined),
       cv: { name: uploadedName(payload.cv.name), type, bytes: bytes.byteLength },
     },
